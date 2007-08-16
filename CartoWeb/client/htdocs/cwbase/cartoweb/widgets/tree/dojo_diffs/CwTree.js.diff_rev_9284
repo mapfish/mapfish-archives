@@ -1,0 +1,142 @@
+--- CwTree.js.upstream	2007-06-29 12:15:43.000000000 +0200
++++ CwTree.js	2007-06-28 20:13:28.000000000 +0200
+@@ -1,14 +1,14 @@
+-dojo.provide("dijit.Tree");
++dojo.provide("cartoweb.CwTree");
+ 
+ dojo.require("dojo.fx");
+ 
+ dojo.require("dijit._Widget");
+ dojo.require("dijit._Templated");
+ dojo.require("dijit._Container");
+-dojo.require("dijit._tree.Controller");
++dojo.require("cartoweb._tree.CwController");
+ 
+ dojo.declare(
+-	"dijit._TreeBase",
++	"cartoweb._CwTreeBase",
+ 	[dijit._Widget, dijit._Templated, dijit._Container, dijit._Contained],
+ {
+ 	// summary:
+@@ -69,9 +69,10 @@
+ 
+ 			// Create _TreeNode widget for each specified tree node
+ 			dojo.forEach(childrenArray, function(childParams){
+-				var child = new dijit._TreeNode(dojo.mixin({
++				var child = new cartoweb._CwTreeNode(dojo.mixin({
+ 					tree: this.tree,
+-					label: this.tree.store.getLabel(childParams.item)
++					// XXXyyy
++					label: "foo" //this.tree.store.getLabel(childParams.item)
+ 				}, childParams));
+ 				this.addChild(child);
+ 			}, this);
+@@ -101,8 +102,8 @@
+ });
+ 
+ dojo.declare(
+-	"dijit.Tree",
+-	dijit._TreeBase,
++	"cartoweb.CwTree",
++	cartoweb._CwTreeBase,
+ {
+ 	// summary
+ 	//	Tree view does all the drawing, visual node management etc.
+@@ -129,7 +130,7 @@
+ 	//		name of attribute that holds children of a tree node
+ 	childrenAttr: "children",
+ 
+-	templatePath: dojo.moduleUrl("dijit", "_tree/Tree.html"),		
++	templatePath: dojo.moduleUrl("cartoweb", "_tree/CwTree.html"),		
+ 
+ 	isExpanded: true, // consider this "root node" to be always expanded
+ 
+@@ -169,12 +170,14 @@
+ 
+ 
+ 		// start the controller, passing in the store
+-		this._controller = new dijit._tree.DataController(
++		this._controller = new cartoweb._tree.CwDataController2(
+ 			{	
+ 				store: this.store,
+ 				treeId: this.id,
+ 				query: this.query,
+-				childrenAttr: this.childrenAttr
++				childrenAttr: this.childrenAttr,
++				// XXXCw
++				tree: this
+ 			}
+ 		);
+ 
+@@ -210,12 +213,21 @@
+ 			return;
+ 		}
+ 
++		// XXXCw
++		console.log("domElement: %o, chk %o", domElement, nodeWidget.checkboxNode);
++		var topic = domElement == nodeWidget.expandoNode ? "toggleOpen" : "execute";
++		if (domElement == nodeWidget.checkboxNode)
++			topic = "checked";
++
+ 		this._publish(
+-			(domElement == nodeWidget.expandoNode ||
+-			 domElement == nodeWidget.expandoNodeText) ? "toggleOpen" : "execute",
++			// XXXCw
++			//(domElement == nodeWidget.expandoNode ||
++			// domElement == nodeWidget.expandoNodeText) ? "toggleOpen" : "execute",
++			topic,
+ 			 { node: nodeWidget} );	
+ 
+-		dojo.stopEvent(e);
++		if (topic != "checked")
++			dojo.stopEvent(e);
+ 	},
+ 
+ 	_onKeyPress: function(/*Event*/ e){
+@@ -261,13 +273,13 @@
+ });
+ 
+ dojo.declare(
+-	"dijit._TreeNode",
+-	dijit._TreeBase,
++	"cartoweb._CwTreeNode",
++	cartoweb._CwTreeBase,
+ {
+ 	// summary
+ 	//		Single node within a tree
+ 
+-	templatePath: dojo.moduleUrl("dijit", "_tree/Node.html"),		
++	templatePath: dojo.moduleUrl("cartoweb", "_tree/CwNode.html"),		
+ 
+ 	// type: String
+ 	//		User defined identifier to differentiate nodes, and to control icon used
+@@ -294,6 +306,10 @@
+ 		this.labelNode.innerHTML="";
+ 		this.labelNode.appendChild(document.createTextNode(this.label));
+ 		
++		// XXXCw
++		// XXXyyy this.iconNode2.src = this.icon;
++		this.checkboxNode.checked = this.checked;
++
+ 		// set expand icon for leaf 	
+ 		this._setExpando();
+ 	},
+@@ -344,14 +360,17 @@
+ 		dojo.addClass(this.expandoNode, styles[idx]);
+ 
+ 		// provide a non-image based indicator for images-off mode
++		// XXXyyy
++		/*
+ 		this.expandoNodeText.innerHTML =
+ 			processing ? "*" :
+ 				(this.isFolder ?
+ 					(this.isExpanded ? "&#9660;" : "&#9658;") : "-");
++		*/
+ 	},	
+ 
+ 	setChildren: function(items){
+-		dijit.Tree.superclass.setChildren.apply(this, arguments);
++		cartoweb.CwTree.superclass.setChildren.apply(this, arguments);
+ 
+ 		// create animations for showing/hiding the children
+ 		this._slideIn = dojo.fx.slideIn({node: this.containerNode, duration: 250});

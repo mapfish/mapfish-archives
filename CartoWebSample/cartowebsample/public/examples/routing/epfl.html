@@ -1,0 +1,73 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Routing</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+    <script type="text/javascript" src="../../cwbase/release/cartoweb/openlayers/OpenLayers.js"></script>
+    <script type="text/javascript">
+      // There's a bug in Firefox 2.0 (and less?) which will prevent dojo from
+      // loading parameters from the script element, and guessing the baseUrl
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=351282
+      var djConfig = {baseUrl: "../../cwbase/dojo/",
+                      parseOnLoad: true};
+    </script>
+
+    <script type="text/javascript" src="../../cwbase/release/cartoweb/dojo/dojo.js" djConfig="isDebug: false"></script>
+    <script type="text/javascript" src="../../cwbase/release/cartoweb/dijit/dijit.js"></script>
+
+    <script type="text/javascript">
+        dojo.require("cartoweb.widgets.Map");
+        dojo.require("cartoweb.widgets.Routing");
+        dojo.require("cartoweb.widgets.tree.TreeContainer");
+
+        function epflCreateMap(mapDiv) {
+
+            var options = {
+                projection: "EPSG:21781",
+                units: "m",
+                maxExtent: new OpenLayers.Bounds(526000,147000,543000,161000),
+                scales: [1/100, 1/500, 1/1500, 1/3000, 1/5000]
+             };
+
+            var map = new OpenLayers.Map(mapDiv , options);
+
+            var epfl = new OpenLayers.Layer.WMS("EPFL Background",
+                                "http://www.cartoweb.org/v4/demos/v0.1/tilecache.cgi?",
+                                {layers: 'epfl', 
+                                 reproject: false, 
+                                 format: 'image/png'});
+            map.addLayer(epfl);
+
+            map.addControl(new OpenLayers.Control.MousePosition({numdigits: 0}));
+
+            map.zoomToExtent(new OpenLayers.Bounds(532661, 152125, 533612, 152837));
+            return map;
+        }
+
+     </script>
+     <style type="text/css">
+          @import "../../cwbase/dijit/themes/tundra/tundra.css";
+          @import "../../base.css";
+
+          #right {
+            position: absolute;
+            left: 680px;
+          }
+     </style>
+  </head>
+
+  <body class="tundra">
+    <div id="header"><a href="../../"><img id="header-logo" src="../../cartoweb.png"/></a></div>
+     <h1 class="page-title">routing demo</h1>
+
+      <div id="content">
+        <div id="right">
+          <div dojoType="cartoweb.widgets.Routing" remoteUrl="../../epfl/routing"></div>
+       </div>
+        <div id="map" createMap="epflCreateMap" dojoType="cartoweb.widgets.Map"></div>
+      </div>
+  </body>
+</html>

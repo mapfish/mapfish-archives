@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Cartoweb GeoStat demo</title>
+    <script type="text/javascript" src="../../cwbase/release/cartoweb/openlayers/OpenLayers.js"></script>
+    <script>
+      // There's a bug in Firefox 2.0 (and less?) which will prevent dojo from
+      // loading parameters from the script element, and guessing the baseUrl
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=351282
+      var djConfig = {baseUrl: "../../cwbase/dojo/",
+                      parseOnLoad: true};
+    </script>
+    
+    <!-- begin color picker -->
+    <link rel="stylesheet" type="text/css" href="../../cwbase/mootools/mooRainbow.css">
+    <script type="text/javascript" src="../../cwbase/mootools/mootools.v1.11.js"></script>
+    <script type="text/javascript" src="../../cwbase/mootools/mooRainbow.js"></script>
+    <!-- end color picker -->
+ 
+    <script type="text/javascript" src="../../cwbase/release/cartoweb/dojo/dojo.js"></script>
+    <script type="text/javascript" src="../../cwbase/release/cartoweb/dijit/dijit.js"></script>
+    <script type="text/javascript" src="../../cwbase/release/cartoweb/cartoweb/cartoweb.js"></script>
+
+    <script type="text/javascript">
+        dojo.require("cartoweb.widgets.Map");
+        dojo.require("cartoweb.widgets.GeoStat.Choropleth");
+        dojo.require("cartoweb.widgets.GeoStat.ProportionalSymbol");
+        dojo.require("cartoweb.widgets.tree.TreeContainer");
+        dojo.require("dijit.TitlePane");
+      
+        function worldFactbkCreateMap(mapDiv){
+            var map = new OpenLayers.Map(mapDiv);
+
+
+            var jpl_wms = new OpenLayers.Layer.WMS("Satellite",
+                                               "http://labs.metacarta.com/wms-c/Basic.py?", 
+                                               {layers: 'satellite', format: 'image/png'} );
+            map.addLayer(jpl_wms);
+
+            var vmap0 = new OpenLayers.Layer.WMS("OpenLayers WMS",
+                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}, {buffer: 0});
+
+            map.addLayer(vmap0);
+            map.setCenter(new OpenLayers.LonLat(17, 2), 2);
+
+            return map;
+        }
+    </script>
+    
+    <style type="text/css">
+        @import "../../cwbase/dijit/themes/tundra/tundra.css";
+        @import "../../base.css";
+
+        #right {
+          position: absolute;
+          left: 680px;
+        }
+    </style>
+  </head>
+  <body class="tundra">
+    <div id="header"><a href="../../"><img id="header-logo" src="../../cartoweb.png"/></a></div>
+    <h1 class="page-title">Cartoweb GeoStat demo</h1>
+
+    <div id="content">
+      <div id="right">
+        <div dojoType="dijit.TitlePane" title="Layers tree" style="width: 260px">
+          <div dojoType="cartoweb.widgets.tree.TreeContainer"></div>
+        </div>
+
+        <div dojoType="dijit.TitlePane" title="Choropleth" open="false" style="width: 260px">
+          <div dojoType="cartoweb.widgets.GeoStat.Choropleth"
+               idAttribute="country"
+               indicators="['birth_rt', 'death_rt', 'fertility']" 
+               geoStatUrl="world_factbk_simplified_africa.json"></div>
+        </div>
+        <div dojoType="dijit.TitlePane" title="Proportional Symbol" open="false" style="width: 260px">
+          <div id="geoStat" dojoType="cartoweb.widgets.GeoStat.ProportionalSymbol"
+               idAttribute="name" indicators="['population']"
+               geoStatUrl="world_cities_capitals.json"></div>
+        </div>
+      </div>
+      <div dojoType="cartoweb.widgets.Map" createMap="worldFactbkCreateMap"></div>
+    </div>
+
+  </body>
+</html>

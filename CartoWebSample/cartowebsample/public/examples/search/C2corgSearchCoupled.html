@@ -1,0 +1,53 @@
+<div>
+  <input id="c2corgSearchCoupledCheckbox" type="checkbox" dojoAttachEvent="onclick: toggle"></input>
+  <label for="c2corgSearchCoupledCheckbox">Activate coupled search</label>
+  <!-- Search form -->
+  <div dojoAttachPoint="c2corgSearchCoupledCriteria" style="display:none">
+    <p>Search criteria:</p>
+    <form id="c2corgSearchCoupledForm" dojoAttachPoint="c2corgSearchCoupledForm">
+      <table>
+        <tr>
+          <td>
+            <label for="min">Minimum elevation</label>
+          </td>
+          <td>
+            <select name="min" dojoAttachEvent="onchange: triggerSearch">
+              <option value="1000" selected="selected">1000</option>
+              <option value="2000">2000</option>
+              <option value="3000">3000</option>
+              <option value="4000">4000</option>
+              <option value="5000">5000</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="max">Maximum elevation</label>
+          </td>
+          <td>
+            <select name="max" dojoAttachEvent="onchange: triggerSearch">
+              <option value="1000">1000</option>
+              <option value="2000">2000</option>
+              <option value="3000">3000</option>
+              <option value="4000">4000</option>
+              <option value="5000" selected="selected">5000</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="name">Summit name contains: </label>
+          </td>
+          <td>
+            <input type="text" name="name"></input>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <input type="submit" value="search" dojoAttachEvent="onclick: triggerSearch"></input>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+</div>

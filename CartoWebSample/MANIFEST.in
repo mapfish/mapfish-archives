@@ -1,0 +1,2 @@
+recursive-include cartowebsample/public *
+recursive-include cartowebsample/templates *

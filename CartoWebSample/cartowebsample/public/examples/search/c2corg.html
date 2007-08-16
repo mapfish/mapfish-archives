@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="../../cwbase/openlayers/lib/OpenLayers.js"></script>
+    <script>
+      // There's a bug in Firefox 2.0 (and less?) which will prevent dojo from
+      // loading parameters from the script element, and guessing the baseUrl
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=351282
+      var djConfig = {baseUrl: "../../cwbase/dojo/",
+                      parseOnLoad: true};
+    </script>
+
+    <script type="text/javascript" src="../../cwbase/dojo/dojo.js"></script>
+    <script type="text/javascript" src="../../cwbase/dijit/dijit.js"></script>
+    <script type="text/javascript" src="../../lib/Jugl.js"></script>
+
+    <script type="text/javascript">
+        dojo.require("cartoweb.widgets.Map");
+        dojo.require("cartoweb.widgets.SearchXY");
+        dojo.require("cartoweb.widgets.SearchExtent");
+
+        // get app-specific widget
+        dojo.registerModulePath("search", "../../examples/search");
+        dojo.require("search.C2corgSearchCoupled");
+
+        // make map global - useful for debug
+        var map;
+
+        var vectorLayer;
+        var featureArray;
+        var searchCoupledWidget = null;
+        var vectorStyle = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+        vectorStyle.externalGraphic = "http://boston.openguides.org/markers/AQUA.png";
+        vectorStyle.graphicWidth = 20;
+        vectorStyle.graphicHeight = 20;
+        vectorStyle.graphicYOffset = -20;
+        vectorStyle.fillOpacity = 1.0;
+
+        function c2corgCreateMap(mapDiv) {
+
+            var scales = [
+                442943842.5, 221471921.25, 110735960.625, 55367980.3125, 27683990.15625,
+                13841995.078125, 6920997.5390625, 3460498.76953125, 1730249.384765625,
+                865124.6923828125, 432562.34619140625, 216281.17309570312, 108140.58654785156,
+                54070.29327392578
+            ];
+        
+            var options = {
+                projection: "EPSG:4326",
+                controls: [new OpenLayers.Control.MouseDefaults()] , 
+                maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
+                scales: scales
+            };
+        
+            map = new OpenLayers.Map(mapDiv, options);
+
+            var layer;
+            
+            var layer = new OpenLayers.Layer.WMS("OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0",
+                {layers: 'basic'}, 
+                {isBaseLayer: true}
+            );
+            layer.setVisibility(true);
+            map.addLayer(layer);
+
+            layer = new OpenLayers.Layer.WMS( "World Map", 
+                "http://world.freemap.in/cgi-bin/mapserv?", 
+                {
+                    map: '/www/freemap.in/world/map/factbooktrans.map',
+                    transparent: true,
+                    layers: 'factbook',
+                    format: 'image/png'
+                }
+            );
+            layer.setVisibility(false);
+            map.addLayer(layer);
+          
+            layer = new OpenLayers.Layer.WMS.Untiled("Summits",
+                "http://www.cartoweb.org/v4/demos/v0.1/mapserver-c2corg?",
+                {layers: ['summits'], format: 'image/png', transparent: true}
+            );
+            layer.setVisibility(true);
+            map.addLayer(layer);  
+
+            layer = new OpenLayers.Layer.WMS("Areas",
+                "http://www.cartoweb.org/v4/demos/v0.1/tilecache.cgi?",
+                {layers: ['c2corg'], format: 'image/png', transparent: true},
+                {reproject: false}
+            );
+            layer.setVisibility(true);
+            map.addLayer(layer);  
+
+            vectorLayer = new OpenLayers.Layer.Vector("vector", {
+                style: vectorStyle,
+                displayInLayerSwitcher: false
+            });
+            map.addLayer(vectorLayer);
+        
+            map.setCenter(new OpenLayers.LonLat(5,45), 6);
+            map.addControl(new OpenLayers.Control.PanZoomBar());
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+            return map;
+        }
+
+        function onGotFeatures(features) {
+            vectorLayer.destroyFeatures();
+            var data = "";
+            if (features) {
+                // display features on map
+                vectorLayer.addFeatures(features);
+                // get HTML table from template
+                featureArray = features;
+                var template = new Jugl.Template("template");
+                var data = template.process(null, true, true);
+            }
+            document.getElementById('searchResults').innerHTML = data;
+        }
+        
+        function triggerSearch() {
+            if (!searchCoupledWidget) {
+                searchCoupledWidget = dijit.byId("c2corgSearchCoupled");
+            }
+            if (searchCoupledWidget && searchCoupledWidget.enabled) {
+	           	searchCoupledWidget.triggerSearch();
+	            document.getElementById('searchResults').innerHTML = "loading...";
+	        } else {
+				document.getElementById('searchResults').innerHTML = "search not activated";
+	        }
+        }
+
+        function clearTable() {
+            document.getElementById('searchResults').innerHTML = "";
+        }
+     </script>
+     <style type="text/css">
+          @import "../../base.css";
+
+          .hidden {
+            display: none;
+          }
+          .left {
+            float :left;
+          }
+          #searchResults {
+            width: 400px;
+            height: 400px;
+            overflow: auto;
+          }
+     </style>
+  </head>
+
+  <!--<body class="tundra">-->
+  <body>
+    <div id="header"><a href="../../"><img id="header-logo" src="../../cartoweb.png"/></a></div>
+    <h1 class="page-title">search example</h1>
+    <div id="content">
+      <!-- Search template -->
+      <div id="template" class="hidden">
+        <span jugl:content="'# objects found: ' + featureArray.length"></span>
+        <table>
+          <tr>
+            <th jugl:repeat="type featureArray[0].attributes" jugl:content="type"></th>
+          </tr>
+          <tr jugl:repeat="feature featureArray">
+            <td jugl:repeat="type feature.attributes" jugl:content="feature.attributes[type]"></td>
+          </tr>
+        </table>
+      </div>
+      <!-- Map widget -->
+      <div class="left">
+        <div id="map" createMap="c2corgCreateMap" dojoType="cartoweb.widgets.Map"></div>
+      </div>
+      <div class="left" style="margin-left:20px">
+        <!-- Clear features link -->
+        <a href="javascript:void(0)" onclick="vectorLayer.destroyFeatures()">clear map</a>
+        <br />
+        <a href="javascript:void(0)" onclick="clearTable()">clear table</a>
+        <!-- Search widgets -->
+        <div id="searchXY"
+             searchUrl="../../c2corg/search"
+             dojoType="cartoweb.widgets.SearchXY">
+        </div>
+        <div id="searchExtent"
+             searchUrl="../../c2corg/search"
+             dojoType="cartoweb.widgets.SearchExtent"
+             onGotFeatures="onGotFeatures"></div>
+        <div id="c2corgSearchCoupled"
+             searchUrl="../../c2corg/search"
+             dojoType="search.C2corgSearchCoupled"
+             onGotFeatures="onGotFeatures">
+        </div>
+      </div>
+      <div style="clear: left"></div>
+      <!-- Search results -->
+      <p>Search results:</p>
+      <div id="searchResults"></div>
+    </div>
+  </body>
+</html>

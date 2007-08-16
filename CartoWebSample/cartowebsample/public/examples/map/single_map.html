@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="../../cwbase/openlayers/lib/OpenLayers.js"></script>
+    <script>
+      // There's a bug in Firefox 2.0 (and less?) which will prevent dojo from
+      // loading parameters from the script element, and guessing the baseUrl
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=351282
+      var djConfig = {baseUrl: "../../cwbase/dojo/",
+                      parseOnLoad: true};
+    </script>
+
+    <script type="text/javascript" src="../../cwbase/dojo/dojo.js"></script>
+    <script type="text/javascript" src="../../cwbase/dijit/dijit.js"></script>
+
+    <script type="text/javascript">
+      dojo.require("cartoweb.widgets.Map");
+      
+      function basicCreateMap(e) {
+        var map = new OpenLayers.Map(e);
+        
+        var ol_wms = new OpenLayers.Layer.WMS("World Map", 
+                                              "http://labs.metacarta.com/wms-c/Basic.py?", 
+                                              {layers: 'basic', format: 'image/png' } );
+        
+        var jpl_wms = new OpenLayers.Layer.WMS("Satellite",
+                                               "http://labs.metacarta.com/wms-c/Basic.py?", 
+                                               {layers: 'satellite', format: 'image/png' } );
+        var dm_wms = new OpenLayers.Layer.WMS("Canada",
+                                              "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
+                                              {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
+                                                       "prov_bound,fedlimit,rail,road,popplace",
+                                               transparent: "true", format: "image/png" });
+        dm_wms.setVisibility(false);
+        map.addLayers([jpl_wms, ol_wms, dm_wms]);
+        map.addControl(new OpenLayers.Control.LayerSwitcher());
+        map.setCenter(new OpenLayers.LonLat(20, 35), 5);
+        
+        return map;
+      }
+    </script>
+    <style type="text/css">
+      .mapContainer {
+        border: 1px solid #999999;
+        height:400px;
+        width:600px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div dojoType="cartoweb.widgets.Map" createMap="basicCreateMap"></div>
+  </body>
+</html>

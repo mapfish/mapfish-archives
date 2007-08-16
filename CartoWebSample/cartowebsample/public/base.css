@@ -1,0 +1,53 @@
+body {
+  font-family: "Trebuchet MS",Arial,Helvetica,sans-serif;
+  font-size: small;
+  padding: 0;
+  margin: 0;
+}
+table th {
+  text-align: left;
+}
+
+a:link, a:visited {
+  color: #1B57B1;
+}
+a:hover {
+  color: #000033;
+}
+
+a img {
+  border: none;
+}
+
+ul > li {
+  list-style-image: url(bullet.gif);
+}
+
+#header {
+  background-color: #114DA4;
+  height: 50px;
+  margin: 0 40px;
+}
+
+#header-logo {
+  margin: 10px;
+}
+
+.page-title {
+  margin: 0 40px;
+  background-color: #6171B0;
+  padding-left: 40px;
+  color: white;
+  text-align: center;
+}
+
+#content {
+  margin: 20px 40px;
+  background-color: white;
+}
+
+.mapContainer {
+  width: 600px;
+  height: 400px;
+  border: 1px solid #999;
+}

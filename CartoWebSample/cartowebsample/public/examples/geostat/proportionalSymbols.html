@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Proportional Symbols</title>
+    <script type="text/javascript" src="../../cwbase/openlayers/lib/OpenLayers.js"></script>
+    <script>
+      // There's a bug in Firefox 2.0 (and less?) which will prevent dojo from
+      // loading parameters from the script element, and guessing the baseUrl
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=351282
+      var djConfig = {baseUrl: "../../cwbase/dojo/",
+                      parseOnLoad: true};
+    </script>
+
+    <script type="text/javascript" src="../../cwbase/dojo/dojo.js"></script>
+    <script type="text/javascript" src="../../cwbase/dijit/dijit.js"></script>
+
+    <script type="text/javascript">
+        dojo.require("cartoweb.widgets.Map");
+        dojo.require("cartoweb.widgets.GeoStat.ProportionalSymbol");
+      
+        function worldCitiesCreateMap(mapDiv){
+            map = new OpenLayers.Map(mapDiv);
+
+            var wms = new OpenLayers.Layer.WMS("OpenLayers WMS", 
+                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}, {buffer: 0});
+
+            map.addLayers([wms]);
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.setCenter(new OpenLayers.LonLat(17, 2), 2);
+
+            return map;
+        }
+    </script>
+    
+    <style type="text/css">
+        @import "../../cwbase/dijit/themes/tundra/tundra.css";
+        @import "../../base.css";
+
+        #right {
+          position: absolute;
+          left: 680px;
+        }
+    </style>
+  </head>
+  <body class="tundra">
+    <div id="header"><a href="../../"><img id="header-logo" src="../../cartoweb.png"/></a></div>
+    <h1 class="page-title">Proportional Symbols Example</h1>
+
+    <div id="content">
+      <div id="right">
+        <div id="geoStat" dojoType="cartoweb.widgets.GeoStat.ProportionalSymbol"
+             idAttribute="name" indicators="['population']"
+             geoStatUrl="world_cities_capitals.json"></div>
+       </div>
+       <div dojoType="cartoweb.widgets.Map" createMap="worldCitiesCreateMap"></div>
+    </div>
+  </body>
+</html>
