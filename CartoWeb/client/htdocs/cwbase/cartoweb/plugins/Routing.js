@@ -3,12 +3,30 @@ dojo.provide("cartoweb.plugins.Routing");
 dojo.require("cartoweb.plugins.ServerCaller");
 
 CartoWeb.Routing = OpenLayers.Class(CartoWeb.ServerCaller, {
+
+    /**
+     * {<OpenLayers.Layer.Vector>} Layer for rendering features.
+     */
     vector: null,
 
+    /**
+     * {<OpenLayers.Format.GeoJSON>} GeoJSON parser
+     */
     parser: null,
 
+    /**
+     * {<OpenLayers.Control.SelectFeature>} Select control
+     */
     select: null,
 
+    /**
+     * Create a new CartoWeb.Routing 
+     *
+     * Parameters:
+     * url - {String} URL for service.
+     * options - {Object} An optional object whose properties will be used
+     *     to extend the plugin.
+     */
     initialize: function(url, options) {
         CartoWeb.ServerCaller.prototype.initialize.apply(this,
                                                          [url, options]);
