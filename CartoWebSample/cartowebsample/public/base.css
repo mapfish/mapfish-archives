@@ -4,6 +4,7 @@ body {
   padding: 0;
   margin: 0;
 }
+
 table th {
   text-align: left;
 }
@@ -17,6 +18,10 @@ a img {
 
 ul > li {
   list-style-image: url(bullet.gif);
+}
+
+h2 { 
+  color: #720000;
 }
 
 #header {
@@ -33,7 +38,7 @@ ul > li {
   margin: 0 40px;
   background-color: #ff772d;
   padding-left: 40px;
-  color: white;
+  color: #720000;
   text-align: center;
 }
 
