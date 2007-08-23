@@ -23,6 +23,9 @@
         dojo.require("cartoweb.widgets.tree.TreeContainer");
         dojo.require("dijit.TitlePane");
 
+        // get app-specific widget
+        dojo.registerModulePath("search", "../../demos/c2corg");
+        dojo.require("search.C2corgSearchCoupled");
         var vectorLayer;
 
         function c2corgCreateMap(mapDiv) {
@@ -150,9 +153,13 @@
           </div>
           <div id="searchExtent"
                searchUrl="../../c2corg/search"
-               form="searchForm"
                dojoType="cartoweb.widgets.SearchExtent"
                onGotFeatures="onGotFeatures">
+           </div>
+           <div id="c2corgSearchCoupled"
+             searchUrl="../../c2corg/search"
+             dojoType="search.C2corgSearchCoupled"
+             onGotFeatures="onGotFeatures">
            </div>
            <a href="javascript:void(0)" onclick="vectorLayer.destroyFeatures()">clear map</a>
            <br />
