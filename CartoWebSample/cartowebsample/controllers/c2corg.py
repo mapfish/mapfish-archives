@@ -1,5 +1,7 @@
 import logging
 
+from sqlalchemy import and_
+
 from cartowebsample.lib.base import *
 from shapely.geometry.point import Point
 from shapely.geometry.polygon import Polygon
