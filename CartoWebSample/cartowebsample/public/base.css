@@ -9,12 +9,8 @@ table th {
 }
 
 a:link, a:visited {
-  color: #1B57B1;
+  color: #ff5c00;
 }
-a:hover {
-  color: #000033;
-}
-
 a img {
   border: none;
 }
@@ -24,7 +20,7 @@ ul > li {
 }
 
 #header {
-  background-color: #114DA4;
+  background-color: #ff5c00;
   height: 50px;
   margin: 0 40px;
 }
@@ -35,7 +31,7 @@ ul > li {
 
 .page-title {
   margin: 0 40px;
-  background-color: #6171B0;
+  background-color: #ff772d;
   padding-left: 40px;
   color: white;
   text-align: center;
