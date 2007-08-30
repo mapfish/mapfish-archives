@@ -11,6 +11,7 @@ cd $HERE
 rm -fr ../cwbase/release/cartoweb/openlayers/*
 
 # patch openlayers
+svn revert -R ../cwbase/openlayers/  
 cd ../cwbase/openlayers/
 
 for file in `ls $HERE/openlayers_patches/`
