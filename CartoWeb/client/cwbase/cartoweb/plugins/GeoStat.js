@@ -72,8 +72,6 @@ CartoWeb.GeoStat = OpenLayers.Class({
      * feature - {<OpenLayers.Feature>}
      */
     showDetails: function(feature) {
-
-
         // Store feature style for restoration later
         if(feature.originalStyle == null) {
             feature.originalStyle = feature.style;
@@ -86,7 +84,7 @@ CartoWeb.GeoStat = OpenLayers.Class({
         this.layer.drawFeature(feature, selectStyle);
 
         // popup html
-        var html = '<h4>'+ feature.attributes[this.idAttribute] +'</h4>';
+        var html = '<h4 style="margin-top: 5px">'+ feature.attributes[this.idAttribute] +'</h4>';
         html += this.indicatorAttribute + ": " + feature.attributes[this.indicatorAttribute];
         feature.data['popupContentHTML'] = html;
         
@@ -98,13 +96,13 @@ CartoWeb.GeoStat = OpenLayers.Class({
         // TODO place the popup in regard to the mouse position
         var bounds = this.layer.map.getExtent();
         var lonlat = new OpenLayers.LonLat(bounds.right, bounds.bottom);
-        var size = new OpenLayers.Size(150, 150);
+        var size = new OpenLayers.Size(200, 100);
         
         var popup = new OpenLayers.Popup.AnchoredBubble(
             feature.attributes[this.idAttribute], 
             lonlat, size, html, 0.5, false);
-        popup.setBackgroundColor("yellow");
-        
+        popup.setBackgroundColor(feature.style.fillColor);
+
         this.layer.map.addPopup(popup);
     },
     
