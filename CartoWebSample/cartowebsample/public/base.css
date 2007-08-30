@@ -9,9 +9,12 @@ table th {
   text-align: left;
 }
 
-a:link, a:visited {
+*:link, *:visited {
   color: #ff5c00;
+  border-bottom: 1px dotted #ff5c00;
+  text-decoration: none;
 }
+
 a img {
   border: none;
 }
