@@ -58,7 +58,7 @@ CartoWeb.GeoStat.Distribution = OpenLayers.Class({
         binCount[nbBins - 1] = this.nbVal - CartoWeb.Util.sum(binCount);
         
         for (var i = 0; i < nbBins; i++) {
-            label = bounds[i] + ' - ' + bounds[i + 1];
+            label = bounds[i].toFixed(3) + ' - ' + bounds[i + 1].toFixed(3);
             bins[i] = new CartoWeb.GeoStat.Bin(binCount[i], label, bounds[i], bounds[i + 1],
                 i == (nbBins - 1));
         }
