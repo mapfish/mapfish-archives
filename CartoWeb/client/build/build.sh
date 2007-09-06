@@ -30,7 +30,8 @@ mv OpenLayers.js $HERE/../cwbase/release/cartoweb/openlayers/
 rm -rf $HERE/../cwbase/release/cartoweb/openlayers/img
 cp -r ../img $HERE/../cwbase/release/cartoweb/openlayers/
 
-mkdir -p $HERE/../cwbase/release/cartoweb/openlayers/theme/
-mkdir -p $HERE/../cwbase/release/cartoweb/openlayers/theme/default
+mkdir -p $HERE/../cwbase/release/cartoweb/openlayers/theme/default/
 cp ../theme/default/style.css $HERE/../cwbase/release/cartoweb/openlayers/theme/default/style.css
+cp -r ../theme/default/img $HERE/../cwbase/release/cartoweb/openlayers/theme/default/
+
 
