@@ -4,6 +4,9 @@
 
 function test_examples_tree(t) {
     
+    t.debug_print("Warning: this tests is not very reliable on some browsers. " +
+                  "It may pass only after a few iterations");
+    
     var testPages = [
         "../examples/map/single_map.html",
         "../examples/map/multiple_maps.html",
@@ -31,14 +34,13 @@ function test_examples_tree(t) {
             // Use a delay_call here as the timeout on open_window is not working as expected
             t.delay_call(TIMEOUT, function() {
         
-                var widgets = wnd.dijit.util.manager.getWidgets();
                 var maps = [];
-                for (widgetId in widgets) {
-                    // Can't use instanof here, as IE has troubles 
+                wnd.dijit.registry.forEach(function(widget) {
+                    // Can't use instanceof here, as IE has troubles 
                     //  with instanceof when objects are from external frames
-                    if (widgets[widgetId].declaredClass == "cartoweb.widgets.Map")
-                        maps.push(widgets[widgetId].map);
-                }
+                    if (widget.declaredClass == "cartoweb.widgets.Map")
+                        maps.push(widget.map);
+                });
     
                 t.ok(maps.length > 0, "at least a map is available");
         
