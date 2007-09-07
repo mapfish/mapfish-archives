@@ -163,7 +163,7 @@ dojo.declare(
 		var div = document.createElement('div');
 		div.style.display = 'none';
 		div.className="TreeContainer";	
-		dijit.util.wai.setAttr(div, "waiRole", "role", "presentation");
+		dijit.wai.setAttr(div, "waiRole", "role", "presentation");
 		this.containerNodeTemplate = div;
 
 
@@ -196,7 +196,7 @@ dojo.declare(
 	_domElement2TreeNode: function(/*DomNode*/ domElement){
 		var ret;
 		do{
-			ret=dijit.util.manager.byNode(domElement);
+			ret=dijit.byNode(domElement);
 		}while(!ret && (domElement=domElement.parentNode));
 		return ret;
 	},
@@ -346,14 +346,14 @@ dojo.declare(
 	_updateLayout: function(){
 		// summary: set appropriate CSS classes for this.domNode
 
-		dojo.removeClass(this.domNode, "TreeIsRoot");
+		dojo.removeClass(this.domNode, "dijitTreeIsRoot");
 		if(this.getParent()["isTree"]){
-			dojo.addClass(this.domNode, 'TreeIsRoot');
+			dojo.addClass(this.domNode, 'dijitTreeIsRoot');
 		}
 
-		dojo.removeClass(this.domNode, "TreeIsLast");
+		dojo.removeClass(this.domNode, "dijitTreeIsLast");
 		if(!this.getNextSibling()){
-			dojo.addClass(this.domNode, 'TreeIsLast');	
+			dojo.addClass(this.domNode, 'dijitTreeIsLast');	
 		}
 	},
 
@@ -361,8 +361,8 @@ dojo.declare(
 		// summary: set the right image for the expando node
 
 		// apply the appropriate class to the expando node
-		var styles = ["TreeExpandoLoading", "TreeExpandoOpened",
-			"TreeExpandoClosed", "TreeExpandoLeaf"];
+		var styles = ["dijitTreeExpandoLoading", "dijitTreeExpandoOpened",
+			"dijitTreeExpandoClosed", "dijitTreeExpandoLeaf"];
 		var idx = processing ? 0 : (this.isFolder ?	(this.isExpanded ? 1 : 2) : 3);
 		dojo.forEach(styles,
 			function(s){
@@ -384,9 +384,9 @@ dojo.declare(
 		cartoweb.widgets.tree.Tree.superclass.setChildren.apply(this, arguments);
 
 		// create animations for showing/hiding the children
-		this._slideIn = dojo.fx.slideIn({node: this.containerNode, duration: 250});
+		this._slideIn = dojo.fx.wipeIn({node: this.containerNode, duration: 250});
 		dojo.connect(this.slideIn, "onEnd", dojo.hitch(this, "_afterExpand"));
-		this._slideOut = dojo.fx.slideOut({node: this.containerNode, duration: 250});
+		this._slideOut = dojo.fx.wipeOut({node: this.containerNode, duration: 250});
 		dojo.connect(this.slideOut, "onEnd", dojo.hitch(this, "_afterCollapse"));
 	},
 
@@ -400,8 +400,8 @@ dojo.declare(
 		}
 
 		this.isExpanded = true;
-		dijit.util.wai.setAttr(this.labelNode, "waiState", "expanded", "true");
-		dijit.util.wai.setAttr(this.containerNode, "waiRole", "role", "group");
+		dijit.wai.setAttr(this.labelNode, "waiState", "expanded", "true");
+		dijit.wai.setAttr(this.containerNode, "waiRole", "role", "group");
 
 		this._setExpando();
 
