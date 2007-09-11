@@ -39,9 +39,7 @@ class C2CorgController(BaseController):
             objects = model.Summit.select(dist < tol, limit=self.SELECT_LIMIT)
             if len(objects) != 0:
                 return geojson.dumps(FeatureCollection([f.toFeature() for f in objects]))
-
             return ''
-        
         if ('bbox' in request.params):
             bbox = request.params['bbox'].split(',')
             # define polygon from box
