@@ -117,12 +117,12 @@ dojo.declare("cartoweb.widgets.tree.TreeContainer", [cartoweb.MapControl, dijit.
         console.log("To handle layers ", wmsLayers);
         for (var layerName in wmsLayers) {
             var layer = layerNameToLayer[layerName];
-            var wmsLayers = wmsLayers[layerName];
+            var wmsSubLayers = wmsLayers[layerName];
 
-            if (wmsLayers.length == 0) {
+            if (wmsSubLayers.length == 0) {
                 layer.setVisibility(false, true);
             } else {
-                layer.params.LAYERS = wmsLayers;
+                layer.params.LAYERS = wmsSubLayers;
                 layer.redraw();
 
                 layer.setVisibility(true, true);
