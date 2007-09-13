@@ -340,7 +340,8 @@ dojo.declare(
 	_onFocus: function(/*Event*/ e){
 		// summary: don't bubble focus out of tree
 
-		dojo.stopEvent(e);
+		if (e)
+            dojo.stopEvent(e);
 	},
 
 	_updateLayout: function(){
@@ -423,7 +424,7 @@ dojo.declare(
 		}
 
 		this.isExpanded = false;
-		dijit.util.wai.setAttr(this.labelNode, "waiState", "expanded", "false");
+		dijit.wai.setAttr(this.labelNode, "waiState", "expanded", "false");
 		this._setExpando();
 
 		this._slideOut.play();
