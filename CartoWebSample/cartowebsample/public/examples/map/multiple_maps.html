@@ -35,7 +35,6 @@
                                                    transparent: "true", format: "image/png" });
             dm_wms.setVisibility(false);
             map.addLayers([jpl_wms, ol_wms, dm_wms]);
-            map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.setCenter(new OpenLayers.LonLat(20, 35), 5);
 
             return map;
