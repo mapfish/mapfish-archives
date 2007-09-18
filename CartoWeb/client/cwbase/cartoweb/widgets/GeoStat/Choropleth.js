@@ -2,30 +2,20 @@ dojo.provide("cartoweb.widgets.GeoStat.Choropleth");
 
 dojo.require("cartoweb.widgets.GeoStat");
 dojo.require("cartoweb.plugins.GeoStat.Choropleth");
+dojo.require("cartoweb.plugins.Color");
 dojo.require("dijit._Templated");
+dojo.require("dijit.form.Button");
+dojo.require("dijit.ColorPalette");
 
 dojo.declare("cartoweb.widgets.GeoStat.Choropleth", [cartoweb.widgets.GeoStat, dijit._Templated], {
 
     templatePath: dojo.moduleUrl("cartoweb.widgets.GeoStat", "Choropleth.html"),
 
+    widgetsInTemplate: true,
+
     mapCreated: function() {
         // fill the template with variables
         this.fillTemplate();
-
-        // add coloPicker
-        [this.colorA, this.colorB].each(function(idx) {
-            idx.setStyle('background-color', new Color(idx.value).hex);
-
-            var r = new MooRainbow(idx, {
-                id: 'mooRainbow' + idx.name,
-        		startColor: new Color(idx.value),
-                imgPath: '../../cwbase/mootools/images/',
-                onChange: function(color) {
-                    this.element.value = color.hex;
-                    this.element.setStyle('background-color', color.hex);
-                }
-        	});
-        });
 
         this.layer = new OpenLayers.Layer.Vector("Choropleth");
         this.layer.setVisibility(false, true);
@@ -61,8 +51,13 @@ dojo.declare("cartoweb.widgets.GeoStat.Choropleth", [cartoweb.widgets.GeoStat, d
             legendDiv: this.legend
         });
 
-        stat.colors = stat.createColorInterpolation(this.colorA.value,
-                                                    this.colorB.value);
+        var colorA = new CartoWeb.ColorRgb();
+        colorA.setFromRgb(this.colorA.style.backgroundColor);
+        var colorB = new CartoWeb.ColorRgb();
+        colorB.setFromRgb(this.colorB.style.backgroundColor);
+
+        stat.colors = stat.createColorInterpolation(colorA,
+                                                    colorB);
 
         stat.updateFeatures();
 

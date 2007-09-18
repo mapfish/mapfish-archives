@@ -71,6 +71,18 @@ CartoWeb.ColorRgb = OpenLayers.Class(CartoWeb.Color, {
     },
     
     /**
+     * APIMethod: setFromRgb
+     * Sets the color from a color rgb string
+     *
+     */
+    setFromRgb: function(rgbString) {
+        var color = dojo.colorFromRgb(rgbString);
+        this.redLevel = color.r;
+        this.greenLevel = color.g;
+        this.blueLevel = color.b;
+    },
+    
+    /**
      * APIMethod: toHexString
      * Converts the rgb color to hex string
      *

@@ -3,7 +3,6 @@ dojo.provide("cartoweb.plugins.GeoStat.Choropleth");
 dojo.require("cartoweb.plugins.CartoWeb");
 dojo.require("cartoweb.plugins.GeoStat");
 dojo.require("cartoweb.plugins.GeoStat.Distribution");
-dojo.require("cartoweb.plugins.Color");
 dojo.require("cartoweb.plugins.GeoStat.ColorLookUpTable");
 
 
@@ -66,11 +65,7 @@ CartoWeb.GeoStat.Choropleth = OpenLayers.Class(CartoWeb.GeoStat, {
      *    Generates color interpolation in regard to classification
      */
     createColorInterpolation: function(minColor, maxColor) {
-        var colorA = new CartoWeb.ColorRgb();
-        colorA.setFromHex(minColor);
-        var colorB = new CartoWeb.ColorRgb();
-        colorB.setFromHex(maxColor);
-        var initialColors = [colorA, colorB];
+        var initialColors = [minColor, maxColor];
         var colorLut = new CartoWeb.GeoStat.ColorLookUpTable(initialColors);
         var nbColors = this.classification.bins.length;
         return colorLut.getColorsArrayByRgbInterpolation(nbColors);

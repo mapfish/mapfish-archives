@@ -1,4 +1,4 @@
-<div>
+<div id="choroplethWidget">
   <table>
     <tbody>
     <tr>
@@ -19,11 +19,25 @@
     </tr>
     <tr>
       <th>Min color</th>
-      <td><input dojoAttachPoint="colorA" name="colorA" value="FF550F" size="5" /></td>
+      <td>
+        <div id="colorA" dojoAttachPoint="colorA" name="colorA" class="colorPicker"
+            style="background-color:#FF550F;width:20px;height:20px;border: 1px solid #555;float:left"></div>
+        <div dojoType="dijit.form.DropDownButton" id="colorPickerA" 
+            iconClass="dijitEditorIcon dijitEditorIconBackColor" showLabel="false">
+          <span>Background</span>
+          <div dojoType="dijit.ColorPalette" id="colorPaletteA" style="display: none" palette="7x10" onChange="dojo.byId('colorA').style.backgroundColor=this.value"></div>
+        </div>
     </tr>
     <tr>
       <th>Max color</th>
-      <td><input dojoAttachPoint="colorB" name="colorB" value="550055" size="5" /></td>
+      <td>
+        <div id="colorB" dojoAttachPoint="colorB" name="colorB" class="colorPicker"
+            style="background-color:#550055;width:20px;height:20px;border: 1px solid #555;float:left"></div>
+        <div dojoType="dijit.form.DropDownButton" id="colorPickerB" 
+            iconClass="dijitEditorIcon dijitEditorIconBackColor" showLabel="false">
+          <span>Background</span>
+          <div dojoType="dijit.ColorPalette" id="colorPaletteB" style="display: none" palette="7x10" onChange="dojo.byId('colorB').style.backgroundColor=this.value"></div>
+        </div>
     </tr>
     <tr>
       <th></th>
