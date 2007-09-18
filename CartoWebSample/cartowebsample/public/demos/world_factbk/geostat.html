@@ -10,12 +10,6 @@
       var djConfig = {baseUrl: "../../cwbase/dojo/",
                       parseOnLoad: true};
     </script>
-    
-    <!-- begin color picker -->
-    <link rel="stylesheet" type="text/css" href="../../cwbase/mootools/mooRainbow.css">
-    <script type="text/javascript" src="../../cwbase/mootools/mootools.v1.11.js"></script>
-    <script type="text/javascript" src="../../cwbase/mootools/mooRainbow.js"></script>
-    <!-- end color picker -->
  
     <script type="text/javascript" src="../../cwbase/release/cartoweb/dojo/dojo.js"></script>
     <script type="text/javascript" src="../../cwbase/release/cartoweb/dijit/dijit.js"></script>
@@ -55,6 +49,11 @@
           position: absolute;
           left: 680px;
         }
+        
+        /* ColorPalette buttons */
+        #choroplethWidget .dijitButtonNode {padding: 0px;}
+        
+        #choroplethWidget .dijitDropDownButton {margin: 0 5px;}
     </style>
   </head>
   <body class="tundra">
