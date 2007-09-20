@@ -22,14 +22,16 @@ class C2CorgController(BaseController):
         
     def search(self):
         expr = None
-        if ('x' in request.params and 
-            'y' in request.params and 
+        if ('coords' in request.params and 
             'bbox' in request.params and
             'width' in request.params):
+            coords = request.params['coords'].split(',')
+            x = float(coords[0])
+            y = float(coords[1])
             # derive tolerance from bbox and map width
             bbox = request.params['bbox'].split(',')
             tol = ((float(bbox[2]) - float(bbox[0])) * self.TOL_PX) / float(request.params['width'])
-            point = Point(float(request.params['x']), float(request.params['y']))
+            point = Point(x, y)
             # prepare query
             dist = self.engine.func.distance(
                 self.engine.func.transform(model.Summit.c.geom, self.PROJ_EPSG),
@@ -40,13 +42,13 @@ class C2CorgController(BaseController):
             if len(objects) != 0:
                 return geojson.dumps(FeatureCollection([f.toFeature() for f in objects]))
             return ''
-        if ('bbox' in request.params):
-            bbox = request.params['bbox'].split(',')
+        if ('coords' in request.params):
+            coords = request.params['coords'].split(',')
             # define polygon from box
-            pointA = (float(bbox[0]), float(bbox[1]))
-            pointB = (float(bbox[0]), float(bbox[3]))
-            pointC = (float(bbox[2]), float(bbox[3]))
-            pointD = (float(bbox[2]), float(bbox[1]))
+            pointA = (float(coords[0]), float(coords[1]))
+            pointB = (float(coords[0]), float(coords[3]))
+            pointC = (float(coords[2]), float(coords[3]))
+            pointD = (float(coords[2]), float(coords[1]))
             pointE = pointA
             coords = (pointA, pointB, pointC, pointD, pointE)
             poly = Polygon(coords)
