@@ -32,7 +32,7 @@ CartoWeb.Searcher.Extent.prototype =
 
     getSearchParams: function() {
         var bbox = this.map.getExtent().toBBOX();
-        var params = {'bbox': bbox};
+        var params = {'coords': bbox};
         return OpenLayers.Util.extend(this.params, params);
     }
 });

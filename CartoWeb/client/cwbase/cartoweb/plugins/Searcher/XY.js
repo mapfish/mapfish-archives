@@ -67,7 +67,7 @@ CartoWeb.Searcher.XY.prototype =
         var lonlat = this.map.getLonLatFromViewPortPx(evt.xy);
         var bbox = this.map.getExtent().toBBOX();
         var size = this.map.getCurrentSize();
-        var params = {'x': lonlat.lon, 'y': lonlat.lat, 'bbox': bbox, 'width': size.w};
+        var params = {'coords': lonlat.lon + ',' + lonlat.lat, 'bbox': bbox, 'width': size.w};
         return OpenLayers.Util.extend(this.params, params);
     }
 });
