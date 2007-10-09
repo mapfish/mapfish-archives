@@ -2,6 +2,7 @@
 import os
 
 from pylons import config
+from sqlalchemy import engine_from_config
 
 import cartowebsample.lib.app_globals as app_globals
 import cartowebsample.lib.helpers
@@ -29,3 +30,6 @@ def load_environment(global_conf, app_conf):
 
     # CONFIGURATION OPTIONS HERE (note: all config options will override any
     # Pylons config options)
+
+    config['pylons.g'].sa_routing_engine = engine_from_config(config, 'sqlalchemy.routing.')
+    config['pylons.g'].sa_search_engine = engine_from_config(config, 'sqlalchemy.search.')

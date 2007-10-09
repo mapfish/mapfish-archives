@@ -1,20 +1,24 @@
-from sacontext import PylonsSAContext
+from pylons import config
 
-sac = PylonsSAContext()
-sac.add_engine_from_config('routing')
-sac.add_engine_from_config('c2corg')
+from sqlalchemy import Column, MetaData, Table, types
+from sqlalchemy.orm import mapper
+from sqlalchemy.orm import scoped_session, sessionmaker
 
-from sqlalchemy import *
 from cartoweb.sqlalchemygeom import Geometry
 from cartoweb.pfpfeature import Feature
 
-from sqlalchemy.ext.assignmapper import assign_mapper
+# Global session manager.  Session() returns the session object appropriate for the current web request.
+binds={"nodes2": MetaData(config['pylons.g'].sa_routing_engine),
+       "lines2": MetaData(config['pylons.g'].sa_routing_engine),
+       "sommets_out": MetaData(config['pylons.g'].sa_search_engine)}
+
+Session = scoped_session(sessionmaker(transactional=True, autoflush=True, binds=binds))
 
 ## routing 
-nodes_table = Table('nodes2', sac.get_metadata('routing'),
-                    Column('node_id', Integer, primary_key=True),
-                    Column('room', String, unique=True),
-                    Column('level', Integer),
+nodes_table = Table('nodes2', MetaData(config['pylons.g'].sa_routing_engine),
+                    Column('node_id', types.Integer, primary_key=True),
+                    Column('room', types.String, unique=True),
+                    Column('level', types.Integer),
                     Column('geom', Geometry))
 
 class Node(object):
@@ -23,9 +27,9 @@ class Node(object):
                        room=str(self.room), floor=str(self.level))
 
 
-lines_table = Table('lines2', sac.get_metadata('routing'),
-                    Column('gid', Integer, primary_key=True),
-                    Column('length', Float),
+lines_table = Table('lines2', MetaData(config['pylons.g'].sa_routing_engine),
+                    Column('gid', types.Integer, primary_key=True),
+                    Column('length', types.Float),
                     Column('geom', Geometry))
 
 class Line(object):
@@ -33,17 +37,15 @@ class Line(object):
         return Feature(id=int(self.gid), geometry=self.geom,
                        distance=float(self.length))
 
-assign_mapper(sac.session_context, Node, nodes_table)
-assign_mapper(sac.session_context, Line, lines_table)
-#mapper(Node, nodes_table, extension=sac.ext)
+mapper(Node, nodes_table)
+mapper(Line, lines_table)
 
 ## c2c org
-summits_table = Table('sommets_out', sac.get_metadata('c2corg'),
-    Column('sommet_id', Integer, primary_key=True),
-    Column('elevation', Integer),
-    Column('name', String),
-    Column('geom', Geometry)
-)
+summits_table = Table('sommets_out', MetaData(config['pylons.g'].sa_search_engine),
+                      Column('sommet_id', types.Integer, primary_key=True),
+                      Column('elevation', types.Integer),
+                      Column('name', types.String),
+                      Column('geom', Geometry))
 
 class Summit(object):
     def __str__(self):
@@ -54,6 +56,4 @@ class Summit(object):
                        elevation=float(self.elevation),
                        name=self.name)
 
-assign_mapper(sac.session_context, Summit, summits_table)
-
-
+mapper(Summit, summits_table)

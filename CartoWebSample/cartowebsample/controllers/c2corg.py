@@ -1,6 +1,8 @@
 import logging
 
-from sqlalchemy import and_
+from sqlalchemy.sql import select
+from sqlalchemy.sql import and_
+from sqlalchemy.sql import func
 
 from cartowebsample.lib.base import *
 from shapely.geometry.point import Point
@@ -17,9 +19,6 @@ class C2CorgController(BaseController):
     SELECT_LIMIT    = 50
     TOL_PX          = 6.
 
-    def __before__(self):
-        self.engine = model.sac.get_engine('c2corg')
-        
     def search(self):
         expr = None
         if ('coords' in request.params and 
@@ -33,12 +32,14 @@ class C2CorgController(BaseController):
             tol = ((float(bbox[2]) - float(bbox[0])) * self.TOL_PX) / float(request.params['width'])
             point = Point(x, y)
             # prepare query
-            dist = self.engine.func.distance(
-                self.engine.func.transform(model.Summit.c.geom, self.PROJ_EPSG),
-                self.engine.func.pointfromtext(point.wkt, self.PROJ_EPSG)
+            dist = func.distance(
+                func.transform(model.summits_table.c.geom, self.PROJ_EPSG),
+                func.pointfromtext(point.wkt, self.PROJ_EPSG)
             )
+            log.info(dist)
             # query
-            objects = model.Summit.select(dist < tol, limit=self.SELECT_LIMIT)
+            objects = model.Session.query(model.Summit).from_statement(
+                select([model.summits_table], dist < tol).limit(self.SELECT_LIMIT)).all()
             if len(objects) != 0:
                 return geojson.dumps(FeatureCollection([f.toFeature() for f in objects]))
             return ''
@@ -53,9 +54,9 @@ class C2CorgController(BaseController):
             coords = (pointA, pointB, pointC, pointD, pointE)
             poly = Polygon(coords)
             # prepare query
-            expr = model.Summit.c.geom.op('&&')(
-                self.engine.func.transform(
-                     self.engine.func.geomfromtext(poly.wkt, self.PROJ_EPSG),
+            expr = model.summits_table.c.geom.op('&&')(
+                func.transform(
+                     func.geomfromtext(poly.wkt, self.PROJ_EPSG),
                      self.PROJ_USER
                 )
             )
@@ -63,23 +64,24 @@ class C2CorgController(BaseController):
             'max' in request.params):
             if (expr is not None):
                 expr = and_(
-                    model.Summit.c.elevation >= int(request.params['min']),
-                    model.Summit.c.elevation <= int(request.params['max']),
+                    model.summits_table.c.elevation >= int(request.params['min']),
+                    model.summits_table.c.elevation <= int(request.params['max']),
                     expr
                 )
             else:
                 expr = and_(
-                    model.Summit.c.elevation >= int(request.params['min']),
-                    model.Summit.c.elevation <= int(request.params['max'])
+                    model.summits_table.c.elevation >= int(request.params['min']),
+                    model.summits_table.c.elevation <= int(request.params['max'])
                 )
         if ('name' in request.params):
-            e = model.Summit.c.name.like('%' + request.params['name'] + '%')
+            e = model.summits_table.c.name.like('%' + request.params['name'] + '%')
             if (expr is not None):
                 expr = and_(expr, e)
             else:
                 expr = e
         if (expr is not None):
-            objects = model.Summit.select(expr, limit=self.SELECT_LIMIT)
+            objects = model.Session.query(model.Summit).from_statement(
+                select([model.summits_table], expr).limit(self.SELECT_LIMIT)).all()
             if len(objects) != 0:
                 return geojson.dumps(FeatureCollection([f.toFeature() for f in objects]))
         return ''
