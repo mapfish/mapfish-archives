@@ -7,13 +7,15 @@ CartoWeb.SearchMediator.prototype = {
         
     url: null,
     callback: null,
+    params: null,
     searchers: null,
     parser: null,
     request: null,
 
-    initialize: function(url, callback) {
+    initialize: function(url, callback, maxFeatures) {
         this.url = url;
         this.callback = callback;
+        this.params = {'maxfeatures': maxFeatures};
         this.searchers = [];
         this.parser = new OpenLayers.Format.GeoJSON();
     },
@@ -43,6 +45,7 @@ CartoWeb.SearchMediator.prototype = {
         this.request = new OpenLayers.Ajax.Request(
             requestString,
             {
+                method: "GET",
                 onSuccess: this.onSuccess.bind(this),
                 onFailure: function() { alert('Ajax request failed'); }
             }
@@ -56,7 +59,7 @@ CartoWeb.SearchMediator.prototype = {
     },
 
     getSearchParams: function(searcher, params) {
-        var allParams = OpenLayers.Util.extend(new Object(), params);
+        var allParams = OpenLayers.Util.extend(this.params, params);
         for (var i = 0; i < this.searchers.length; i++) {
             var s = this.searchers[i];
             if (s == searcher) {

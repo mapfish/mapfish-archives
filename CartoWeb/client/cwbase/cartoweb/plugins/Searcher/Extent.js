@@ -8,8 +8,8 @@ CartoWeb.Searcher.Extent.prototype =
 
     map: null,
     
-    initialize: function(map, mediator, url, callback) {
-        CartoWeb.Searcher.prototype.initialize.apply(this, [mediator, url, callback]);
+    initialize: function(map, mediator, url, callback, maxFeatures) {
+        CartoWeb.Searcher.prototype.initialize.apply(this, [mediator, url, callback, maxFeatures]);
         this.map = map;
     },
     
@@ -32,7 +32,7 @@ CartoWeb.Searcher.Extent.prototype =
 
     getSearchParams: function() {
         var bbox = this.map.getExtent().toBBOX();
-        var params = {'coords': bbox};
+        var params = {'box': bbox};
         return OpenLayers.Util.extend(this.params, params);
     }
 });

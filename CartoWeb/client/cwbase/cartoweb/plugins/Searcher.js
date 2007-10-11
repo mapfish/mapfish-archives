@@ -12,12 +12,12 @@ CartoWeb.Searcher.prototype = {
     
     params: null,
 
-    initialize: function(mediator, url, callback) {
+    initialize: function(mediator, url, callback, maxFeatures) {
         if (mediator) {
             this.mediator = mediator;
         } else if (url) {
             var cb = callback ? callback : this.onGotFeatures.bind(this);
-            this.mediator = new CartoWeb.SearchMediator(url, cb);
+            this.mediator = new CartoWeb.SearchMediator(url, cb, maxFeatures);
         }
         // register ourself in the mediator
         this.mediator.register(this);

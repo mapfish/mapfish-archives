@@ -8,10 +8,11 @@ dojo.declare("cartoweb.widgets.SearchExtent", [cartoweb.MapControl, dijit._Templ
 
     templatePath: dojo.moduleUrl("cartoweb.widgets", "SearchExtent.html"),
     searchUrl: null,
+    maxFeatures: 100,
 
     mapCreated: function() {
         var cb = this.onGotFeatures ? this.onGotFeatures : null;
-        var mediator = new CartoWeb.SearchMediator(this.searchUrl, cb);
+        var mediator = new CartoWeb.SearchMediator(this.searchUrl, cb, this.maxFeatures);
         this.query = new CartoWeb.Searcher.Extent(this.map, mediator);
     },
 

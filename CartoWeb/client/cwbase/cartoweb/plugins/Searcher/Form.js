@@ -8,8 +8,8 @@ CartoWeb.Searcher.Form.prototype =
 
     form: null,
     
-    initialize: function(form, mediator, url, callback) {
-        CartoWeb.Searcher.prototype.initialize.apply(this, [ mediator, url, callback]);
+    initialize: function(form, mediator, url, callback, maxFeatures) {
+        CartoWeb.Searcher.prototype.initialize.apply(this, [mediator, url, callback, maxFeatures]);
         this.form = form;
     },
     

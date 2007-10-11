@@ -9,9 +9,10 @@ CartoWeb.Searcher.XY.prototype =
     map: null,
     evt: null,
 
-    initialize: function(map, mediator, url, callback) {
-        CartoWeb.Searcher.prototype.initialize.apply(this, [mediator, url, callback]);
+    initialize: function(map, radius, mediator, url, callback, maxFeatures) {
+        CartoWeb.Searcher.prototype.initialize.apply(this, [mediator, url, callback, maxFeatures]);
         this.map = map;
+        this.radius = radius;
     },
 
     enable: function() {
@@ -65,9 +66,7 @@ CartoWeb.Searcher.XY.prototype =
 
     getSearchParams: function(evt) {
         var lonlat = this.map.getLonLatFromViewPortPx(evt.xy);
-        var bbox = this.map.getExtent().toBBOX();
-        var size = this.map.getCurrentSize();
-        var params = {'coords': lonlat.lon + ',' + lonlat.lat, 'bbox': bbox, 'width': size.w};
+        var params = {'lon': lonlat.lon, 'lat': lonlat.lat, 'radius': this.radius};
         return OpenLayers.Util.extend(this.params, params);
     }
 });

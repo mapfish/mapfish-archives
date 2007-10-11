@@ -13,12 +13,13 @@ dojo.declare("cartoweb.widgets.SearchCoupled", [cartoweb.MapControl, dijit._Temp
     searcherExtent: null,
     searcherForm: null,
     searchUrl: null,
+    maxFeatures: 100,
     onGotFeatures: null,
     enabled: false,
 
     mapCreated: function() {
         var cb = this.onGotFeatures ? this.onGotFeatures : null;
-        var mediator = new CartoWeb.SearchMediator(this.searchUrl, cb);
+        var mediator = new CartoWeb.SearchMediator(this.searchUrl, cb, this.maxFeatures);
         this.searcherExtent = new CartoWeb.Searcher.Extent(this.map, mediator);
         var form = document.getElementById(this.form);
         this.searcherForm = new CartoWeb.Searcher.Form(form, mediator);
