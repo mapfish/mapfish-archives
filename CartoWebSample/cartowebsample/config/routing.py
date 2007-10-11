@@ -18,6 +18,8 @@ def make_map():
 
     # CUSTOM ROUTES HERE
 
+    map.connect('c2corg/', controller='c2corg', action='show', conditions=dict(method=['GET']))
+    map.connect('c2corg/:(id).:(format)', controller='c2corg', action='show', conditions=dict(method=['GET']))
     map.connect(':controller/:action/:id')
     map.connect('*url', controller='template', action='view')
 

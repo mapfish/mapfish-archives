@@ -179,15 +179,20 @@
         <a href="javascript:void(0)" onclick="clearTable()">clear table</a>
         <!-- Search widgets -->
         <div id="searchXY"
-             searchUrl="../../c2corg/search"
+             searchUrl="../../c2corg"
+             radius="10000"
+             maxFeatures="10"
              dojoType="cartoweb.widgets.SearchXY">
         </div>
         <div id="searchExtent"
-             searchUrl="../../c2corg/search"
+             searchUrl="../../c2corg"
+             maxFeatures="50"
              dojoType="cartoweb.widgets.SearchExtent"
-             onGotFeatures="onGotFeatures"></div>
+             onGotFeatures="onGotFeatures">
+        </div>
         <div id="c2corgSearchCoupled"
-             searchUrl="../../c2corg/search"
+             searchUrl="../../c2corg"
+             maxFeatures="50"
              dojoType="search.C2corgSearchCoupled"
              onGotFeatures="onGotFeatures">
         </div>
