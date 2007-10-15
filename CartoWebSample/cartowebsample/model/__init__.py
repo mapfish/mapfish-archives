@@ -10,7 +10,8 @@ from cartoweb.pfpfeature import Feature
 # Global session manager.  Session() returns the session object appropriate for the current web request.
 binds={"nodes2": MetaData(config['pylons.g'].sa_routing_engine),
        "lines2": MetaData(config['pylons.g'].sa_routing_engine),
-       "sommets_out": MetaData(config['pylons.g'].sa_search_engine)}
+       "sommets_out": MetaData(config['pylons.g'].sa_search_engine),
+       "world_factbk_simplified":  MetaData(config['pylons.g'].sa_geostat_engine)}
 
 Session = scoped_session(sessionmaker(transactional=True, autoflush=True, binds=binds))
 
@@ -57,3 +58,23 @@ class Summit(object):
                        name=self.name)
 
 mapper(Summit, summits_table)
+
+## africa
+countries_table = Table('world_factbk_simplified', MetaData(config['pylons.g'].sa_geostat_engine),
+                        Column('gid', types.Integer, primary_key=True),
+                        Column('country', types.String),
+                        Column('birth_rt', types.Float),
+                        Column('death_rt', types.Float),
+                        Column('fertility', types.Float),
+                        Column('simplify', Geometry))
+
+class Country(object):
+    def __str__(self):
+        return self.country
+
+    def toFeature(self):
+        return Feature(id=self.gid, geometry=self.simplify, country=self.country,
+                       birth_rt=self.birth_rt, death_rt=self.death_rt,
+                       fertility=self.fertility)
+
+mapper(Country, countries_table)

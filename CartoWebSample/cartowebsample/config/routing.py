@@ -20,6 +20,8 @@ def make_map():
 
     map.connect('c2corg/', controller='c2corg', action='show', conditions=dict(method=['GET']))
     map.connect('c2corg/:(id).:(format)', controller='c2corg', action='show', conditions=dict(method=['GET']))
+    map.connect('countries/', controller='countries', action='show', conditions=dict(method=['GET']))
+    map.connect('countries/:(id).:(format)', controller='countries', action='show', conditions=dict(method=['GET']))
     map.connect(':controller/:action/:id')
     map.connect('*url', controller='template', action='view')
 

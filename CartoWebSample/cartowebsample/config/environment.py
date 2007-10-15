@@ -33,3 +33,4 @@ def load_environment(global_conf, app_conf):
 
     config['pylons.g'].sa_routing_engine = engine_from_config(config, 'sqlalchemy.routing.')
     config['pylons.g'].sa_search_engine = engine_from_config(config, 'sqlalchemy.search.')
+    config['pylons.g'].sa_geostat_engine = engine_from_config(config, 'sqlalchemy.geostat.')
