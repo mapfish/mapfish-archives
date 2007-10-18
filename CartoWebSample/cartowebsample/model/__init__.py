@@ -31,7 +31,8 @@ from cartoweb.pfpfeature import Feature
 binds={"nodes2": MetaData(config['pylons.g'].sa_routing_engine),
        "lines2": MetaData(config['pylons.g'].sa_routing_engine),
        "sommets_out": MetaData(config['pylons.g'].sa_search_engine),
-       "world_factbk_simplified":  MetaData(config['pylons.g'].sa_geostat_engine)}
+       "world_factbk_simplified": MetaData(config['pylons.g'].sa_geostat_engine),
+       "world_cities": MetaData(config['pylons.g'].sa_geostat_engine)}
 
 Session = scoped_session(sessionmaker(transactional=True, autoflush=True, binds=binds))
 
@@ -79,7 +80,7 @@ class Summit(object):
 
 mapper(Summit, summits_table)
 
-## africa
+## world_factbk
 countries_table = Table('world_factbk_simplified', MetaData(config['pylons.g'].sa_geostat_engine),
                         Column('gid', types.Integer, primary_key=True),
                         Column('country', types.String),
@@ -98,3 +99,26 @@ class Country(object):
                        fertility=self.fertility)
 
 mapper(Country, countries_table)
+
+## world_cities
+cities_table = Table('world_cities', MetaData(config['pylons.g'].sa_geostat_engine),
+                     Column('id', types.Integer, primary_key=True),
+                     Column('ufi', types.Integer),
+                     Column('admin_code', types.Integer),
+                     Column('mgcc', types.Integer),
+                     Column('name', types.String),
+                     Column('attrib', types.Integer),
+                     Column('population', types.Integer),
+                     Column('the_geom', Geometry))
+
+class City(object):
+    def __str__(self):
+        return self.name
+
+    def toFeature(self):
+        return Feature(id=self.id, geometry=self.the_geom, ufi=self.ufi,
+                       admin_code=self.admin_code, mgcc=self.mgcc, name=self.name,
+                       attrib=self.attrib, population=self.population)
+
+mapper(City, cities_table)
+
