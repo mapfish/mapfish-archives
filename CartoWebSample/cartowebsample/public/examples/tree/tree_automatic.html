@@ -3,48 +3,68 @@
   <head>
 
     <script type="text/javascript" src="../../cwbase/openlayers/lib/OpenLayers.js"></script>
- 
-    <script>
-      // There's a bug in Firefox 2.0 (and less?) which will prevent dojo from
-      // loading parameters from the script element, and guessing the baseUrl
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=351282
-      var djConfig = {baseUrl: "../../cwbase/dojo/",
-                      isDebug: true, debugAtAllCosts: true,
-                      parseOnLoad: true};
-    </script>
-
-    <script type="text/javascript" src="../../cwbase/dojo/dojo.js"></script>
-    <script type="text/javascript" src="../../cwbase/dijit/dijit.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="../../xxbase/ext/resources/css/ext-all.css" />
     <script type="text/javascript" src="c2corgCreateMap.js"></script>
+    <script type="text/javascript" src="../../xxbase/ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../xxbase/ext/ext-all-debug.js"></script>
+
+    <script type="text/javascript" src="../../xxbase/cartoweb/widgets/tree/LayerTree.js"></script>
 
     <script type="text/javascript"><!--
-        dojo.require("cartoweb.widgets.Map");
-        dojo.require("cartoweb.widgets.tree.TreeContainer");
+
+      if (!window.console || !console.firebug)
+      {
+          var names = ["log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
+          "group", "groupEnd", "time", "timeEnd", "count", "trace", "profile", "profileEnd"];
+      
+          window.console = {};
+          for (var i = 0; i < names.length; ++i)
+              window.console[names[i]] = function() {}
+      }      
+
+      // reference local blank image
+      Ext.BLANK_IMAGE_URL = '../../xxbase/ext/resources/images/default/s.gif';
+
+      Ext.onReady(function() {
+        var map = c2corgCreateMap("map");
+        
+        var tree = new cartoweb.tree.LayerTree(map, {
+                            el: 'tree',
+                            showWmsLegend: true
+        });
+        tree.render();
+        
+      }, this);
     
-     --></script>
-     <style type="text/css">
-          @import "../../cwbase/dijit/themes/tundra/tundra.css";
-          @import "../../cwbase/cartoweb/widgets/tree/Tree.css";
-     
-          .mapContainer {
-            width: 600px;
-            height: 400px;
-            border: 1px solid #999;
-          }
-          #right {
-            position: absolute;
-            left: 620px;
-          }
-     </style>
+    --></script>
+
+    <style type="text/css">
+        #map {
+          width: 600px;
+          height: 400px;
+          border: 1px solid #999;
+        }
+        #right {
+          position: absolute;
+          left: 620px;
+        }
+        #tree {
+          height: 400px;
+          width: 200px;
+          border: 1px solid black;
+        }
+        .cf-wms-node img.x-tree-node-icon {
+          width: auto !important;
+          height: auto !important;
+        }
+    </style>
   </head>
 
-  <body class="tundra">
+  <body>
     <div id="right">
-      <div id="treeDiv" dojoType="cartoweb.widgets.tree.TreeContainer"
-           showWmsLegend="true"></div>
+      <div id="tree"></div>
     </div>
-    
-    <div id="map" createMap="c2corgCreateMap" dojoType="cartoweb.widgets.Map"></div>
-
+    <div id="map"></div>
   </body>
 </html>
