@@ -76,9 +76,10 @@
             layer.setVisibility(false);
             map.addLayer(layer);
           
-            layer = new OpenLayers.Layer.WMS.Untiled("Summits",
+            layer = new OpenLayers.Layer.WMS("Summits",
                 "http://www.cartoweb.org/v4/demos/v0.1/mapserv-c2corg?",
-                {layers: ['summits'], format: 'image/png', transparent: true}
+                {layers: ['summits'], format: 'image/png', transparent: true,
+                 singleTile: true}
             );
             layer.setVisibility(true);
             map.addLayer(layer);  

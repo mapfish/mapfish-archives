@@ -51,9 +51,14 @@ function c2corgCreateMap(mapDiv) {
     c2cwmsLayers = ['parkings', 'summits', 'refuges', 'sites',
                     'countries', 'departements_fr', 'cantons_ch',
                     'massifs'];
-    c2cwms = new OpenLayers.Layer.WMS.Untiled("C2C Objects",
+    c2cwms = new OpenLayers.Layer.WMS("C2C Objects",
         "http://dev.camptocamp.com/c2corg/wms?",
-        {layers: c2cwmsLayers, format: 'image/png', transparent: true}
+        {
+            singleTile: true,
+            layers: c2cwmsLayers,
+            format: 'image/png',
+            transparent: true
+        }
     );
     c2cwms.setVisibility(false);
     map.addLayer(c2cwms);  
