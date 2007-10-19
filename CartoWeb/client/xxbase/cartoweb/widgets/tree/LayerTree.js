@@ -28,13 +28,10 @@ cartoweb.tree.LayerTree.prototype = {
 
     _handleModelChange: function LT__handleModelChange() {
     
-        console.log("model change, tree: ", this.tree);
-
         var layerNameToLayer = {};
         Ext.each(this.map.layers, function(layer) {
             layerNameToLayer[layer.name] = layer;
         });
-        console.log("layerNameToLayer", layerNameToLayer);
         
         var wmsLayers = {};
 
@@ -48,7 +45,6 @@ cartoweb.tree.LayerTree.prototype = {
                 return;
             
             if (layerNameToLayer[nodeLayerName]) {
-                console.log("checking layer ", nodeLayerName, "==>", checked);
                 layerNameToLayer[nodeLayerName].setVisibility(checked, true);
                 return;
             }
@@ -67,7 +63,6 @@ cartoweb.tree.LayerTree.prototype = {
     
         });
     
-        console.log("To handle wms layers ", wmsLayers);
         for (var layerName in wmsLayers) {
             var layer = layerNameToLayer[layerName];
             var wmsSubLayers = wmsLayers[layerName];
@@ -88,8 +83,6 @@ cartoweb.tree.LayerTree.prototype = {
     
         var map = this.map;
     
-        console.log("Show legend? ", this.showWmsLegend);
-
         var getLegendParams = {
             service: "WMS",
             version: "1.1.1",
@@ -120,7 +113,6 @@ cartoweb.tree.LayerTree.prototype = {
                                                                 getLegendParams);
                             var paramsString = OpenLayers.Util.getParameterString(params);
                             iconUrl = l.url + paramsString;
-                            console.log("Icon url", iconUrl);
                         }
           
                         wmsChildren.push({text: w, // TODO: i18n
@@ -148,7 +140,6 @@ cartoweb.tree.LayerTree.prototype = {
     render: function() {
 
         var Tree = Ext.tree;
-        console.log("building tree");
 
         this.tree = new Tree.TreePanel({
             el: this.el,
@@ -163,7 +154,6 @@ cartoweb.tree.LayerTree.prototype = {
         });
         
         this.tree.addListener("checkchange", function checkChange() {
-            console.log("checkchange event received_", arguments);
             this._handleModelChange();
         }, this);
         
