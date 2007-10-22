@@ -1,29 +1,29 @@
 /*
  * Copyright (C) 2007  Camptocamp
  *
- * This file is part of CartoWeb
+ * This file is part of MapFish
  *
- * CartoWeb is free software: you can redistribute it and/or modify
+ * MapFish is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * CartoWeb is distributed in the hope that it will be useful,
+ * MapFish is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with CartoWeb.  If not, see <http://www.gnu.org/licenses/>.
+ * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
-dojo.provide("cartoweb.widgets.tree.Controller");
+dojo.provide("mapfish.widgets.tree.Controller");
 
 dojo.require("dijit._Widget");
-dojo.require("cartoweb.widgets.tree.Tree");
+dojo.require("mapfish.widgets.tree.Tree");
 
-cartoweb.widgets.tree.TreeUtils = {
+mapfish.widgets.tree.TreeUtils = {
 
     visit: function(item, callback, childrenGetter) {
     
@@ -41,7 +41,7 @@ cartoweb.widgets.tree.TreeUtils = {
     
     descendantsAndSelf: function(item) {
         var items = [];
-        cartoweb.widgets.tree.TreeUtils.visit(item, function(item) {
+        mapfish.widgets.tree.TreeUtils.visit(item, function(item) {
             items.push(item);
         });        
         return items;
@@ -49,7 +49,7 @@ cartoweb.widgets.tree.TreeUtils = {
 };
 
 dojo.declare(
-	"cartoweb.widgets.tree.Controller",
+	"mapfish.widgets.tree.Controller",
 	[dijit._Widget],
 {
 	// Summary: _tree.Controller performs all basic operations on Tree
@@ -93,7 +93,7 @@ dojo.declare(
 	
     updateAncestorsDescendants: function(item, checked) {
 
-        var TU = cartoweb.widgets.tree.TreeUtils;
+        var TU = mapfish.widgets.tree.TreeUtils;
 
         TU.visit(item, function(item) {
             item.checked = checked;
@@ -117,7 +117,7 @@ dojo.declare(
 
    syncModelToDom: function(tree) {
 
-        cartoweb.widgets.tree.TreeUtils.visit(tree, function(treeNode) {
+        mapfish.widgets.tree.TreeUtils.visit(tree, function(treeNode) {
             if (treeNode.item) {
                 treeNode.checkboxNode.checked = treeNode.item.checked;
             }
@@ -311,8 +311,8 @@ dojo.declare(
 });
 
 dojo.declare(
-	"cartoweb.widgets.tree.DataController",
-	cartoweb.widgets.tree.Controller,
+	"mapfish.widgets.tree.DataController",
+	mapfish.widgets.tree.Controller,
 {
 
     _getChildren: function(parent) {
@@ -378,7 +378,7 @@ dojo.declare(
 						
 			default:
 				// data is already loaded; just proceed
-				cartoweb.widgets.tree.Controller.prototype._expand.apply(this, arguments);
+				mapfish.widgets.tree.Controller.prototype._expand.apply(this, arguments);
 				break;
 		}
 	},
@@ -388,7 +388,7 @@ dojo.declare(
 		var children = this._getChildren(items);
 		node.setChildren(children);
 
-		cartoweb.widgets.tree.Controller.prototype._expand.apply(this, arguments);
+		mapfish.widgets.tree.Controller.prototype._expand.apply(this, arguments);
 	},
 
 	_collapse: function(/*_TreeNode*/ node){
@@ -396,7 +396,7 @@ dojo.declare(
 			// ignore clicks while we are in the process of loading data
 			return;
 		}
-		cartoweb.widgets.tree.Controller.prototype._collapse.apply(this, arguments);
+		mapfish.widgets.tree.Controller.prototype._collapse.apply(this, arguments);
 	}
 
 });

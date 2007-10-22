@@ -1,34 +1,34 @@
 /*
  * Copyright (C) 2007  Camptocamp
  *
- * This file is part of CartoWeb
+ * This file is part of MapFish
  *
- * CartoWeb is free software: you can redistribute it and/or modify
+ * MapFish is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * CartoWeb is distributed in the hope that it will be useful,
+ * MapFish is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with CartoWeb.  If not, see <http://www.gnu.org/licenses/>.
+ * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
-dojo.provide("cartoweb.widgets.tree.Tree");
+dojo.provide("mapfish.widgets.tree.Tree");
 
 dojo.require("dojo.fx");
 
 dojo.require("dijit._Widget");
 dojo.require("dijit._Templated");
 dojo.require("dijit._Container");
-dojo.require("cartoweb.widgets.tree.Controller");
+dojo.require("mapfish.widgets.tree.Controller");
 
 dojo.declare(
-	"cartoweb.widgets.tree._TreeBase",
+	"mapfish.widgets.tree._TreeBase",
 	[dijit._Widget, dijit._Templated, dijit._Container, dijit._Contained],
 {
 	// summary:
@@ -89,7 +89,7 @@ dojo.declare(
 
 			// Create _TreeNode widget for each specified tree node
 			dojo.forEach(childrenArray, function(childParams){
-				var child = new cartoweb.widgets.tree._TreeNode(dojo.mixin({
+				var child = new mapfish.widgets.tree._TreeNode(dojo.mixin({
 					tree: this.tree
 				}, childParams));
 				this.addChild(child);
@@ -120,8 +120,8 @@ dojo.declare(
 });
 
 dojo.declare(
-	"cartoweb.widgets.tree.Tree",
-	cartoweb.widgets.tree._TreeBase,
+	"mapfish.widgets.tree.Tree",
+	mapfish.widgets.tree._TreeBase,
 {
 	// summary
 	//	Tree view does all the drawing, visual node management etc.
@@ -148,7 +148,7 @@ dojo.declare(
 	//		name of attribute that holds children of a tree node
 	childrenAttr: "children",
 
-	templatePath: dojo.moduleUrl("cartoweb.widgets.tree", "Tree.html"),		
+	templatePath: dojo.moduleUrl("mapfish.widgets.tree", "Tree.html"),		
 
 	isExpanded: true, // consider this "root node" to be always expanded
 
@@ -188,7 +188,7 @@ dojo.declare(
 
 
 		// start the controller, passing in the store
-		this._controller = new cartoweb.widgets.tree.DataController(
+		this._controller = new mapfish.widgets.tree.DataController(
 			{	
 				store: this.store,
 				treeId: this.id,
@@ -289,13 +289,13 @@ dojo.declare(
 });
 
 dojo.declare(
-	"cartoweb.widgets.tree._TreeNode",
-	cartoweb.widgets.tree._TreeBase,
+	"mapfish.widgets.tree._TreeNode",
+	mapfish.widgets.tree._TreeBase,
 {
 	// summary
 	//		Single node within a tree
 
-	templatePath: dojo.moduleUrl("cartoweb.widgets.tree", "Node.html"),		
+	templatePath: dojo.moduleUrl("mapfish.widgets.tree", "Node.html"),		
 
 	// type: String
 	//		User defined identifier to differentiate nodes, and to control icon used
@@ -402,7 +402,7 @@ dojo.declare(
 	},	
 
 	setChildren: function(items){
-		cartoweb.widgets.tree.Tree.superclass.setChildren.apply(this, arguments);
+		mapfish.widgets.tree.Tree.superclass.setChildren.apply(this, arguments);
 
 		// create animations for showing/hiding the children
 		this._slideIn = dojo.fx.wipeIn({node: this.containerNode, duration: 250});

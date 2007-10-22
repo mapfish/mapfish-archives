@@ -1,48 +1,48 @@
 /*
  * Copyright (C) 2007  Camptocamp
  *
- * This file is part of CartoWeb
+ * This file is part of MapFish
  *
- * CartoWeb is free software: you can redistribute it and/or modify
+ * MapFish is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * CartoWeb is distributed in the hope that it will be useful,
+ * MapFish is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with CartoWeb.  If not, see <http://www.gnu.org/licenses/>.
+ * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
-dojo.provide("cartoweb.plugins.Searcher.XY");
+dojo.provide("mapfish.plugins.Searcher.XY");
 
-dojo.require("cartoweb.plugins.Searcher");
+dojo.require("mapfish.plugins.Searcher");
 
-CartoWeb.Searcher.XY = OpenLayers.Class.create();
-CartoWeb.Searcher.XY.prototype =
-    OpenLayers.Class.inherit(CartoWeb.Searcher, {
+MapFish.Searcher.XY = OpenLayers.Class.create();
+MapFish.Searcher.XY.prototype =
+    OpenLayers.Class.inherit(MapFish.Searcher, {
 
     map: null,
     evt: null,
 
     initialize: function(map, radius, mediator, url, callback, maxFeatures) {
-        CartoWeb.Searcher.prototype.initialize.apply(this, [mediator, url, callback, maxFeatures]);
+        MapFish.Searcher.prototype.initialize.apply(this, [mediator, url, callback, maxFeatures]);
         this.map = map;
         this.radius = radius;
     },
 
     enable: function() {
-        if (CartoWeb.Searcher.prototype.enable.call(this)) {
+        if (MapFish.Searcher.prototype.enable.call(this)) {
             this.map.events.register("click", this, this._onMapClick);
         }
     },
 
     disable: function() {
-        if (CartoWeb.Searcher.prototype.disable.call(this)) {
+        if (MapFish.Searcher.prototype.disable.call(this)) {
             this.map.events.unregister("click", this, this._onMapClick);
         }
     },

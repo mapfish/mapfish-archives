@@ -1,33 +1,33 @@
 /*
  * Copyright (C) 2007  Camptocamp
  *
- * This file is part of CartoWeb
+ * This file is part of MapFish
  *
- * CartoWeb is free software: you can redistribute it and/or modify
+ * MapFish is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * CartoWeb is distributed in the hope that it will be useful,
+ * MapFish is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with CartoWeb.  If not, see <http://www.gnu.org/licenses/>.
+ * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
-dojo.provide("cartoweb.widgets.tree.TreeContainer");
+dojo.provide("mapfish.widgets.tree.TreeContainer");
 
-dojo.require("cartoweb.MapControl");
+dojo.require("mapfish.MapControl");
 dojo.require("dijit._Templated");
-dojo.require("cartoweb.widgets.tree.Tree");
+dojo.require("mapfish.widgets.tree.Tree");
   
 
 // FIXME: this widget should be a container
 
-dojo.declare("cartoweb.widgets.tree.TreeContainer", [cartoweb.MapControl, dijit._Templated], {
+dojo.declare("mapfish.widgets.tree.TreeContainer", [mapfish.MapControl, dijit._Templated], {
 
     templateString: "<div></div>",
     showWmsLegend: false,
@@ -106,7 +106,7 @@ dojo.declare("cartoweb.widgets.tree.TreeContainer", [cartoweb.MapControl, dijit.
         var self = this;
         var wmsLayers = {};
         
-	    cartoweb.widgets.tree.TreeUtils.visit(message.tree.model, function(node) {
+	    mapfish.widgets.tree.TreeUtils.visit(message.tree.model, function(node) {
 	        
 	        var map = self.map;
 	        var checked = node.checked;
@@ -157,12 +157,12 @@ dojo.declare("cartoweb.widgets.tree.TreeContainer", [cartoweb.MapControl, dijit.
         if (this.map)
             dojo.subscribe(topicId, this, this._handleOLModelChange);
     
-        this.tree = new cartoweb.widgets.tree.Tree({store: {}, model: model,
+        this.tree = new mapfish.widgets.tree.Tree({store: {}, model: model,
                                         map: this.map, id: topicId}, 
                                         this.domNode);
     
         var checkedItems = []
-        cartoweb.widgets.tree.TreeUtils.visit(model, function(item) {
+        mapfish.widgets.tree.TreeUtils.visit(model, function(item) {
             if (item.checked)
                 checkedItems.push(item)
         });

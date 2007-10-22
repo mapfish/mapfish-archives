@@ -1,28 +1,28 @@
 /*
  * Copyright (C) 2007  Camptocamp
  *
- * This file is part of CartoWeb
+ * This file is part of MapFish
  *
- * CartoWeb is free software: you can redistribute it and/or modify
+ * MapFish is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * CartoWeb is distributed in the hope that it will be useful,
+ * MapFish is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with CartoWeb.  If not, see <http://www.gnu.org/licenses/>.
+ * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
-dojo.provide("cartoweb.plugins.Routing");
+dojo.provide("mapfish.plugins.Routing");
 
-dojo.require("cartoweb.plugins.ServerCaller");
+dojo.require("mapfish.plugins.ServerCaller");
 
-CartoWeb.Routing = OpenLayers.Class(CartoWeb.ServerCaller, {
+MapFish.Routing = OpenLayers.Class(MapFish.ServerCaller, {
 
     /**
      * {<OpenLayers.Layer.Vector>} Layer for rendering features.
@@ -40,7 +40,7 @@ CartoWeb.Routing = OpenLayers.Class(CartoWeb.ServerCaller, {
     select: null,
 
     /**
-     * Create a new CartoWeb.Routing 
+     * Create a new MapFish.Routing 
      *
      * Parameters:
      * url - {String} URL for service.
@@ -48,7 +48,7 @@ CartoWeb.Routing = OpenLayers.Class(CartoWeb.ServerCaller, {
      *     to extend the plugin.
      */
     initialize: function(url, options) {
-        CartoWeb.ServerCaller.prototype.initialize.apply(this,
+        MapFish.ServerCaller.prototype.initialize.apply(this,
                                                          [url, options]);
         this.parser = new OpenLayers.Format.GeoJSON();
 
@@ -80,12 +80,12 @@ CartoWeb.Routing = OpenLayers.Class(CartoWeb.ServerCaller, {
 
         for (var i = 0; i < features.length; i++) {
             if (features[i].attributes._isSourceNode) {
-                features[i].style = CartoWeb.Routing.firstPointStyle;
+                features[i].style = MapFish.Routing.firstPointStyle;
             } else if (features[i].attributes._isTargetNode) {
-                features[i].style = CartoWeb.Routing.lastPointStyle;
+                features[i].style = MapFish.Routing.lastPointStyle;
             } else {
                 bounds.extend(features[i].geometry.getBounds());
-                features[i].style = CartoWeb.Routing.routeStyle;
+                features[i].style = MapFish.Routing.routeStyle;
             }
         }
         this.vector.addFeatures(features);
@@ -100,29 +100,29 @@ CartoWeb.Routing = OpenLayers.Class(CartoWeb.ServerCaller, {
 
 
 // default style for route
-CartoWeb.Routing.routeStyle = {
+MapFish.Routing.routeStyle = {
     strokeColor: "blue",
     strokeWidth: 6,
     strokeOpacity: 0.4
 };
 
-OpenLayers.Util.applyDefaults(CartoWeb.Routing.routeStyle,
+OpenLayers.Util.applyDefaults(MapFish.Routing.routeStyle,
                               OpenLayers.Feature.Vector.style['default']);
 
-CartoWeb.Routing.firstPointStyle = {
-    externalGraphic: "../../cwbase/cartoweb/widgets/routing/start.png",
+MapFish.Routing.firstPointStyle = {
+    externalGraphic: "../../cwbase/mapfish/widgets/routing/start.png",
     graphicWidth: 18,
     graphicHeight: 26,
     graphicYOffset: -26,
     fillOpacity: 1,
     cursor: 'pointer'
 };
-OpenLayers.Util.applyDefaults(CartoWeb.Routing.firstPointStyle,
+OpenLayers.Util.applyDefaults(MapFish.Routing.firstPointStyle,
                               OpenLayers.Feature.Vector.style['default']);
 
 
-CartoWeb.Routing.lastPointStyle = {
-    externalGraphic: "../../cwbase/cartoweb/widgets/routing/stop.png",
+MapFish.Routing.lastPointStyle = {
+    externalGraphic: "../../cwbase/mapfish/widgets/routing/stop.png",
     graphicWidth: 18,
     graphicHeight: 26,
     graphicYOffset: -26,
@@ -130,6 +130,6 @@ CartoWeb.Routing.lastPointStyle = {
     cursor: 'pointer'
 };
 
-OpenLayers.Util.applyDefaults(CartoWeb.Routing.lastPointStyle,
+OpenLayers.Util.applyDefaults(MapFish.Routing.lastPointStyle,
                               OpenLayers.Feature.Vector.style['default']);
 

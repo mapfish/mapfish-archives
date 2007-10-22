@@ -1,32 +1,32 @@
 /*
  * Copyright (C) 2007  Camptocamp
  *
- * This file is part of CartoWeb
+ * This file is part of MapFish
  *
- * CartoWeb is free software: you can redistribute it and/or modify
+ * MapFish is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * CartoWeb is distributed in the hope that it will be useful,
+ * MapFish is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with CartoWeb.  If not, see <http://www.gnu.org/licenses/>.
+ * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
-dojo.provide("cartoweb.plugins.GeoStat.Distribution");
+dojo.provide("mapfish.plugins.GeoStat.Distribution");
 
-dojo.require("cartoweb.plugins.CartoWeb");
-dojo.require("cartoweb.plugins.Util");
+dojo.require("mapfish.plugins.MapFish");
+dojo.require("mapfish.plugins.Util");
 
 /**
  * Distribution Class
  */
-CartoWeb.GeoStat.Distribution = OpenLayers.Class({
+MapFish.GeoStat.Distribution = OpenLayers.Class({
     nbVal: null,
     
     minVal: null,
@@ -36,9 +36,9 @@ CartoWeb.GeoStat.Distribution = OpenLayers.Class({
     initialize: function(values) {
         this.values = values;
         this.nbVal = values.length;
-        this.minVal = this.nbVal ? CartoWeb.Util.min(this.values) : 0;
-        this.maxVal = this.nbVal ? CartoWeb.Util.max(this.values) : 0;
-        this.meanVal = this.nbVal ? CartoWeb.Util.sum(this.values) / this.nbVal : 0;
+        this.minVal = this.nbVal ? MapFish.Util.min(this.values) : 0;
+        this.maxVal = this.nbVal ? MapFish.Util.max(this.values) : 0;
+        this.meanVal = this.nbVal ? MapFish.Util.sum(this.values) / this.nbVal : 0;
         
         var stdDevNum = 0;
         
@@ -75,14 +75,14 @@ CartoWeb.GeoStat.Distribution = OpenLayers.Class({
             }
         }
         
-        binCount[nbBins - 1] = this.nbVal - CartoWeb.Util.sum(binCount);
+        binCount[nbBins - 1] = this.nbVal - MapFish.Util.sum(binCount);
         
         for (var i = 0; i < nbBins; i++) {
             label = bounds[i].toFixed(3) + ' - ' + bounds[i + 1].toFixed(3);
-            bins[i] = new CartoWeb.GeoStat.Bin(binCount[i], label, bounds[i], bounds[i + 1],
+            bins[i] = new MapFish.GeoStat.Bin(binCount[i], label, bounds[i], bounds[i + 1],
                 i == (nbBins - 1));
         }
-        return new CartoWeb.GeoStat.Classification(bins);
+        return new MapFish.GeoStat.Classification(bins);
     },
     
     classifyByEqIntervals: function(nbBins) {
@@ -133,7 +133,7 @@ CartoWeb.GeoStat.Distribution = OpenLayers.Class({
      * bounds - {Array(Integer)} Array of bounds to be used for by bounds method
      *
      * Returns:
-     * {<CartoWeb.GeoStat.Classification>} Classification
+     * {<MapFish.GeoStat.Classification>} Classification
      */
     classify: function(method, nbBins, bounds) {
         var classification = null;
@@ -141,43 +141,43 @@ CartoWeb.GeoStat.Distribution = OpenLayers.Class({
             nbBins = this.sturgesRule();
         }
         switch (method) {
-        case CartoWeb.GeoStat.Distribution.CLASSIFY_WITH_BOUNDS:
+        case MapFish.GeoStat.Distribution.CLASSIFY_WITH_BOUNDS:
             classification = this.classifyWithBounds(bounds);
             break;
-        case CartoWeb.GeoStat.Distribution.CLASSIFY_BY_EQUAL_INTERVALS :
+        case MapFish.GeoStat.Distribution.CLASSIFY_BY_EQUAL_INTERVALS :
             classification = this.classifyByEqIntervals(nbBins);
             break;
-        case CartoWeb.GeoStat.Distribution.CLASSIFY_BY_QUANTILS :
+        case MapFish.GeoStat.Distribution.CLASSIFY_BY_QUANTILS :
             classification = this.classifyByQuantils(nbBins);
             break;
         }
         return classification;
     },
     
-    CLASS_NAME: "CartoWeb.GeoStat.Distribution"
+    CLASS_NAME: "MapFish.GeoStat.Distribution"
 });
 
 /**
- * Constant: CartoWeb.GeoStat.Distribution.CLASSIFY_WITH_BOUNDS
+ * Constant: MapFish.GeoStat.Distribution.CLASSIFY_WITH_BOUNDS
  */
-CartoWeb.GeoStat.Distribution.CLASSIFY_WITH_BOUNDS = 0;
+MapFish.GeoStat.Distribution.CLASSIFY_WITH_BOUNDS = 0;
 
 /**
- * Constant: CartoWeb.GeoStat.Distribution.CLASSIFY_BY_EQUAL_INTERVALS
+ * Constant: MapFish.GeoStat.Distribution.CLASSIFY_BY_EQUAL_INTERVALS
  */
-CartoWeb.GeoStat.Distribution.CLASSIFY_BY_EQUAL_INTERVALS = 1;
+MapFish.GeoStat.Distribution.CLASSIFY_BY_EQUAL_INTERVALS = 1;
 
 /**
- * Constant: CartoWeb.GeoStat.Distribution.CLASSIFY_BY_QUANTILS
+ * Constant: MapFish.GeoStat.Distribution.CLASSIFY_BY_QUANTILS
  */
-CartoWeb.GeoStat.Distribution.CLASSIFY_BY_QUANTILS = 2;
+MapFish.GeoStat.Distribution.CLASSIFY_BY_QUANTILS = 2;
 
 /**
  * Bin is category of the Classification.
  *     When they are defined, lowerBound is within the class
  *     and upperBound is outside de the class.
  */
-CartoWeb.GeoStat.Bin = OpenLayers.Class({
+MapFish.GeoStat.Bin = OpenLayers.Class({
     label: null,
     nbVal: null,
     lowerBound: null,
@@ -192,13 +192,13 @@ CartoWeb.GeoStat.Bin = OpenLayers.Class({
         this.isLast = isLast;
     },
     
-    CLASS_NAME: "CartoWeb.GeoStat.Bin"
+    CLASS_NAME: "MapFish.GeoStat.Bin"
 });
 
 /**
  * Classification summarize a Distribution by regrouping data within several Bins.
  */
-CartoWeb.GeoStat.Classification = OpenLayers.Class({
+MapFish.GeoStat.Classification = OpenLayers.Class({
     bins: [],
     
     initialize: function(bins) {
@@ -216,5 +216,5 @@ CartoWeb.GeoStat.Classification = OpenLayers.Class({
         return bounds;
     },
     
-    CLASS_NAME: "CartoWeb.GeoStat.Classification"
+    CLASS_NAME: "MapFish.GeoStat.Classification"
 });

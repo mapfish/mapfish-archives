@@ -1,35 +1,35 @@
 /*
  * Copyright (C) 2007  Camptocamp
  *
- * This file is part of CartoWeb
+ * This file is part of MapFish
  *
- * CartoWeb is free software: you can redistribute it and/or modify
+ * MapFish is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * CartoWeb is distributed in the hope that it will be useful,
+ * MapFish is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with CartoWeb.  If not, see <http://www.gnu.org/licenses/>.
+ * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
-dojo.provide("cartoweb.plugins.Color");
+dojo.provide("mapfish.plugins.Color");
 
-dojo.require("cartoweb.plugins.CartoWeb");
+dojo.require("mapfish.plugins.MapFish");
 
 /**
  * An abstract representation of color
  */
-CartoWeb.Color = OpenLayers.Class({
+MapFish.Color = OpenLayers.Class({
     getColorRgb: function() {}
 });
 
-CartoWeb.ColorRgb = OpenLayers.Class(CartoWeb.Color, {
+MapFish.ColorRgb = OpenLayers.Class(MapFish.Color, {
     redLevel: null,
     greenLevel: null,
     blueLevel: null,
@@ -137,5 +137,5 @@ CartoWeb.ColorRgb = OpenLayers.Class(CartoWeb.Color, {
         return hexCharacters.charAt(i) + hexCharacters.charAt(j)
     },
     
-    CLASS_NAME: "CartoWeb.Choropleth"
+    CLASS_NAME: "MapFish.Choropleth"
 });

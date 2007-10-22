@@ -1,30 +1,30 @@
 /*
  * Copyright (C) 2007  Camptocamp
  *
- * This file is part of CartoWeb
+ * This file is part of MapFish
  *
- * CartoWeb is free software: you can redistribute it and/or modify
+ * MapFish is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * CartoWeb is distributed in the hope that it will be useful,
+ * MapFish is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with CartoWeb.  If not, see <http://www.gnu.org/licenses/>.
+ * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.namespace('cartoweb.tree');
+Ext.namespace('mapfish.tree');
 
-cartoweb.tree.LayerTree = function(map, config) {
+mapfish.tree.LayerTree = function(map, config) {
     this.map = map;
     Ext.apply(this, config);
 }
 
-cartoweb.tree.LayerTree.prototype = {
+mapfish.tree.LayerTree.prototype = {
 
     _handleModelChange: function LT__handleModelChange() {
 

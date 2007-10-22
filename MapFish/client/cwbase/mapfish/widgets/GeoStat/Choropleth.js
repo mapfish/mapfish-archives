@@ -1,35 +1,35 @@
 /*
  * Copyright (C) 2007  Camptocamp
  *
- * This file is part of CartoWeb
+ * This file is part of MapFish
  *
- * CartoWeb is free software: you can redistribute it and/or modify
+ * MapFish is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * CartoWeb is distributed in the hope that it will be useful,
+ * MapFish is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with CartoWeb.  If not, see <http://www.gnu.org/licenses/>.
+ * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
-dojo.provide("cartoweb.widgets.GeoStat.Choropleth");
+dojo.provide("mapfish.widgets.GeoStat.Choropleth");
 
-dojo.require("cartoweb.widgets.GeoStat");
-dojo.require("cartoweb.plugins.GeoStat.Choropleth");
-dojo.require("cartoweb.plugins.Color");
+dojo.require("mapfish.widgets.GeoStat");
+dojo.require("mapfish.plugins.GeoStat.Choropleth");
+dojo.require("mapfish.plugins.Color");
 dojo.require("dijit._Templated");
 dojo.require("dijit.form.Button");
 dojo.require("dijit.ColorPalette");
 
-dojo.declare("cartoweb.widgets.GeoStat.Choropleth", [cartoweb.widgets.GeoStat, dijit._Templated], {
+dojo.declare("mapfish.widgets.GeoStat.Choropleth", [mapfish.widgets.GeoStat, dijit._Templated], {
 
-    templatePath: dojo.moduleUrl("cartoweb.widgets.GeoStat", "Choropleth.html"),
+    templatePath: dojo.moduleUrl("mapfish.widgets.GeoStat", "Choropleth.html"),
 
     widgetsInTemplate: true,
 
@@ -58,22 +58,22 @@ dojo.declare("cartoweb.widgets.GeoStat.Choropleth", [cartoweb.widgets.GeoStat, d
         for (var i = 0; i < features.length; i++) {
             values.push(features[i].attributes[indicatorAttribute]);
         }
-        var dist = new CartoWeb.GeoStat.Distribution(values);
+        var dist = new MapFish.GeoStat.Distribution(values);
         var classification = dist.classify(
-            CartoWeb.GeoStat.Distribution[this.method.value],
+            MapFish.GeoStat.Distribution[this.method.value],
             this.numClasses.value,
             null
         );
-        var stat = new CartoWeb.GeoStat.Choropleth(this.layer, {
+        var stat = new MapFish.GeoStat.Choropleth(this.layer, {
             classification: classification,
             idAttribute: this.idAttribute,
             indicatorAttribute: indicatorAttribute,
             legendDiv: this.legend
         });
 
-        var colorA = new CartoWeb.ColorRgb();
+        var colorA = new MapFish.ColorRgb();
         colorA.setFromRgb(this.colorA.style.backgroundColor);
-        var colorB = new CartoWeb.ColorRgb();
+        var colorB = new MapFish.ColorRgb();
         colorB.setFromRgb(this.colorB.style.backgroundColor);
 
         stat.colors = stat.createColorInterpolation(colorA,

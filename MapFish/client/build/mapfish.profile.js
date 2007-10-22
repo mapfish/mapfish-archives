@@ -7,9 +7,9 @@ dependencies = {
 			]
 		},
 		{
-			name: "../cartoweb/cartoweb.js",
+			name: "../mapfish/mapfish.js",
 			dependencies: [
-				"cartoweb.cartoweb"
+				"mapfish.mapfish"
 			]
 		}
 
@@ -17,6 +17,6 @@ dependencies = {
 
 	prefixes: [
 		[ "dijit", "../dijit" ],
-		[ "cartoweb", "../cartoweb" ],
+		[ "mapfish", "../mapfish" ],
 	]
 }

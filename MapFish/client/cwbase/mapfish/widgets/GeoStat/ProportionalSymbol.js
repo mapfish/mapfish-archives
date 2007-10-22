@@ -1,32 +1,32 @@
 /*
  * Copyright (C) 2007  Camptocamp
  *
- * This file is part of CartoWeb
+ * This file is part of MapFish
  *
- * CartoWeb is free software: you can redistribute it and/or modify
+ * MapFish is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * CartoWeb is distributed in the hope that it will be useful,
+ * MapFish is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with CartoWeb.  If not, see <http://www.gnu.org/licenses/>.
+ * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
-dojo.provide("cartoweb.widgets.GeoStat.ProportionalSymbol");
+dojo.provide("mapfish.widgets.GeoStat.ProportionalSymbol");
 
-dojo.require("cartoweb.widgets.GeoStat");
-dojo.require("cartoweb.plugins.GeoStat.ProportionalSymbol");
+dojo.require("mapfish.widgets.GeoStat");
+dojo.require("mapfish.plugins.GeoStat.ProportionalSymbol");
 dojo.require("dijit._Templated");
 
-dojo.declare("cartoweb.widgets.GeoStat.ProportionalSymbol", [cartoweb.widgets.GeoStat, dijit._Templated], {
+dojo.declare("mapfish.widgets.GeoStat.ProportionalSymbol", [mapfish.widgets.GeoStat, dijit._Templated], {
 
-    templatePath: dojo.moduleUrl("cartoweb.widgets.GeoStat", "ProportionalSymbol.html"),
+    templatePath: dojo.moduleUrl("mapfish.widgets.GeoStat", "ProportionalSymbol.html"),
     
     mapCreated: function() {
         // fill the template with variables
@@ -53,9 +53,9 @@ dojo.declare("cartoweb.widgets.GeoStat.ProportionalSymbol", [cartoweb.widgets.Ge
         for (var i = 0; i < features.length; i++) {
             values.push(features[i].attributes[indicatorAttribute]);
         }
-        var dist = new CartoWeb.GeoStat.Distribution(values);
+        var dist = new MapFish.GeoStat.Distribution(values);
         
-        var stat = new CartoWeb.GeoStat.ProportionalSymbol(this.layer, {
+        var stat = new MapFish.GeoStat.ProportionalSymbol(this.layer, {
             minVal: dist.minVal,
             maxVal: dist.maxVal,
             minSize: parseInt(this.sizeA.value),
