@@ -27,6 +27,9 @@ cartoweb.tree.LayerTree = function(map, config) {
 cartoweb.tree.LayerTree.prototype = {
 
     _handleModelChange: function LT__handleModelChange() {
+
+        if (!this.map)
+            return;
     
         var layerNameToLayer = {};
         Ext.each(this.map.layers, function(layer) {
