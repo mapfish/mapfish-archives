@@ -2,27 +2,18 @@
 <html>
   <head>
 
+    <link rel="stylesheet" type="text/css" href="../../xxbase/ext/resources/css/ext-all.css" />
+
+    <script type="text/javascript" src="../../cwbase/openlayers/lib/Firebug/firebug.js"></script>
     <script type="text/javascript" src="../../cwbase/openlayers/lib/OpenLayers.js"></script>
     
-    <link rel="stylesheet" type="text/css" href="../../xxbase/ext/resources/css/ext-all.css" />
-    <script type="text/javascript" src="c2corgCreateMap.js"></script>
     <script type="text/javascript" src="../../xxbase/ext/adapter/ext/ext-base.js"></script>
     <script type="text/javascript" src="../../xxbase/ext/ext-all-debug.js"></script>
 
     <script type="text/javascript" src="../../xxbase/cartoweb/widgets/tree/LayerTree.js"></script>
+    <script type="text/javascript" src="c2corgCreateMap.js"></script>
 
     <script type="text/javascript"><!--
-
-      if (!window.console || !console.firebug)
-      {
-          var names = ["log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
-          "group", "groupEnd", "time", "timeEnd", "count", "trace", "profile", "profileEnd"];
-      
-          window.console = {};
-          for (var i = 0; i < names.length; ++i)
-              window.console[names[i]] = function() {}
-      }      
-
       // reference local blank image
       Ext.BLANK_IMAGE_URL = '../../xxbase/ext/resources/images/default/s.gif';
 
@@ -52,7 +43,6 @@
         #tree {
           height: 400px;
           width: 200px;
-          border: 1px solid black;
         }
         .cf-wms-node img.x-tree-node-icon {
           width: auto !important;
