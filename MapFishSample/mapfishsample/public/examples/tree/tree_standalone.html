@@ -1,129 +1,91 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" type="text/css" href="../../mfbase/ext/resources/css/ext-all.css" />
 
-    <script>
-      // There's a bug in Firefox 2.0 (and less?) which will prevent dojo from
-      // loading parameters from the script element, and guessing the baseUrl
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=351282
-      var djConfig = {baseUrl: "../../cwbase/dojo/",
-                      isDebug: true, debugAtAllCosts: true,
-                      parseOnLoad: true};
-    </script>
+    <script type="text/javascript" src="../../cwbase/openlayers/lib/Firebug/firebug.js"></script>
+    <script type="text/javascript" src="../../cwbase/openlayers/lib/OpenLayers.js"></script>
 
-    <script type="text/javascript" src="../../cwbase/dojo/dojo.js"></script>
-    <script type="text/javascript" src="../../cwbase/dijit/dijit.js"></script>
+    <script type="text/javascript" src="../../mfbase/ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../mfbase/ext/ext-all-debug.js"></script>
 
-    <script type="text/javascript"><!--
-        dojo.require("mapfish.widgets.Map");
-        dojo.require("mapfish.widgets.tree.TreeContainer");
-        
-        dojo.addOnLoad(function () {
-
-            var treeDiv = dijit.byId("treeDiv");
-            
-            // listener:
-            dojo.subscribe("treeDiv_inner", function(message) {
-                if (message.event != "modelChanged")
-                    return;
-                console.log("new model", message.tree.model);
-                
-                var checkedNodes = "Checked nodes: ";
-                mapfish.widgets.tree.TreeUtils.visit(
-                    message.tree.model, function(node) {
-                        console.log("Item", node);
-                        if (node.checked)
-                            checkedNodes += " " + node.label;
-                    }
-                );
-                var msg = dojo.byId("messages");
-                msg.appendChild(document.createTextNode(checkedNodes));
-                msg.appendChild(document.createElement("br"));
-            });
-            
-	        var model = 
-	           {name: "root",
-	                children: [
-	                    {label: "label 1",
-	                     expanded: true,
-	                     icon: "icons/img1.png",
-	                     url: "http://www.camptocamp.com",
-	                     children: [
-	                        {label: "label 1.1",
-	                         children: [
-	                            {label: "nested 3"}
-	                         ]   
-	                        },
-	                        {label: "label 1.2",
-                             checked: true,
-	                         expanded: true,
-                             icon: "icons/img2.png",
-	                         children: [
-	                            {label: "label 1.2.1"},
-	                            {label: "label 1.2.2",
-	                             expanded: true,
-	                             children: [
-	                                {label: "label 1.2.2.1"}
-	                             ]   
-	                            }
-	                         ]   
-	                        }
-	                     ]
-	                    },
-	                    {label: "label 2",
-                         icon: "icons/img2.png",
-	                     children: [
-	                        {label: "label 2.1"},
-	                        {label: "label 2.2",
-                             icon: "icons/img3.png",
-	                         children: [
-	                            {label: "label 2.2.1"}
-	                         ]   
-	                        }
-	                     ]
-	                    }
-	                ]
-	        };            
-            treeDiv.initWithModel(model);
-        });
-        
-        function create() {
-            console.log("TODO");
-            return;
-        }
-        
-        function destroy() {
-            var treeDiv = dijit.byId("treeDiv");
-            treeDiv.destroyRecursive();
-        }
-        
-     --></script>
-     <style type="text/css">
-          @import "../../cwbase/dijit/themes/tundra/tundra.css";
-          @import "../../cwbase/mapfish/widgets/tree/Tree.css";
+    <script type="text/javascript" src="../../mfbase/mapfish/widgets/tree/LayerTree.js"></script>
      
-          #treeContainer {
-            border: 1px solid #ccc;
-            height: 15em;
-          }
+    <script type="text/javascript"><!--
+      // reference local blank image
+      Ext.BLANK_IMAGE_URL = '../../mfbase/ext/resources/images/default/s.gif';
+
+      Ext.onReady(function() {
+
+          var model = [
+                      {text: "label 1",
+                       expanded: true,
+                       icon: "icons/img1.png",
+                       url: "http://www.camptocamp.com",
+                       children: [
+                          {text: "label 1.1",
+                           children: [
+                              {text: "nested 3", leaf: true}
+                           ]
+                          },
+                          {text: "label 1.2",
+                           checked: true,
+                           expanded: true,
+                           icon: "icons/img2.png",
+                           children: [
+                              {text: "label 1.2.1", leaf: true},
+                              {text: "label 1.2.2",
+                               expanded: true,
+                               children: [
+                                  {text: "label 1.2.2.1", leaf: true}
+                               ]
+                              }
+                           ]
+                          }
+                       ]
+                      },
+                      {text: "label 2",
+                       icon: "icons/img2.png",
+                       children: [
+                          {text: "label 2.1", leaf: true},
+                          {text: "label 2.2",
+                           icon: "icons/img3.png",
+                           children: [
+                              {text: "label 2.2.1", leaf: true}
+                           ]
+                          }
+                       ]
+                      }
+                  ];
+        
+        var tree = new mapfish.tree.LayerTree(null, {
+                            el: 'tree',
+                            model: model
+        });
+        tree.render();
+        
+      }, this);
+
+    --></script>
+
+     <style type="text/css">
           #messages {
             height: 10em;
             background-color: #eee;        
             overflow: auto;
             font-size: small;    
           }
+          #tree {
+            height: 300px;
+            width: 600px;
+          }
      </style>
   </head>
 
   <body class="tundra">
-    <div id="treeContainer">
-      <div id="treeDiv" dojoType="mapfish.widgets.tree.TreeContainer"></div>
-    </div>
+    <div id="tree"></div>
 
     <div>
-        <button onclick="destroy()">destroy tree</button>
-        <button onclick="create()">create tree</button>
-
         <div id="messages">
         </div>
     </div>
