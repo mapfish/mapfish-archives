@@ -1,60 +1,89 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" type="text/css" href="../../mfbase/ext/resources/css/ext-all.css" />
+
+    <script type="text/javascript" src="../../mfbase/openlayers/lib/Firebug/firebug.js"></script>
     <script type="text/javascript" src="../../mfbase/openlayers/lib/OpenLayers.js"></script>
-    <script>
-      // There's a bug in Firefox 2.0 (and less?) which will prevent dojo from
-      // loading parameters from the script element, and guessing the baseUrl
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=351282
-      var djConfig = {baseUrl: "../../cwbase/dojo/",
-                      parseOnLoad: true};
-    </script>
 
+    <script type="text/javascript" src="../../mfbase/ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../mfbase/ext/ext-all-debug.js"></script>
 
-    <script type="text/javascript" src="../../cwbase/dojo/dojo.js"></script>
-    <script type="text/javascript" src="../../cwbase/dijit/dijit.js"></script>
+    <script type="text/javascript" src="../../mfbase/mapfish/widgets/tree/LayerTree.js"></script>
 
     <script type="text/javascript">
-      dojo.require("mapfish.widgets.Map");
-      dojo.require("mapfish.widgets.tree.TreeContainer");
+    
+    // reference local blank image
+    Ext.BLANK_IMAGE_URL = '../../mfbase/ext/resources/images/default/s.gif';
 
-      function myCreateMap(e) {
-            var map = new OpenLayers.Map(e);
+    function createFirstMap(e) {
+      var map = new OpenLayers.Map(e);
+      var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                                       "http://labs.metacarta.com/wms/vmap0",
+                                       {layers: 'basic'} );
+      map.addLayer(layer);
+      map.setCenter(new OpenLayers.LonLat(5, 40), 5);
+  
+      return map;
+    }
 
-            var ol_wms = new OpenLayers.Layer.WMS("World Map", 
-                                                   "http://labs.metacarta.com/wms-c/Basic.py?", 
-                                                   {layers: 'basic', format: 'image/png' } );
+    function createSecondMap(e) {
+      var map = new OpenLayers.Map(e);
+  
+      var ol_wms = new OpenLayers.Layer.WMS("World Map", 
+                                             "http://labs.metacarta.com/wms-c/Basic.py?", 
+                                             {layers: 'basic', format: 'image/png' } );
+  
+      var jpl_wms = new OpenLayers.Layer.WMS("Satellite",
+                                             "http://labs.metacarta.com/wms-c/Basic.py?", 
+                                             {layers: 'satellite', format: 'image/png' } );
+      var dm_wms = new OpenLayers.Layer.WMS("Canada",
+                                            "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
+                                            {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
+                                                     "prov_bound,fedlimit,rail,road,popplace",
+                                             transparent: "true", format: "image/png" });
+      dm_wms.setVisibility(false);
+      map.addLayers([jpl_wms, ol_wms, dm_wms]);
+      map.setCenter(new OpenLayers.LonLat(20, 35), 5);
+  
+      return map;
+    }
 
-            var jpl_wms = new OpenLayers.Layer.WMS("Satellite",
-                                                   "http://labs.metacarta.com/wms-c/Basic.py?", 
-                                                   {layers: 'satellite', format: 'image/png' } );
-            var dm_wms = new OpenLayers.Layer.WMS("Canada",
-                                                  "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
-                                                  {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
-                                                           "prov_bound,fedlimit,rail,road,popplace",
-                                                   transparent: "true", format: "image/png" });
-            dm_wms.setVisibility(false);
-            map.addLayers([jpl_wms, ol_wms, dm_wms]);
-            map.setCenter(new OpenLayers.LonLat(20, 35), 5);
+    Ext.onReady(function() {
+      var map, tree;
+      
+      map = createFirstMap("firstMap");
+      tree = new mapfish.tree.LayerTree(map, {el: 'firstTree'});
+      tree.render();
 
-            return map;
-      }
-
-     </script>
-     <style type="text/css">
-          .mapContainer {
-             width: 300px;
-             height: 200px;
-             border: 1px solid #999;
-          }
-     </style>
+      map = createSecondMap("secondMap");
+      tree = new mapfish.tree.LayerTree(map, {el: 'secondTree'});
+      tree.render();
+      
+    }, this);
+    </script>
+      
+    <style type="text/css">
+        .map, .mapContainer, #firstMap, #secondMap {
+           width: 300px;
+           height: 200px;
+           border: 1px solid #999;
+        }
+        .tree, #firstTree, #secondTree {
+          width: 500px;
+          height: 100px;
+        }
+        .x-panel-body {
+          border: none !important;
+        }
+    </style>
   </head>
 
   <body>
-    <div id="firstMap" dojoType="mapfish.widgets.Map"></div>
-    <div mapId="firstMap" dojoType="mapfish.widgets.tree.TreeContainer"></div>
+    <div id="firstMap" class="map"></div>
+    <div id="firstTree" class="tree"></div>
 
-    <div id="secondMap" dojoType="mapfish.widgets.Map" createMap="myCreateMap"></div>
-    <div mapId="secondMap" dojoType="mapfish.widgets.tree.TreeContainer"></div>
+    <div id="secondMap" class="map"></div>
+    <div id="secondTree" class="tree"></div>
   </body>
 </html>
