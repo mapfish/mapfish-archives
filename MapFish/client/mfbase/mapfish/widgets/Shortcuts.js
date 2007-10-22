@@ -60,7 +60,7 @@ Ext.extend(mapfish.widgets.Shortcuts, Ext.Container, {
                 editable: false,
                 mode: 'local',
                 triggerAction: 'all',
-                emptyText:'Select an value ...',
+                emptyText:'Select a value ...',
                 lazyRender: true,
                 width: 150,
             })
