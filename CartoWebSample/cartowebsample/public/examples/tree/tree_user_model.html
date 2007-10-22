@@ -1,94 +1,101 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" type="text/css" href="../../xxbase/ext/resources/css/ext-all.css" />
 
+    <script type="text/javascript" src="../../cwbase/openlayers/lib/Firebug/firebug.js"></script>
     <script type="text/javascript" src="../../cwbase/openlayers/lib/OpenLayers.js"></script>
- 
-    <script>
-      // There's a bug in Firefox 2.0 (and less?) which will prevent dojo from
-      // loading parameters from the script element, and guessing the baseUrl
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=351282
-      var djConfig = {baseUrl: "../../cwbase/dojo/",
-                      isDebug: true, debugAtAllCosts: true,
-                      parseOnLoad: true};
-    </script>
 
-    <script type="text/javascript" src="../../cwbase/dojo/dojo.js"></script>
-    <script type="text/javascript" src="../../cwbase/dijit/dijit.js"></script>
+    <script type="text/javascript" src="../../xxbase/ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../xxbase/ext/ext-all-debug.js"></script>
+
+    <script type="text/javascript" src="../../xxbase/cartoweb/widgets/tree/LayerTree.js"></script>
     <script type="text/javascript" src="c2corgCreateMap.js"></script>
 
     <script type="text/javascript"><!--
-        dojo.require("cartoweb.widgets.Map");
-        dojo.require("cartoweb.widgets.tree.TreeContainer");
 
-        var gModel = 
-            {
-                name: "root",
-                children: [
+      Ext.onReady(function() {
+      
+        var map = c2corgCreateMap("map");
+        
+        var model = [
                     {
-                        label: "World map",
+                        text: "World map",
+                        leaf: false,
                         expanded: true,
                         checked: true,
-                        url: "http://www.google.com/search?q=world+map",
+                        href: "http://www.google.com/search?q=world+map",
+                        hrefTarget: "_blank", 
                         layerName: "World Map",
                         children: [
                             {
-                                label: "Country boundaries",
-                                noCheckbox: true,
-                                icon: "icons/img1.png"
+                                text: "Country boundaries",
+                                icon: "icons/img1.png",
+                                leaf: true,
                             },
                             {
-                                label: "Sample class",
-                                noCheckbox: true,
-                                icon: "icons/img2.png"
+                                text: "Sample class",
+                                icon: "icons/img2.png",
+                                leaf: true,
                             }
                          ]
                     },
                     {
-                        label: "Some Objects",
+                        text: "Some Objects",
+                        leaf: false,
                         expanded: true,
-                        noCheckbox: true,
                         icon: "icons/img3.png",
                         children: [
                             {
-                                label: "Parkings",
+                                text: "Parkings",
                                 icon: "icons/img2.png",
-                                layerName: "C2C Objects:parkings"
+                                leaf: true,
+                                layerName: "C2C Objects:parkings",
+                                checked: false
                             },
                             {
-                                label: "Summits",
+                                text: "Summits",
                                 icon: "icons/img1.png",
-                                layerName: "C2C Objects:summits"
+                                leaf: true,
+                                layerName: "C2C Objects:summits",
+                                checked: false
                             }
-                         ]
+                        ]
                     }
-                ]
-            };
-        
+                ];
+
+        var tree = new cartoweb.tree.LayerTree(map, {
+                            el: 'tree',
+                            model: model
+        });
+
+        tree.render();
+      }, this);
+    
      --></script>
-     <style type="text/css">
-          @import "../../cwbase/dijit/themes/tundra/tundra.css";
-          @import "../../cwbase/cartoweb/widgets/tree/Tree.css";
-     
-          .mapContainer {
-            width: 600px;
-            height: 400px;
-            border: 1px solid #999;
-          }
-          #right {
-            position: absolute;
-            left: 620px;
-          }
-     </style>
+
+    <style type="text/css">
+        #map {
+          width: 600px;
+          height: 400px;
+          border: 1px solid #999;
+        }
+        #right {
+          font-size: 11px;
+          position: absolute;
+          left: 620px;
+        }
+        #tree {
+          height: 400px;
+          width: 200px;
+        }
+    </style>
   </head>
 
-  <body class="tundra">
+  <body>
     <div id="right">
-      <div id="treeDiv" dojoType="cartoweb.widgets.tree.TreeContainer"
-           showWmsLegend="true" model="gModel"></div>
+      <div id="tree"></div>
     </div>
-
-    <div id="map" createMap="c2corgCreateMap" dojoType="cartoweb.widgets.Map"></div>
-
+    <div id="map"></div>
   </body>
 </html>
