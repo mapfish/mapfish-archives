@@ -1,0 +1,129 @@
+<html>
+<head>
+  <title>Shortcuts example in a Complex Layout</title>
+    <link rel="stylesheet" type="text/css" href="../../mfbase/ext/resources/css/ext-all.css" />
+
+    <script type="text/javascript" src="../../mfbase/openlayers/lib/Firebug/firebug.js"></script>
+    <script type="text/javascript" src="../../mfbase/openlayers/lib/OpenLayers.js"></script>
+
+    <script type="text/javascript" src="../../mfbase/ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../mfbase/ext/ext-all-debug.js"></script>
+    
+    <script type="text/javascript" src="../../mfbase/mapfish/core/Util.js"></script>
+    <!-- FIXME load the Color file from mfbase -->
+    <script type="text/javascript" src="../../mfbase/mapfish/core/Color.js" ></script>
+    
+    <script type="text/javascript" src="../../mfbase/mapfish/core/GeoStat.js" ></script>
+    
+    <script type="text/javascript" src="../../mfbase/mapfish/widgets/geostat/Choropleth.js" ></script>
+    
+    <!-- EXT colorField Extent -->
+    <script type="text/javascript" src="../../mfbase/ext-community-extensions/color-field.js" ></script>
+    <link rel="stylesheet" type="text/css" href="../../mfbase/ext-community-extensions/color-field.css" />
+    
+	<style type="text/css">
+    html, body {
+        font:normal 12px verdana;
+        margin:0;
+        padding:0;
+        border:0 none;
+        overflow:hidden;
+        height:100%;
+    }
+    </style>
+	<script type="text/javascript">
+  
+    // reference local blank image
+    Ext.BLANK_IMAGE_URL = '../../mfbase/ext/resources/images/default/s.gif';
+  
+    Ext.onReady(function(){
+        Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
+        
+        var map = new OpenLayers.Map($('olmap'));
+
+        var wms = new OpenLayers.Layer.WMS("OpenLayers WMS", 
+            "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}, {buffer: 0});
+
+        map.addLayers([wms]);
+        map.addControl(new OpenLayers.Control.LayerSwitcher());
+        map.setCenter(new OpenLayers.LonLat(17, 2), 2);
+        
+        var choropleth = new mapfish.widgets.geostat.Choropleth(map, {
+                                idAttribute: "country",
+                                indicators: [['birth_rt', 'Birth Rate'],
+                                             ['death_rt', 'Death Rate'],
+                                             ['fertility', 'Fertility']],
+                                geoStatUrl: "../../countries"
+                            });
+       
+        var viewport = new Ext.Viewport({
+            layout:'border',
+            items:[
+                new Ext.BoxComponent({ // raw
+                    region:'north',
+                    el: 'north',
+                    height:32
+                }),{
+                    region:'south',
+                    contentEl: 'south',
+                    split:true,
+                    height: 100,
+                    minSize: 100,
+                    maxSize: 200,
+                    collapsible: true,
+                    title:'South',
+                    margins:'0 0 0 0'
+                },{
+                    region:'west',
+                    id:'west-panel',
+                    title:'West',
+                    split:true,
+                    width: 200,
+                    minSize: 175,
+                    maxSize: 400,
+                    collapsible: true,
+                    margins:'0 0 0 5',
+                    layout:'anchor',
+                    layoutConfig:{
+                        animate:true
+                    },
+                    items: [{
+                        contentEl: 'west',
+                        title:'Navigation',
+                        border:false,
+                        iconCls:'nav'
+                    },{
+                        title:'Settings',
+                        html:'<p>Some settings in here.</p>',
+                        border:false,
+                        iconCls:'settings'
+                    },{
+                        title:'Geostat',
+                        items: choropleth,
+                        border:false
+                    }]
+                },{
+                    region:'center',
+                    title: 'Map',
+                    contentEl:'olmap'
+                }
+             ]
+        });
+    });
+	</script>
+</head>
+<body>
+  <div id="west">
+    <p>Hi. I'm the west panel.</p>
+  </div>
+  <div id="north">
+    <p>CartoWeb4</p>
+  </div>
+  <div id="olmap">
+  </div>
+  <div id="south">
+    <p>south - generally for informational stuff, also could be for status bar</p>
+  </div>
+
+ </body>
+</html>

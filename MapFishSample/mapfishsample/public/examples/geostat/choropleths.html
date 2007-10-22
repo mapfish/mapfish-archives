@@ -2,64 +2,86 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Choropleths</title>
+    <link rel="stylesheet" type="text/css" href="../../mfbase/ext/resources/css/ext-all.css" />
+
+    <script type="text/javascript" src="../../mfbase/openlayers/lib/Firebug/firebug.js"></script>
     <script type="text/javascript" src="../../mfbase/openlayers/lib/OpenLayers.js"></script>
-    <script>
-      // There's a bug in Firefox 2.0 (and less?) which will prevent dojo from
-      // loading parameters from the script element, and guessing the baseUrl
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=351282
-      var djConfig = {baseUrl: "../../cwbase/dojo/",
-                      parseOnLoad: true};
-    </script>
+
+    <script type="text/javascript" src="../../mfbase/ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../mfbase/ext/ext-all-debug.js"></script>
     
-    <script type="text/javascript" src="../../cwbase/dojo/dojo.js"></script>
-    <script type="text/javascript" src="../../cwbase/dijit/dijit.js"></script>
+    <script type="text/javascript" src="../../mfbase/mapfish/core/Util.js"></script>
+    <!-- FIXME load the Color file from mfbase -->
+    <script type="text/javascript" src="../../mfbase/mapfish/core/Color.js" ></script>
+    
+    <script type="text/javascript" src="../../mfbase/mapfish/core/GeoStat.js" ></script>
+    
+    <script type="text/javascript" src="../../mfbase/mapfish/widgets/geostat/Choropleth.js" ></script>
+    
+    <!-- EXT colorField Extent -->
+    <script type="text/javascript" src="../../mfbase/ext-community-extensions/color-field.js" ></script>
+    <link rel="stylesheet" type="text/css" href="../../mfbase/ext-community-extensions/color-field.css" />
+    
+    <!-- A Localization Script File comes here -->
+    <script type="text/javascript">     
 
-    <script type="text/javascript">
-        dojo.require("mapfish.widgets.Map");
-        dojo.require("mapfish.widgets.GeoStat.Choropleth");
+      function createMap(mapDiv) {
+          var map = new OpenLayers.Map($('olmap'));
+
+          var wms = new OpenLayers.Layer.WMS("OpenLayers WMS", 
+              "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}, {buffer: 0});
+
+          map.addLayers([wms]);
+          map.addControl(new OpenLayers.Control.LayerSwitcher());
+          map.setCenter(new OpenLayers.LonLat(17, 2), 2);
+          
+          return map;
+      }
+
+      // reference local blank image
+      Ext.BLANK_IMAGE_URL = '../../mfbase/ext/resources/images/default/s.gif';
+
+      Ext.onReady(function() {
+        var map = createMap("map");
+        
+        var choropleth = new mapfish.widgets.geostat.Choropleth(map, {
+                                el: "myChoroplethDiv",
+                                idAttribute: "country",
+                                indicators: [['birth_rt', 'Birth Rate'],
+                                             ['death_rt', 'Death Rate'],
+                                             ['fertility', 'Fertility']],
+                                geoStatUrl: "../../countries"
+                            })
+        choropleth.render();
+        
+      }, this);
       
-        function worldFactbkCreateMap(mapDiv){
-            var map = new OpenLayers.Map(mapDiv);
-
-            var wms = new OpenLayers.Layer.WMS("OpenLayers WMS", 
-                "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}, {buffer: 0});
-
-            map.addLayers([wms]);
-            map.addControl(new OpenLayers.Control.LayerSwitcher());
-            map.setCenter(new OpenLayers.LonLat(17, 2), 2);
-
-            return map;
-        }
     </script>
     
     <style type="text/css">
-        @import "../../cwbase/dijit/themes/tundra/tundra.css";
-/*        @import "../../cwbase/dijit/themes/dijit.css"; */
         @import "../../base.css";
 
         #right {
-          position: absolute;
-          left: 680px;
+            float:right;
+            width:28%;
         }
         
-        /* ColorPalette buttons */
-        #choroplethWidget .dijitButtonNode {padding: 0px;}
-        
-        #choroplethWidget .dijitDropDownButton {margin: 0 5px;}
+        #olmap {
+            width: 65%;
+            height: 400px;
+            border: 1px solid black;
+        }
     </style>
   </head>
   <body class="tundra">
-    <div id="header"><a href="../../"><img id="header-logo" src="../../mapfish.png"/></a></div>
+    <div id="header"><a href="../../"><img id="header-logo" src="http://bluecarto.free.fr/clownfish/logo_v9_sphere.png"/></a></div>
     <h1 class="page-title">Choropleths Example</h1>
 
     <div id="content">
       <div id="right">
-        <div id="geoStat" dojoType="mapfish.widgets.GeoStat.Choropleth"
-             idAttribute="country"
-             indicators="['birth_rt', 'death_rt', 'fertility']" 
-             geoStatUrl="../../countries"></div>
-     </div>
-     <div dojoType="mapfish.widgets.Map" createMap="worldFactbkCreateMap"></div>
-     </div>
+        <div id="myChoroplethDiv"></div>
+      </div>
+      <div id="olmap"></div>
+    </div>
   </body>
 </html>
