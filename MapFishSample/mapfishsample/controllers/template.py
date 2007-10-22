@@ -1,4 +1,4 @@
-from cartowebsample.lib.base import *
+from mapfishsample.lib.base import *
 
 class TemplateController(BaseController):
 

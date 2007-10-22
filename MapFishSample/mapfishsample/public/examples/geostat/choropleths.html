@@ -15,8 +15,8 @@
     <script type="text/javascript" src="../../cwbase/dijit/dijit.js"></script>
 
     <script type="text/javascript">
-        dojo.require("cartoweb.widgets.Map");
-        dojo.require("cartoweb.widgets.GeoStat.Choropleth");
+        dojo.require("mapfish.widgets.Map");
+        dojo.require("mapfish.widgets.GeoStat.Choropleth");
       
         function worldFactbkCreateMap(mapDiv){
             var map = new OpenLayers.Map(mapDiv);
@@ -49,17 +49,17 @@
     </style>
   </head>
   <body class="tundra">
-    <div id="header"><a href="../../"><img id="header-logo" src="../../cartoweb.png"/></a></div>
+    <div id="header"><a href="../../"><img id="header-logo" src="../../mapfish.png"/></a></div>
     <h1 class="page-title">Choropleths Example</h1>
 
     <div id="content">
       <div id="right">
-        <div id="geoStat" dojoType="cartoweb.widgets.GeoStat.Choropleth"
+        <div id="geoStat" dojoType="mapfish.widgets.GeoStat.Choropleth"
              idAttribute="country"
              indicators="['birth_rt', 'death_rt', 'fertility']" 
              geoStatUrl="../../countries"></div>
      </div>
-     <div dojoType="cartoweb.widgets.Map" createMap="worldFactbkCreateMap"></div>
+     <div dojoType="mapfish.widgets.Map" createMap="worldFactbkCreateMap"></div>
      </div>
   </body>
 </html>

@@ -15,8 +15,8 @@
     <script type="text/javascript" src="../../cwbase/dijit/dijit.js"></script>
 
     <script type="text/javascript"><!--
-        dojo.require("cartoweb.widgets.Map");
-        dojo.require("cartoweb.widgets.tree.TreeContainer");
+        dojo.require("mapfish.widgets.Map");
+        dojo.require("mapfish.widgets.tree.TreeContainer");
         
         dojo.addOnLoad(function () {
 
@@ -29,7 +29,7 @@
                 console.log("new model", message.tree.model);
                 
                 var checkedNodes = "Checked nodes: ";
-                cartoweb.widgets.tree.TreeUtils.visit(
+                mapfish.widgets.tree.TreeUtils.visit(
                     message.tree.model, function(node) {
                         console.log("Item", node);
                         if (node.checked)
@@ -100,7 +100,7 @@
      --></script>
      <style type="text/css">
           @import "../../cwbase/dijit/themes/tundra/tundra.css";
-          @import "../../cwbase/cartoweb/widgets/tree/Tree.css";
+          @import "../../cwbase/mapfish/widgets/tree/Tree.css";
      
           #treeContainer {
             border: 1px solid #ccc;
@@ -117,7 +117,7 @@
 
   <body class="tundra">
     <div id="treeContainer">
-      <div id="treeDiv" dojoType="cartoweb.widgets.tree.TreeContainer"></div>
+      <div id="treeDiv" dojoType="mapfish.widgets.tree.TreeContainer"></div>
     </div>
 
     <div>

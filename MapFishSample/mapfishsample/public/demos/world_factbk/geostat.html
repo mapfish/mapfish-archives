@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>CartoWeb 4 GeoStat demo</title>
-    <script type="text/javascript" src="../../cwbase/release/cartoweb/openlayers/OpenLayers.js"></script>
+    <title>MapFish GeoStat demo</title>
+    <script type="text/javascript" src="../../cwbase/release/mapfish/openlayers/OpenLayers.js"></script>
     <script>
       // There's a bug in Firefox 2.0 (and less?) which will prevent dojo from
       // loading parameters from the script element, and guessing the baseUrl
@@ -11,15 +11,15 @@
                       parseOnLoad: true};
     </script>
  
-    <script type="text/javascript" src="../../cwbase/release/cartoweb/dojo/dojo.js"></script>
-    <script type="text/javascript" src="../../cwbase/release/cartoweb/dijit/dijit.js"></script>
-    <script type="text/javascript" src="../../cwbase/release/cartoweb/cartoweb/cartoweb.js"></script>
+    <script type="text/javascript" src="../../cwbase/release/mapfish/dojo/dojo.js"></script>
+    <script type="text/javascript" src="../../cwbase/release/mapfish/dijit/dijit.js"></script>
+    <script type="text/javascript" src="../../cwbase/release/mapfish/mapfish/mapfish.js"></script>
 
     <script type="text/javascript">
-        dojo.require("cartoweb.widgets.Map");
-        dojo.require("cartoweb.widgets.GeoStat.Choropleth");
-        dojo.require("cartoweb.widgets.GeoStat.ProportionalSymbol");
-        dojo.require("cartoweb.widgets.tree.TreeContainer");
+        dojo.require("mapfish.widgets.Map");
+        dojo.require("mapfish.widgets.GeoStat.Choropleth");
+        dojo.require("mapfish.widgets.GeoStat.ProportionalSymbol");
+        dojo.require("mapfish.widgets.tree.TreeContainer");
         dojo.require("dijit.TitlePane");
       
         function worldFactbkCreateMap(mapDiv){
@@ -57,28 +57,28 @@
     </style>
   </head>
   <body class="tundra">
-    <div id="header"><a href="../"><img id="header-logo" src="../../cartoweb.png"/></a></div>
-    <h1 class="page-title">CartoWeb 4 GeoStat demo</h1>
+    <div id="header"><a href="../"><img id="header-logo" src="../../mapfish.png"/></a></div>
+    <h1 class="page-title">MapFish GeoStat demo</h1>
 
     <div id="content">
       <div id="right">
         <div dojoType="dijit.TitlePane" title="Layers tree" style="width: 260px">
-          <div dojoType="cartoweb.widgets.tree.TreeContainer"></div>
+          <div dojoType="mapfish.widgets.tree.TreeContainer"></div>
         </div>
 
         <div dojoType="dijit.TitlePane" title="Choropleth" open="false" style="width: 260px">
-          <div dojoType="cartoweb.widgets.GeoStat.Choropleth"
+          <div dojoType="mapfish.widgets.GeoStat.Choropleth"
                idAttribute="country"
                indicators="['birth_rt', 'death_rt', 'fertility']" 
                geoStatUrl="../../countries"></div>
         </div>
         <div dojoType="dijit.TitlePane" title="Proportional Symbol" open="false" style="width: 260px">
-          <div id="geoStat" dojoType="cartoweb.widgets.GeoStat.ProportionalSymbol"
+          <div id="geoStat" dojoType="mapfish.widgets.GeoStat.ProportionalSymbol"
                idAttribute="name" indicators="['population']"
                geoStatUrl="../../cities"></div>
         </div>
       </div>
-      <div dojoType="cartoweb.widgets.Map" createMap="worldFactbkCreateMap"></div>
+      <div dojoType="mapfish.widgets.Map" createMap="worldFactbkCreateMap"></div>
     </div>
 
   </body>

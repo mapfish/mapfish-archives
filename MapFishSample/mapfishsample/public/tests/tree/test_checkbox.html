@@ -14,8 +14,8 @@
     <script type="text/javascript" src="../../cwbase/dijit/dijit.js"></script>
     
     <script type="text/javascript"><!--
-        dojo.require("cartoweb.widgets.Map");
-        dojo.require("cartoweb.widgets.tree.TreeContainer");
+        dojo.require("mapfish.widgets.Map");
+        dojo.require("mapfish.widgets.tree.TreeContainer");
 
         dojo.addOnLoad(function () {
 
@@ -90,7 +90,7 @@
                     });
                     t.ok(allOk, "All dom checkboxes are in the right state, for wid " + nodeWid);
                     
-                    var descendantsAndSelf = cartoweb.widgets.tree.TreeUtils.descendantsAndSelf(nodeItem);
+                    var descendantsAndSelf = mapfish.widgets.tree.TreeUtils.descendantsAndSelf(nodeItem);
                     var allOk = dojo.every(descendantsAndSelf, function(item) {
                         return item.checked == checked;
                     }); 
@@ -99,7 +99,7 @@
             
                 var tree = dijit.byId("treeDiv").tree;
                 t.debug_print(tree);
-                var label1Wid = "cartoweb_widgets_tree__TreeNode_0";
+                var label1Wid = "mapfish_widgets_tree__TreeNode_0";
                 var label1Item = tree.model.children[0];
                 
                 checkDescendants(label1Wid, label1Item, true);
@@ -122,7 +122,7 @@
      --></script>
      <style type="text/css">
           @import "../../cwbase/dijit/themes/tundra/tundra.css";
-          @import "../../cwbase/cartoweb/widgets/tree/Tree.css";
+          @import "../../cwbase/mapfish/widgets/tree/Tree.css";
      
           #treeContainer {
             border: 1px solid #ccc;
@@ -133,7 +133,7 @@
 
   <body class="tundra">
     <div id="treeContainer">
-      <div id="treeDiv" dojoType="cartoweb.widgets.tree.TreeContainer"></div>
+      <div id="treeDiv" dojoType="mapfish.widgets.tree.TreeContainer"></div>
     </div>
   </body>
 </html>

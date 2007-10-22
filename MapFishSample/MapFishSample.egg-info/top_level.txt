@@ -1,1 +1,1 @@
-cartowebsample
+mapfishsample

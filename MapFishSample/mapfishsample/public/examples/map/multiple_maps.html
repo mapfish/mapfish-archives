@@ -15,8 +15,8 @@
     <script type="text/javascript" src="../../cwbase/dijit/dijit.js"></script>
 
     <script type="text/javascript">
-      dojo.require("cartoweb.widgets.Map");
-      dojo.require("cartoweb.widgets.tree.TreeContainer");
+      dojo.require("mapfish.widgets.Map");
+      dojo.require("mapfish.widgets.tree.TreeContainer");
 
       function myCreateMap(e) {
             var map = new OpenLayers.Map(e);
@@ -51,10 +51,10 @@
   </head>
 
   <body>
-    <div id="firstMap" dojoType="cartoweb.widgets.Map"></div>
-    <div mapId="firstMap" dojoType="cartoweb.widgets.tree.TreeContainer"></div>
+    <div id="firstMap" dojoType="mapfish.widgets.Map"></div>
+    <div mapId="firstMap" dojoType="mapfish.widgets.tree.TreeContainer"></div>
 
-    <div id="secondMap" dojoType="cartoweb.widgets.Map" createMap="myCreateMap"></div>
-    <div mapId="secondMap" dojoType="cartoweb.widgets.tree.TreeContainer"></div>
+    <div id="secondMap" dojoType="mapfish.widgets.Map" createMap="myCreateMap"></div>
+    <div mapId="secondMap" dojoType="mapfish.widgets.tree.TreeContainer"></div>
   </body>
 </html>

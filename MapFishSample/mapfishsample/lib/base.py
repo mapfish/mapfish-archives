@@ -10,8 +10,8 @@ from pylons.controllers.util import abort, etag_cache, redirect_to
 from pylons.i18n import _, ungettext, N_
 from pylons.templating import render
 
-import cartowebsample.lib.helpers as h
-import cartowebsample.model as model
+import mapfishsample.lib.helpers as h
+import mapfishsample.model as model
 
 class BaseController(WSGIController):
 

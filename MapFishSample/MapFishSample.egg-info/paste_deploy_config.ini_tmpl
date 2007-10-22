@@ -1,5 +1,5 @@
 #
-# CartoWebSample - Pylons configuration
+# MapFishSample - Pylons configuration
 #
 # The %(here)s variable will be replaced with the parent directory of this file
 #
@@ -15,10 +15,10 @@ host = 0.0.0.0
 port = 5000
 
 [app:main]
-use = egg:CartoWebSample
+use = egg:MapFishSample
 full_stack = true
 cache_dir = %(here)s/data
-beaker.session.key = cartowebsample
+beaker.session.key = mapfishsample
 beaker.session.secret = ${app_instance_secret}
 app_instance_uuid = ${app_instance_uuid}
 

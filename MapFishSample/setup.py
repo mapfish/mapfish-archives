@@ -6,7 +6,7 @@ except ImportError:
     from setuptools import setup, find_packages
 
 setup(
-    name='CartoWebSample',
+    name='MapFishSample',
     version="",
     #description="",
     #author="",
@@ -16,10 +16,10 @@ setup(
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
     test_suite='nose.collector',
-    package_data={'cartowebsample': ['i18n/*/LC_MESSAGES/*.mo']},
+    package_data={'mapfishsample': ['i18n/*/LC_MESSAGES/*.mo']},
     entry_points="""
     [paste.app_factory]
-    main = cartowebsample.config.middleware:make_app
+    main = mapfishsample.config.middleware:make_app
 
     [paste.app_install]
     main = pylons.util:PylonsInstaller

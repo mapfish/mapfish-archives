@@ -15,9 +15,9 @@
     <script type="text/javascript" src="../../lib/Jugl.js"></script>
 
     <script type="text/javascript">
-        dojo.require("cartoweb.widgets.Map");
-        dojo.require("cartoweb.widgets.SearchXY");
-        dojo.require("cartoweb.widgets.SearchExtent");
+        dojo.require("mapfish.widgets.Map");
+        dojo.require("mapfish.widgets.SearchXY");
+        dojo.require("mapfish.widgets.SearchExtent");
 
         // get app-specific widget
         dojo.registerModulePath("search", "../../examples/search");
@@ -154,7 +154,7 @@
 
   <!--<body class="tundra">-->
   <body>
-    <div id="header"><a href="../../"><img id="header-logo" src="../../cartoweb.png"/></a></div>
+    <div id="header"><a href="../../"><img id="header-logo" src="../../mapfish.png"/></a></div>
     <h1 class="page-title">search example</h1>
     <div id="content">
       <!-- Search template -->
@@ -171,7 +171,7 @@
       </div>
       <!-- Map widget -->
       <div class="left">
-        <div id="map" createMap="c2corgCreateMap" dojoType="cartoweb.widgets.Map"></div>
+        <div id="map" createMap="c2corgCreateMap" dojoType="mapfish.widgets.Map"></div>
       </div>
       <div class="left" style="margin-left:20px">
         <!-- Clear features link -->
@@ -183,12 +183,12 @@
              searchUrl="../../c2corg"
              radius="10000"
              maxFeatures="10"
-             dojoType="cartoweb.widgets.SearchXY">
+             dojoType="mapfish.widgets.SearchXY">
         </div>
         <div id="searchExtent"
              searchUrl="../../c2corg"
              maxFeatures="50"
-             dojoType="cartoweb.widgets.SearchExtent"
+             dojoType="mapfish.widgets.SearchExtent"
              onGotFeatures="onGotFeatures">
         </div>
         <div id="c2corgSearchCoupled"

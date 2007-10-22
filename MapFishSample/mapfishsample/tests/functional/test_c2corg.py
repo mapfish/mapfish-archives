@@ -1,4 +1,4 @@
-from cartowebsample.tests import *
+from mapfishsample.tests import *
 
 class TestC2CorgController(TestController):
 

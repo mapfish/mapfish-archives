@@ -38,7 +38,7 @@ function test_examples_tree(t) {
                 wnd.dijit.registry.forEach(function(widget) {
                     // Can't use instanceof here, as IE has troubles 
                     //  with instanceof when objects are from external frames
-                    if (widget.declaredClass == "cartoweb.widgets.Map")
+                    if (widget.declaredClass == "mapfish.widgets.Map")
                         maps.push(widget.map);
                 });
     

@@ -1,2 +1,2 @@
-recursive-include cartowebsample/public *
-recursive-include cartowebsample/templates *
+recursive-include mapfishsample/public *
+recursive-include mapfishsample/templates *

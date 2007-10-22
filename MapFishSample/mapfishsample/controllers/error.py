@@ -3,7 +3,7 @@ import os.path
 import paste.fileapp
 from pylons.middleware import error_document_template, media_path
 
-from cartowebsample.lib.base import *
+from mapfishsample.lib.base import *
 
 class ErrorController(BaseController):
     """Generates error documents as and when they are required.

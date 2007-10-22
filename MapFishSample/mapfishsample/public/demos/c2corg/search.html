@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>CartoWeb 4 Search demo</title>
-    <script type="text/javascript" src="../../cwbase/release/cartoweb/openlayers/OpenLayers.js"></script>
+    <title>MapFish Search demo</title>
+    <script type="text/javascript" src="../../cwbase/release/mapfish/openlayers/OpenLayers.js"></script>
     <script>
       // There's a bug in Firefox 2.0 (and less?) which will prevent dojo from
       // loading parameters from the script element, and guessing the baseUrl
@@ -11,16 +11,16 @@
                       parseOnLoad: true};
     </script>
     
-    <script type="text/javascript" src="../../cwbase/release/cartoweb/dojo/dojo.js"></script>
-    <script type="text/javascript" src="../../cwbase/release/cartoweb/dijit/dijit.js"></script>
-    <script type="text/javascript" src="../../cwbase/release/cartoweb/cartoweb/cartoweb.js"></script>
+    <script type="text/javascript" src="../../cwbase/release/mapfish/dojo/dojo.js"></script>
+    <script type="text/javascript" src="../../cwbase/release/mapfish/dijit/dijit.js"></script>
+    <script type="text/javascript" src="../../cwbase/release/mapfish/mapfish/mapfish.js"></script>
     <script type="text/javascript" src="../../lib/Jugl.js"></script>
 
     <script type="text/javascript">
-        dojo.require("cartoweb.widgets.Map");
-        dojo.require("cartoweb.widgets.SearchXY");
-        dojo.require("cartoweb.widgets.SearchExtent");
-        dojo.require("cartoweb.widgets.tree.TreeContainer");
+        dojo.require("mapfish.widgets.Map");
+        dojo.require("mapfish.widgets.SearchXY");
+        dojo.require("mapfish.widgets.SearchExtent");
+        dojo.require("mapfish.widgets.tree.TreeContainer");
         dojo.require("dijit.TitlePane");
 
         // get app-specific widget
@@ -133,18 +133,18 @@
     </style>
   </head>
   <body class="tundra">
-    <div id="header"><a href="../"><img id="header-logo" src="../../cartoweb.png"/></a></div>
-    <h1 class="page-title">CartoWeb 4 Search demo</h1>
+    <div id="header"><a href="../"><img id="header-logo" src="../../mapfish.png"/></a></div>
+    <h1 class="page-title">MapFish Search demo</h1>
     <div id="content">
       <!-- Map -->
       <div class="float-left">
-        <div dojoType="cartoweb.widgets.Map" createMap="c2corgCreateMap"></div>
+        <div dojoType="mapfish.widgets.Map" createMap="c2corgCreateMap"></div>
       </div>
       <!-- Widgets -->
       <div class="float-left">
         <!-- Layer widget -->
         <div dojoType="dijit.TitlePane" title="Layers tree" style="width:260px;margin-left:20px;">
-          <div dojoType="cartoweb.widgets.tree.TreeContainer"></div>
+          <div dojoType="mapfish.widgets.tree.TreeContainer"></div>
         </div>
         <!-- Search widgets -->
         <div dojoType="dijit.TitlePane" title="Search" open="false" style="width:260px;margin-left:20px">
@@ -152,12 +152,12 @@
                searchUrl="../../c2corg"
                radius="10000"
                maxFeatures="10"
-               dojoType="cartoweb.widgets.SearchXY">
+               dojoType="mapfish.widgets.SearchXY">
           </div>
           <div id="searchExtent"
                searchUrl="../../c2corg"
                maxFeatures="50"
-               dojoType="cartoweb.widgets.SearchExtent"
+               dojoType="mapfish.widgets.SearchExtent"
                onGotFeatures="onGotFeatures">
            </div>
            <div id="c2corgSearchCoupled"

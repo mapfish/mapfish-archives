@@ -10,7 +10,7 @@ from pylons.middleware import error_mapper, ErrorDocuments, ErrorHandler, \
     StaticJavascripts
 from pylons.wsgiapp import PylonsApp
 
-from cartowebsample.config.environment import load_environment
+from mapfishsample.config.environment import load_environment
 
 def make_app(global_conf, full_stack=True, **app_conf):
     """Create a Pylons WSGI application and return it

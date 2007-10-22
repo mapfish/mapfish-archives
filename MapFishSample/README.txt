@@ -1,16 +1,16 @@
-This file is for you to describe the CartoWebSample application. Typically
+This file is for you to describe the MapFishSample application. Typically
 you would include information such as the information below:
 
 Installation and Setup
 ======================
 
-Install ``CartoWebSample`` using easy_install::
+Install ``MapFishSample`` using easy_install::
 
-    easy_install CartoWebSample
+    easy_install MapFishSample
 
 Make a config file as follows::
 
-    paster make-config CartoWebSample config.ini
+    paster make-config MapFishSample config.ini
 
 Tweak the config file as appropriate and then setup the application::
 

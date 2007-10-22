@@ -1,6 +1,6 @@
 
     [paste.app_factory]
-    main = cartowebsample.config.middleware:make_app
+    main = mapfishsample.config.middleware:make_app
 
     [paste.app_install]
     main = pylons.util:PylonsInstaller

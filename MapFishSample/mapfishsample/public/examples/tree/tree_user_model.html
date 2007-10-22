@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="../../xxbase/ext/resources/css/ext-all.css" />
+    <link rel="stylesheet" type="text/css" href="../../mfbase/ext/resources/css/ext-all.css" />
 
     <script type="text/javascript" src="../../cwbase/openlayers/lib/Firebug/firebug.js"></script>
     <script type="text/javascript" src="../../cwbase/openlayers/lib/OpenLayers.js"></script>
 
-    <script type="text/javascript" src="../../xxbase/ext/adapter/ext/ext-base.js"></script>
-    <script type="text/javascript" src="../../xxbase/ext/ext-all-debug.js"></script>
+    <script type="text/javascript" src="../../mfbase/ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../mfbase/ext/ext-all-debug.js"></script>
 
-    <script type="text/javascript" src="../../xxbase/cartoweb/widgets/tree/LayerTree.js"></script>
+    <script type="text/javascript" src="../../mfbase/mapfish/widgets/tree/LayerTree.js"></script>
     <script type="text/javascript" src="c2corgCreateMap.js"></script>
 
     <script type="text/javascript"><!--
@@ -64,7 +64,7 @@
                     }
                 ];
 
-        var tree = new cartoweb.tree.LayerTree(map, {
+        var tree = new mapfish.tree.LayerTree(map, {
                             el: 'tree',
                             model: model
         });

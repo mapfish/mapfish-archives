@@ -4,9 +4,9 @@ import os
 from pylons import config
 from sqlalchemy import engine_from_config
 
-import cartowebsample.lib.app_globals as app_globals
-import cartowebsample.lib.helpers
-from cartowebsample.config.routing import make_map
+import mapfishsample.lib.app_globals as app_globals
+import mapfishsample.lib.helpers
+from mapfishsample.config.routing import make_map
 
 def load_environment(global_conf, app_conf):
     """Configure the Pylons environment via the ``pylons.config`` object"""
@@ -18,11 +18,11 @@ def load_environment(global_conf, app_conf):
                  templates=[os.path.join(root, 'templates')])
 
     # Initialize config with the basic options
-    config.init_app(global_conf, app_conf, package='cartowebsample',
+    config.init_app(global_conf, app_conf, package='mapfishsample',
                     template_engine='mako', paths=paths)
 
     config['pylons.g'] = app_globals.Globals()
-    config['pylons.h'] = cartowebsample.lib.helpers
+    config['pylons.h'] = mapfishsample.lib.helpers
     config['routes.map'] = make_map()
 
     # Customize templating options via this variable
