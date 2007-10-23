@@ -56,7 +56,8 @@
                     ['AS', 'Asia', new OpenLayers.Bounds(15.59375, -21.90625, 173.796875, 83.5625)]]
         });
     
-        var shortcuts = new mapfish.widgets.Shortcuts(map, {
+        var shortcuts = new mapfish.widgets.Shortcuts({
+            map: map,
             el: 'myDiv',
             store: store,
             templates: {

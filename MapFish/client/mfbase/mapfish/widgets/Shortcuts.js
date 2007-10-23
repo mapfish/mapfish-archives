@@ -41,16 +41,14 @@ var shortcuts = new mapfish.widgets.Shortcuts({
 // FIXME mapfish.widgets should have already been defined
 Ext.namespace('mapfish.widgets');
 
-mapfish.widgets.Shortcuts = function(map, config){
+mapfish.widgets.Shortcuts = function(config){
     Ext.apply(this, config);
-    this.map = map;
     mapfish.widgets.Shortcuts.superclass.constructor.call(this);
 }
 
 Ext.extend(mapfish.widgets.Shortcuts, Ext.Container, {
 
     initComponent : function() {
-        console.log(this.map);
         var combo = new Ext.form.ComboBox({
                 name: 'shortcuts',
                 hiddenName: '',
