@@ -1,0 +1,109 @@
+<html>
+<head>
+  <title>Map in a Complex Layout</title>
+    <link rel="stylesheet" type="text/css" href="../../mfbase/ext/resources/css/ext-all.css" />
+
+    <script type="text/javascript" src="../../mfbase/openlayers/lib/Firebug/firebug.js"></script>
+    <script type="text/javascript" src="../../mfbase/openlayers/lib/OpenLayers.js"></script>
+
+    <script type="text/javascript" src="../../mfbase/ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../mfbase/ext/ext-all-debug.js"></script>
+
+    <script type="text/javascript" src="../../mfbase/mapfish/widgets/MapComponent.js"></script>
+    
+	<style type="text/css">
+	html, body {
+        font:normal 12px verdana;
+        margin:0;
+        padding:0;
+        border:0 none;
+        overflow:hidden;
+        height:100%;
+    }
+    </style>
+	<script type="text/javascript">
+  
+    // reference local blank image
+    Ext.BLANK_IMAGE_URL = '../../mfbase/ext/resources/images/default/s.gif';
+  
+    Ext.onReady(function(){
+        
+        var map = new OpenLayers.Map($('center'));
+
+        var wms = new OpenLayers.Layer.WMS("OpenLayers WMS", 
+            "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}, {buffer: 0});
+
+        map.addLayers([wms]);
+        map.addControl(new OpenLayers.Control.LayerSwitcher());
+        map.setCenter(new OpenLayers.LonLat(17, 2), 2);
+
+        
+        var mapcomponent = new mapfish.widgets.MapComponent({map: map});
+       
+        var viewport = new Ext.Viewport({
+            layout:'border',
+            items:[
+                new Ext.BoxComponent({ // raw
+                    region:'north',
+                    el: 'north',
+                    height:32
+                }),{
+                    region:'south',
+                    contentEl: 'south',
+                    split:true,
+                    height: 100,
+                    minSize: 100,
+                    maxSize: 200,
+                    collapsible: true,
+                    title:'South',
+                    margins:'0 0 0 0'
+                },{
+                    region:'west',
+                    id:'west-panel',
+                    title:'West',
+                    split:true,
+                    width: 200,
+                    minSize: 175,
+                    maxSize: 400,
+                    collapsible: true,
+                    margins:'0 0 0 5',
+                    layout:'accordion',
+                    layoutConfig:{
+                        animate:true
+                    },
+                    items: [{
+                        contentEl: 'west',
+                        title:'Navigation',
+                        border:false,
+                        iconCls:'nav'
+                    },{
+                        title:'Settings',
+                        html:'<p>Some settings in here.</p>',
+                        border:false,
+                        iconCls:'settings'
+                    }]
+                },{
+                    region:'center',
+                    title: 'Map',
+                    items: mapcomponent
+                }
+             ]
+        });
+    });
+	</script>
+</head>
+<body>
+  <div id="west">
+    <p>Hi. I'm the west panel.</p>
+  </div>
+  <div id="north">
+    <p>MapFish</p>
+  </div>
+  <div id="center">
+  </div>
+  <div id="south">
+    <p>south - generally for informational stuff, also could be for status bar</p>
+  </div>
+
+ </body>
+</html>
