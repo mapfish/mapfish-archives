@@ -48,7 +48,8 @@
         map.addControl(new OpenLayers.Control.LayerSwitcher());
         map.setCenter(new OpenLayers.LonLat(17, 2), 2);
         
-        var choropleth = new mapfish.widgets.geostat.Choropleth(map, {
+        var choropleth = new mapfish.widgets.geostat.Choropleth({
+                                map: map,
                                 idAttribute: "country",
                                 indicators: [['birth_rt', 'Birth Rate'],
                                              ['death_rt', 'Death Rate'],

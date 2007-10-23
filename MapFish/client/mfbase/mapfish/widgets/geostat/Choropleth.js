@@ -22,9 +22,8 @@ Ext.namespace('mapfish.widgets');
 
 Ext.namespace('mapfish.widgets.geostat');
 
-mapfish.widgets.geostat.Choropleth = function(map, config) {
+mapfish.widgets.geostat.Choropleth = function(config) {
     Ext.apply(this, config);
-    this.map = map;
     mapfish.widgets.geostat.Choropleth.superclass.constructor.call(this);
     OpenLayers.loadURL(this.geoStatUrl, "", this, this.parseData);
 }
@@ -237,3 +236,4 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.Container, {
         this.choropleth.updateFeatures();
     }
 });
+Ext.reg('choropleth', mapfish.widgets.geostat.Choropleth);

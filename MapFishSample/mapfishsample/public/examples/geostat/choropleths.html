@@ -44,7 +44,8 @@
       Ext.onReady(function() {
         var map = createMap("map");
         
-        var choropleth = new mapfish.widgets.geostat.Choropleth(map, {
+        var choropleth = new mapfish.widgets.geostat.Choropleth({
+                                map: map,
                                 el: "myChoroplethDiv",
                                 idAttribute: "country",
                                 indicators: [['birth_rt', 'Birth Rate'],
