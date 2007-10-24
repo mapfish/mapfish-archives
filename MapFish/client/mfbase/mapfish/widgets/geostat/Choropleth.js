@@ -17,7 +17,6 @@
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// FIXME mapfish.widgets should have already been defined
 Ext.namespace('mapfish.widgets');
 
 Ext.namespace('mapfish.widgets.geostat');
