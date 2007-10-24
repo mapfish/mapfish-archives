@@ -17,6 +17,12 @@
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @requires OpenLayers/Map.js
+ * @requires OpenLayers/Layer/WMS.js
+ * @requires OpenLayers/Layer/WMS/Untiled.js
+ */
+
 Ext.namespace('mapfish.tree');
 
 mapfish.tree.LayerTree = function(map, config) {

@@ -28,6 +28,12 @@
  *
  */
 
+/**
+ * @requires OpenLayers/Layer/Vector.js
+ * @requires OpenLayers/Popup/AnchoredBubble.js
+ * @requires OpenLayers/Feature/Vector.js
+ */
+
 mapfish.GeoStat = OpenLayers.Class({
     
     /**

@@ -38,6 +38,11 @@ var shortcuts = new mapfish.widgets.Shortcuts({
  * @param {Object} map the OpenLayers map object
  * @param {Object} config The config object
  */
+
+/**
+ * @requires OpenLayers/Map.js
+ */
+
 Ext.namespace('mapfish.widgets');
 
 mapfish.widgets.Shortcuts = function(config){

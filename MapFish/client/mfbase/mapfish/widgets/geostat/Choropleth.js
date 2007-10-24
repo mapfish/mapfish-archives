@@ -17,6 +17,12 @@
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @requires OpenLayers/Format/GeoJSON.js
+ * @requires core/GeoStat.js
+ * @requires core/Color.js
+ */
+
 Ext.namespace('mapfish.widgets');
 
 Ext.namespace('mapfish.widgets.geostat');
