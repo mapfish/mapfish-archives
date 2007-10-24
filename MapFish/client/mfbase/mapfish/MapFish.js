@@ -17,6 +17,14 @@
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * This code is taken from the OpenLayers code base.
+ *
+ * Copyright (c) 2006-2007 MetaCarta, Inc., published under the Clear BSD
+ * license.  See http://svn.openlayers.org/trunk/openlayers/license.txt for the
+ * full text of the license.
+ */
+
 (function() {
     /**
      * Before creating the mapfish namespace, check to see if
