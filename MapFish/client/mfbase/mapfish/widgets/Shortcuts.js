@@ -38,7 +38,6 @@ var shortcuts = new mapfish.widgets.Shortcuts({
  * @param {Object} map the OpenLayers map object
  * @param {Object} config The config object
  */
-// FIXME mapfish.widgets should have already been defined
 Ext.namespace('mapfish.widgets');
 
 mapfish.widgets.Shortcuts = function(config){
