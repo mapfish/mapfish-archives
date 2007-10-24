@@ -418,10 +418,6 @@ mapfish.GeoStat.Choropleth = OpenLayers.Class(mapfish.GeoStat, {
     updateFeatures: function () {
         var boundsArray = this.classification.getBoundsArray();
         
-        if (this.colors.length != this.classification.bins.length) {
-            OpenLayers.Console.error("Given number of colors doesn't match");
-        };
-        
         for (var i = 0; i < this.layer.features.length; i++) {
             var feature = this.layer.features[i];
             var value = feature.attributes[this.indicator];
