@@ -17,17 +17,19 @@
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-mapfish.Util = {};
+(function() {
+    /**
+     * Before creating the mapfish namespace, check to see if
+     * mapfish.singleFile is true. This occurs if the
+     * SingleFile.js script is included before this one - as is the
+     * case with single file builds.
+     */
+    var singleFile = (typeof mapfish == "object" && mapfish.singleFile);
 
-mapfish.Util.sum = function(array) {
-    for (var i=0, sum=0; i < array.length; sum += array[i++]);
-    return sum;
-}
-
-mapfish.Util.max = function(array) {
-    return Math.max.apply({}, array);
-}
-
-mapfish.Util.min = function(array) {
-    return Math.min.apply({}, array);
-}
+    /**
+     * Namespace: mapfish
+     * The mapfish object provides a namespace for all things 
+     */
+    window.mapfish = {
+    };
+})();

@@ -17,17 +17,6 @@
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-mapfish.Util = {};
-
-mapfish.Util.sum = function(array) {
-    for (var i=0, sum=0; i < array.length; sum += array[i++]);
-    return sum;
-}
-
-mapfish.Util.max = function(array) {
-    return Math.max.apply({}, array);
-}
-
-mapfish.Util.min = function(array) {
-    return Math.min.apply({}, array);
-}
+var mapfish = {
+    singleFile: true
+};
