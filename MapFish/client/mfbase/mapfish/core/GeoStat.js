@@ -384,8 +384,8 @@ mapfish.GeoStat.Choropleth = OpenLayers.Class(mapfish.GeoStat, {
         var select = new OpenLayers.Control.SelectFeature(this.layer, {
             hover: true,
             callbacks: {
-               over: this.showDetails.bind(this),
-               out: this.hideDetails.bind(this)
+               over: OpenLayers.Function.bind(this.showDetails, this),
+               out: OpenLayers.Function.bind(this.hideDetails, this)
             }
         });
         this.map.addControl(select);
