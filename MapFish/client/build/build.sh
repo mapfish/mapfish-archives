@@ -18,15 +18,13 @@
 # along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# MapFish path
-MAPFISHPATH=/path/to/MapFish
-
 
 #
 # Variables
 #
 
-buildpath="${MAPFISHPATH}/client/build"
+buildpath="$(cd $(dirname $0); pwd)"
+releasepath="${buildpath}/../mfbase/release"
 
 
 #
@@ -41,8 +39,6 @@ sh="/bin/sh"
 #
 # MapFish.js build
 #
-
-releasepath="${MAPFISHPATH}/client/mfbase/release"
 
 ${mkdir} ${releasepath}
 (cd ${buildpath} && ${python} build.py mapfish-widgets.cfg  ${releasepath}/MapFish.js)
