@@ -1,4 +1,4 @@
-#!/bin/sh
+#!bin/sh
 # 
 # Copyright (C) 2007  Camptocamp
 #  
@@ -18,44 +18,41 @@
 # along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# FIXME: we shouldn't use cd or relative paths everywhere here, that makes things hard to understand and debug
-
-set -e
-
-HERE=`pwd`
-
-# build dojo and friends
-cd ../cwbase/util/buildscripts/
-sh build.sh profileFile=$HERE/mapfish.profile.js action=release releaseName=mapfish copyTests=false
-cd $HERE
+# MapFish path
+MAPFISHPATH=/home/elemoine/workspace/MapFish
 
 
-rm -fr ../mfbase/release/mapfish/openlayers/*
+#
+# Variables
+#
 
-mkdir -p ../mfbase/release/mapfish/openlayers
-
-# patch openlayers
-svn revert -R ../mfbase/openlayers/  
-cd ../mfbase/openlayers/
-
-for file in `ls $HERE/openlayers_patches/`
-do 
-  patch -p 0 --forward < $HERE/openlayers_patches/$file
-done
-
-# build openlayers
-
-cd $HERE
-cd ../mfbase/openlayers/build/
-python build.py full
-mkdir -p $HERE/../mfbase/release/mapfish/openlayers/
-mv OpenLayers.js $HERE/../mfbase/release/mapfish/openlayers/
-
-rm -rf $HERE/../mfbase/release/mapfish/openlayers/img
-cp -r ../img $HERE/../mfbase/release/mapfish/openlayers/
-
-mkdir -p $HERE/../mfbase/release/mapfish/openlayers/theme/default/
-cp ../theme/default/style.css $HERE/../mfbase/release/mapfish/openlayers/theme/default/style.css
-cp -r ../theme/default/img $HERE/../mfbase/release/mapfish/openlayers/theme/default/
+buildpath="${MAPFISHPATH}/client/build"
 
 
+#
+# Command path definitions
+#
+
+python="/usr/bin/python"
+mkdir="/bin/mkdir"
+sh="/bin/sh"
+
+
+#
+# MapFish.js build
+#
+
+releasepath="${MAPFISHPATH}/client/mfbase/release"
+
+${mkdir} ${releasepath}
+${python} ${buildpath}/build.py ${buildpath}/mapfish-widgets.cfg ${releasepath}/MapFish.js
+
+
+#
+# Dojo build (old stuff, to be removed)
+#
+
+(cd ${buildpath} && ${sh} build-dojo.sh)
+
+
+exit 0
