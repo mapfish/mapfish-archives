@@ -34,8 +34,8 @@ h2 {
   margin: 0 40px;
 }
 
-#header-logo {
-  margin: 10px;
+#header a {
+  border: none;
 }
 
 .page-title {
