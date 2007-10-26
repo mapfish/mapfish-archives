@@ -19,7 +19,7 @@
 #
 
 # MapFish path
-MAPFISHPATH=/home/elemoine/workspace/MapFish
+MAPFISHPATH=/path/to/MapFish
 
 
 #
@@ -45,7 +45,7 @@ sh="/bin/sh"
 releasepath="${MAPFISHPATH}/client/mfbase/release"
 
 ${mkdir} ${releasepath}
-${python} ${buildpath}/build.py ${buildpath}/mapfish-widgets.cfg ${releasepath}/MapFish.js
+(cd ${buildpath} && ${python} build.py mapfish-widgets.cfg  ${releasepath}/MapFish.js)
 
 
 #
