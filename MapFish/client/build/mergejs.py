@@ -192,7 +192,7 @@ def run (configDict, outputFilename = None, configFile = None):
     ## TODO: Do import when we walk the directories above?
     for filepath in allFiles:
         print "Importing: %s" % filepath
-        filekey = filepath.replace("\\", "/").partition("/")[0]
+        filekey = filepath.replace("\\", "/").split("/")[0]
         fullpath = os.path.join(configDict[filekey], filepath)
         content = open(fullpath, "U").read() # TODO: Ensure end of line @ EOF?
         files[filepath] = SourceFile(filepath, content) # TODO: Chop path?
@@ -222,7 +222,7 @@ def run (configDict, outputFilename = None, configFile = None):
                 order.append(filepath)
                 if not files.has_key(filepath):
                     print "Importing: %s" % filepath
-                    filekey = filepath.replace("\\", "/").partition("/")[0]
+                    filekey = filepath.replace("\\", "/").split("/")[0]
                     fullpath = os.path.join(configDict[filekey], filepath)
                     content = open(fullpath, "U").read() # TODO: Ensure end of line @ EOF?
                     files[filepath] = SourceFile(filepath, content) # TODO: Chop path?
