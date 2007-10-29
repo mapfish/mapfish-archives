@@ -45,14 +45,14 @@ var shortcuts = new mapfish.widgets.Shortcuts({
 
 Ext.namespace('mapfish.widgets');
 
-mapfish.widgets.Shortcuts = function(config){
+mapfish.widgets.Shortcuts = function(config) {
     Ext.apply(this, config);
     mapfish.widgets.Shortcuts.superclass.constructor.call(this);
 }
 
 Ext.extend(mapfish.widgets.Shortcuts, Ext.Container, {
 
-    initComponent : function() {
+    initComponent: function() {
         var combo = new Ext.form.ComboBox({
                 name: 'shortcuts',
                 hiddenName: '',
@@ -74,9 +74,8 @@ Ext.extend(mapfish.widgets.Shortcuts, Ext.Container, {
     },
 
     // private
-    onRender : function(container, position) {
-    
-        if(!this.el){
+    onRender: function(container, position) {
+        if (!this.el) {
             this.el = document.createElement('div');
         }
         
@@ -85,22 +84,17 @@ Ext.extend(mapfish.widgets.Shortcuts, Ext.Container, {
         this.initTemplates();
         this.applyTemplates();
     },
-    
 
     // private
-    initTemplates : function(){
+    initTemplates: function() {
         var ts = this.templates || {};
         
-        if(!ts.header){
-            ts.header = new Ext.Template(
-                    'some text before'
-                    );
+        if (!ts.header) {
+            ts.header = new Ext.Template('some text before');
         }
         
-        if(!ts.footer){
-            ts.footer = new Ext.Template(
-                    'some text after'
-                    );
+        if (!ts.footer) {
+            ts.footer = new Ext.Template('some text after');
         }
 
         this.templates = ts;
@@ -113,6 +107,7 @@ Ext.extend(mapfish.widgets.Shortcuts, Ext.Container, {
             
             var el = document.createElement("div");
             template.overwrite(el);
+
             switch (i) {
                 case 'header':
                     template.insertBefore(this.el);

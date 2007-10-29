@@ -34,7 +34,7 @@
  */
 Ext.namespace('mapfish.widgets');
 
-mapfish.widgets.MapComponent = function(config){
+mapfish.widgets.MapComponent = function(config) {
     Ext.apply(this, config);
     mapfish.widgets.MapComponent.superclass.constructor.call(this);
 }
@@ -42,24 +42,23 @@ mapfish.widgets.MapComponent = function(config){
 Ext.extend(mapfish.widgets.MapComponent, Ext.BoxComponent, {
 
     // private
-    initComponent : function() {
+    initComponent: function() {
         mapfish.widgets.MapComponent.superclass.initComponent.call(this);
     },
 
     // private
-    onRender : function(container, position) {
-    
-        if(!this.el){
+    onRender: function(container, position) {
+        if (!this.el) {
             this.el = this.map.div;
         }
-        
+
         mapfish.widgets.MapComponent.superclass.onRender.apply(this, arguments);
-        
+
         // force map size update
         this.map.updateSize();
         this.ownerCt.on('resize', this.resizeMap, this);
     },
-    
+
     // private
     resizeMap: function(ct, width, height, originalWidth, originalHeight) {
         this.map.updateSize();
