@@ -64,7 +64,7 @@ Ext.extend(mapfish.widgets.Shortcuts, Ext.Container, {
                 triggerAction: 'all',
                 emptyText:'Select a value ...',
                 lazyRender: true,
-                width: 150,
+                width: 150
             })
         combo.on('select', this.recenter, this);
 
