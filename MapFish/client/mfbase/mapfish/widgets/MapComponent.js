@@ -62,6 +62,10 @@ Ext.extend(mapfish.widgets.MapComponent, Ext.BoxComponent, {
     // private
     resizeMap: function(ct, width, height, originalWidth, originalHeight) {
         this.map.updateSize();
+    },
+
+    onResize: function(adjWidth, adjHeight, rawWidth, rawHeight) {
+        this.map.updateSize();
     }
 });
 Ext.reg('mapcomponent', mapfish.widgets.MapComponent);
