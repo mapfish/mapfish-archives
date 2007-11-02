@@ -40,7 +40,7 @@ sh="/bin/sh"
 # MapFish.js build
 #
 
-${mkdir} ${releasepath}
+${mkdir} -p ${releasepath}
 (cd ${buildpath} && ${python} build.py mapfish-widgets.cfg  ${releasepath}/MapFish.js)
 
 
