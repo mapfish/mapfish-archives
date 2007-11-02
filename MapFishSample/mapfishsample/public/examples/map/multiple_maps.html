@@ -53,11 +53,11 @@
       var map, tree;
       
       map = createFirstMap("firstMap");
-      tree = new mapfish.tree.LayerTree(map, {el: 'firstTree'});
+      tree = new mapfish.widgets.LayerTree({map: map, el: 'firstTree'});
       tree.render();
 
       map = createSecondMap("secondMap");
-      tree = new mapfish.tree.LayerTree(map, {el: 'secondTree'});
+      tree = new mapfish.widgets.LayerTree({map: map, el: 'secondTree'});
       tree.render();
       
     }, this);

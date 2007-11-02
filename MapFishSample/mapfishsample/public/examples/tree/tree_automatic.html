@@ -20,10 +20,8 @@
       Ext.onReady(function() {
         var map = c2corgCreateMap("map");
         
-        var tree = new mapfish.tree.LayerTree(map, {
-                            el: 'tree',
-                            showWmsLegend: true
-        });
+        var tree = new mapfish.widgets.LayerTree({map: map, el: 'tree', 
+                                                  showWmsLegend: true});
         tree.render();
         
       }, this);

@@ -64,11 +64,7 @@
                     }
                 ];
 
-        var tree = new mapfish.tree.LayerTree(map, {
-                            el: 'tree',
-                            model: model
-        });
-
+        var tree = new mapfish.widgets.LayerTree({el: 'tree', model: model});
         tree.render();
       }, this);
     

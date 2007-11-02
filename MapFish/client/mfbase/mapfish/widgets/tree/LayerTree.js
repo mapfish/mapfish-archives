@@ -23,19 +23,19 @@
  * @requires OpenLayers/Layer/WMS/Untiled.js
  */
 
-Ext.namespace('mapfish.tree');
+Ext.namespace('mapfish.widgets');
 
-mapfish.tree.LayerTree = function(map, config) {
-    this.map = map;
+mapfish.widgets.LayerTree = function(config) {
     Ext.apply(this, config);
 }
 
-mapfish.tree.LayerTree.prototype = {
+mapfish.widgets.LayerTree.prototype = {
 
     _handleModelChange: function LT__handleModelChange() {
 
-        if (!this.map)
+        if (!this.map) {
             return;
+        }
     
         var layerNameToLayer = {};
         Ext.each(this.map.layers, function(layer) {
@@ -50,8 +50,9 @@ mapfish.tree.LayerTree.prototype = {
             var checked = node.attributes.checked;
             var nodeLayerName = node.attributes.layerName;
             
-            if (!nodeLayerName)
+            if (!nodeLayerName) {
                 return;
+            }
             
             if (layerNameToLayer[nodeLayerName]) {
                 layerNameToLayer[nodeLayerName].setVisibility(checked, true);
@@ -59,17 +60,18 @@ mapfish.tree.LayerTree.prototype = {
             }
             
             var wmsParts = nodeLayerName.split(":");
-            if (wmsParts.length != 2)
+            if (wmsParts.length != 2) {
                 return;
+            }
             var layerName = wmsParts[0];
             var wmsName = wmsParts[1];
             
-            if (!wmsLayers[layerName])
+            if (!wmsLayers[layerName]) {
                 wmsLayers[layerName] = [];
+            }
             if (checked) {
                 wmsLayers[layerName].push(wmsName);
             }
-    
         });
     
         for (var layerName in wmsLayers) {
@@ -89,9 +91,6 @@ mapfish.tree.LayerTree.prototype = {
 
 
     _extractOLModel: function LT__extractOLModel() {
-    
-        var map = this.map;
-    
         var getLegendParams = {
             service: "WMS",
             version: "1.1.1",
@@ -103,8 +102,8 @@ mapfish.tree.LayerTree.prototype = {
         // TODO: how to deal with baseLayers?
         var layers = [];
 
-        for (var i = 0; i < map.layers.length; i++) {
-            var l = map.layers[i];
+        for (var i = 0; i < this.map.layers.length; i++) {
+            var l = this.map.layers[i];
             var wmsChildren = [];
 
             if (l instanceof OpenLayers.Layer.WMS ||
