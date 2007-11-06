@@ -13,15 +13,26 @@
       // https://bugzilla.mozilla.org/show_bug.cgi?id=351282
       var djConfig = {baseUrl: "../../cwbase/dojo/",
                       parseOnLoad: true};
+      // TODO: remove once migrated
+      var gMfLocation = "../../mfbase/";
     </script>
 
-    <script type="text/javascript" src="../../cwbase/release/mapfish/dojo/dojo.js" djConfig="isDebug: false"></script>
+    <script type="text/javascript" src="../../cwbase/release/mapfish/dojo/dojo.js"></script>
     <script type="text/javascript" src="../../cwbase/release/mapfish/dijit/dijit.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="../../mfbase/ext/resources/css/ext-all.css" />
+
+    <script type="text/javascript" src="../../mfbase/ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../mfbase/ext/ext-all.js"></script>
+    <!-- TODO: use this one once migrated
+    <script type="text/javascript" src="../../mfbase/release/MapFish.js"></script>
+    -->
+    <script type="text/javascript" src="../../mfbase/mapfish/MapFish.js"></script>
+
     <script type="text/javascript">
-        dojo.require("mapfish.widgets.Map");
-        dojo.require("mapfish.widgets.Routing");
-        dojo.require("mapfish.widgets.tree.TreeContainer");
+        dojo.require("mapfish_legacy.widgets.Map");
+        dojo.require("mapfish_legacy.widgets.Routing");
+        dojo.require("mapfish_legacy.widgets.tree.TreeContainer");
 
         function epflCreateMap(mapDiv) {
 
@@ -65,9 +76,9 @@
 
       <div id="content">
         <div id="right">
-          <div dojoType="mapfish.widgets.Routing" remoteUrl="../../epfl/routing"></div>
+          <div dojoType="mapfish_legacy.widgets.Routing" remoteUrl="../../epfl/routing"></div>
        </div>
-        <div id="map" createMap="epflCreateMap" dojoType="mapfish.widgets.Map"></div>
+        <div id="map" createMap="epflCreateMap" dojoType="mapfish_legacy.widgets.Map"></div>
       </div>
   </body>
 </html>

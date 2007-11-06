@@ -9,18 +9,29 @@
       // https://bugzilla.mozilla.org/show_bug.cgi?id=351282
       var djConfig = {baseUrl: "../../cwbase/dojo/",
                       parseOnLoad: true};
+      // TODO: remove once migrated
+      var gMfLocation = "../../mfbase/";
     </script>
     
     <script type="text/javascript" src="../../cwbase/release/mapfish/dojo/dojo.js"></script>
     <script type="text/javascript" src="../../cwbase/release/mapfish/dijit/dijit.js"></script>
-    <script type="text/javascript" src="../../cwbase/release/mapfish/mapfish/mapfish.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../../mfbase/ext/resources/css/ext-all.css" />
+
+    <script type="text/javascript" src="../../mfbase/ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../mfbase/ext/ext-all.js"></script>
+    <!-- TODO: use this one once migrated
+    <script type="text/javascript" src="../../mfbase/release/MapFish.js"></script>
+    -->
+    <script type="text/javascript" src="../../mfbase/mapfish/MapFish.js"></script>
+
     <script type="text/javascript" src="../../lib/Jugl.js"></script>
 
     <script type="text/javascript">
-        dojo.require("mapfish.widgets.Map");
-        dojo.require("mapfish.widgets.SearchXY");
-        dojo.require("mapfish.widgets.SearchExtent");
-        dojo.require("mapfish.widgets.tree.TreeContainer");
+        dojo.require("mapfish_legacy.widgets.Map");
+        dojo.require("mapfish_legacy.widgets.SearchXY");
+        dojo.require("mapfish_legacy.widgets.SearchExtent");
+        dojo.require("mapfish_legacy.widgets.tree.TreeContainer");
         dojo.require("dijit.TitlePane");
 
         // get app-specific widget
@@ -101,6 +112,8 @@
             map.setCenter(new OpenLayers.LonLat(5,45), 6);
             map.addControl(new OpenLayers.Control.PanZoomBar());
 
+            initExt(map);
+
             return map;
         }
 
@@ -121,14 +134,30 @@
         function clearSearchResults() {
             document.getElementById('searchResults').innerHTML = '';
         }
+
     </script>
+    <script type="text/javascript">
     
+    // reference local blank image
+    Ext.BLANK_IMAGE_URL = '../../mfbase/ext/resources/images/default/s.gif';
+  
+    // This will be replaced by Ext.onReady()
+    function initExt(map) {
+        var tree = new mapfish.widgets.LayerTree({map: map, el: 'tree', 
+                                                  showWmsLegend: true});
+        tree.render();
+    };
+    </script>
     <style type="text/css">
         @import "../../cwbase/dijit/themes/tundra/tundra.css";
         @import "../../base.css";
 
         .float-left {
           float: left;
+        }
+        
+        #tree {
+          height: 200px;
         }
     </style>
   </head>
@@ -138,26 +167,27 @@
     <div id="content">
       <!-- Map -->
       <div class="float-left">
-        <div dojoType="mapfish.widgets.Map" createMap="c2corgCreateMap"></div>
+        <div dojoType="mapfish_legacy.widgets.Map" createMap="c2corgCreateMap"></div>
       </div>
       <!-- Widgets -->
       <div class="float-left">
         <!-- Layer widget -->
         <div dojoType="dijit.TitlePane" title="Layers tree" style="width:260px;margin-left:20px;">
-          <div dojoType="mapfish.widgets.tree.TreeContainer"></div>
+            <div id="tree"></div>
         </div>
+        
         <!-- Search widgets -->
         <div dojoType="dijit.TitlePane" title="Search" open="false" style="width:260px;margin-left:20px">
           <div id="searchXY"
                searchUrl="../../c2corg"
                radius="10000"
                maxFeatures="10"
-               dojoType="mapfish.widgets.SearchXY">
+               dojoType="mapfish_legacy.widgets.SearchXY">
           </div>
           <div id="searchExtent"
                searchUrl="../../c2corg"
                maxFeatures="50"
-               dojoType="mapfish.widgets.SearchExtent"
+               dojoType="mapfish_legacy.widgets.SearchExtent"
                onGotFeatures="onGotFeatures">
            </div>
            <div id="c2corgSearchCoupled"

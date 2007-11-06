@@ -9,17 +9,27 @@
       // https://bugzilla.mozilla.org/show_bug.cgi?id=351282
       var djConfig = {baseUrl: "../../cwbase/dojo/",
                       parseOnLoad: true};
+      // TODO: remove once migrated
+      var gMfLocation = "../../mfbase/";
     </script>
  
     <script type="text/javascript" src="../../cwbase/release/mapfish/dojo/dojo.js"></script>
     <script type="text/javascript" src="../../cwbase/release/mapfish/dijit/dijit.js"></script>
-    <script type="text/javascript" src="../../cwbase/release/mapfish/mapfish/mapfish.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../../mfbase/ext/resources/css/ext-all.css" />
+
+    <script type="text/javascript" src="../../mfbase/ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../mfbase/ext/ext-all.js"></script>
+    <!-- TODO: use this one once migrated
+    <script type="text/javascript" src="../../mfbase/release/MapFish.js"></script>
+    -->
+    <script type="text/javascript" src="../../mfbase/mapfish/MapFish.js"></script>
 
     <script type="text/javascript">
-        dojo.require("mapfish.widgets.Map");
-        dojo.require("mapfish.widgets.GeoStat.Choropleth");
-        dojo.require("mapfish.widgets.GeoStat.ProportionalSymbol");
-        dojo.require("mapfish.widgets.tree.TreeContainer");
+        dojo.require("mapfish_legacy.widgets.Map");
+        dojo.require("mapfish_legacy.widgets.GeoStat.Choropleth");
+        dojo.require("mapfish_legacy.widgets.GeoStat.ProportionalSymbol");
+        dojo.require("mapfish_legacy.widgets.tree.TreeContainer");
         dojo.require("dijit.TitlePane");
       
         function worldFactbkCreateMap(mapDiv){
@@ -37,10 +47,24 @@
             map.addLayer(vmap0);
             map.setCenter(new OpenLayers.LonLat(17, 2), 2);
 
+            initExt(map);
+
             return map;
         }
     </script>
+    <script type="text/javascript">
     
+    // reference local blank image
+    Ext.BLANK_IMAGE_URL = '../../mfbase/ext/resources/images/default/s.gif';
+  
+    // This will be replaced by Ext.onReady()
+    function initExt(map) {
+        var tree = new mapfish.widgets.LayerTree({map: map, el: 'tree', 
+                                                  showWmsLegend: true});
+        tree.render();
+    };
+    </script>
+
     <style type="text/css">
         @import "../../cwbase/dijit/themes/tundra/tundra.css";
         @import "../../base.css";
@@ -48,6 +72,9 @@
         #right {
           position: absolute;
           left: 680px;
+        }
+        #tree {
+          height: 100px;
         }
         
         /* ColorPalette buttons */
@@ -63,22 +90,22 @@
     <div id="content">
       <div id="right">
         <div dojoType="dijit.TitlePane" title="Layers tree" style="width: 260px">
-          <div dojoType="mapfish.widgets.tree.TreeContainer"></div>
+          <div id="tree"></div>
         </div>
 
         <div dojoType="dijit.TitlePane" title="Choropleth" open="false" style="width: 260px">
-          <div dojoType="mapfish.widgets.GeoStat.Choropleth"
+          <div dojoType="mapfish_legacy.widgets.GeoStat.Choropleth"
                idAttribute="country"
                indicators="['birth_rt', 'death_rt', 'fertility']" 
                geoStatUrl="../../countries"></div>
         </div>
         <div dojoType="dijit.TitlePane" title="Proportional Symbol" open="false" style="width: 260px">
-          <div id="geoStat" dojoType="mapfish.widgets.GeoStat.ProportionalSymbol"
+          <div id="geoStat" dojoType="mapfish_legacy.widgets.GeoStat.ProportionalSymbol"
                idAttribute="name" indicators="['population']"
                geoStatUrl="../../cities"></div>
         </div>
       </div>
-      <div dojoType="mapfish.widgets.Map" createMap="worldFactbkCreateMap"></div>
+      <div dojoType="mapfish_legacy.widgets.Map" createMap="worldFactbkCreateMap"></div>
     </div>
 
   </body>

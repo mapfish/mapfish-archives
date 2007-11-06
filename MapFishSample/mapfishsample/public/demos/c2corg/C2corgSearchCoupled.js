@@ -20,9 +20,9 @@
 
 dojo.provide("search.C2corgSearchCoupled");
 
-dojo.require("mapfish.widgets.SearchCoupled");
+dojo.require("mapfish_legacy.widgets.SearchCoupled");
 
-dojo.declare("search.C2corgSearchCoupled", [mapfish.widgets.SearchCoupled], {
+dojo.declare("search.C2corgSearchCoupled", [mapfish_legacy.widgets.SearchCoupled], {
 
     templatePath: dojo.moduleUrl("search", "C2corgSearchCoupled.html"),
 
@@ -32,11 +32,11 @@ dojo.declare("search.C2corgSearchCoupled", [mapfish.widgets.SearchCoupled], {
 
     mapCreated: function() {
         this.form = this.c2corgSearchCoupledForm.id;
-        mapfish.widgets.SearchCoupled.prototype.mapCreated.apply(this);
+        mapfish_legacy.widgets.SearchCoupled.prototype.mapCreated.apply(this);
     },
 
     toggle: function() {
-        mapfish.widgets.SearchCoupled.prototype.toggle.apply(this);
+        mapfish_legacy.widgets.SearchCoupled.prototype.toggle.apply(this);
         this.c2corgSearchCoupledCriteria.style.display = this.enabled ?
             "block" : "none";
     }
