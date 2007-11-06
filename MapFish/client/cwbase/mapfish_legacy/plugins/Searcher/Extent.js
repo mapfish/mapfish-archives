@@ -18,9 +18,9 @@
  */
 
 
-dojo.provide("mapfish.plugins.Searcher.Extent");
+dojo.provide("mapfish_legacy.plugins.Searcher.Extent");
 
-dojo.require("mapfish.plugins.Searcher");
+dojo.require("mapfish_legacy.plugins.Searcher");
 
 MapFish.Searcher.Extent = OpenLayers.Class.create();
 MapFish.Searcher.Extent.prototype =

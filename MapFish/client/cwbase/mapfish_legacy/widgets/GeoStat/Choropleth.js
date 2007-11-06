@@ -18,18 +18,18 @@
  */
 
 
-dojo.provide("mapfish.widgets.GeoStat.Choropleth");
+dojo.provide("mapfish_legacy.widgets.GeoStat.Choropleth");
 
-dojo.require("mapfish.widgets.GeoStat");
-dojo.require("mapfish.plugins.GeoStat.Choropleth");
-dojo.require("mapfish.plugins.Color");
+dojo.require("mapfish_legacy.widgets.GeoStat");
+dojo.require("mapfish_legacy.plugins.GeoStat.Choropleth");
+dojo.require("mapfish_legacy.plugins.Color");
 dojo.require("dijit._Templated");
 dojo.require("dijit.form.Button");
 dojo.require("dijit.ColorPalette");
 
-dojo.declare("mapfish.widgets.GeoStat.Choropleth", [mapfish.widgets.GeoStat, dijit._Templated], {
+dojo.declare("mapfish_legacy.widgets.GeoStat.Choropleth", [mapfish_legacy.widgets.GeoStat, dijit._Templated], {
 
-    templatePath: dojo.moduleUrl("mapfish.widgets.GeoStat", "Choropleth.html"),
+    templatePath: dojo.moduleUrl("mapfish_legacy.widgets.GeoStat", "Choropleth.html"),
 
     widgetsInTemplate: true,
 

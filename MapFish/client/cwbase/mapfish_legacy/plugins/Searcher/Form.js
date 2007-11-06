@@ -18,9 +18,9 @@
  */
 
 
-dojo.provide("mapfish.plugins.Searcher.Form");
+dojo.provide("mapfish_legacy.plugins.Searcher.Form");
 
-dojo.require("mapfish.plugins.Searcher");
+dojo.require("mapfish_legacy.plugins.Searcher");
 
 MapFish.Searcher.Form = OpenLayers.Class.create();
 MapFish.Searcher.Form.prototype =

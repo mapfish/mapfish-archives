@@ -18,10 +18,10 @@
  */
 
 
-dojo.provide("mapfish.plugins.GeoStat.Distribution");
+dojo.provide("mapfish_legacy.plugins.GeoStat.Distribution");
 
-dojo.require("mapfish.plugins.MapFish");
-dojo.require("mapfish.plugins.Util");
+dojo.require("mapfish_legacy.plugins.MapFish");
+dojo.require("mapfish_legacy.plugins.Util");
 
 /**
  * Distribution Class

@@ -18,15 +18,15 @@
  */
 
 
-dojo.provide("mapfish.widgets.SearchExtent");
+dojo.provide("mapfish_legacy.widgets.SearchExtent");
 
-dojo.require("mapfish.MapControl");
+dojo.require("mapfish_legacy.MapControl");
 dojo.require("dijit._Templated");
-dojo.require("mapfish.plugins.Searcher.Extent");
+dojo.require("mapfish_legacy.plugins.Searcher.Extent");
 
-dojo.declare("mapfish.widgets.SearchExtent", [mapfish.MapControl, dijit._Templated], {
+dojo.declare("mapfish_legacy.widgets.SearchExtent", [mapfish_legacy.MapControl, dijit._Templated], {
 
-    templatePath: dojo.moduleUrl("mapfish.widgets", "SearchExtent.html"),
+    templatePath: dojo.moduleUrl("mapfish_legacy.widgets", "SearchExtent.html"),
     searchUrl: null,
     maxFeatures: 100,
 

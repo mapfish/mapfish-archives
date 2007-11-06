@@ -18,10 +18,10 @@
  */
 
 
-dojo.provide("mapfish.plugins.Searcher");
+dojo.provide("mapfish_legacy.plugins.Searcher");
 
-dojo.require("mapfish.plugins.MapFish");
-dojo.require("mapfish.plugins.SearchMediator");
+dojo.require("mapfish_legacy.plugins.MapFish");
+dojo.require("mapfish_legacy.plugins.SearchMediator");
 
 MapFish.Searcher = OpenLayers.Class.create();
 MapFish.Searcher.prototype = {

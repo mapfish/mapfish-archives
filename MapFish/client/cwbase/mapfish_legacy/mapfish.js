@@ -18,24 +18,24 @@
  */
 
 
-dojo.provide("mapfish.mapfish");
+dojo.provide("mapfish_legacy.mapfish_legacy");
 
-dojo.require("mapfish.MapControl");
-dojo.require("mapfish.widgets.Map");
-dojo.require("mapfish.widgets.tree.TreeContainer");
+dojo.require("mapfish_legacy.MapControl");
+dojo.require("mapfish_legacy.widgets.Map");
+dojo.require("mapfish_legacy.widgets.tree.TreeContainer");
 
 // The following two don't seem to be required as the others
 // below depend on them. Keeping them should not hurt.
-dojo.require("mapfish.plugins.MapFish");
-dojo.require("mapfish.plugins.ServerCaller");
+dojo.require("mapfish_legacy.plugins.MapFish");
+dojo.require("mapfish_legacy.plugins.ServerCaller");
 
 // routing
-dojo.require("mapfish.plugins.Routing");
+dojo.require("mapfish_legacy.plugins.Routing");
 
 // search
-dojo.require("mapfish.plugins.Searcher.XY");
-dojo.require("mapfish.plugins.Searcher.Extent");
-dojo.require("mapfish.plugins.Searcher.Form");
+dojo.require("mapfish_legacy.plugins.Searcher.XY");
+dojo.require("mapfish_legacy.plugins.Searcher.Extent");
+dojo.require("mapfish_legacy.plugins.Searcher.Form");
 
 // geostat
-dojo.require("mapfish.plugins.GeoStat.Choropleth");
+dojo.require("mapfish_legacy.plugins.GeoStat.Choropleth");

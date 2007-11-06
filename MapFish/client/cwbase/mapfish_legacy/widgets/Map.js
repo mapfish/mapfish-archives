@@ -18,12 +18,12 @@
  */
 
 
-dojo.provide("mapfish.widgets.Map");
+dojo.provide("mapfish_legacy.widgets.Map");
 
 dojo.require("dijit._Widget");
 dojo.require("dijit._Templated");
 
-dojo.declare("mapfish.widgets.Map", [dijit._Widget, dijit._Templated], {
+dojo.declare("mapfish_legacy.widgets.Map", [dijit._Widget, dijit._Templated], {
     
     templateString: "<div class='mapContainer'></div>",
 

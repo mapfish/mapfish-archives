@@ -18,15 +18,15 @@
  */
 
 
-dojo.provide("mapfish.widgets.SearchXY");
+dojo.provide("mapfish_legacy.widgets.SearchXY");
 
-dojo.require("mapfish.MapControl");
+dojo.require("mapfish_legacy.MapControl");
 dojo.require("dijit._Templated");
-dojo.require("mapfish.plugins.Searcher.XY");
+dojo.require("mapfish_legacy.plugins.Searcher.XY");
 
-dojo.declare("mapfish.widgets.SearchXY", [mapfish.MapControl, dijit._Templated], {
+dojo.declare("mapfish_legacy.widgets.SearchXY", [mapfish_legacy.MapControl, dijit._Templated], {
 
-    templatePath: dojo.moduleUrl("mapfish.widgets", "SearchXY.html"),
+    templatePath: dojo.moduleUrl("mapfish_legacy.widgets", "SearchXY.html"),
     searchUrl: null,
     radius: 100,        /* 100 meters by default */
     maxFeatures: 100,   /* 100 features maximum by default */

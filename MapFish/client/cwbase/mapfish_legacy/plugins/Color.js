@@ -18,9 +18,9 @@
  */
 
 
-dojo.provide("mapfish.plugins.Color");
+dojo.provide("mapfish_legacy.plugins.Color");
 
-dojo.require("mapfish.plugins.MapFish");
+dojo.require("mapfish_legacy.plugins.MapFish");
 
 /**
  * An abstract representation of color

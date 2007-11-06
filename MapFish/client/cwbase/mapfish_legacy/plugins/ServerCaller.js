@@ -18,8 +18,8 @@
  */
 
 
-dojo.provide("mapfish.plugins.ServerCaller");
-dojo.require("mapfish.plugins.MapFish");
+dojo.provide("mapfish_legacy.plugins.ServerCaller");
+dojo.require("mapfish_legacy.plugins.MapFish");
 
 MapFish.ServerCaller = OpenLayers.Class({
     // remote service url

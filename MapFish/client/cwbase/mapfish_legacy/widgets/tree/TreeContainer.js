@@ -18,16 +18,16 @@
  */
 
 
-dojo.provide("mapfish.widgets.tree.TreeContainer");
+dojo.provide("mapfish_legacy.widgets.tree.TreeContainer");
 
-dojo.require("mapfish.MapControl");
+dojo.require("mapfish_legacy.MapControl");
 dojo.require("dijit._Templated");
-dojo.require("mapfish.widgets.tree.Tree");
+dojo.require("mapfish_legacy.widgets.tree.Tree");
   
 
 // FIXME: this widget should be a container
 
-dojo.declare("mapfish.widgets.tree.TreeContainer", [mapfish.MapControl, dijit._Templated], {
+dojo.declare("mapfish_legacy.widgets.tree.TreeContainer", [mapfish_legacy.MapControl, dijit._Templated], {
 
     templateString: "<div></div>",
     showWmsLegend: false,
@@ -106,7 +106,7 @@ dojo.declare("mapfish.widgets.tree.TreeContainer", [mapfish.MapControl, dijit._T
         var self = this;
         var wmsLayers = {};
         
-	    mapfish.widgets.tree.TreeUtils.visit(message.tree.model, function(node) {
+	    mapfish_legacy.widgets.tree.TreeUtils.visit(message.tree.model, function(node) {
 	        
 	        var map = self.map;
 	        var checked = node.checked;
@@ -157,12 +157,12 @@ dojo.declare("mapfish.widgets.tree.TreeContainer", [mapfish.MapControl, dijit._T
         if (this.map)
             dojo.subscribe(topicId, this, this._handleOLModelChange);
     
-        this.tree = new mapfish.widgets.tree.Tree({store: {}, model: model,
+        this.tree = new mapfish_legacy.widgets.tree.Tree({store: {}, model: model,
                                         map: this.map, id: topicId}, 
                                         this.domNode);
     
         var checkedItems = []
-        mapfish.widgets.tree.TreeUtils.visit(model, function(item) {
+        mapfish_legacy.widgets.tree.TreeUtils.visit(model, function(item) {
             if (item.checked)
                 checkedItems.push(item)
         });

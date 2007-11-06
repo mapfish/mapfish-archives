@@ -18,11 +18,11 @@
  */
 
 
-dojo.provide("mapfish.plugins.GeoStat.ProportionalSymbol");
+dojo.provide("mapfish_legacy.plugins.GeoStat.ProportionalSymbol");
 
-dojo.require("mapfish.plugins.MapFish");
-dojo.require("mapfish.plugins.GeoStat");
-dojo.require("mapfish.plugins.GeoStat.Distribution");
+dojo.require("mapfish_legacy.plugins.MapFish");
+dojo.require("mapfish_legacy.plugins.GeoStat");
+dojo.require("mapfish_legacy.plugins.GeoStat.Distribution");
 
 
 MapFish.GeoStat.ProportionalSymbol = OpenLayers.Class(MapFish.GeoStat, {

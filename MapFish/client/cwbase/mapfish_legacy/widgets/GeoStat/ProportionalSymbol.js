@@ -18,15 +18,15 @@
  */
 
 
-dojo.provide("mapfish.widgets.GeoStat.ProportionalSymbol");
+dojo.provide("mapfish_legacy.widgets.GeoStat.ProportionalSymbol");
 
-dojo.require("mapfish.widgets.GeoStat");
-dojo.require("mapfish.plugins.GeoStat.ProportionalSymbol");
+dojo.require("mapfish_legacy.widgets.GeoStat");
+dojo.require("mapfish_legacy.plugins.GeoStat.ProportionalSymbol");
 dojo.require("dijit._Templated");
 
-dojo.declare("mapfish.widgets.GeoStat.ProportionalSymbol", [mapfish.widgets.GeoStat, dijit._Templated], {
+dojo.declare("mapfish_legacy.widgets.GeoStat.ProportionalSymbol", [mapfish_legacy.widgets.GeoStat, dijit._Templated], {
 
-    templatePath: dojo.moduleUrl("mapfish.widgets.GeoStat", "ProportionalSymbol.html"),
+    templatePath: dojo.moduleUrl("mapfish_legacy.widgets.GeoStat", "ProportionalSymbol.html"),
     
     mapCreated: function() {
         // fill the template with variables

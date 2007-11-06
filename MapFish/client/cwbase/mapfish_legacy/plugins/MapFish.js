@@ -18,6 +18,6 @@
  */
 
 
-dojo.provide("mapfish.plugins.MapFish");
+dojo.provide("mapfish_legacy.plugins.MapFish");
 
 MapFish = {};

@@ -18,11 +18,11 @@
  */
 
 
-dojo.provide("mapfish.widgets.GeoStat");
+dojo.provide("mapfish_legacy.widgets.GeoStat");
 
-dojo.require("mapfish.MapControl");
+dojo.require("mapfish_legacy.MapControl");
 
-dojo.declare("mapfish.widgets.GeoStat", [mapfish.MapControl], {
+dojo.declare("mapfish_legacy.widgets.GeoStat", [mapfish_legacy.MapControl], {
 
     /**
      * url to get the vector features

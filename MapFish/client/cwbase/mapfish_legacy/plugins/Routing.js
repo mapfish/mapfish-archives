@@ -18,9 +18,9 @@
  */
 
 
-dojo.provide("mapfish.plugins.Routing");
+dojo.provide("mapfish_legacy.plugins.Routing");
 
-dojo.require("mapfish.plugins.ServerCaller");
+dojo.require("mapfish_legacy.plugins.ServerCaller");
 
 MapFish.Routing = OpenLayers.Class(MapFish.ServerCaller, {
 
@@ -110,7 +110,7 @@ OpenLayers.Util.applyDefaults(MapFish.Routing.routeStyle,
                               OpenLayers.Feature.Vector.style['default']);
 
 MapFish.Routing.firstPointStyle = {
-    externalGraphic: "../../cwbase/mapfish/widgets/routing/start.png",
+    externalGraphic: "../../cwbase/mapfish_legacy/widgets/routing/start.png",
     graphicWidth: 18,
     graphicHeight: 26,
     graphicYOffset: -26,
@@ -122,7 +122,7 @@ OpenLayers.Util.applyDefaults(MapFish.Routing.firstPointStyle,
 
 
 MapFish.Routing.lastPointStyle = {
-    externalGraphic: "../../cwbase/mapfish/widgets/routing/stop.png",
+    externalGraphic: "../../cwbase/mapfish_legacy/widgets/routing/stop.png",
     graphicWidth: 18,
     graphicHeight: 26,
     graphicYOffset: -26,

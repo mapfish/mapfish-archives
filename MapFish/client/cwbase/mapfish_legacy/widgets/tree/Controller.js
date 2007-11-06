@@ -18,12 +18,12 @@
  */
 
 
-dojo.provide("mapfish.widgets.tree.Controller");
+dojo.provide("mapfish_legacy.widgets.tree.Controller");
 
 dojo.require("dijit._Widget");
-dojo.require("mapfish.widgets.tree.Tree");
+dojo.require("mapfish_legacy.widgets.tree.Tree");
 
-mapfish.widgets.tree.TreeUtils = {
+mapfish_legacy.widgets.tree.TreeUtils = {
 
     visit: function(item, callback, childrenGetter) {
     
@@ -41,7 +41,7 @@ mapfish.widgets.tree.TreeUtils = {
     
     descendantsAndSelf: function(item) {
         var items = [];
-        mapfish.widgets.tree.TreeUtils.visit(item, function(item) {
+        mapfish_legacy.widgets.tree.TreeUtils.visit(item, function(item) {
             items.push(item);
         });        
         return items;
@@ -49,7 +49,7 @@ mapfish.widgets.tree.TreeUtils = {
 };
 
 dojo.declare(
-	"mapfish.widgets.tree.Controller",
+	"mapfish_legacy.widgets.tree.Controller",
 	[dijit._Widget],
 {
 	// Summary: _tree.Controller performs all basic operations on Tree
@@ -93,7 +93,7 @@ dojo.declare(
 	
     updateAncestorsDescendants: function(item, checked) {
 
-        var TU = mapfish.widgets.tree.TreeUtils;
+        var TU = mapfish_legacy.widgets.tree.TreeUtils;
 
         TU.visit(item, function(item) {
             item.checked = checked;
@@ -117,7 +117,7 @@ dojo.declare(
 
    syncModelToDom: function(tree) {
 
-        mapfish.widgets.tree.TreeUtils.visit(tree, function(treeNode) {
+        mapfish_legacy.widgets.tree.TreeUtils.visit(tree, function(treeNode) {
             if (treeNode.item) {
                 treeNode.checkboxNode.checked = treeNode.item.checked;
             }
@@ -311,8 +311,8 @@ dojo.declare(
 });
 
 dojo.declare(
-	"mapfish.widgets.tree.DataController",
-	mapfish.widgets.tree.Controller,
+	"mapfish_legacy.widgets.tree.DataController",
+	mapfish_legacy.widgets.tree.Controller,
 {
 
     _getChildren: function(parent) {
@@ -378,7 +378,7 @@ dojo.declare(
 						
 			default:
 				// data is already loaded; just proceed
-				mapfish.widgets.tree.Controller.prototype._expand.apply(this, arguments);
+				mapfish_legacy.widgets.tree.Controller.prototype._expand.apply(this, arguments);
 				break;
 		}
 	},
@@ -388,7 +388,7 @@ dojo.declare(
 		var children = this._getChildren(items);
 		node.setChildren(children);
 
-		mapfish.widgets.tree.Controller.prototype._expand.apply(this, arguments);
+		mapfish_legacy.widgets.tree.Controller.prototype._expand.apply(this, arguments);
 	},
 
 	_collapse: function(/*_TreeNode*/ node){
@@ -396,7 +396,7 @@ dojo.declare(
 			// ignore clicks while we are in the process of loading data
 			return;
 		}
-		mapfish.widgets.tree.Controller.prototype._collapse.apply(this, arguments);
+		mapfish_legacy.widgets.tree.Controller.prototype._collapse.apply(this, arguments);
 	}
 
 });

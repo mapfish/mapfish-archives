@@ -18,9 +18,9 @@
  */
 
 
-dojo.provide("mapfish.plugins.Util");
+dojo.provide("mapfish_legacy.plugins.Util");
 
-dojo.require("mapfish.plugins.MapFish");
+dojo.require("mapfish_legacy.plugins.MapFish");
 
 MapFish.Util = {};
 

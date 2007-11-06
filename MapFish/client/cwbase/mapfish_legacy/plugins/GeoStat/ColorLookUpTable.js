@@ -18,9 +18,9 @@
  */
 
 
-dojo.provide("mapfish.plugins.GeoStat.ColorLookUpTable");
+dojo.provide("mapfish_legacy.plugins.GeoStat.ColorLookUpTable");
 
-dojo.require("mapfish.plugins.MapFish");
+dojo.require("mapfish_legacy.plugins.MapFish");
 
 /**
  * Colors related classes

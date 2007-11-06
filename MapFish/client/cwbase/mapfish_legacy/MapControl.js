@@ -18,11 +18,11 @@
  */
 
 
-dojo.provide("mapfish.MapControl");
+dojo.provide("mapfish_legacy.MapControl");
 
 dojo.require("dijit._Widget");
 
-dojo.declare("mapfish.MapControl", [dijit._Widget], {
+dojo.declare("mapfish_legacy.MapControl", [dijit._Widget], {
     // The Map widget id.
     // Can be left blank if there is only one map in the page.
     mapId: "",

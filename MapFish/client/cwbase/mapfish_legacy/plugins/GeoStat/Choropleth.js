@@ -18,12 +18,12 @@
  */
 
 
-dojo.provide("mapfish.plugins.GeoStat.Choropleth");
+dojo.provide("mapfish_legacy.plugins.GeoStat.Choropleth");
 
-dojo.require("mapfish.plugins.MapFish");
-dojo.require("mapfish.plugins.GeoStat");
-dojo.require("mapfish.plugins.GeoStat.Distribution");
-dojo.require("mapfish.plugins.GeoStat.ColorLookUpTable");
+dojo.require("mapfish_legacy.plugins.MapFish");
+dojo.require("mapfish_legacy.plugins.GeoStat");
+dojo.require("mapfish_legacy.plugins.GeoStat.Distribution");
+dojo.require("mapfish_legacy.plugins.GeoStat.ColorLookUpTable");
 
 
 MapFish.GeoStat.Choropleth = OpenLayers.Class(MapFish.GeoStat, {

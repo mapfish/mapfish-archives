@@ -18,17 +18,17 @@
  */
 
 
-dojo.provide("mapfish.widgets.Routing");
+dojo.provide("mapfish_legacy.widgets.Routing");
 
-dojo.require("mapfish.MapControl");
+dojo.require("mapfish_legacy.MapControl");
 dojo.require("dijit._Templated");
 
-dojo.require("mapfish.plugins.Routing");
+dojo.require("mapfish_legacy.plugins.Routing");
 
-dojo.declare("mapfish.widgets.Routing", [mapfish.MapControl, dijit._Templated], {
+dojo.declare("mapfish_legacy.widgets.Routing", [mapfish_legacy.MapControl, dijit._Templated], {
     remoteUrl: "",
 
-    templatePath: dojo.moduleUrl("mapfish.widgets", "routing/Routing.html"),
+    templatePath: dojo.moduleUrl("mapfish_legacy.widgets", "routing/Routing.html"),
 
     mapCreated: function() {
         this.routing = new MapFish.Routing(this.remoteUrl, 

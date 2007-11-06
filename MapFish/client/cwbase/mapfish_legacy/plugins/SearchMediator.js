@@ -18,9 +18,9 @@
  */
 
 
-dojo.provide("mapfish.plugins.SearchMediator");
+dojo.provide("mapfish_legacy.plugins.SearchMediator");
 
-dojo.require("mapfish.plugins.MapFish");
+dojo.require("mapfish_legacy.plugins.MapFish");
 
 MapFish.SearchMediator = OpenLayers.Class.create();
 MapFish.SearchMediator.prototype = {

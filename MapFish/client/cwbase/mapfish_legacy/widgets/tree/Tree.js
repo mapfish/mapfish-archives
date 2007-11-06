@@ -18,17 +18,17 @@
  */
 
 
-dojo.provide("mapfish.widgets.tree.Tree");
+dojo.provide("mapfish_legacy.widgets.tree.Tree");
 
 dojo.require("dojo.fx");
 
 dojo.require("dijit._Widget");
 dojo.require("dijit._Templated");
 dojo.require("dijit._Container");
-dojo.require("mapfish.widgets.tree.Controller");
+dojo.require("mapfish_legacy.widgets.tree.Controller");
 
 dojo.declare(
-	"mapfish.widgets.tree._TreeBase",
+	"mapfish_legacy.widgets.tree._TreeBase",
 	[dijit._Widget, dijit._Templated, dijit._Container, dijit._Contained],
 {
 	// summary:
@@ -89,7 +89,7 @@ dojo.declare(
 
 			// Create _TreeNode widget for each specified tree node
 			dojo.forEach(childrenArray, function(childParams){
-				var child = new mapfish.widgets.tree._TreeNode(dojo.mixin({
+				var child = new mapfish_legacy.widgets.tree._TreeNode(dojo.mixin({
 					tree: this.tree
 				}, childParams));
 				this.addChild(child);
@@ -120,8 +120,8 @@ dojo.declare(
 });
 
 dojo.declare(
-	"mapfish.widgets.tree.Tree",
-	mapfish.widgets.tree._TreeBase,
+	"mapfish_legacy.widgets.tree.Tree",
+	mapfish_legacy.widgets.tree._TreeBase,
 {
 	// summary
 	//	Tree view does all the drawing, visual node management etc.
@@ -148,7 +148,7 @@ dojo.declare(
 	//		name of attribute that holds children of a tree node
 	childrenAttr: "children",
 
-	templatePath: dojo.moduleUrl("mapfish.widgets.tree", "Tree.html"),		
+	templatePath: dojo.moduleUrl("mapfish_legacy.widgets.tree", "Tree.html"),		
 
 	isExpanded: true, // consider this "root node" to be always expanded
 
@@ -188,7 +188,7 @@ dojo.declare(
 
 
 		// start the controller, passing in the store
-		this._controller = new mapfish.widgets.tree.DataController(
+		this._controller = new mapfish_legacy.widgets.tree.DataController(
 			{	
 				store: this.store,
 				treeId: this.id,
@@ -289,13 +289,13 @@ dojo.declare(
 });
 
 dojo.declare(
-	"mapfish.widgets.tree._TreeNode",
-	mapfish.widgets.tree._TreeBase,
+	"mapfish_legacy.widgets.tree._TreeNode",
+	mapfish_legacy.widgets.tree._TreeBase,
 {
 	// summary
 	//		Single node within a tree
 
-	templatePath: dojo.moduleUrl("mapfish.widgets.tree", "Node.html"),		
+	templatePath: dojo.moduleUrl("mapfish_legacy.widgets.tree", "Node.html"),		
 
 	// type: String
 	//		User defined identifier to differentiate nodes, and to control icon used
@@ -402,7 +402,7 @@ dojo.declare(
 	},	
 
 	setChildren: function(items){
-		mapfish.widgets.tree.Tree.superclass.setChildren.apply(this, arguments);
+		mapfish_legacy.widgets.tree.Tree.superclass.setChildren.apply(this, arguments);
 
 		// create animations for showing/hiding the children
 		this._slideIn = dojo.fx.wipeIn({node: this.containerNode, duration: 250});

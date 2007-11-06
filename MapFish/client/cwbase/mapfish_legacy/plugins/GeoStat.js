@@ -18,9 +18,9 @@
  */
 
 
-dojo.provide("mapfish.plugins.GeoStat");
+dojo.provide("mapfish_legacy.plugins.GeoStat");
 
-dojo.require("mapfish.plugins.MapFish");
+dojo.require("mapfish_legacy.plugins.MapFish");
 
 MapFish.GeoStat = OpenLayers.Class({
     

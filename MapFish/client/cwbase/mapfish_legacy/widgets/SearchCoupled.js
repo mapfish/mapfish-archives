@@ -18,16 +18,16 @@
  */
 
 
-dojo.provide("mapfish.widgets.SearchCoupled");
+dojo.provide("mapfish_legacy.widgets.SearchCoupled");
 
-dojo.require("mapfish.MapControl");
+dojo.require("mapfish_legacy.MapControl");
 dojo.require("dijit._Templated");
-dojo.require("mapfish.plugins.Searcher.Form");
-dojo.require("mapfish.plugins.Searcher.Extent");
+dojo.require("mapfish_legacy.plugins.Searcher.Form");
+dojo.require("mapfish_legacy.plugins.Searcher.Extent");
 
-dojo.declare("mapfish.widgets.SearchCoupled", [mapfish.MapControl, dijit._Templated], {
+dojo.declare("mapfish_legacy.widgets.SearchCoupled", [mapfish_legacy.MapControl, dijit._Templated], {
 
-    templatePath: dojo.moduleUrl("mapfish.widgets", "SearchCoupled.html"),
+    templatePath: dojo.moduleUrl("mapfish_legacy.widgets", "SearchCoupled.html"),
 
     form: "",
     searcherExtent: null,
