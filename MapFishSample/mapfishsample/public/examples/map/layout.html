@@ -13,12 +13,12 @@
     
 	<style type="text/css">
 	html, body {
-        font:normal 12px verdana;
-        margin:0;
-        padding:0;
-        border:0 none;
-        overflow:hidden;
-        height:100%;
+        font: normal 12px verdana;
+        margin: 0;
+        padding: 0;
+        border: 0 none;
+        overflow: hidden;
+        height: 100%;
     }
     </style>
 	<script type="text/javascript">
@@ -26,7 +26,7 @@
     // reference local blank image
     Ext.BLANK_IMAGE_URL = '../../mfbase/ext/resources/images/default/s.gif';
   
-    Ext.onReady(function(){
+    Ext.onReady(function() {
         
         var map = new OpenLayers.Map($('center'));
 
@@ -44,46 +44,46 @@
             layout:'border',
             items:[
                 new Ext.BoxComponent({ // raw
-                    region:'north',
+                    region: 'north',
                     el: 'north',
-                    height:32
+                    height: 32
                 }),{
-                    region:'south',
+                    region: 'south',
                     contentEl: 'south',
-                    split:true,
+                    split: true,
                     height: 100,
                     minSize: 100,
                     maxSize: 200,
                     collapsible: true,
-                    title:'South',
-                    margins:'0 0 0 0'
+                    title: 'South',
+                    margins: '0 0 0 0'
                 },{
-                    region:'west',
-                    id:'west-panel',
-                    title:'West',
-                    split:true,
+                    region: 'west',
+                    id: 'west-panel',
+                    title: 'West',
+                    split: true,
                     width: 200,
                     minSize: 175,
                     maxSize: 400,
                     collapsible: true,
-                    margins:'0 0 0 5',
-                    layout:'accordion',
+                    margins: '0 0 0 5',
+                    layout: 'accordion',
                     layoutConfig:{
-                        animate:true
+                        animate: true
                     },
                     items: [{
                         contentEl: 'west',
-                        title:'Navigation',
-                        border:false,
-                        iconCls:'nav'
+                        title: 'Navigation',
+                        border: false,
+                        iconCls: 'nav'
                     },{
-                        title:'Settings',
-                        html:'<p>Some settings in here.</p>',
-                        border:false,
-                        iconCls:'settings'
+                        title: 'Settings',
+                        html: '<p>Some settings in here.</p>',
+                        border: false,
+                        iconCls: 'settings'
                     }]
                 },{
-                    region:'center',
+                    region: 'center',
                     title: 'Map',
                     items: mapcomponent
                 }
