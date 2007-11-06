@@ -54,6 +54,12 @@
          * Path to this script
          */
         _getScriptLocation: function () {
+            // Workaround for Firefox bug:
+            // https://bugzilla.mozilla.org/show_bug.cgi?id=351282
+            if (window.gMfLocation) {
+                return window.gMfLocation;
+            }
+
             var scriptLocation = "";
             var scriptName = mapfish._scriptName;
          
