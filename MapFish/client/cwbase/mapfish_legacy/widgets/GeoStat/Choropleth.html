@@ -1,0 +1,52 @@
+<div id="choroplethWidget">
+  <table>
+    <tbody>
+    <tr>
+      <th>Indicator</th>
+      <td><select dojoAttachPoint="attributeName" name="attributeName"></select></td>
+    </tr>
+    <tr>
+      <th>Method</th>
+      <td>
+        <select dojoAttachPoint="method" name="method">
+          <option value="CLASSIFY_BY_EQUAL_INTERVALS">Equal Intervals</option>
+          <option value="CLASSIFY_BY_QUANTILS">Quantils</option>
+        </select>
+      </td>
+    <tr>
+      <th>Nb classes</th>
+      <td><input dojoAttachPoint="numClasses" name="numClasses" value="6" size="2"/></td>
+    </tr>
+    <tr>
+      <th>Min color</th>
+      <td>
+        <div id="colorA" dojoAttachPoint="colorA" name="colorA" class="colorPicker"
+            style="background-color:#FF550F;width:20px;height:20px;border: 1px solid #555;float:left"></div>
+        <div dojoType="dijit.form.DropDownButton" id="colorPickerA" 
+            iconClass="dijitEditorIcon dijitEditorIconBackColor" showLabel="false">
+          <span>Background</span>
+          <div dojoType="dijit.ColorPalette" id="colorPaletteA" style="display: none" palette="7x10" onChange="dojo.byId('colorA').style.backgroundColor=this.value"></div>
+        </div>
+    </tr>
+    <tr>
+      <th>Max color</th>
+      <td>
+        <div id="colorB" dojoAttachPoint="colorB" name="colorB" class="colorPicker"
+            style="background-color:#550055;width:20px;height:20px;border: 1px solid #555;float:left"></div>
+        <div dojoType="dijit.form.DropDownButton" id="colorPickerB" 
+            iconClass="dijitEditorIcon dijitEditorIconBackColor" showLabel="false">
+          <span>Background</span>
+          <div dojoType="dijit.ColorPalette" id="colorPaletteB" style="display: none" palette="7x10" onChange="dojo.byId('colorB').style.backgroundColor=this.value"></div>
+        </div>
+    </tr>
+    <tr>
+      <th></th>
+      <td><button dojoAttachEvent="onclick: classify">OK</button></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div><h3>Legend:</h3>
+    <div dojoAttachPoint="legend"></div>
+  </div>
+</div>
