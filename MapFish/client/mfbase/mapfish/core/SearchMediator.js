@@ -68,7 +68,7 @@ mapfish.SearchMediator = OpenLayers.Class({
             requestString,
             {
                 method: "GET",
-                onSuccess: this.onSuccess.bind(this),
+                onSuccess: OpenLayers.Function.bind(this.onSuccess, this),
                 onFailure: function() { alert('Ajax request failed'); }
             }
         );

@@ -34,7 +34,8 @@ mapfish.Searcher = OpenLayers.Class({
         if (mediator) {
             this.mediator = mediator;
         } else if (url) {
-            var cb = callback ? callback : this.onGotFeatures.bind(this);
+            var cb = callback ?
+                callback : OpenLayers.Function.bind(this.onGotFeatures, this);
             this.mediator = new mapfish.SearchMediator(url, cb, maxFeatures);
         }
         // register ourself in the mediator

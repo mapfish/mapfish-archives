@@ -84,7 +84,7 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
         }
         // HACK: reregister onGotFeatures in the mediator. Without this
         // onGotFeatures is called with the same features ever.
-        this.mediator.callback = this.onGotFeatures.bind(this);
+        this.mediator.callback = OpenLayers.Function.bind(this.onGotFeatures, this);
     },
 
     getSearchParams: function(evt) {
