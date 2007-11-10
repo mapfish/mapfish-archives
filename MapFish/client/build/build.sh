@@ -33,15 +33,22 @@ releasepath="${buildpath}/../mfbase/release"
 
 python="/usr/bin/python"
 mkdir="/bin/mkdir"
+rm="/bin/rm"
 sh="/bin/sh"
+cp="/bin/cp"
 
 
 #
 # MapFish.js build
 #
 
+openlayerspath="${buildpath}/../mfbase/openlayers"
+
 ${mkdir} -p ${releasepath}
 (cd ${buildpath} && ${python} build.py mapfish-widgets.cfg  ${releasepath}/MapFish.js)
+${rm} -rf "${releasepath}/img" && ${cp} -r "${openlayerspath}/img" ${releasepath}
+${rm} -rf "${releasepath}/theme" && ${cp} -r "${openlayerspath}/theme" ${releasepath}
+
 
 
 #

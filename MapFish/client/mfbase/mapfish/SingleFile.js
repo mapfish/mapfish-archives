@@ -20,3 +20,5 @@
 var mapfish = {
     singleFile: true
 };
+
+window.OpenLayers._scriptName = "MapFish.js";
