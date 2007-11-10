@@ -19,7 +19,6 @@
 
 
 /*
- * @requires core/SearchMediator.js
  * @requires OpenLayers/Util.js
  * @requires OpenLayers/Format/GeoJSON.js
  * @requires OpenLayers/Ajax.js
