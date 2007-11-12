@@ -102,7 +102,8 @@
             "widgets/MapComponent.js",
             "widgets/Shortcuts.js",
             "widgets/geostat/Choropleth.js",
-            "widgets/tree/LayerTree.js"
+            "widgets/tree/LayerTree.js",
+            "widgets/search/Point.js"
         ); // etc.
 
         var allScriptTags = "";
