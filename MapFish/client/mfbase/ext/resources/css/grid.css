@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 Beta 1
+ * Ext JS Library 2.0 RC 1
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -89,6 +89,12 @@
 	
 }
 
+.x-grid-row-loading {
+    background: #fff url(../images/default/shared/loading-balls.gif) no-repeat center center;
+}
+.x-grid-page {
+    overflow:hidden;
+}
 .x-grid3-row {
 	cursor: default;
     border:1px solid #ededed;
@@ -97,7 +103,7 @@
     width:100%;
 }
 .x-grid3-row-alt{
-	/*background-color:#f1f2f4;*/
+	background-color:#fafafa;
 }
 
 .x-grid3-row-over {
@@ -266,14 +272,8 @@ td.x-grid3-hd-over .x-grid3-hd-inner, td.sort-desc .x-grid3-hd-inner, td.sort-as
 .x-grid3-row-selected {
 	background: #DFE8F6;
 	border:1px dotted #a3bae9;
-}/*
-.x-grid3-row-selected td {
-	border-left:1px solid #c3daf9;
-    border-right:1px solid #719ad5;
-}*/
-.x-grid3-row-selected span, .x-grid3-row-selected b, .x-grid3-row-selected div, .x-grid3-row-selected strong, .x-grid3-row-selected i{
-
 }
+
 .x-grid3-cell-selected{
 	background-color: #B8CFEE !important;
 	color: black;

@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 Beta 1
+ * Ext JS Library 2.0 RC 1
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -259,7 +259,7 @@
 
 .loading-indicator {
     font-size: 11px;
-    background-image: url( '../images/default/grid/loading.gif' );
+    background-image: url(../images/default/grid/loading.gif);
     background-repeat: no-repeat;
     background-position: left;
     padding-left: 20px;
