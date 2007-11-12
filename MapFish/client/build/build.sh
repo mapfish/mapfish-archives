@@ -45,7 +45,7 @@ cp="/bin/cp"
 openlayerspath="${buildpath}/../mfbase/openlayers"
 
 ${mkdir} -p ${releasepath}
-(cd ${buildpath} && ${python} build.py mapfish-widgets.cfg  ${releasepath}/MapFish.js)
+(cd ${buildpath} && ${python} build.py mapfish-widgets-with-openlayers.cfg  ${releasepath}/MapFish.js)
 ${rm} -rf "${releasepath}/img" && ${cp} -r "${openlayerspath}/img" ${releasepath}
 ${rm} -rf "${releasepath}/theme" && ${cp} -r "${openlayerspath}/theme" ${releasepath}
 
