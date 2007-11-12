@@ -36,36 +36,20 @@ Ext.namespace('mapfish.widgets');
 
 mapfish.widgets.MapComponent = function(config) {
     Ext.apply(this, config);
+    this.contentEl=this.map.div;
     mapfish.widgets.MapComponent.superclass.constructor.call(this);
 }
 
-Ext.extend(mapfish.widgets.MapComponent, Ext.BoxComponent, {
+Ext.extend(mapfish.widgets.MapComponent, Ext.Panel, {
+    /**
+     * The map to display.
+     * {OpenLayers.Map}  
+     */
+    map: null,
 
-    // private
     initComponent: function() {
-        mapfish.widgets.MapComponent.superclass.initComponent.call(this);
-    },
-
-    // private
-    onRender: function(container, position) {
-        if (!this.el) {
-            this.el = this.map.div;
-        }
-
-        mapfish.widgets.MapComponent.superclass.onRender.apply(this, arguments);
-
-        // force map size update
-        this.map.updateSize();
-        this.ownerCt.on('resize', this.resizeMap, this);
-    },
-
-    // private
-    resizeMap: function(ct, width, height, originalWidth, originalHeight) {
-        this.map.updateSize();
-    },
-
-    onResize: function(adjWidth, adjHeight, rawWidth, rawHeight) {
-        this.map.updateSize();
+        mapfish.widgets.MapComponent.superclass.initComponent.apply(this, arguments);
+        this.on("bodyresize", this.map.updateSize, this.map);
     }
 });
 Ext.reg('mapcomponent', mapfish.widgets.MapComponent);
