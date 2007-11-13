@@ -17,8 +17,34 @@
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var mapfish = {
-    singleFile: true
-};
+/*
+ * This file is to be included in the [first] section of MapFish build
+ * config file.
+ */
 
-window.OpenLayers._scriptName = "MapFish.js";
+(function() {
+    window.mapfish = {
+        singleFile: true
+    }
+
+    // If OpenLayers and MapFish are built into a single library file
+    // (MapFish.js) we need to fool OpenLayers and make it believe its script
+    // name is MapFish.js instead of OpenLayers.js. Without this, OpenLayers
+    // won't be able to find the path to its images and themes.
+
+    var foolOpenLayers = true;
+    
+    var scripts = document.getElementsByTagName('script');
+    for (var i = 0; i < scripts.length; i++) {
+        var src = scripts[i].getAttribute('src');
+        if (src && src.lastIndexOf("OpenLayers.js") > -1) {
+            foolOpenLayers = false;
+            break;
+        }
+    }
+
+    if (foolOpenLayers) {
+        // poor OpenLayers!
+        window.OpenLayers._scriptName = "MapFish.js";
+    }
+})();

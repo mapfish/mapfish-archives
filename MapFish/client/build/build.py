@@ -30,38 +30,116 @@
 import sys
 sys.path.append("./")
 
+import getopt
+
 import jsmin, mergejs
 
-configDict = {
-    'OpenLayers.js' : '../mfbase/openlayers/lib',
-    'OpenLayers'    : '../mfbase/openlayers/lib',
-    'Rico'          : '../mfbase/openlayers/lib',
-    'SingleFile.js' : '../mfbase/mapfish',
-    'MapFish.js'    : '../mfbase/mapfish',
-    'widgets'       : '../mfbase/mapfish',
-    'core'          : '../mfbase/mapfish'
+#
+# Define config vars
+#
+
+configDictOpenLayers = {
+    'OpenLayers.js':                '../mfbase/openlayers/lib',
+    'OpenLayers':                   '../mfbase/openlayers/lib',
+    'Rico':                         '../mfbase/openlayers/lib'
 }
 
-configFilename = "mapfish-widgets.cfg"
+configDictMapFish = {
+    'SingleFile.js':                '../mfbase/mapfish',
+    'MapFish.js':                   '../mfbase/mapfish',
+    'widgets':                      '../mfbase/mapfish',
+    'core':                         '../mfbase/mapfish'
+}
+
+
+#
+# Parse command args
+#
+
+def usage():
+    sys.stderr.write("""
+Usage: build.py [OPTION]...
+    -c --config configfile      Specify configuration file (default value: mapfish-widgets.cfg)
+    -o --output outputfile      Specify output file (default value: MapFish.js)
+    -m --mfonly                 MapFish only build (OpenLayers files not included)
+"""
+    )
+
+try:
+    opts, args = getopt.getopt(sys.argv[1:], "c:o:m", ["config=", "output=", "mfonly"]) 
+except getopt.GetoptError:
+    usage()
+    sys.exit(1)
+
+configFilename = "mapfish-widgets-with-openlayers.cfg"
 outputFilename = "MapFish.js"
+mfOnly = False
+for o, a in opts:
+    if o in ("-c", "--config"):
+        configFilename = a
+        if not configFilename.endswith(".cfg"):
+            configFilename = a + ".cfg"
+    if o in ("-o", "--output"):
+        outputFilename = a
+    if o in ("-m", "--mfonly"):
+        mfOnly = True
 
-if len(sys.argv) > 1:
-    configFilename = sys.argv[1]
-    extension = configFilename[-4:]
+#
+# Get file list
+#
 
-    if extension  != ".cfg":
-        configFilename = sys.argv[1] + ".cfg"
+configDictGlobal = {}
+configDictGlobal.update(configDictOpenLayers)
+configDictGlobal.update(configDictMapFish)
 
-if len(sys.argv) > 2:
-    outputFilename = sys.argv[2]
+(files, order) = mergejs.getFiles(configDictGlobal, configFilename)
 
+# rebuild the file list and order list, based on whether a MapFish-only
+# build is to be done or not
+if not mfOnly:
+    newfiles = files
+    neworder = order
+else:
+    newfiles = {}
+    neworder = []
+    for f in files:
+        keep = False
+        for k in configDictMapFish:
+            if f.startswith(k):
+                keep = True
+                break
+        if keep:
+            newfiles[f] = files[f]
+    for o in order:
+        keep = False
+        for k in configDictMapFish:
+            if o.startswith(k):
+                keep = True
+                break
+        if keep:
+            neworder.append(o)
+
+#
+# Merge files
+#
 print "Merging libraries."
-merged = mergejs.run(configDict, None, configFilename)
+merged = mergejs.run(newfiles, neworder)
+
+#
+# Compress files
+#
 print "Compressing."
 minimized = jsmin.jsmin(merged)
+
+#
+# Add license
+#
 print "Adding license file."
 minimized = file("license.txt").read() + minimized
 
+#
+# Print to output file
+#
 print "Writing to %s." % outputFilename
 file(outputFilename, "w").write(minimized)
 

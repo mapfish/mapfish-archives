@@ -155,7 +155,7 @@ class Config:
         self.include =  lines[lines.index("[include]") + 1:lines.index("[exclude]")]
         self.exclude =  lines[lines.index("[exclude]") + 1:]
 
-def run (configDict, outputFilename = None, configFile = None):
+def getFiles(configDict, configFile = None):
     cfg = None
     if configFile:
         cfg = Config(configFile)
@@ -181,11 +181,7 @@ def run (configDict, outputFilename = None, configFile = None):
                     elif (not cfg) or (filepath not in cfg.exclude):
                         allFiles.append(filepath)
 
-    ## Header inserted at the start of each file in the output
-    HEADER = "/* " + "=" * 70 + "\n    %s\n" + "   " + "=" * 70 + " */\n\n"
-
     files = {}
-
     order = [] # List of filepaths to output, in a dependency satisfying order 
 
     ## Import file source code
@@ -247,10 +243,15 @@ def run (configDict, outputFilename = None, configFile = None):
                      for item in order
                      if ((item not in cfg.forceFirst) and
                          (item not in cfg.forceLast))] + cfg.forceLast
-    
-    print
+
+    return (files, order)
+
+def run (files, order, outputFilename = None):
     ## Output the files in the determined order
     result = []
+
+    ## Header inserted at the start of each file in the output
+    HEADER = "/* " + "=" * 70 + "\n    %s\n" + "   " + "=" * 70 + " */\n\n"
 
     for fp in order:
         f = files[fp]

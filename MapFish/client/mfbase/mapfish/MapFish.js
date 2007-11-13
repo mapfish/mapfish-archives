@@ -32,7 +32,7 @@
      * SingleFile.js script is included before this one - as is the
      * case with single file builds.
      */
-    var singleFile = (typeof mapfish == "object" && mapfish.singleFile);
+    var singleFile = (typeof window.mapfish == "object" && window.mapfish.singleFile);
 
     /**
      * Namespace: mapfish
