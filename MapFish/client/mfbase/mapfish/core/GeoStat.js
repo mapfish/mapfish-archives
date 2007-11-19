@@ -387,12 +387,18 @@ mapfish.GeoStat.Choropleth = OpenLayers.Class(mapfish.GeoStat, {
         this.updateFeatures();
         this.layer.setVisibility(true, true);
         
+        this.featureCallbacks = OpenLayers.Util.extend({
+                over: OpenLayers.Function.bind(this.showDetails, this),
+                out: OpenLayers.Function.bind(this.hideDetails, this)
+            }, this.featureCallbacks);
+        // bind callbacks
+        for (var i in this.featureCallbacks) {
+            this.featureCallbacks[i] = OpenLayers.Function.bind(this.featureCallbacks[i], this);
+        }
+        
         var select = new OpenLayers.Control.SelectFeature(this.layer, {
             hover: true,
-            callbacks: {
-               over: OpenLayers.Function.bind(this.showDetails, this),
-               out: OpenLayers.Function.bind(this.hideDetails, this)
-            }
+            callbacks: this.featureCallbacks
         });
         this.map.addControl(select);
         select.activate();

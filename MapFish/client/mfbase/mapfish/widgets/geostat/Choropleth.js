@@ -74,6 +74,7 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.Container, {
             triggerAction: 'all',
             emptyText:'Select an indicator...',
             selectOnFocus:true,
+            editable: false,
             applyTo: 'Xindicator'
         });
         
@@ -93,6 +94,7 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.Container, {
             triggerAction: 'all',
             emptyText:'Select an method...',
             selectOnFocus:true,
+            editable: false,
             applyTo: 'Xmethod'
         });
         
@@ -111,6 +113,7 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.Container, {
             mode: 'local',
             triggerAction: 'all',
             selectOnFocus:true,
+            editable: false,
             applyTo: 'XnumClasses'
         });
         combo.on('select', this.updateNumClasses, this);
@@ -185,7 +188,8 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.Container, {
                 numClasses: numClasses,
                 idAttribute: this.idAttribute,
                 indicator: indicator,
-                colors: this.setColors()
+                colors: this.setColors(),
+                featureCallbacks: this.featureCallbacks
             });
         } else {
             this.choropleth.indicator = indicator;
