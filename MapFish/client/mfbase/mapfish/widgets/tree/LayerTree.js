@@ -27,38 +27,48 @@ Ext.namespace('mapfish.widgets');
 
 mapfish.widgets.LayerTree = function(config) {
     Ext.apply(this, config);
+    mapfish.widgets.LayerTree.superclass.constructor.call(this);
 }
 
-mapfish.widgets.LayerTree.prototype = {
+Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
+
+    rootVisible: false,
+    animate: true,
+    autoScroll: true,
+    loader: new Ext.tree.TreeLoader({}),
+    enableDD: false,
+    containerScroll: true,
+    dropConfig: {appendOnly: true},
+    lines: true,
 
     _handleModelChange: function LT__handleModelChange() {
 
         if (!this.map) {
             return;
         }
-    
+
         var layerNameToLayer = {};
         Ext.each(this.map.layers, function(layer) {
             layerNameToLayer[layer.name] = layer;
         });
-        
+
         var wmsLayers = {};
 
-        this.tree.getRootNode().cascade(function() {
+        this.getRootNode().cascade(function() {
 
             var node = this;
             var checked = node.attributes.checked;
             var nodeLayerName = node.attributes.layerName;
-            
+
             if (!nodeLayerName) {
                 return;
             }
-            
+
             if (layerNameToLayer[nodeLayerName]) {
                 layerNameToLayer[nodeLayerName].setVisibility(checked, true);
                 return;
             }
-            
+
             var wmsParts = nodeLayerName.split(":");
             if (wmsParts.length != 2) {
                 return;
@@ -73,17 +83,17 @@ mapfish.widgets.LayerTree.prototype = {
                 wmsLayers[layerName].push(wmsName);
             }
         });
-    
+
         for (var layerName in wmsLayers) {
             var layer = layerNameToLayer[layerName];
             var wmsSubLayers = wmsLayers[layerName];
-    
+
             if (wmsSubLayers.length == 0) {
                 layer.setVisibility(false, true);
             } else {
                 layer.params.LAYERS = wmsSubLayers;
                 layer.redraw();
-    
+
                 layer.setVisibility(true, true);
             }
         }
@@ -114,7 +124,7 @@ mapfish.widgets.LayerTree.prototype = {
                 if (wmsLayers instanceof Array) {
                     for (var j = 0; j < wmsLayers.length; j++) {
                         var w = wmsLayers[j];
-                        
+
                         var iconUrl;
                         if (this.showWmsLegend) {
                             var params = OpenLayers.Util.extend({LAYER: w},
@@ -141,48 +151,41 @@ mapfish.widgets.LayerTree.prototype = {
                          leaf: wmsChildren.length == 0
                          });
         }
-        
+
         return layers;
     },
 
-    render: function() {
+    initComponent: function() {
 
-        var Tree = Ext.tree;
+        mapfish.widgets.LayerTree.superclass.initComponent.call(this);
 
-        this.tree = new Tree.TreePanel({
-            el: this.el,
-            rootVisible: false,
-            animate: false,
-            autoScroll: true,
-            loader: new Tree.TreeLoader({}),
-            enableDD: false,
-            containerScroll: true,
-            dropConfig: {appendOnly: true},
-            lines: true
-        });
-        
-        this.tree.addListener("checkchange", function checkChange() {
+        this.addListener("checkchange", function checkChange() {
             this._handleModelChange();
         }, this);
-        
-        // add a tree sorter in folder mode
-        //new Tree.TreeSorter(tree, {folderSort:true});
-        
+
         if (!this.model) {
             this.model = this._extractOLModel();
         }
 
         // set the root node
-        var root = new Tree.AsyncTreeNode({
+        var root = new Ext.tree.AsyncTreeNode({
             text: 'Root', 
             draggable: false, // disable root node dragging
             id: 'source',
             children: this.model
         });
-        this.tree.setRootNode(root);
-        
-        // render the tree
-        this.tree.render();
-        root.expand(false, /*no anim*/ false);
+        this.setRootNode(root);
+    },
+
+    // private
+    onRender: function(container, position) {
+        if (!this.el) {
+            this.el = document.createElement('div');
+        }
+
+        mapfish.widgets.LayerTree.superclass.onRender.apply(this, arguments);
     }
-}
+
+});
+Ext.reg('layertree', mapfish.widgets.LayerTree);
+
