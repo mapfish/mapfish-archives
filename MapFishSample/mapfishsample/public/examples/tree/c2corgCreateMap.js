@@ -65,7 +65,6 @@ function c2corgCreateMap(mapDiv) {
 
     map.setCenter(new OpenLayers.LonLat(5,45), 6);
     map.addControl(new OpenLayers.Control.PanZoomBar());
-    map.addControl(new OpenLayers.Control.LayerSwitcher());
 
     return map;
 }
