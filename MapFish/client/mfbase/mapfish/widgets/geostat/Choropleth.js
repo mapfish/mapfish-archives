@@ -69,7 +69,7 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.Container, {
             hiddenName: 'indicator',
             store: store,
             valueField: 'value',
-            displayField:'text',
+            displayField: 'text',
             mode: 'local',
             triggerAction: 'all',
             emptyText:'Select an indicator...',
@@ -89,11 +89,11 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.Container, {
             hiddenName: 'method',
             store: store,
             valueField: 'value',
-            displayField:'text',
+            displayField: 'text',
             mode: 'local',
             triggerAction: 'all',
-            emptyText:'Select an method...',
-            selectOnFocus:true,
+            emptyText: 'Select a method...',
+            selectOnFocus: true,
             editable: false,
             applyTo: 'Xmethod'
         });
@@ -108,11 +108,11 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.Container, {
             hiddenName: 'numClasses',
             store: store,
             valueField: 'value',
-            displayField:'value',
+            displayField: 'value',
             value: 5,
             mode: 'local',
             triggerAction: 'all',
-            selectOnFocus:true,
+            selectOnFocus: true,
             editable: false,
             applyTo: 'XnumClasses'
         });
