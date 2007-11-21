@@ -59,9 +59,9 @@
                                     out: hideDetails
                                 }
                             });
-       
+
         var viewport = new Ext.Viewport({
-            layout:'border',
+            layout: 'border',
             items:[
                 new Ext.BoxComponent({ // raw
                     region: 'north',
@@ -76,25 +76,37 @@
                     minSize: 100,
                     maxSize: 200,
                     collapsible: true,
-                    title: 'South',
+                    title: 'Query Results',
                     margins: '0 0 0 0'
                 },{
                     region: 'west',
-                    id: 'west-panel',
-                    title: 'Geostat',
+                    title: ' ',
                     split: true,
-                    width: 200,
-                    minSize: 175,
-                    maxSize: 400,
                     collapsible: true,
+                    frame: true,
+                    width: 250,
+                    minSize: 175,
+                    maxSize: 500,
                     margins: '0 0 0 5',
-                    layout: 'anchor',
-                    layoutConfig:{
-                        animate: true
+                    layout: 'border',
+                    autoScroll: false,
+                    defaults: {
+                      border: true,
+                      frame: true
                     },
                     items: [{
-                        items: choropleth,
-                        border: false
+                        title: 'Layers',
+                        region: 'north',
+                        height: 100,
+                        xtype: 'layertree',
+                        map: map
+                    },{
+                        title: 'Geostat',
+                        region: 'center',
+                        items: [{
+                            items: choropleth,
+                            border: false
+                        }]
                     }]
                 },{
                     region: 'center',
@@ -127,13 +139,13 @@
 	</script>
 </head>
 <body>
-  <div id="north">
-    <p>MapFish</p>
+  <div id="north" style="padding: 5px">
+    <h1 style="font-size: 150%;">MapFish</h1>
   </div>
   <div id="olmap">
   </div>
   <div id="south">
-    <p>Generally for informational stuff, also could be for status bar</p>
+    <p>The results are displayed here when you move your mouse on the map.</p>
   </div>
 
  </body>
