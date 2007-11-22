@@ -44,7 +44,6 @@
             "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}, {buffer: 0});
 
         map.addLayers([wms]);
-        map.addControl(new OpenLayers.Control.LayerSwitcher());
         map.setCenter(new OpenLayers.LonLat(17, 2), 2);
         
         var choropleth = new mapfish.widgets.geostat.Choropleth({
