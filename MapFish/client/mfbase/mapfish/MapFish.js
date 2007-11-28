@@ -103,7 +103,10 @@
             "widgets/Shortcuts.js",
             "widgets/geostat/Choropleth.js",
             "widgets/tree/LayerTree.js",
-            "widgets/search/Point.js"
+            "widgets/search/Point.js",
+            "widgets/toolbar/Toolbar.js",
+            "widgets/toolbar/CheckItem.js",
+            "widgets/toolbar/MenuItem.js"
         ); // etc.
 
         var allScriptTags = "";
