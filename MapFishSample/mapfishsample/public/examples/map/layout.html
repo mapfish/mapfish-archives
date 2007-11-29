@@ -42,9 +42,6 @@
         map.addControl(new OpenLayers.Control.LayerSwitcher());
         map.setCenter(new OpenLayers.LonLat(17, 2), 2);
 
-        
-        var mapcomponent = new mapfish.widgets.MapComponent({map: map});
-       
         var viewport = new Ext.Viewport({
             layout:'border',
             items:[
@@ -78,20 +75,21 @@
                     },
                     items: [{
                         contentEl: 'west',
-                        title: 'Navigation',
+                        title: 'Layer Tree',
                         border: false,
-                        iconCls: 'nav'
+                        xtype: 'layertree',
+                        map: map
                     },{
                         title: 'Settings',
                         html: '<p>Some settings in here.</p>',
                         border: false,
-                        iconCls: 'settings'
                     }]
                 },{
                     region: 'center',
                     title: 'Map',
                     layout: 'fit',
-                    items: mapcomponent
+                    xtype: 'mapcomponent',
+                    map: map
                 }
              ]
         });
@@ -99,14 +97,11 @@
 	</script>
 </head>
 <body>
-  <div id="west">
-    <p>Hi. I'm the west panel.</p>
-  </div>
+  <div id="west"></div>
   <div id="north">
     <p>MapFish</p>
   </div>
-  <div id="center">
-  </div>
+  <div id="center"></div>
   <div id="south">
     <p>south - generally for informational stuff, also could be for status bar</p>
   </div>
