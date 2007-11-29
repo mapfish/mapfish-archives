@@ -28,9 +28,35 @@
 
 mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
 
+    /**
+     * APIProperty: map
+     * {<OpenLayers.Map>} - The OpenLayers Map object.
+     */
     map: null,
+
+    /**
+     * APIProperty: radius
+     * {Integer} - The search radius around the clicked point.
+     */
+    radius: null,
+
+    /**
+     * Property: evt
+     * {<OpenLayers.Event>}
+     */
     evt: null,
 
+    /**
+     * Constructor: mapfish.Searcher.XY
+     *
+     * Parameters:
+     * map - {<OpenLayers.Map>}
+     * radius - {Integer}
+     * mediator - {<mapfish.SearchMediator>}
+     * url - {String}
+     * callback - {Function}
+     * maxFeatures - {Integer}
+     */
     initialize: function(map, radius, mediator, url, callback, maxFeatures) {
         mapfish.Searcher.prototype.initialize.apply(
             this, [mediator, url, callback, maxFeatures]);
@@ -38,18 +64,33 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
         this.radius = radius;
     },
 
+    /**
+     * APIMethod: enable
+     *      Enable search.
+     */
     enable: function() {
         if (mapfish.Searcher.prototype.enable.call(this)) {
             this.map.events.register("click", this, this._onMapClick);
         }
     },
 
+    /**
+     * APIMethod: disable
+     *      Disable search.
+     */
     disable: function() {
         if (mapfish.Searcher.prototype.disable.call(this)) {
             this.map.events.unregister("click", this, this._onMapClick);
         }
     },
 
+    /**
+     * Method: _onMapClick
+     *      Called on click on map.
+     *
+     * Parameters:
+     * evt - {<OpenLayers.Event>}
+     */
     _onMapClick: function(evt) {
         this.cancelSearch();
         this.doSearch(this.getSearchParams(evt));
@@ -57,6 +98,14 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
         OpenLayers.Event.stop(evt);
     },
 
+    /**
+     * Method: onGotFeatures
+     *      Default callback invoked upon receiving features from the search
+     *      service.
+     *
+     * Parameters:
+     * features - Array({<OpenLayers.Feature.Vector>})
+     */
     onGotFeatures: function(features) {
         if (features && features.length > 0) {
             var lonlat = this.map.getLonLatFromViewPortPx(this.evt.xy);
@@ -87,6 +136,16 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
         this.mediator.callback = OpenLayers.Function.bind(this.onGotFeatures, this);
     },
 
+    /**
+     * Method: getSearchParams
+     *      Get the search parameters.
+     *
+     * Parameters:
+     * evt - {<OpenLayers.Event>}
+     *
+     * Returns:
+     * {Object} The params object
+     */
     getSearchParams: function(evt) {
         var lonlat = this.map.getLonLatFromViewPortPx(evt.xy);
         var params = {'lon': lonlat.lon, 'lat': lonlat.lat, 'radius': this.radius};
