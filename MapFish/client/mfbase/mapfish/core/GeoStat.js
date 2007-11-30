@@ -586,9 +586,34 @@ mapfish.GeoStat.Classification = OpenLayers.Class({
     CLASS_NAME: "mapfish.GeoStat.Classification"
 });
 
-
+/**
+ * Class: mapfish.GeoStat.ProportionalSymbol
+ * 
+ * Mandatory options are :
+ * features
+ * 
+ * Example usage :
+ * new mapfish.GeoStat.ProportionalSymbol(this.map, {
+ *              features: features,
+ *              minSize: 5,
+ *              maxSize: 15,
+ *              indicator: 'population',
+ *              featureCallbacks: {
+ *                  over: showDetails,
+ *                  out: hideDetails
+ *              }
+ *          });
+ */
 mapfish.GeoStat.ProportionalSymbol = OpenLayers.Class(mapfish.GeoStat, {
     
+    
+    /**
+     * Constant: DEFAULT_PARAMS
+     * {Object} Hashtable of default parameter key/value pairs 
+     */
+    DEFAULT_PARAMS: { minSize: 2,
+                      maxSize: 20
+                    },
     /**
      * Constructor: OpenLayers.Layer
      *
@@ -596,8 +621,36 @@ mapfish.GeoStat.ProportionalSymbol = OpenLayers.Class(mapfish.GeoStat, {
      * layer - {String} The layer name
      * options - {Object} Hashtable of extra options to tag onto the layer
      */
-    initialize: function(layer, options) {
+    initialize: function(map, options) {
         mapfish.GeoStat.prototype.initialize.apply(this, arguments);
+        
+        var values = [];
+        var features = this.layer.features;
+        for (var i = 0; i < features.length; i++) {
+            values.push(features[i].attributes[this.indicator]);
+        }
+        var dist = new mapfish.GeoStat.Distribution(values);
+        this.minVal = dist.minVal;
+        this.maxVal = dist.maxVal;
+        
+        this.updateFeatures();
+        this.layer.setVisibility(true, true);
+        
+        this.featureCallbacks = OpenLayers.Util.extend({
+                over: OpenLayers.Function.bind(this.showDetails, this),
+                out: OpenLayers.Function.bind(this.hideDetails, this)
+            }, this.featureCallbacks);
+        // bind callbacks
+        for (var i in this.featureCallbacks) {
+            this.featureCallbacks[i] = OpenLayers.Function.bind(this.featureCallbacks[i], this);
+        }
+        
+        var select = new OpenLayers.Control.SelectFeature(this.layer, {
+            hover: true,
+            callbacks: this.featureCallbacks
+        });
+        this.map.addControl(select);
+        select.activate();
     },
     
     /**
