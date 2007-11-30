@@ -624,15 +624,7 @@ mapfish.GeoStat.ProportionalSymbol = OpenLayers.Class(mapfish.GeoStat, {
     initialize: function(map, options) {
         mapfish.GeoStat.prototype.initialize.apply(this, arguments);
         
-        var values = [];
-        var features = this.layer.features;
-        for (var i = 0; i < features.length; i++) {
-            values.push(features[i].attributes[this.indicator]);
-        }
-        var dist = new mapfish.GeoStat.Distribution(values);
-        this.minVal = dist.minVal;
-        this.maxVal = dist.maxVal;
-        
+        this.setClassification();
         this.updateFeatures();
         this.layer.setVisibility(true, true);
         
@@ -651,6 +643,20 @@ mapfish.GeoStat.ProportionalSymbol = OpenLayers.Class(mapfish.GeoStat, {
         });
         this.map.addControl(select);
         select.activate();
+    },
+    
+    /**
+     * APIMethod: Creates a classification with the features
+     */   
+    setClassification: function() {
+        var values = [];
+        var features = this.layer.features;
+        for (var i = 0; i < features.length; i++) {
+            values.push(features[i].attributes[this.indicator]);
+        }
+        var dist = new mapfish.GeoStat.Distribution(values);
+        this.minVal = dist.minVal;
+        this.maxVal = dist.maxVal;
     },
     
     /**

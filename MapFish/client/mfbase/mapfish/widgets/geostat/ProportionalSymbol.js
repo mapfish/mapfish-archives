@@ -53,6 +53,7 @@ Ext.extend(mapfish.widgets.geostat.ProportionalSymbol, Ext.FormPanel, {
             displayField: 'text',
             mode: 'local',
             emptyText: 'select an indicator',
+            triggerAction: 'all',
             store: new Ext.data.SimpleStore({
                 fields: ['value', 'text'],
                 data : this.indicators
@@ -113,17 +114,22 @@ Ext.extend(mapfish.widgets.geostat.ProportionalSymbol, Ext.FormPanel, {
             return;
         }
         
-        if (!this.choropleth) {
+        var minSize = this.form.findField('minSize').getValue();
+        var maxSize = this.form.findField('maxSize').getValue();
+        
+        if (!this.proportionalSymbol) {
             this.proportionalSymbol = new mapfish.GeoStat.ProportionalSymbol(this.map, {
                 features: this.features,
-                minSize: this.form.findField('minSize').getValue(),
-                maxSize: this.form.findField('maxSize').getValue(),
+                minSize: minSize,
+                maxSize: maxSize,
                 indicator: indicator,
                 idAttribute: this.idAttribute,
                 featureCallbacks: this.featureCallbacks
             });
         } else {
             this.proportionalSymbol.indicator = indicator;
+            this.proportionalSymbol.minSize = minSize;
+            this.proportionalSymbol.maxSize = maxSize;
             this.proportionalSymbol.setClassification();
             this.proportionalSymbol.updateFeatures();
         }
