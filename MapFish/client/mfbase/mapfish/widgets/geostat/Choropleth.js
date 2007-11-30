@@ -32,115 +32,113 @@ mapfish.widgets.geostat.Choropleth = function(config) {
     mapfish.widgets.geostat.Choropleth.superclass.constructor.call(this);
     OpenLayers.loadURL(this.geoStatUrl, "", this, this.parseData);
 }
-Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.Container, {
+Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.FormPanel, {
     
-    // FIXME generate unique id's
+    /**
+     * Property: border
+     *     Styling border
+     */
+    border: false,
     
-    mainTemplate: new Ext.Template(
-            '<input type="text" id="Xindicator" size="20"/>',
-            '<input type="text" id="Xmethod" size="20"/>',
-            '<input type="text" id="XnumClasses" size="10"/>',
-            '<input type="text" id="colorA" value="#FFFF00" size="10" />',
-            '<input type="text" id="colorB" value="#FF0000" size="10" />',
-            '<div id="button" ></div>'
-    ),
-    
+    /**
+     * Method: initComponent
+     *    Inits the component
+     */
     initComponent : function() {
-    },
-
-    // private
-    onRender : function(container, position) {
-    
-        if(!this.el){
-            this.el = document.createElement('div');
-        }
-        
-        mapfish.widgets.geostat.Choropleth.superclass.onRender.apply(this, arguments);
-    
-        this.mainTemplate.overwrite(this.el, {});
-        
-        var store = new Ext.data.SimpleStore({
-            fields: ['value', 'text'],
-            data : this.indicators
-        });
-        
-        var combo = new Ext.form.ComboBox({
-            name: 'Xindicator',
-            hiddenName: 'indicator',
-            store: store,
+        this.items = [{
+            xtype: 'combo',
+            fieldLabel: 'Indicator',
+            name: 'indicator',
+            editable: false,
             valueField: 'value',
             displayField: 'text',
             mode: 'local',
-            triggerAction: 'all',
-            emptyText:'Select an indicator...',
-            selectOnFocus:true,
-            editable: false,
-            applyTo: 'Xindicator'
-        });
-        
-        var store = new Ext.data.SimpleStore({
-            fields: ['value', 'text'],
-            data : [['CLASSIFY_BY_EQUAL_INTERVALS', 'Equal Intervals'],
-                    ['CLASSIFY_BY_QUANTILS', 'Quantils']]
-        });
-        
-        var combo = new Ext.form.ComboBox({
-            name: 'Xmethod',
+            emptyText: 'Select an indicator',
+            store: new Ext.data.SimpleStore({
+                fields: ['value', 'text'],
+                data : this.indicators
+            }),
+            listeners: {
+                'select': {
+                    fn: function() {this.classify(false)},
+                    scope: this
+                }
+            }
+        },{
+            xtype: 'combo',
+            fieldLabel: 'Method',
+            name: 'method',
             hiddenName: 'method',
-            store: store,
+            editable: false,
             valueField: 'value',
             displayField: 'text',
             mode: 'local',
-            triggerAction: 'all',
-            emptyText: 'Select a method...',
-            selectOnFocus: true,
+            emptyText: 'Select a method',
+            store: new Ext.data.SimpleStore({
+                fields: ['value', 'text'],
+                data : [['CLASSIFY_BY_EQUAL_INTERVALS', 'Equal Intervals'],
+                        ['CLASSIFY_BY_QUANTILS', 'Quantils']]
+            }),
+            listeners: {
+                'select': {
+                    fn: function() {this.classify(false)},
+                    scope: this
+                }
+            }
+        },{
+            xtype: 'combo',
+            fieldLabel: 'Number of classes',
+            name: 'numClasses',
             editable: false,
-            applyTo: 'Xmethod'
-        });
-        
-        var store = new Ext.data.SimpleStore({
-            fields: ['value'],
-            data: [[0], [1], [2], [3], [4], [5], [6], [7], [8], [9]]
-        });
-        
-        var combo = new Ext.form.ComboBox({
-            name: 'XnumClasses',
-            hiddenName: 'numClasses',
-            store: store,
             valueField: 'value',
             displayField: 'value',
-            value: 5,
             mode: 'local',
+            value: 5,
             triggerAction: 'all',
-            selectOnFocus: true,
-            editable: false,
-            applyTo: 'XnumClasses'
-        });
-        combo.on('select', this.updateNumClasses, this);
-        
-        var color_field = new Ext.ux.ColorField({
+            store: new Ext.data.SimpleStore({
+                fields: ['value'],
+                data: [[0], [1], [2], [3], [4], [5], [6], [7], [8], [9]]
+            }),
+            listeners: {
+                'select': {
+                    fn: this.updateNumClasses,
+                    scope: this
+                }
+            }
+        },{
+            xtype: 'colorfield',
             fieldLabel: 'Color',
-            id: 'colorA',
+            name: 'colorA',
             width: 100,
             allowBlank: false,
-            applyTo: 'colorA'
-        });
-        color_field.on('valid', this.updateColors, this);
-        
-        var color_field = new Ext.ux.ColorField({
+            value: "#FFFF00",
+            listeners: {
+                'valid': {
+                    fn: this.updateColors,
+                    scope: this
+                }
+            }
+        },{
+            xtype: 'colorfield',
             fieldLabel: 'Color',
-            id: 'colorB',
+            name: 'colorB',
             width: 100,
             allowBlank: false,
-            applyTo: 'colorB'
-        });
-        color_field.on('valid', this.updateColors, this);
+            value: "#FF0000",
+            listeners: {
+                'valid': {
+                    fn: this.updateColors,
+                    scope: this
+                }
+            }
+        }];
         
-        var ok_button = new Ext.Button({
+        this.buttons = [{
             text: 'OK',
-            applyTo: 'button'
-        });
-        ok_button.on('click', this.classify, this);
+            handler: function() {this.classify(true)},
+            scope: this
+        }];
+        mapfish.widgets.geostat.Choropleth.superclass.initComponent.apply(this);
     },
         
     /**
@@ -165,21 +163,28 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.Container, {
      *    the field given for attributeName
      *    Creates a new Distribution and related Classification
      *    Then creates an new Choropleths and applies classification
+     *    
+     * Parameters:
+     * exception {Boolean} Will show a message box to user if form is incomplete
      */
-    classify: function() {
-        var indicator = Ext.get('indicator').getValue();
+    classify: function(exception) {
+        var indicator = this.form.findField('indicator').getValue();
         if (!indicator) {
-            Ext.MessageBox.alert('Error', 'You must choose an indicator');
+            if (exception) {
+                Ext.MessageBox.alert('Error', 'You must choose an indicator');
+            }
             return;
         }
         
-        var method = Ext.get('method').getValue();
+        var method = this.form.findField('method').getValue();
         if (!method) {
-            Ext.MessageBox.alert('Error', 'You must choose a method');
+            if (exception) {
+                Ext.MessageBox.alert('Error', 'You must choose a method');
+            }
             return;
         }
         
-        var numClasses = Ext.get('numClasses').getValue();
+        var numClasses = this.form.findField('numClasses').getValue();
         
         if (!this.choropleth) {
             this.choropleth = new mapfish.GeoStat.Choropleth(this.map, {
@@ -208,9 +213,9 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.Container, {
      */
     setColors: function() {
         var colorA = new mapfish.ColorRgb();
-        colorA.setFromHex(Ext.get('colorA').getValue());
+        colorA.setFromHex(this.form.findField('colorA').getValue());
         var colorB = new mapfish.ColorRgb();
-        colorB.setFromHex(Ext.get('colorB').getValue());
+        colorB.setFromHex(this.form.findField('colorB').getValue());
         
         return [colorA, colorB];
     },

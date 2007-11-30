@@ -45,14 +45,13 @@
         
         var choropleth = new mapfish.widgets.geostat.Choropleth({
                                 map: map,
-                                el: "myChoroplethDiv",
                                 idAttribute: "country",
                                 indicators: [['birth_rt', 'Birth Rate'],
                                              ['death_rt', 'Death Rate'],
                                              ['fertility', 'Fertility']],
                                 geoStatUrl: "../../countries"
                             })
-        choropleth.render();
+        choropleth.render("myChoroplethDiv");
         
       }, this);
       

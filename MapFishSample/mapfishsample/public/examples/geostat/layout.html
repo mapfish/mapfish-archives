@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Shortcuts example in a Complex Layout</title>
+  <title>Geostat widgets in a Complex Layout</title>
     <link rel="stylesheet" type="text/css" href="../../mfbase/ext/resources/css/ext-all.css" />
 
     <script type="text/javascript" src="../../mfbase/openlayers/lib/Firebug/firebug.js"></script>
@@ -48,6 +48,7 @@
         
         var choropleth = new mapfish.widgets.geostat.Choropleth({
                                 map: map,
+                                title: 'Choropleth',
                                 idAttribute: "country",
                                 indicators: [['birth_rt', 'Birth Rate'],
                                              ['death_rt', 'Death Rate'],
@@ -56,8 +57,21 @@
                                 featureCallbacks: {
                                     over: showDetails,
                                     out: hideDetails
+                                },
+                                defaults: {
+                                    width: 150
                                 }
                             });
+        var propSymbol = new mapfish.widgets.geostat.ProportionalSymbol({
+                                map: map,
+                                title: 'Proportional Symbols',
+                                idAttribute: "name",
+                                indicators: [['population', 'Population']],
+                                geoStatUrl: "../../cities",
+                                defaults: {
+                                    width: 150
+                                }
+                            })
 
         var viewport = new Ext.Viewport({
             layout: 'border',
@@ -83,7 +97,7 @@
                     split: true,
                     collapsible: true,
                     frame: true,
-                    width: 250,
+                    width: 300,
                     minSize: 175,
                     maxSize: 500,
                     margins: '0 0 0 5',
@@ -102,10 +116,10 @@
                     },{
                         title: 'Geostat',
                         region: 'center',
-                        items: [{
-                            items: choropleth,
-                            border: false
-                        }]
+                        items: [
+                            propSymbol,
+                            choropleth
+                        ]
                     }]
                 },{
                     region: 'center',
