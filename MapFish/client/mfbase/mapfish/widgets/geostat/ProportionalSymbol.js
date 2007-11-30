@@ -47,11 +47,12 @@ Ext.extend(mapfish.widgets.geostat.ProportionalSymbol, Ext.FormPanel, {
         this.items = [{
             xtype: 'combo',
             fieldLabel: 'Indicator',
-            id: 'indicator',
+            name: 'indicator',
             editable: false,
             valueField: 'value',
             displayField: 'text',
             mode: 'local',
+            emptyText: 'select an indicator',
             store: new Ext.data.SimpleStore({
                 fields: ['value', 'text'],
                 data : this.indicators
@@ -59,14 +60,14 @@ Ext.extend(mapfish.widgets.geostat.ProportionalSymbol, Ext.FormPanel, {
         },{
             xtype: 'numberfield',
             fieldLabel:'Min Size',
-            id: 'minSize',
+            name: 'minSize',
             width: 30,
             value: 2,
             maxValue: 20
         },{
             xtype: 'numberfield',
             fieldLabel:'Max Size',
-            id: 'maxSize',
+            name: 'maxSize',
             width: 30,
             value: 20,
             maxValue: 50
@@ -105,7 +106,7 @@ Ext.extend(mapfish.widgets.geostat.ProportionalSymbol, Ext.FormPanel, {
      *    Then creates an new ProportionalSymbols and applies classification
      */
     classify: function() {
-        var indicator = Ext.get('indicator').getValue();
+        var indicator = this.form.findField('indicator').getValue();
         
         if (!indicator) {
             Ext.MessageBox.alert('Error', 'You must choose an indicator');
@@ -115,8 +116,8 @@ Ext.extend(mapfish.widgets.geostat.ProportionalSymbol, Ext.FormPanel, {
         if (!this.choropleth) {
             this.proportionalSymbol = new mapfish.GeoStat.ProportionalSymbol(this.map, {
                 features: this.features,
-                minSize: Ext.getCmp('minSize').getValue(),
-                maxSize: Ext.getCmp('maxSize').getValue(),
+                minSize: this.form.findField('minSize').getValue(),
+                maxSize: this.form.findField('maxSize').getValue(),
                 indicator: indicator,
                 idAttribute: this.idAttribute,
                 featureCallbacks: this.featureCallbacks
