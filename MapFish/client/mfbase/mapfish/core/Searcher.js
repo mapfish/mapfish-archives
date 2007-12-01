@@ -24,25 +24,59 @@
 
 mapfish.Searcher = OpenLayers.Class({
         
+    /**
+     * Property: mediator
+     * {<mapfish.SearchMediator>} - The search mediator.
+     */
     mediator: null,
 
+    /**
+     * Property: enabled
+     * {Boolean} - Specifies if search is enabled.
+     */
     enabled: false,
-    
+
+    /**
+     * Property: params
+     * {Object} - Request parameters.
+     */
     params: null,
 
-    initialize: function(mediator, url, callback, maxFeatures) {
-        if (mediator) {
-            this.mediator = mediator;
-        } else if (url) {
-            var cb = callback ?
-                callback : OpenLayers.Function.bind(this.onGotFeatures, this);
-            this.mediator = new mapfish.SearchMediator(url, cb, maxFeatures);
-        }
-        // register ourself in the mediator
-        this.mediator.register(this);
+    /**
+     * Constructor: mapfish.Searcher
+     *
+     * Parameters:
+     * mediator - {<mapfish.SearchMediator>}
+     * options - {Object}
+     * mediatorOptions - {Object}
+     */
+    initialize: function(mediator, options, mediatorOptions) {
         this.params = {};
+        // create mediator if none is provided
+        if (!mediator) {
+            mediator = new mapfish.SearchMediator();
+        }
+        // set mediator options if provided
+        if (mediatorOptions) {
+            mediator.setOptions(mediatorOptions);
+        }
+        // set a default callback in mediator if none was provided
+        if (!mediator.callback) {
+            mediator.callback = OpenLayers.Function.bind(
+                this.onGotFeatures, this
+            );
+        }
+        this.mediator = mediator;
+        // register ourself in the mediator
+        mediator.register(this);
+        // set options
+        OpenLayers.Util.extend(this, options);
     },
-    
+
+    /**
+     * APIMethod: enable
+     *      Enable search.
+     */
     enable: function() {
         if (this.enabled) {
             return false;
@@ -50,7 +84,11 @@ mapfish.Searcher = OpenLayers.Class({
         this.enabled = true;
         return true;
     },
-    
+ 
+    /**
+     * APIMethod: disable
+     *      Disable search.
+     */
     disable: function() {
         if (!this.enabled) {
             return false;
@@ -58,22 +96,48 @@ mapfish.Searcher = OpenLayers.Class({
         this.enabled = false;
         return true;
     },
-    
+ 
+    /**
+     * Method: doSearch
+     *      Trigger search.
+     */
     doSearch: function(params) {
         this.mediator.doSearch(this, params);
     },
 
+    /**
+     * Method: cancelSearch
+     *      Cancel search request.
+     */
     cancelSearch: function() {
         this.mediator.cancelSearch();
     },
-    
+ 
+    /**
+     * Method: addLayers
+     *      Add layers as request params.
+     *
+     * FIXME: this function should be moved elsewhere or removed.
+     *
+     * Parameters:
+     * layers - {Array}
+     */
     addLayers: function(layers) {
         if (!(layers instanceof Array)) {
             layers = [layers];
         }
         this.addParams({'layers': layers.join(',')});
     },
-    
+
+    /**
+     * Method: removeLayers
+     *      Remove layers from the params.
+     *
+     * FIXME: this function should be moved elsewhere or removed.
+     *
+     * Parameters:
+     * layers - {Array}
+     */
     removeLayers: function(layers) {
         if (!this.params['layers']) {
             return;
@@ -93,13 +157,33 @@ mapfish.Searcher = OpenLayers.Class({
         }
     },
 
+    /**
+     * Method: addParams
+     *      Add request params.
+     *
+     * Parameters:
+     * params - {Object}
+     *
+     * Returns:
+     * {Object} The resulting params object.
+     */
     addParams: function(params) {
         return OpenLayers.Util.extend(this.params, params);
     },
-        
-    /* to be overriden by subclasses */
+ 
+    /**
+     * Method: getSearchParams
+     *      Get the search params.
+     *
+     * to be overriden by subclasses
+     */
     getSearchParams: function() {},
 
-    /* to be overriden by subclasses */
+    /**
+     * Method: onGotFeatures
+     *      Default callback called when features are received.
+     *
+     * to be overriden by subclasses
+     */
     onGotFeatures: function() {}
 });

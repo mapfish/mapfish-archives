@@ -97,10 +97,16 @@ Ext.extend(mapfish.widgets.search.Point, Ext.Panel, {
         mapfish.widgets.search.Point.superclass.initComponent.call(this);
         // create the core search object
         this.searcher = new mapfish.Searcher.XY(
-            this.map, this.radius, null,
-            this.url, this.onGotFeatures, this.maxFeatures
+            this.map, null, null, {
+                'url': this.url,
+                'callback': this.onGotFeatures,
+                'params': {
+                    'maxfeatures': this.maxFeatures,
+                    'radius': this.radius
+                }
+            }
         );
-        // create a checkbox and add to this panel
+        // create a checkbox and add it to this panel
         var checkbox = new Ext.form.Checkbox({boxLabel: this.label});
         checkbox.on('check', this._onCheck, this);
         this.add(checkbox);

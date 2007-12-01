@@ -25,26 +25,44 @@
 
 mapfish.Searcher.Form = OpenLayers.Class(mapfish.Searcher, {
 
+    /**
+     * Property: map
+     * {DOMElement} - The form node.
+     */
     form: null,
-    
-    initialize: function(form, mediator, url, callback, maxFeatures) {
+
+    /**
+     * Constructor: mapfish.Searcher.Extent
+     *
+     * Parameters:
+     * form - {DOMElement}
+     * mediator - {<mapfish.SearchMediator>}
+     * options - {Object}
+     * mediatorOptions - {Object}
+     */
+    initialize: function(form, mediator, options, mediatorOptions) {
         mapfish.Searcher.prototype.initialize.apply(
-            this, [mediator, url, callback, maxFeatures]);
+            this,
+            [mediator, options, mediatorOptions]
+        );
         this.form = form;
     },
-    
-    enable: function() {
-        mapfish.Searcher.prototype.enable.call(this);
-    },
-    
-    disable: function() {
-        mapfish.Searcher.prototype.disable.call(this);
-    },
 
+    /**
+     * APIMethod: triggerSearch
+     *      Trigger search.
+     */
     triggerSearch: function() {
         this.doSearch(this.getSearchParams());
     },
 
+    /**
+     * Method: getSearchParams
+     *      Search the form to get the search params.
+     *
+     * Returns:
+     * {Object} The params object
+     */
     getSearchParams: function() {
         var params = {};
         var form = this.form;
@@ -100,9 +118,14 @@ mapfish.Searcher.Form = OpenLayers.Class(mapfish.Searcher, {
     },
 
     /**
-     * General method that builds a request string from an HTMLFormElement and
-     * returns a formatted string: 'elemeentName=elemeentValue' or 'elemeentName='
-     * @param HTMLFormElement
+     * Method: getParamsFromInput
+     *      Build a request string from an input element.
+     *
+     * Parameters:
+     * htmlElement - {DOMElement}
+     *
+     * Returns:
+     * {String} Request string (elementName=elementValue)
      */
     getParamsFromInput: function(htmlElement) {
         var inputType = htmlElement.getAttribute('type');

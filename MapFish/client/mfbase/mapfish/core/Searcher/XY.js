@@ -29,16 +29,10 @@
 mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
 
     /**
-     * APIProperty: map
+     * Property: map
      * {<OpenLayers.Map>} - The OpenLayers Map object.
      */
     map: null,
-
-    /**
-     * APIProperty: radius
-     * {Integer} - The search radius around the clicked point.
-     */
-    radius: null,
 
     /**
      * Property: evt
@@ -51,17 +45,16 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
      *
      * Parameters:
      * map - {<OpenLayers.Map>}
-     * radius - {Integer}
      * mediator - {<mapfish.SearchMediator>}
-     * url - {String}
-     * callback - {Function}
-     * maxFeatures - {Integer}
+     * options - {Object}
+     * mediatorOptions - {Object}
      */
-    initialize: function(map, radius, mediator, url, callback, maxFeatures) {
+    initialize: function(map, mediator, options, mediatorOptions) {
         mapfish.Searcher.prototype.initialize.apply(
-            this, [mediator, url, callback, maxFeatures]);
+            this,
+            [mediator, options, mediatorOptions]
+        );
         this.map = map;
-        this.radius = radius;
     },
 
     /**
@@ -148,7 +141,7 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
      */
     getSearchParams: function(evt) {
         var lonlat = this.map.getLonLatFromViewPortPx(evt.xy);
-        var params = {'lon': lonlat.lon, 'lat': lonlat.lat, 'radius': this.radius};
+        var params = {'lon': lonlat.lon, 'lat': lonlat.lat};
         return OpenLayers.Util.extend(this.params, params);
     }
 });

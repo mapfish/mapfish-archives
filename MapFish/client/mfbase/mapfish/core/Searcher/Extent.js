@@ -26,31 +26,68 @@
 
 mapfish.Searcher.Extent = OpenLayers.Class(mapfish.Searcher, {
 
+    /**
+     * Property: map
+     * {<OpenLayers.Map>} - The OpenLayers Map object.
+     */
     map: null,
-    
-    initialize: function(map, mediator, url, callback, maxFeatures) {
+
+    /**
+     * Constructor: mapfish.Searcher.Extent
+     *
+     * Parameters:
+     * map - {<OpenLayers.Map>}
+     * mediator - {<mapfish.SearchMediator>}
+     * options - {Object}
+     * mediatorOptions - {Object}
+     */
+    initialize: function(map, mediator, options, mediatorOptions) {
         mapfish.Searcher.prototype.initialize.apply(
-            this, [mediator, url, callback, maxFeatures]);
+            this,
+            [mediator, options, mediatorOptions]
+        );
         this.map = map;
     },
-    
+
+    /**
+     * APIMethod: enable
+     *      Enable search.
+     */
     enable: function() {
         if (mapfish.Searcher.prototype.enable.call(this)) {
             this.map.events.register('moveend', this, this._onMoveend);
         }
     },
-    
+
+    /**
+     * APIMethod: disable
+     *      Disable search.
+     */
     disable: function() {
         if (mapfish.Searcher.prototype.disable.call(this)) {
             this.map.events.unregister('moveend', this, this._onMoveend);
         }
     },
-        
+
+    /**
+     * Method: _onMoveend
+     *      Called when user is done panning the map.
+     *
+     * Parameters:
+     * e - {<OpenLayers.Event>}
+     */
     _onMoveend: function(e) {
         this.doSearch(this.getSearchParams());
         OpenLayers.Event.stop(e);
     },
 
+    /**
+     * Method: getSearchParams
+     *      Get the search parameters.
+     *
+     * Returns:
+     * {Object} The params object
+     */
     getSearchParams: function() {
         var bbox = this.map.getExtent().toBBOX();
         var params = {'box': bbox};

@@ -25,26 +25,101 @@
  */
 
 mapfish.SearchMediator = OpenLayers.Class({
-        
+ 
+    /**
+     * Property: url
+     * {String} - The search service URL.
+     */
     url: null,
+
+    /**
+     * Property: callback
+     * {Function} - The callback called when features are received
+     *      from the search service.
+     */
     callback: null,
+
+    /**
+     * Property: params
+     * {Object} - The search request params.
+     */
     params: null,
+
+    /**
+     * Property: searchers
+     * Array({<mapfish.Searcher>} - Array of searchers controlled by this
+     *      mediator.
+     */
     searchers: null,
+
+    /**
+     * Property: parser.
+     * {<OpenLayers.Format>} - The OpenLayers format used to deserialize
+     *      the response sent by the service.
+     */
     parser: null,
+
+    /**
+     * Property: request.
+     * {Object} - The Ajax request object.
+     */
     request: null,
 
-    initialize: function(url, callback, maxFeatures) {
+    /**
+     * Constructor: mapfish.SearchMediator
+     *
+     * Parameters:
+     * url - {String}
+     * callback - {Function}
+     * params - {Object}
+     */
+    initialize: function(url, callback, params) {
         this.url = url;
         this.callback = callback;
-        this.params = {'maxfeatures': maxFeatures};
+        this.params = OpenLayers.Util.extend({}, params);
         this.searchers = [];
         this.parser = new OpenLayers.Format.GeoJSON();
     },
 
+    /**
+     * APIMethod: setOptions
+     *      Set the mediator's options.
+     *
+     * Parameters:
+     * options - {Object}
+     */
+    setOptions: function(options) {
+        if (options) {
+            if (options.url) {
+                this.url = options.url;
+            }
+            if (options.callback) {
+                this.callback = callback;
+            }
+            if (options.params) {
+                OpenLayers.Util.extend(this.params, options.params);
+            }
+        }
+    },
+
+    /**
+     * APIMethod: register
+     *      Register a searcher in the mediator.
+     *
+     * Parameters:
+     * searcher - {<mapfish.Searcher>}
+     */
     register: function(searcher) {
         this.searchers.push(searcher);
     },
 
+    /**
+     * Method: onSuccess
+     *      Callback called on ajax search request success.
+     *
+     * Parameters:
+     * request - {Object}
+     */
     onSuccess: function(request) {
         this.request = null;
         // extract features from response
@@ -55,6 +130,14 @@ mapfish.SearchMediator = OpenLayers.Class({
         }
     },
 
+    /**
+     * APIMethod: doSearch
+     *      Trigger search request to the search service.
+     *
+     * Parameters:
+     * searcher - {<mapfish.Searcher>}
+     * params - {Object}
+     */
     doSearch: function(searcher, params) {
         // build parameters string
         var allParams = this.getSearchParams(searcher, params);
@@ -73,12 +156,24 @@ mapfish.SearchMediator = OpenLayers.Class({
         );
     },
 
+    /**
+     * APIMethod: cancelSearch
+     *      Cancel ongoing search request sent to the search service.
+     */
     cancelSearch: function() {
         if (this.request) {
             this.request.transport.abort();
         }
     },
 
+    /**
+     * APIMethod: getSearchParams
+     *      Get search params from searchers.
+     *
+     * Parameters:
+     * searcher - {<mapfish.Searcher>}
+     * params - {Object}
+     */
     getSearchParams: function(searcher, params) {
         var allParams = OpenLayers.Util.extend(this.params, params);
         for (var i = 0; i < this.searchers.length; i++) {
