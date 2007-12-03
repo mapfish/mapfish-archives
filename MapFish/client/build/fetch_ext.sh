@@ -19,6 +19,7 @@ find ../mfbase/ext -type f|grep -v .svn|xargs --no-run-if-empty rm
 cp -r $EXT_VER/ext-* ../mfbase/ext
 cp -r $EXT_VER/resources/ ../mfbase/ext
 cp -r $EXT_VER/adapter/ ../mfbase/ext
+cp -r $EXT_VER/source/ ../mfbase/ext
 
 (cd ../mfbase/ext; svn status|grep "^\!"|sed "s/^\!//"|xargs -n1 --no-run-if-empty svn remove)
 (cd ../mfbase/ext; svn status|grep "^\?"|sed "s/^\?//"|xargs -n1 --no-run-if-empty svn add)
