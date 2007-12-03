@@ -54,6 +54,7 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.FormPanel, {
             displayField: 'text',
             mode: 'local',
             emptyText: 'Select an indicator',
+            triggerAction: 'all',
             store: new Ext.data.SimpleStore({
                 fields: ['value', 'text'],
                 data : this.indicators
@@ -74,6 +75,7 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.FormPanel, {
             displayField: 'text',
             mode: 'local',
             emptyText: 'Select a method',
+            triggerAction: 'all',
             store: new Ext.data.SimpleStore({
                 fields: ['value', 'text'],
                 data : [['CLASSIFY_BY_EQUAL_INTERVALS', 'Equal Intervals'],
