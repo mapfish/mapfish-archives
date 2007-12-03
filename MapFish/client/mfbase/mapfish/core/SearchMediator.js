@@ -94,7 +94,7 @@ mapfish.SearchMediator = OpenLayers.Class({
                 this.url = options.url;
             }
             if (options.callback) {
-                this.callback = callback;
+                this.callback = options.callback;
             }
             if (options.params) {
                 OpenLayers.Util.extend(this.params, options.params);
