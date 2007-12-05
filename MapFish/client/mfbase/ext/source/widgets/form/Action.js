@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -10,7 +10,7 @@
  * @class Ext.form.Action
  * The subclasses of this class provide actions to perform upon {@link Ext.form.BasicForm Form}s.
  * <br><br>
- * Instances of this class are only created by an {@link Ext.form.BasicForm Form} when 
+ * Instances of this class are only created by a {@link Ext.form.BasicForm Form} when 
  * the Form needs to perform an action such as submit or load. The Configuration options
  * listed for this class are set through the Form's action methods: {@link Ext.form.BasicForm#submit submit},
  * {@link Ext.form.BasicForm#load load} and {@link Ext.form.BasicForm#doAction doAction}.
@@ -18,8 +18,8 @@
  * The instance of Action which performed the action is passed to the success
  * and failure callbacks of the Form's action methods ({@link Ext.form.BasicForm#submit submit},
  * {@link Ext.form.BasicForm#load load} and {@link Ext.form.BasicForm#doAction doAction}),
- * and to the {@link Ext.form.BasicForm#actioncomplete} and
- * {@link Ext.form.BasicForm#actionfailed} event handlers.
+ * and to the {@link Ext.form.BasicForm#actioncomplete actioncomplete} and
+ * {@link Ext.form.BasicForm#actionfailed actionfailed} event handlers.
  */
 Ext.form.Action = function(form, options){
     this.form = form;
@@ -71,18 +71,18 @@ Ext.form.Action.prototype = {
  */
 /**
  * @cfg {Function} success The function to call when a valid success return packet is recieved.
- * The function is passed the following parameters:<ul>
- * <li><code>form</code> : Ext.form.BasicForm<div class="sub-desc">The form that requested the action</div></li>
- * <li><code>action</code> : Ext.form.Action<div class="sub-desc">The Action class. The {@link #result}
+ * The function is passed the following parameters:<ul class="mdetail-params">
+ * <li><b>form</b> : Ext.form.BasicForm<div class="sub-desc">The form that requested the action</div></li>
+ * <li><b>action</b> : Ext.form.Action<div class="sub-desc">The Action class. The {@link #result}
  * property of this object may be examined to perform custom postprocessing.</div></li>
  * </ul>
  */
 /**
  * @cfg {Function} failure The function to call when a failure packet was recieved, or when an
  * error ocurred in the Ajax communication.
- * The function is passed the following parameters:<ul>
- * <li><code>form</code> : Ext.form.BasicForm<div class="sub-desc">The form that requested the action</div></li>
- * <li><code>action</code> : Ext.form.Action<div class="sub-desc">The Action class. If an Ajax
+ * The function is passed the following parameters:<ul class="mdetail-params">
+ * <li><b>form</b> : Ext.form.BasicForm<div class="sub-desc">The form that requested the action</div></li>
+ * <li><b>action</b> : Ext.form.Action<div class="sub-desc">The Action class. If an Ajax
  * error ocurred, the failure type will be in {@link #failureType}. The {@link #result}
  * property of this object may be examined to perform custom postprocessing.</div></li>
  * </ul>
@@ -107,17 +107,15 @@ Ext.form.Action.prototype = {
  */
     type : 'default',
 /**
- * The type of failure detected. See {@link #CLIENT_INVALID}, {@link #SERVER_INVALID},
- * {@link #CONNECT_FAILURE}, {@link #LOAD_FAILURE}
+ * The type of failure detected. See {@link #Ext.form.Action-Action.CLIENT_INVALID CLIENT_INVALID}, {@link #Ext.form.Action-Action.SERVER_INVALID SERVER_INVALID},
+ * {@link #Ext.form.Action-Action.CONNECT_FAILURE CONNECT_FAILURE}, {@link #Ext.form.Action-Action.LOAD_FAILURE LOAD_FAILURE}
  * @property failureType
  * @type {String}
- */
-/**
+ *//**
  * The XMLHttpRequest object used to perform the action.
  * @property response
  * @type {Object}
- */
-/**
+ *//**
  * The decoded response object containing a boolean <tt style="font-weight:bold">success</tt> property and
  * other, action-specific properties.
  * @property result
@@ -190,12 +188,13 @@ Ext.form.Action.prototype = {
     },
 
     // private
-    createCallback : function(){
+    createCallback : function(opts){
+		var opts = opts || {};
         return {
             success: this.success,
             failure: this.failure,
             scope: this,
-            timeout: (this.form.timeout*1000),
+            timeout: (opts.timeout*1000) || (this.form.timeout*1000),
             upload: this.form.fileUpload ? this.success : undefined
         };
     }
@@ -226,7 +225,7 @@ Ext.form.Action.prototype = {
 }</code></pre>
  * <br><br>
  * Other data may be placed into the response for processing the the {@link Ext.form.BasicForm}'s callback
- * or event handler methods.
+ * or event handler methods. The object decoded from this JSON is available in the {@link #result} property.
  */
 Ext.form.Action.Submit = function(form, options){
     Ext.form.Action.Submit.superclass.constructor.call(this, form, options);
@@ -236,7 +235,7 @@ Ext.extend(Ext.form.Action.Submit, Ext.form.Action, {
     /**
     * @cfg {boolean} clientValidation Determines whether a Form's fields are validated
     * in a final call to {@link Ext.form.BasicForm#isValid isValid} prior to submission.
-    * Pass <tt>false</tt> in the  to prevent this. If not defined, pre-submission field validation
+    * Pass <tt>false</tt> in the Form's submit options to prevent this. If not defined, pre-submission field validation
     * is performed.
     */
     type : 'submit',
@@ -247,7 +246,7 @@ Ext.extend(Ext.form.Action.Submit, Ext.form.Action, {
         var method = this.getMethod();
         var isPost = method == 'POST';
         if(o.clientValidation === false || this.form.isValid()){
-            Ext.Ajax.request(Ext.apply(this.createCallback(), {
+            Ext.Ajax.request(Ext.apply(this.createCallback(o), {
                 form:this.form.el.dom,
                 url:this.getUrl(!isPost),
                 method: method,
@@ -309,7 +308,7 @@ Ext.extend(Ext.form.Action.Submit, Ext.form.Action, {
  * submitting.
  * <br><br>
  * A response packet <b>must</b> contain a boolean <tt style="font-weight:bold">success</tt> property, and
- * an <tt style="font-weight:bold">data</tt> property. The <tt style="font-weight:bold">data</tt> property contains the
+ * a <tt style="font-weight:bold">data</tt> property. The <tt style="font-weight:bold">data</tt> property contains the
  * values of Fields to load. The individual value object for each Field
  * is passed to the Field's {@link Ext.form.Field#setValue setValue} method.
  * <br><br>
@@ -326,7 +325,7 @@ Ext.extend(Ext.form.Action.Submit, Ext.form.Action, {
 }</code></pre>
  * <br><br>
  * Other data may be placed into the response for processing the the {@link Ext.form.BasicForm Form}'s callback
- * or event handler methods.
+ * or event handler methods. The object decoded from this JSON is available in the {@link #result} property.
  */
 Ext.form.Action.Load = function(form, options){
     Ext.form.Action.Load.superclass.constructor.call(this, form, options);
@@ -340,7 +339,7 @@ Ext.extend(Ext.form.Action.Load, Ext.form.Action, {
     // private
     run : function(){
         Ext.Ajax.request(Ext.apply(
-                this.createCallback(), {
+                this.createCallback(this.options), {
                     method:this.getMethod(),
                     url:this.getUrl(false),
                     params:this.getParams()

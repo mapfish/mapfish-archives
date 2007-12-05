@@ -1,11 +1,19 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
  */
 
+/* // Internal developer documentation -- will not show up in API docs
+ * @class Ext.dd.PanelProxy
+ * A custom drag proxy implementation specific to {@link Ext.Panel}s. This class is primarily used internally
+ * for the Panel's drag drop implementation, and should never need to be created directly.
+ * @constructor
+ * @param panel The {@link Ext.Panel} to proxy for
+ * @param config Configuration options
+ */
 Ext.dd.PanelProxy = function(panel, config){
     this.panel = panel;
     this.id = this.panel.id +'-ddproxy';
@@ -13,25 +21,46 @@ Ext.dd.PanelProxy = function(panel, config){
 };
 
 Ext.dd.PanelProxy.prototype = {
+    /**
+     * @cfg {Boolean} insertProxy True to insert a placeholder proxy element while dragging the panel,
+      * false to drag with no proxy (defaults to true).
+     */
     insertProxy : true,
+
+    // private overrides
     setStatus : Ext.emptyFn,
     reset : Ext.emptyFn,
     update : Ext.emptyFn,
     stop : Ext.emptyFn,
     sync: Ext.emptyFn,
-    
+
+    /**
+     * Gets the proxy's element
+     * @return {Element} The proxy's element
+     */
     getEl : function(){
         return this.ghost;
     },
 
+    /**
+     * Gets the proxy's ghost element
+     * @return {Element} The proxy's ghost element
+     */
     getGhost : function(){
         return this.ghost;
     },
 
+    /**
+     * Gets the proxy's element
+     * @return {Element} The proxy's element
+     */
     getProxy : function(){
         return this.proxy;
     },
 
+    /**
+     * Hides the proxy
+     */
     hide : function(){
         if(this.ghost){
             if(this.proxy){
@@ -44,6 +73,9 @@ Ext.dd.PanelProxy.prototype = {
         }
     },
 
+    /**
+     * Shows the proxy
+     */
     show : function(){
         if(!this.ghost){
             this.ghost = this.panel.createGhost(undefined, undefined, Ext.getBody());
@@ -56,6 +88,7 @@ Ext.dd.PanelProxy.prototype = {
         }
     },
 
+    // private
     repair : function(xy, callback, scope){
         this.hide();
         if(typeof callback == "function"){
@@ -63,6 +96,13 @@ Ext.dd.PanelProxy.prototype = {
         }
     },
 
+    /**
+     * Moves the proxy to a different position in the DOM.  This is typically called while dragging the Panel
+     * to keep the proxy sync'd to the Panel's location.
+     * @param {HTMLElement} parentNode The proxy's parent DOM node
+     * @param {HTMLElement} before (optional) The sibling node before which the proxy should be inserted (defaults
+     * to the parent's last child if not specified)
+     */
     moveProxy : function(parentNode, before){
         if(this.proxy){
             parentNode.insertBefore(this.proxy.dom, before);
@@ -70,6 +110,7 @@ Ext.dd.PanelProxy.prototype = {
     }
 };
 
+// private - DD implementation for Panels
 Ext.Panel.DD = function(panel, cfg){
     this.panel = panel;
     this.dragData = {panel: panel};

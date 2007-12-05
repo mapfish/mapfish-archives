@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -63,7 +63,7 @@ Ext.util.MixedCollection = function(allowFunctions, keyFn){
 
 Ext.extend(Ext.util.MixedCollection, Ext.util.Observable, {
     allowFunctions : false,
-    
+
 /**
  * Adds an item to the collection. Fires the {@link #add} event when complete.
  * @param {String} key The key to associate with the item
@@ -92,7 +92,7 @@ Ext.extend(Ext.util.MixedCollection, Ext.util.Observable, {
         this.fireEvent("add", this.length-1, o, key);
         return o;
     },
-   
+
 /**
   * MixedCollection has a generic way to fetch keys if you implement getKey.  The default implementation
   * simply returns <tt style="font-weight:bold;">item.id</tt> but you can provide your own implementation
@@ -123,9 +123,9 @@ mc.add(otherEl);
  * @return {Object} The key for the passed item.
  */
     getKey : function(o){
-         return o.id; 
+         return o.id;
     },
-   
+
 /**
  * Replaces an item in the collection. Fires the {@link #replace} event when complete.
  * @param {String} key The key associated with the item to replace, or the item to replace.
@@ -147,7 +147,7 @@ mc.add(otherEl);
         this.fireEvent("replace", key, old, o);
         return o;
     },
-   
+
 /**
  * Adds all elements of an Array or an Object to the collection.
  * @param {Object/Array} objs An Object containing properties which will be added to the collection, or
@@ -167,10 +167,15 @@ mc.add(otherEl);
             }
         }
     },
-   
+
 /**
- * Executes the specified function once for every item in the collection, passing each
- * item as the first and only parameter. Returning false from the function will stop the iteration.
+ * Executes the specified function once for every item in the collection, passing the following arguments:
+ * <div class="mdetail-params"><ul>
+ * <li><b>item</b> : Mixed<p class="sub-desc">The collection item</p></li>
+ * <li><b>index</b> : Number<p class="sub-desc">The item's index</p></li>
+ * <li><b>length</b> : Number<p class="sub-desc">The total number of items in the collection</p></li>
+ * </ul></div>
+ * The function should return a boolean value. Returning false from the function will stop the iteration.
  * @param {Function} fn The function to execute for each item.
  * @param {Object} scope (optional) The scope in which to execute the function.
  */
@@ -182,7 +187,7 @@ mc.add(otherEl);
             }
         }
     },
-   
+
 /**
  * Executes the specified function once for every key in the collection, passing each
  * key, and its associated item as the first two parameters.
@@ -194,7 +199,7 @@ mc.add(otherEl);
             fn.call(scope || window, this.keys[i], this.items[i], i, len);
         }
     },
-   
+
     /**
      * Returns the first item in the collection which elicits a true return value from the
      * passed selection function.
@@ -210,7 +215,7 @@ mc.add(otherEl);
         }
         return null;
     },
-   
+
 /**
  * Inserts an item at the specified index in the collection. Fires the {@link #add} event when complete.
  * @param {Number} index The index to insert the item at.
@@ -235,7 +240,7 @@ mc.add(otherEl);
         this.fireEvent("add", index, o, key);
         return o;
     },
-   
+
 /**
  * Removed an item from the collection.
  * @param {Object} o The item to remove.
@@ -244,7 +249,7 @@ mc.add(otherEl);
     remove : function(o){
         return this.removeAt(this.indexOf(o));
     },
-   
+
 /**
  * Remove an item from a specified index in the collection. Fires the {@link #remove} event when complete.
  * @param {Number} index The index within the collection of the item to remove.
@@ -265,7 +270,7 @@ mc.add(otherEl);
         }
         return false;
     },
-   
+
 /**
  * Removed an item associated with the passed key fom the collection.
  * @param {String} key The key of the item to remove.
@@ -274,15 +279,15 @@ mc.add(otherEl);
     removeKey : function(key){
         return this.removeAt(this.indexOfKey(key));
     },
-   
+
 /**
  * Returns the number of items in the collection.
  * @return {Number} the number of items in the collection.
  */
     getCount : function(){
-        return this.length; 
+        return this.length;
     },
-   
+
 /**
  * Returns index within the collection of the passed Object.
  * @param {Object} o The item to find the index of.
@@ -291,7 +296,7 @@ mc.add(otherEl);
     indexOf : function(o){
         return this.items.indexOf(o);
     },
-   
+
 /**
  * Returns index within the collection of the passed key.
  * @param {String} key The key to find the index of.
@@ -300,7 +305,7 @@ mc.add(otherEl);
     indexOfKey : function(key){
         return this.keys.indexOf(key);
     },
-   
+
 /**
  * Returns the item associated with the passed key OR index. Key has priority over index.  This is the equivalent
  * of calling {@link #key} first, then if nothing matched calling {@link #itemAt}.
@@ -311,7 +316,7 @@ mc.add(otherEl);
         var item = typeof this.map[key] != "undefined" ? this.map[key] : this.items[key];
         return typeof item != 'function' || this.allowFunctions ? item : null; // for prototype!
     },
-    
+
 /**
  * Returns the item at the specified index.
  * @param {Number} index The index of the item.
@@ -320,7 +325,7 @@ mc.add(otherEl);
     itemAt : function(index){
         return this.items[index];
     },
-    
+
 /**
  * Returns the item associated with the passed key.
  * @param {String/Number} key The key of the item.
@@ -329,7 +334,7 @@ mc.add(otherEl);
     key : function(key){
         return this.map[key];
     },
-   
+
 /**
  * Returns true if the collection contains the passed Object as an item.
  * @param {Object} o  The Object to look for in the collection.
@@ -338,7 +343,7 @@ mc.add(otherEl);
     contains : function(o){
         return this.indexOf(o) != -1;
     },
-   
+
 /**
  * Returns true if the collection contains the passed Object as a key.
  * @param {String} key The key to look for in the collection.
@@ -347,7 +352,7 @@ mc.add(otherEl);
     containsKey : function(key){
         return typeof this.map[key] != "undefined";
     },
-   
+
 /**
  * Removes all items from the collection.  Fires the {@link #clear} event when complete.
  */
@@ -358,21 +363,21 @@ mc.add(otherEl);
         this.map = {};
         this.fireEvent("clear");
     },
-   
+
 /**
  * Returns the first item in the collection.
  * @return {Object} the first item in the collection..
  */
     first : function(){
-        return this.items[0]; 
+        return this.items[0];
     },
-   
+
 /**
  * Returns the last item in the collection.
  * @return {Object} the last item in the collection..
  */
     last : function(){
-        return this.items[this.length-1];   
+        return this.items[this.length-1];
     },
 
     // private
@@ -398,7 +403,7 @@ mc.add(otherEl);
         }
         this.fireEvent("sort", this);
     },
-    
+
     /**
      * Sorts this collection with the passed comparison function
      * @param {String} direction (optional) "ASC" or "DESC"
@@ -407,7 +412,7 @@ mc.add(otherEl);
     sort : function(dir, fn){
         this._sort("value", dir, fn);
     },
-    
+
     /**
      * Sorts this collection by keys
      * @param {String} direction (optional) "ASC" or "DESC"
@@ -418,7 +423,7 @@ mc.add(otherEl);
             return String(a).toUpperCase()-String(b).toUpperCase();
         });
     },
-    
+
     /**
      * Returns a range of items in this collection
      * @param {Number} startIndex (optional) defaults to 0
@@ -444,7 +449,7 @@ mc.add(otherEl);
         }
         return r;
     },
-        
+
     /**
      * Filter the <i>objects</i> in this collection by a specific property.
      * Returns a new collection that has been filtered.
@@ -452,7 +457,7 @@ mc.add(otherEl);
      * @param {String/RegExp} value Either string that the property values
      * should start with or a RegExp to test against the property
      * @param {Boolean} anyMatch (optional) True to match any part of the string, not just the beginning
-     * @param {Boolean} caseSensitive (optional) True for case sensitive comparison
+     * @param {Boolean} caseSensitive (optional) True for case sensitive comparison (defaults to False).
      * @return {MixedCollection} The new filtered collection
      */
     filter : function(property, value, anyMatch, caseSensitive){
@@ -466,10 +471,9 @@ mc.add(otherEl);
 	},
 
     /**
-     * Filter by a function. * Returns a new collection that has been filtered.
-     * The passed function will be called with each
-     * object in the collection. If the function returns true, the value is included
-     * otherwise it is filtered.
+     * Filter by a function. Returns a <i>new</i> collection that has been filtered.
+     * The passed function will be called with each object in the collection.
+     * If the function returns true, the value is included otherwise it is filtered.
      * @param {Function} fn The function to be called, it will receive the args o (the object), k (the key)
      * @param {Object} scope (optional) The scope of the function (defaults to this)
      * @return {MixedCollection} The new filtered collection
@@ -488,13 +492,13 @@ mc.add(otherEl);
 
     /**
      * Finds the index of the first matching object in this collection by a specific property/value.
-     * Returns a new collection that has been filtered.
-     * @param {String} property A property on your objects
-     * @param {String/RegExp} value Either string that the property values
+     * Returns a <i>new</i> collection that has been filtered.
+     * @param {String} property The name of a property on your objects.
+     * @param {String/RegExp} value A string that the property values
      * should start with or a RegExp to test against the property.
-     * @param {Number} startIndex (optional) The index to start searching at
-     * @param {Boolean} anyMatch (optional) True to match any part of the string, not just the beginning
-     * @param {Boolean} caseSensitive (optional) True for case sensitive comparison
+     * @param {Number} start (optional) The index to start searching at (defaults to 0).
+     * @param {Boolean} anyMatch (optional) True to match any part of the string, not just the beginning.
+     * @param {Boolean} caseSensitive (optional) True for case sensitive comparison.
      * @return {Number} The matched index or -1
      */
     findIndex : function(property, value, start, anyMatch, caseSensitive){
@@ -510,9 +514,9 @@ mc.add(otherEl);
     /**
      * Find the index of the first matching object in this collection by a function.
      * If the function returns <i>true<i> it is considered a match.
-     * @param {Function} fn The function to be called, it will receive the args o (the object), k (the key)
-     * @param {Object} scope (optional) The scope of the function (defaults to this)
-     * @param {Number} startIndex (optional) The index to start searching at
+     * @param {Function} fn The function to be called, it will receive the args o (the object), k (the key).
+     * @param {Object} scope (optional) The scope of the function (defaults to this).
+     * @param {Number} start (optional) The index to start searching at (defaults to 0).
      * @return {Number} The matched index or -1
      */
     findIndexBy : function(fn, scope, start){

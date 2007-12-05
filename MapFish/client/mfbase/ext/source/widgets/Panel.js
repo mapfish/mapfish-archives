@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -26,7 +26,7 @@ Ext.Panel = Ext.extend(Ext.Container, {
      */
     /**
      * The Panel's body {@link Ext.Element Element} which may be used to contain HTML content.
-     * The content may be specified in the {@link #html} config, or it may be loaded using the 
+     * The content may be specified in the {@link #html} config, or it may be loaded using the
      * {@link autoLoad} config, or through the Panel's {@link #getUpdater Updater}. Read-only.
      * <p>If this is used to load visible HTML elements in either way, then
      * the Panel may not be used as a Layout for hosting nested Panels.</p>
@@ -86,11 +86,13 @@ Ext.Panel = Ext.extend(Ext.Container, {
     /**
      * @cfg {String} title
      * The title text to display in the panel header (defaults to '').  When a title is specified the header
-     * element will automatically be created and displayed unless {@link #header} is explicitly set to false.
+     * element will automatically be created and displayed unless {@link #header} is explicitly set to false.  If
+     * you don't want to specify a title at config time, but you may want one later, you must either specify a
+     * non-empty title (a blank space ' ' will do) or header:true so that the container element will get created.
      */
     /**
      * @cfg {Array} buttons
-     * An array of {@link Ext.Button} <b>configs</b> used to buttons to add to the footer of this panel
+     * An array of {@link Ext.Button} <b>configs</b> used to add buttons to the footer of this panel.
      */
     /**
      * @cfg {Object/String/Function} autoLoad
@@ -132,39 +134,40 @@ Ext.Panel = Ext.extend(Ext.Container, {
     /**
      * @cfg {Array} tools
      * An array of tool button configs to be added to the header tool area.
-     * Each tool config may contain the following properties:<ul>
-     * <li><b>id</b> : String<p style="margin-left:1em"><b>Required.</b> The type
+     * Each tool config may contain the following properties:
+     * <div class="mdetail-params"><ul>
+     * <li><b>id</b> : String<p class="sub-desc"><b>Required.</b> The type
      * of tool to create. Values may be<ul>
      * <li><tt>toggle</tt> (Created by default when {@link #collapsible} is <tt>true</tt>)</li>
-     * <li><tt>close</tt><li>
-     * <li><tt>minimize</tt><li>
-     * <li><tt>maximize</tt><li>
-     * <li><tt>restore</tt><li>
-     * <li><tt>gear</tt><li>
-     * <li><tt>pin</tt><li>
-     * <li><tt>unpin</tt><li>
-     * <li><tt>right</tt><li>
-     * <li><tt>left</tt><li>
-     * <li><tt>up</tt><li>
-     * <li><tt>down</tt><li>
-     * <li><tt>refresh</tt><li>
-     * <li><tt>minus</tt><li>
-     * <li><tt>plus</tt><li>
-     * <li><tt>help</tt><li>
-     * <li><tt>search</tt><li>
-     * <li><tt>save</tt><li>
-     * </ul></p></tt><li>
-     * <li><b>handler</b> : Function<p style="margin-left:1em"><b>Required.</b> The function to
+     * <li><tt>close</tt></li>
+     * <li><tt>minimize</tt></li>
+     * <li><tt>maximize</tt></li>
+     * <li><tt>restore</tt></li>
+     * <li><tt>gear</tt></li>
+     * <li><tt>pin</tt></li>
+     * <li><tt>unpin</tt></li>
+     * <li><tt>right</tt></li>
+     * <li><tt>left</tt></li>
+     * <li><tt>up</tt></li>
+     * <li><tt>down</tt></li>
+     * <li><tt>refresh</tt></li>
+     * <li><tt>minus</tt></li>
+     * <li><tt>plus</tt></li>
+     * <li><tt>help</tt></li>
+     * <li><tt>search</tt></li>
+     * <li><tt>save</tt></li>
+     * </ul></div></p></li>
+     * <li><b>handler</b> : Function<p class="sub-desc"><b>Required.</b> The function to
      * call when clicked. Arguments passed are:<ul>
-     * <li><b>event</b> : Ext.EventObject<p style="margin-left:1em">The click event.</p></li>
-     * <li><b>toolEl</b> : Type<p style="margin-left:1em">The tool Element.</p></li>
-     * <li><b>Panel</b> : Type<p style="margin-left:1em">The host Panel</p></li>
+     * <li><b>event</b> : Ext.EventObject<p class="sub-desc">The click event.</p></li>
+     * <li><b>toolEl</b> : Ext.Element<p class="sub-desc">The tool Element.</p></li>
+     * <li><b>Panel</b> : Ext.Panel<p class="sub-desc">The host Panel</p></li>
      * </ul></p></li>
-     * <li><b>scope</b> : Object<p style="margin-left:1em">The scope in which to call the handler.</p></li>
-     * <li><b>qtip</b> : String/Object<p style="margin-left:1em">A tip string, or
+     * <li><b>scope</b> : Object<p class="sub-desc">The scope in which to call the handler.</p></li>
+     * <li><b>qtip</b> : String/Object<p class="sub-desc">A tip string, or
      * a config argument to {@link Ext.QuickTip#register}</p></li>
-     * <li><b>hidden</b> : Boolean<p style="margin-left:1em">True to initially render hidden.</p></li>
-     * <li><b>on</b> : Object<p style="margin-left:1em">A listener config object specifiying
+     * <li><b>hidden</b> : Boolean<p class="sub-desc">True to initially render hidden.</p></li>
+     * <li><b>on</b> : Object<p class="sub-desc">A listener config object specifiying
      * event listeners in the format of an argument to {@link #addListener}</p></li>
      * </ul>
      * Example usage:
@@ -234,6 +237,12 @@ tools:[{
      * A KeyMap config object (in the format expected by {@link Ext.KeyMap#addBinding} used to assign custom key
      * handling to this panel (defaults to null).
      */
+ 	/**
+  	 * @cfg {Boolean} draggable
+  	 * True to enable dragging of this Panel (defaults to false).  For custom drag/drop implementations, an Ext.Panel.DD
+  	 * config could also be passed in this config instead of true, although Ext.Panel.DD is an internal, undocumented class.
+     */
+
     /**
     * @cfg {String} baseCls
     * The base CSS class to apply to this panel's element (defaults to 'x-panel').
@@ -300,9 +309,9 @@ tools:[{
      */
     elements : 'body',
 
-    // protected - these could both be used to customize the behavior of the window,
-    // but changing them would not be useful without further mofifications and could
-    // lead to unexpected or undesirable results.
+    // protected - these could be used to customize the behavior of the window,
+    // but changing them would not be useful without further mofifications and
+    // could lead to unexpected or undesirable results.
     toolTarget : 'header',
     collapseEl : 'bwrap',
     slideAnchor : 't',
@@ -381,7 +390,7 @@ tools:[{
             'close',
             /**
              * @event activate
-             * Fires after the Panel has been visually activated. 
+             * Fires after the Panel has been visually activated.
              * Note that Panels do not directly support being activated, but some Panel subclasses
              * do (like {@link Ext.Window}). Panels which are child Components of a TabPanel fire the
              * activate and deactivate events under the control of the TabPanel.
@@ -390,7 +399,7 @@ tools:[{
             'activate',
             /**
              * @event deactivate
-             * Fires after the Panel has been visually deactivated. 
+             * Fires after the Panel has been visually deactivated.
              * Note that Panels do not directly support being deactivated, but some Panel subclasses
              * do (like {@link Ext.Window}). Panels which are child Components of a TabPanel fire the
              * activate and deactivate events under the control of the TabPanel.
@@ -586,7 +595,7 @@ tools:[{
         if(this.floating){
             this.makeFloating(this.floating);
         }
-        
+
         if(this.collapsible){
             this.tools = this.tools ? this.tools.slice(0) : [];
             if(!this.hideCollapseTool){
@@ -690,7 +699,7 @@ tools:[{
      * @return {Ext.Toolbar} The toolbar
      */
     getBottomToolbar : function(){
-        return this.bottomToolbar;  
+        return this.bottomToolbar;
     },
 
     /**
@@ -730,7 +739,7 @@ tools:[{
         if(!this.toolTemplate){
             // initialize the global tool template on first use
             var tt = new Ext.Template(
-                 '<div class="x-tool x-tool-{id}">&#160</div>'
+                 '<div class="x-tool x-tool-{id}">&#160;</div>'
             );
             tt.disableFormats = true;
             tt.compile();
@@ -761,6 +770,7 @@ tools:[{
         }
     },
 
+    // private
     onShow : function(){
         if(this.floating){
             return this.el.show();
@@ -768,6 +778,7 @@ tools:[{
         Ext.Panel.superclass.onShow.call(this);
     },
 
+    // private
     onHide : function(){
         if(this.floating){
             return this.el.hide();
@@ -837,6 +848,7 @@ tools:[{
         }
     },
 
+    // private
     initDraggable : function(){
         this.dd = new Ext.Panel.DD(this, typeof this.draggable == 'boolean' ? null : this.draggable);
     },
@@ -1031,6 +1043,11 @@ tools:[{
                 Ext.destroy(this.tools[k]);
             }
         }
+        if(this.buttons){
+            for(var b in this.buttons){
+                Ext.destroy(this.buttons[b]);
+            }
+        }
         Ext.destroy(
             this.topToolbar,
             this.bottomToolbar
@@ -1109,9 +1126,9 @@ tools:[{
     },
 
     /**
-     * Sets the title text for the panel and optioanlly the icon class.
+     * Sets the title text for the panel and optionally the icon class.
      * @param {String} title The title text to set
-     * @param {String} (optional) iconCls A CSS class that provides the icon image for this panel
+     * @param {String} (optional) iconCls A custon, user-defined CSS class that provides the icon image for this panel
      */
     setTitle : function(title, iconCls){
         this.title = title;

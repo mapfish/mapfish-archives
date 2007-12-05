@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -46,13 +46,14 @@ Ext.QuickTip = Ext.extend(Ext.ToolTip, {
     /**
      * Configures a new quick tip instance and assigns it to a target element.  The following config values are
      * supported (for example usage, see the {@link Ext.QuickTips} class header):
-     * <ul><li>autoHide</li>
+     * <div class="mdetail-params"><ul>
+     * <li>autoHide</li>
      * <li>cls</li>
      * <li>dismissDelay (overrides the singleton value)</li>
      * <li>target (required)</li>
      * <li>text (required)</li>
      * <li>title</li>
-     * <li>width</li></ul>
+     * <li>width</li></ul></div>
      * @param {Object} config The config object
      */
     register : function(config){
@@ -151,10 +152,11 @@ Ext.QuickTip = Ext.extend(Ext.ToolTip, {
             this.body.update(t.text);
             this.autoHide = t.autoHide;
             this.dismissDelay = t.dismissDelay || this.dismissDelay;
+            if(this.lastCls){
+                this.el.removeClass(this.lastCls);
+                delete this.lastCls;
+            }
             if(t.cls){
-                if(this.lastCls){
-                    this.el.removeClass(this.lastCls);
-                }
                 this.el.addClass(t.cls);
                 this.lastCls = t.cls;
             }

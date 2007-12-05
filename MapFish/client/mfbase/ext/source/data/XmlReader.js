@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -66,7 +66,7 @@ Ext.extend(Ext.data.XmlReader, Ext.data.DataReader, {
     /**
      * This method is only used by a DataProxy which has retrieved data from a remote server.
 	 * @param {Object} response The XHR object which contains the parsed XML document.  The response is expected
-	 * to contain a method called 'responseXML' that returns an XML document object.
+	 * to contain a property called <tt>responseXML</tt> which refers to an XML document object.
      * @return {Object} records A data block which is used by an {@link Ext.data.Store} as
      * a cache of Ext.data.Records.
      */

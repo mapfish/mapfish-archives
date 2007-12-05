@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -43,22 +43,22 @@ window           Ext.Window
 Toolbar components
 ---------------------------------------
 toolbar          Ext.Toolbar
+tbbutton         Ext.Toolbar.Button
+tbfill           Ext.Toolbar.Fill
 tbitem           Ext.Toolbar.Item
 tbseparator      Ext.Toolbar.Separator
 tbspacer         Ext.Toolbar.Spacer
-tbfill           Ext.Toolbar.Fill
-tbtext           Ext.Toolbar.TextItem
-tbbutton         Ext.Toolbar.Button
 tbsplit          Ext.Toolbar.SplitButton
+tbtext           Ext.Toolbar.TextItem
 
 Form components
 ---------------------------------------
+form             Ext.FormPanel
 checkbox         Ext.form.Checkbox
 combo            Ext.form.ComboBox
 datefield        Ext.form.DateField
 field            Ext.form.Field
 fieldset         Ext.form.FieldSet
-form             Ext.FormPanel
 hidden           Ext.form.Hidden
 htmleditor       Ext.form.HtmlEditor
 numberfield      Ext.form.NumberField
@@ -192,10 +192,6 @@ Ext.Component = function(config){
 
     this.initComponent();
 
-    if(this.stateful !== false){
-        this.initState(config);
-    }
-
     if(this.plugins){
         if(this.plugins instanceof Array){
             for(var i = 0, len = this.plugins.length; i < len; i++){
@@ -204,6 +200,10 @@ Ext.Component = function(config){
         }else{
             this.plugins.init(this);
         }
+    }
+
+    if(this.stateful !== false){
+        this.initState(config);
     }
 
     if(this.applyTo){
@@ -231,7 +231,7 @@ Ext.extend(Ext.Component, Ext.util.Observable, {
      * specified not as a fully instantiated Component, but as a <i>Component config
      * object</i>. The xtype will be looked up at render time up to determine what
      * type of child Component to create.<br><br>
-     * The predefined xtypes are listed at the top of this document.
+     * The predefined xtypes are listed {@link Ext.Component here}.
      * <br><br>
      * If you subclass Components to create your own Components, you may register
      * them using {@link Ext.ComponentMgr#registerType} in order to be able to

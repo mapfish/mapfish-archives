@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -8,8 +8,14 @@
 
 /**
  * @class Ext.tree.TreePanel
+ * <p>The TreePanel provides tree-structured UI representation of tree-structured data.</p>
+ * <p>{@link Ext.tree.TreeNode TreeNode}s added to the TreePanel may each contain metadata
+ * used by your application in their {@link Ext.tree.TreeNode#attributes attributes} property.</p>
+ * <p><b>A TreePanel must have a {@link #root} node before it is rendered.</b> This may either be
+ * specified using the {@link #root} config option, or using the {@link #setRootNode} method.
  * @extends Ext.Panel
 
+ * @cfg {Ext.tree.TreeNode} root The root node for the tree.
  * @cfg {Boolean} rootVisible false to hide the root node (defaults to true)
  * @cfg {Boolean} lines false to disable tree lines (defaults to true)
  * @cfg {Boolean} enableDD true to enable drag and drop
@@ -28,6 +34,7 @@
  * @cfg {Boolean} selModel A tree selection model to use with this TreePanel (defaults to a {@link Ext.tree.DefaultSelectionModel})
  * @cfg {Ext.tree.TreeLoader} loader A {@link Ext.tree.TreeLoader} for use with this TreePanel
  * @cfg {String} pathSeparator The token used to separate sub-paths in path strings (defaults to '/')
+ *
  * @constructor
  * @param {Object} config
  */
@@ -49,9 +56,9 @@ Ext.tree.TreePanel = Ext.extend(Ext.Panel, {
         this.nodeHash = {};
 
         /**
-        * The root node for this tree
-        * @type Node
-        * @property Ext.tree.TreePanel root
+        * The root node of this tree.
+        * @type Ext.tree.TreeNode
+        * @property root
         */
         if(this.root){
            this.setRootNode(this.root);
@@ -77,7 +84,7 @@ Ext.tree.TreePanel = Ext.extend(Ext.Panel, {
             */
            "remove",
            /**
-            * @event nodemove
+            * @event movenode
             * Fires when a node is moved to a new location in the tree
             * @param {Tree} tree The owner tree
             * @param {Node} node The node moved
@@ -112,7 +119,7 @@ Ext.tree.TreePanel = Ext.extend(Ext.Panel, {
             */
            "beforeremove",
            /**
-            * @event beforemove
+            * @event beforemovenode
             * Fires before a node is moved to a new location in the tree. Return false to cancel the move.
             * @param {Tree} tree The owner tree
             * @param {Node} node The node being moved
@@ -338,7 +345,8 @@ Ext.tree.TreePanel = Ext.extend(Ext.Panel, {
         node.isRoot = true;
         this.registerNode(node);
         if(!this.rootVisible){
-            node.ui = new Ext.tree.RootTreeNodeUI(node);
+        	var uiP = node.attributes.uiProvider;
+        	node.ui = uiP ? new uiP(node) : new Ext.tree.RootTreeNodeUI(node); 
         }
         return node;
     },
@@ -583,5 +591,37 @@ Ext.tree.TreePanel = Ext.extend(Ext.Panel, {
         this.nodeHash = null;
         Ext.tree.TreePanel.superclass.onDestroy.call(this);
     }
+    
+    /** @cfg {String/Number} activeItem @hide */
+    /** @cfg {Boolean} autoDestroy @hide */
+    /** @cfg {Object/String/Function} autoLoad @hide */
+    /** @cfg {Boolean} autoWidth @hide */
+    /** @cfg {Boolean/Number} bufferResize @hide */
+    /** @cfg {String} defaultType @hide */
+    /** @cfg {Object} defaults @hide */
+    /** @cfg {Boolean} hideBorders @hide */
+    /** @cfg {Mixed} items @hide */
+    /** @cfg {String} layout @hide */
+    /** @cfg {Object} layoutConfig @hide */
+    /** @cfg {Boolean} monitorResize @hide */
+    /** @property items @hide */
+    /** @method add @hide */
+    /** @method cascade @hide */
+    /** @method doLayout @hide */
+    /** @method find @hide */
+    /** @method findBy @hide */
+    /** @method findById @hide */
+    /** @method findByType @hide */
+    /** @method getComponent @hide */
+    /** @method getLayout @hide */
+    /** @method getUpdater @hide */
+    /** @method insert @hide */
+    /** @method load @hide */
+    /** @method remove @hide */
+    /** @event add @hide */
+    /** @event afterLayout @hide */
+    /** @event beforeadd @hide */
+    /** @event beforeremove @hide */
+    /** @event remove @hide */
 });
 Ext.reg('treepanel', Ext.tree.TreePanel);

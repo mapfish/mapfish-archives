@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -97,7 +97,7 @@ Ext.grid.ColumnModel = function(config){
 };
 Ext.extend(Ext.grid.ColumnModel, Ext.util.Observable, {
     /**
-     * @cfg {String} id (Optional) Defaults to the column's initial ordinal position.
+     * @cfg {String} id (optional) Defaults to the column's initial ordinal position.
      * A name which identifies this column. The id is used to create a CSS class name which
      * is applied to all table cells (including headers) in that column. The class name
      * takes the form of <pre>x-grid3-td-<b>id</b></pre>
@@ -111,35 +111,42 @@ Ext.extend(Ext.grid.ColumnModel, Ext.util.Observable, {
      * @cfg {String} header The header text to display in the Grid view.
      */
     /**
-     * @cfg {String} dataIndex (Optional) The name of the field in the grid's {@link Ext.data.Store}'s
+     * @cfg {String} dataIndex (optional) The name of the field in the grid's {@link Ext.data.Store}'s
      * {@link Ext.data.Record} definition from which to draw the column's value. If not
      * specified, the column's index is used as an index into the Record's data Array.
      */
     /**
-     * @cfg {Number} width (Optional) The initial width in pixels of the column. Using this
+     * @cfg {Number} width (optional) The initial width in pixels of the column. Using this
      * instead of {@link Ext.grid.Grid#autoSizeColumns} is more efficient.
      */
     /**
-     * @cfg {Boolean} sortable (Optional) True if sorting is to be allowed on this column.
+     * @cfg {Boolean} sortable (optional) True if sorting is to be allowed on this column.
      * Defaults to the value of the {@link #defaultSortable} property.
      * Whether local/remote sorting is used is specified in {@link Ext.data.Store#remoteSort}.
      */
     /**
-     * @cfg {Boolean} fixed (Optional) True if the column width cannot be changed.  Defaults to false.
+     * @cfg {Boolean} fixed (optional) True if the column width cannot be changed.  Defaults to false.
      */
     /**
-     * @cfg {Boolean} resizable (Optional) False to disable column resizing. Defaults to true.
+     * @cfg {Boolean} resizable (optional) False to disable column resizing. Defaults to true.
      */
     /**
-     * @cfg {Boolean} hidden (Optional) True to hide the column. Defaults to false.
+     * @cfg {Boolean} hidden (optional) True to hide the column. Defaults to false.
      */
     /**
-     * @cfg {Function} renderer (Optional) A function used to generate HTML markup for a cell
+     * @cfg {Function} renderer (optional) A function used to generate HTML markup for a cell
      * given the cell's data value. See {@link #setRenderer}. If not specified, the
      * default renderer uses the raw data value.
      */
     /**
-     * @cfg {String} align (Optional) Set the CSS text-align property of the column.  Defaults to undefined.
+     * @cfg {String} align (optional) Set the CSS text-align property of the column.  Defaults to undefined.
+     */
+    /**
+     * @cfg {Boolean} hideable (optional) Specify as <tt>false</tt> to prevent the user from hiding this column.  Defaults to true.
+     */
+    /**
+     * @cfg {Ext.form.Field} editor (optional) The {@link Ext.form.Field} to use when editing values in this column if
+     * editing is supported by the grid.
      */
 
     /**
@@ -313,20 +320,21 @@ Ext.extend(Ext.grid.ColumnModel, Ext.util.Observable, {
     },
 
     /**
-     * Sets the rendering (formatting) function for a column.
+     * Sets the rendering (formatting) function for a column.  See {@link Ext.util.Format} for some 
+     * default formatting functions.
      * @param {Number} col The column index
      * @param {Function} fn The function to use to process the cell's raw data
      * to return HTML markup for the grid view. The render function is called with
      * the following parameters:<ul>
-     * <li><b>value</b> : Object<p style="margin-left:1em">The data value for the cell.</p></li>
-     * <li><b>metadata</b> : Object<p style="margin-left:1em">An object in which you may set the following attributes:<ul>
-     * <li><b>css</b> : String<p style="margin-left:1em">A CSS class name to add to the cell's TD element.</p></li>
-     * <li><b>attr</b> : String<p style="margin-left:1em">An HTML attribute definition string to apply to the data container element <i>within</i> the table cell
+     * <li><b>value</b> : Object<p class="sub-desc">The data value for the cell.</p></li>
+     * <li><b>metadata</b> : Object<p class="sub-desc">An object in which you may set the following attributes:<ul>
+     * <li><b>css</b> : String<p class="sub-desc">A CSS class name to add to the cell's TD element.</p></li>
+     * <li><b>attr</b> : String<p class="sub-desc">An HTML attribute definition string to apply to the data container element <i>within</i> the table cell
      * (e.g. 'style="color:red;"').</p></li></ul></p></li>
-     * <li><b>record</b> : Ext.data.record<p style="margin-left:1em">The {@link Ext.data.Record} from which the data was extracted.</p></li>
-     * <li><b>rowIndex</b> : Number<p style="margin-left:1em">Row index</p></li>
-     * <li><b>colIndex</b> : Number<p style="margin-left:1em">Column index</p></li>
-     * <li><b>store</b> : Ext.data.Store<p style="margin-left:1em">The {@link Ext.data.Store} object from which the Record was extracted.</p></li></ul>
+     * <li><b>record</b> : Ext.data.record<p class="sub-desc">The {@link Ext.data.Record} from which the data was extracted.</p></li>
+     * <li><b>rowIndex</b> : Number<p class="sub-desc">Row index</p></li>
+     * <li><b>colIndex</b> : Number<p class="sub-desc">Column index</p></li>
+     * <li><b>store</b> : Ext.data.Store<p class="sub-desc">The {@link Ext.data.Store} object from which the Record was extracted.</p></li></ul>
      */
     setRenderer : function(col, fn){
         this.config[col].renderer = fn;

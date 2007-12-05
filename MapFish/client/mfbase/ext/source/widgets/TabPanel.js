@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -70,10 +70,6 @@ var tabs = new Ext.TabPanel({
 Ext.TabPanel = Ext.extend(Ext.Panel,  {
     /**
      * @cfg {Boolean} layoutOnTabChange Set to true to do a layout of tab items as tabs are changed.
-     */
-    /**
-     * @cfg {Boolean} collapsible
-     * @hide
      */
     /**
      * @cfg {Boolean} monitorResize True to automatically monitor window resize events and rerender the layout on
@@ -347,7 +343,7 @@ var tabs = new Ext.TabPanel({
             this.remove(t.item);
             return;
         }
-        if(t.item){
+        if(t.item && t.item != this.activeTab){
             this.setActiveTab(t.item);
         }
     },
@@ -355,7 +351,7 @@ var tabs = new Ext.TabPanel({
     // private
     onStripClick : function(e){
         var t = this.findTargets(e);
-        if(!t.close && t.item & t.item != this.activeTab){
+        if(!t.close && t.item && t.item != this.activeTab){
             this.setActiveTab(t.item);
         }
     },
@@ -823,6 +819,23 @@ var tabs = new Ext.TabPanel({
         this.scrollLeft[pos == 0 ? 'addClass' : 'removeClass']('x-tab-scroller-left-disabled');
         this.scrollRight[pos >= (this.getScrollWidth()-this.getScrollArea()) ? 'addClass' : 'removeClass']('x-tab-scroller-right-disabled');
     }
+
+    /**
+     * @cfg {Boolean} collapsible
+     * @hide
+     */
+    /**
+     * @cfg {String} header
+     * @hide
+     */
+    /**
+     * @cfg {Boolean} headerAsText
+     * @hide
+     */
+    /**
+     * @property header
+     * @hide
+     */
 });
 Ext.reg('tabpanel', Ext.TabPanel);
 

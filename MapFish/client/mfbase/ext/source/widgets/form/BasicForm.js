@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -131,6 +131,16 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
     onSubmit : function(e){
         e.stopEvent();
     },
+    
+    // private
+	destroy: function() {
+        this.items.each(function(f){
+            Ext.destroy(f);
+        });
+		this.el.removeAllListeners();
+		this.el.remove();
+		this.purgeListeners();
+	},
 
     /**
      * Returns true if client-side validation on the form is successful.
@@ -173,7 +183,7 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
      * other config options):<ul>
      * <li><b>url</b> : String<p style="margin-left:1em">The url for the action (defaults
      * to the form's url.)</p></li>
-     * <li><b>method : String<p style="margin-left:1em">The form method to use (defaults
+     * <li><b>method</b> : String<p style="margin-left:1em">The form method to use (defaults
      * to the form's method, or POST if not defined)</p></li>
      * <li><b>params</b> : String/Object<p style="margin-left:1em">The params to pass
      * (defaults to the form's baseParams, or none if not defined)</p></li>
@@ -182,7 +192,7 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
      * (the transaction was sent and received correctly), but the resulting response data
      * can still contain data errors. The function is passed the following parameters:<ul>
      * <li><code>form</code> : Ext.form.BasicForm<div class="sub-desc">The form that requested the action</div></li>
-     * <li><code>action</code> : Ext.form.Action<div class="sub-desc">The Action class. The {@link #result}
+     * <li><code>action</code> : Ext.form.Action<div class="sub-desc">The Action class. The {@link Ext.form.Action#result result}
      * property of this object may be examined to perform custom postprocessing.</div></li>
      * </ul></p></li>
      * <li><b>failure</b> : Function<p style="margin-left:1em">The callback that will
@@ -191,7 +201,7 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
      * is passed the following parameters:<ul>
      * <li><code>form</code> : Ext.form.BasicForm<div class="sub-desc">The form that requested the action</div></li>
      * <li><code>action</code> : Ext.form.Action<div class="sub-desc">The Action class. If an Ajax
-     * error ocurred, the failure type will be in {@link #failureType}. The {@link #result}
+     * error ocurred, the failure type will be in {@link Ext.form.Action#failureType failureType}. The {@link Ext.form.Action#result result}
      * property of this object may be examined to perform custom postprocessing.</div></li>
      * </ul></p></li>
      * <li><b>scope</b> : Object<p style="margin-left:1em">The scope in which to call the

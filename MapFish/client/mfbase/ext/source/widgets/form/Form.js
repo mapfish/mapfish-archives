@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -11,6 +11,10 @@
  * @extends Ext.Panel
  * Standard form container.
  * <p><b>Although they are not listed, this class also accepts all the config options required to configure its internal {@link Ext.form.BasicForm}</b></p>
+ * <br><br>
+ * FormPanel uses a {@link Ext.layout.FormLayout} internally, and that is required for fields and labels to work correctly
+ * within the FormPanel's layout.  To nest additional layout styles within a FormPanel, you should nest additional Panels
+ * or other containers that can provide additional layout functionality. <b>You should not override FormPanel's layout.</b>
  * <br><br>
  * By default, Ext Forms are submitted through Ajax, using {@link Ext.form.Action}.
  * To enable normal browser submission of the Ext Form contained in this FormPanel,
@@ -24,7 +28,6 @@
  * @constructor
  * @param {Object} config Configuration options
  */
-
 Ext.FormPanel = Ext.extend(Ext.Panel, {
     /**
      * @cfg {Number} labelWidth The width of labels. This property cascades to child containers.
@@ -60,8 +63,12 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
      */
     monitorPoll : 200,
 
+    /**
+     * @cfg {String} layout @hide
+     */
     layout: 'form',
 
+    // private
     initComponent :function(){
         this.form = this.createForm();
         
@@ -80,11 +87,13 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
         this.relayEvents(this.form, ['beforeaction', 'actionfailed', 'actioncomplete']);
     },
 
+    // private
     createForm: function(){
         delete this.initialConfig.listeners;
         return new Ext.form.BasicForm(null, this.initialConfig);
     },
 
+    // private
     initFields : function(){
         var f = this.form;
         var formPanel = this;
@@ -105,6 +114,7 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
         this.items.each(fn);
     },
 
+    // private
     getLayoutTarget : function(){
         return this.form.el;
     },
@@ -117,6 +127,7 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
         return this.form;
     },
 
+    // private
     onRender : function(ct, position){
         this.initFields();
 
@@ -131,7 +142,14 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
         }
         this.form.initEl(this.body.createChild(o));
     },
+    
+    // private
+    beforeDestroy: function(){
+        Ext.FormPanel.superclass.beforeDestroy.call(this);
+        Ext.destroy(this.form);
+    },
 
+    // private
     initEvents : function(){
         Ext.FormPanel.superclass.initEvents.call(this);
 
@@ -162,10 +180,15 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
         this.bound = false;
     },
 
+    /**
+     * This is a proxy for the underlying BasicForm's {@link Ext.form.BasicForm#load} call.
+     * @param {Object} options The options to pass to the action (see {@link Ext.form.BasicForm#doAction} for details)
+     */
     load : function(){
         this.form.load.apply(this.form, arguments);  
     },
 
+    // private
     onDisable : function(){
         Ext.FormPanel.superclass.onDisable.call(this);
         if(this.form){
@@ -175,6 +198,7 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
         }
     },
 
+    // private
     onEnable : function(){
         Ext.FormPanel.superclass.onEnable.call(this);
         if(this.form){

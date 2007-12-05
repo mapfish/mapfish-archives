@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -37,6 +37,13 @@ Ext.Window = Ext.extend(Ext.Panel, {
     /**
     * @cfg {String/Number/Button} defaultButton
     * The id / index of a button or a button instance to focus when this window received the focus.
+    */
+    /**
+    * @cfg {Function} onEsc
+    * Allows override of the built-in processing for the escape key. Default action
+    * is to close the Window (performing whatever action is specified in {@link #closeAction}.
+    * To prevent the Window closing when the escape key is pressed, specify this as 
+    * Ext.emptyFn (See {@link Ext#emptyFn}).
     */
     /**
     * @cfg {String} baseCls
@@ -259,28 +266,26 @@ Ext.Window = Ext.extend(Ext.Panel, {
         this.dd = new Ext.Window.DD(this);  
     },
 
-    /**
-    * @cfg {Function} onEsc
-    * Allows override of the built-in processing for the escape key. Default action
-    * is to close the Window (performing whatever action is specified in {@link #closeAction}.
-    * To prevent the Window closing when the escape key is pressed, specify this as 
-    * Ext.emptyFn (See {@link Ext#emptyFn}).
-    */
+   // private
     onEsc : function(){
         this[this.closeAction]();  
     },
 
     // private
-    onDestroy : function(){
-        if(this.manager){
-            this.manager.unregister(this);
-        }
+    beforeDestroy : function(){
         Ext.destroy(
             this.resizer,
             this.dd,
             this.proxy
         );
-
+        Ext.Window.superclass.beforeDestroy.call(this);
+    },
+    
+    // private
+    onDestroy : function(){
+        if(this.manager){
+            this.manager.unregister(this);
+        }
         Ext.Window.superclass.onDestroy.call(this);
     },
 

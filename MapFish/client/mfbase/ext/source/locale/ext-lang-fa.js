@@ -1,12 +1,4 @@
 /*
- * Ext JS Library 2.0 RC 1
- * Copyright(c) 2006-2007, Ext JS, LLC.
- * licensing@extjs.com
- * 
- * http://extjs.com/license
- */
-
-/*
  * Farsi (Persian) translation
  * By Mohaqa
  * 03-10-2007, 06:23 PM

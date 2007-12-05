@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -8,7 +8,7 @@
 
 /**
  * @class Ext.WindowGroup
- * An object that represents a grouop of {@link Ext.Window} instances and provides z-order management
+ * An object that represents a group of {@link Ext.Window} instances and provides z-order management
  * and window activation behavior.
  * @constructor
  */
@@ -137,7 +137,7 @@ Ext.WindowGroup = function(){
          * @return {Ext.Window} The active window
          */
         getActive : function(){
-            return front;  
+            return front;
         },
 
         /**

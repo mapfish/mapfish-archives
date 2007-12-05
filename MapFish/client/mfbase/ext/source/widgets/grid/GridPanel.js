@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -42,20 +42,6 @@
  * @param {Object} config The config object
  */
 Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
-    elements:'body',
-
-    /**
-     * @cfg {Boolean} autoWidth
-     * @hide
-     */
-    /**
-     * @cfg {Boolean} items
-     * @hide
-     */
-    /**
-     * @cfg {Boolean} layout
-     * @hide
-     */
     /**
      * @cfg {Ext.data.Store} store The {@link Ext.data.Store} the grid should use as its data source (required).
      */
@@ -79,8 +65,8 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
     * @cfg {Number} maxHeight Sets the maximum height of the grid - ignored if autoHeight is not on.
     */
     /**
-     * @cfg {Boolean} disableSelection True to disable selections in the grid (defaults to false).
-	 */
+     * @cfg {Boolean} disableSelection True to disable selections in the grid (defaults to false). - ignored a SelectionModel is specified 
+     */
     /**
      * @cfg {Boolean} enableColumnMove False to turn off column reordering via drag drop (defaults to true).
      */
@@ -100,43 +86,43 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
     ddText : "{0} selected row{1}",
     /**
      * @cfg {Number} minColumnWidth The minimum width a column can be resized to. Defaults to 25.
-	 */
-	minColumnWidth : 25,
+     */
+    minColumnWidth : 25,
     /**
-	 * @cfg {Boolean} monitorWindowResize True to autoSize the grid when the window resizes. Defaults to true.
-	 */
-	monitorWindowResize : true,
+     * @cfg {Boolean} monitorWindowResize True to autoSize the grid when the window resizes. Defaults to true.
+     */
+    monitorWindowResize : true,
     //deprecated
-	maxRowsToMeasure : 0,
-	/**
-	 * @cfg {Boolean} trackMouseOver True to highlight rows when the mouse is over. Default is true.
-	 */
-	trackMouseOver : true,
-	/**
-	 * @cfg {Boolean} enableDragDrop True to enable drag and drop of rows.
-	 */
-	enableDragDrop : false,
-	/**
-	 * @cfg {Boolean} enableColumnMove True to enable drag and drop reorder of columns.
-	 */
-	enableColumnMove : true,
-	/**
-	 * @cfg {Boolean} enableColumnHide True to enable hiding of columns with the header context menu.
-	 */
-	enableColumnHide : true,
-	/**
-	 * @cfg {Boolean} enableHdMenu True to enable the drop down button for menu in the headers.
-	 */
-	enableHdMenu : true,
+    maxRowsToMeasure : 0,
     /**
-	 * @cfg {Boolean} enableRowHeightSync True to manually sync row heights across locked and not locked rows.
-	 */
-	enableRowHeightSync : false,
-	/**
-	 * @cfg {Boolean} stripeRows True to stripe the rows. Default is false.
-	 */
-	stripeRows : false,
-	/**
+     * @cfg {Boolean} trackMouseOver True to highlight rows when the mouse is over. Default is true.
+     */
+    trackMouseOver : true,
+    /**
+     * @cfg {Boolean} enableDragDrop True to enable drag and drop of rows.
+     */
+    enableDragDrop : false,
+    /**
+     * @cfg {Boolean} enableColumnMove True to enable drag and drop reorder of columns.
+     */
+    enableColumnMove : true,
+    /**
+     * @cfg {Boolean} enableColumnHide True to enable hiding of columns with the header context menu.
+     */
+    enableColumnHide : true,
+    /**
+     * @cfg {Boolean} enableHdMenu True to enable the drop down button for menu in the headers.
+     */
+    enableHdMenu : true,
+    /**
+     * @cfg {Boolean} enableRowHeightSync True to manually sync row heights across locked and not locked rows.
+     */
+    enableRowHeightSync : false,
+    /**
+     * @cfg {Boolean} stripeRows True to stripe the rows. Default is false.
+     */
+    stripeRows : false,
+    /**
      * @cfg {String} autoExpandColumn The id of a column in this grid that should expand to fill unused space. This id can not be 0.
      */
     autoExpandColumn : false,
@@ -150,13 +136,13 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
     */
     autoExpandMax : 1000,
     /**
-	 * @cfg {Object} view The {@link Ext.grid.GridView} used by the grid. This can be set before a call to render().
-	 */
-	view : null,
-	/**
+     * @cfg {Object} view The {@link Ext.grid.GridView} used by the grid. This can be set before a call to render().
+     */
+    view : null,
+    /**
      * @cfg {Object} loadMask An {@link Ext.LoadMask} config or true to mask the grid while loading (defaults to false).
-	 */
-	loadMask : false,
+     */
+    loadMask : false,
 
     // private
     rendered : false,
@@ -478,12 +464,12 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
         this.viewReady = true;
     },
 
-	/**
-	 * Reconfigures the grid to use a different Store and Column Model.
-	 * The View will be bound to the new objects and refreshed.
-	 * @param {Ext.data.Store} store The new {@link Ext.data.Store} object
-	 * @param {Ext.grid.ColumnModel} colModel The new {@link Ext.grid.ColumnModel} object
-	 */
+    /**
+     * Reconfigures the grid to use a different Store and Column Model.
+     * The View will be bound to the new objects and refreshed.
+     * @param {Ext.data.Store} store The new {@link Ext.data.Store} object
+     * @param {Ext.grid.ColumnModel} colModel The new {@link Ext.grid.ColumnModel} object
+     */
     reconfigure : function(store, colModel){
         if(this.loadMask){
             this.loadMask.destroy();
@@ -673,8 +659,36 @@ Ext.grid.GridPanel = Ext.extend(Ext.Panel, {
         return String.format(this.ddText, count, count == 1 ? '' : 's');
     }
 
-    /**
-     * @cfg {Boolean} autoWidth @hide
-     */
+    /** @cfg {String/Number} activeItem @hide */
+    /** @cfg {Boolean} autoDestroy @hide */
+    /** @cfg {Object/String/Function} autoLoad @hide */
+    /** @cfg {Boolean} autoWidth @hide */
+    /** @cfg {Boolean/Number} bufferResize @hide */
+    /** @cfg {String} defaultType @hide */
+    /** @cfg {Object} defaults @hide */
+    /** @cfg {Boolean} hideBorders @hide */
+    /** @cfg {Mixed} items @hide */
+    /** @cfg {String} layout @hide */
+    /** @cfg {Object} layoutConfig @hide */
+    /** @cfg {Boolean} monitorResize @hide */
+    /** @property items @hide */
+    /** @method add @hide */
+    /** @method cascade @hide */
+    /** @method doLayout @hide */
+    /** @method find @hide */
+    /** @method findBy @hide */
+    /** @method findById @hide */
+    /** @method findByType @hide */
+    /** @method getComponent @hide */
+    /** @method getLayout @hide */
+    /** @method getUpdater @hide */
+    /** @method insert @hide */
+    /** @method load @hide */
+    /** @method remove @hide */
+    /** @event add @hide */
+    /** @event afterLayout @hide */
+    /** @event beforeadd @hide */
+    /** @event beforeremove @hide */
+    /** @event remove @hide */
 });
 Ext.reg('grid', Ext.grid.GridPanel);

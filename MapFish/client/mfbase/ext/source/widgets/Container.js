@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -29,10 +29,15 @@ Ext.Container = Ext.extend(Ext.BoxComponent, {
      * @cfg {Object} layoutConfig
      * This is a config object containing properties specific to the chosen layout (to be used in conjunction with
      * the {@link #layout} config value).  For complete details regarding the valid config options for each layout
-     * type, see the layout class corresponding to the type specified:
-     * {@link Ext.layout.Accordion}, {@link Ext.layout.AnchorLayout}, {@link Ext.layout.BorderLayout},
-     * {@link Ext.layout.CardLayout}, {@link Ext.layout.ColumnLayout}, {@link Ext.layout.FitLayout},
-     * {@link Ext.layout.FormLayout} and {@link Ext.layout.TableLayout}.
+     * type, see the layout class corresponding to the type specified:<ul class="mdetail-params">
+     * <li>{@link Ext.layout.Accordion}</li>
+     * <li>{@link Ext.layout.AnchorLayout}</li>
+     * <li>{@link Ext.layout.BorderLayout}</li>
+     * <li>{@link Ext.layout.CardLayout}</li>
+     * <li>{@link Ext.layout.ColumnLayout}</li>
+     * <li>{@link Ext.layout.FitLayout}</li>
+     * <li>{@link Ext.layout.FormLayout}</li>
+     * <li>{@link Ext.layout.TableLayout}</li></ul>
      */
     /**
      * @cfg {Boolean/Number} bufferResize

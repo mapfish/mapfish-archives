@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -10,13 +10,13 @@
  * @class Ext.data.ScriptTagProxy
  * @extends Ext.data.DataProxy
  * An implementation of Ext.data.DataProxy that reads a data object from a URL which may be in a domain
- * other than the originating domain of the running page.<br><br>
+ * other than the originating domain of the running page.<br>
  * <p>
- * <em>Note that if you are retrieving data from a page that is in a domain that is NOT the same as the originating domain
- * of the running page, you must use this class, rather than DataProxy.</em><br><br>
+ * <b>Note that if you are retrieving data from a page that is in a domain that is NOT the same as the originating domain
+ * of the running page, you must use this class, rather than HttpProxy.</b><br>
  * <p>
  * The content passed back from a server resource requested by a ScriptTagProxy is executable JavaScript
- * source code that is used as the source inside a &lt;script> tag.<br><br>
+ * source code that is used as the source inside a &lt;script> tag.<br>
  * <p>
  * In order for the browser to process the returned data, the server must wrap the data object
  * with a call to a callback function, the name of which is passed as a parameter by the ScriptTagProxy.
@@ -40,7 +40,7 @@ out.print(dataBlock.toJsonString());
 if (scriptTag) {
     out.write(");");
 }
-</pre></code>
+</code></pre>
  *
  * @constructor
  * @param {Object} config A configuration object.

@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -95,8 +95,8 @@ Ext.extend(Ext.data.Connection, Ext.util.Observable, {
     disableCaching: true,
 
     /**
-     * Sends an HTTP request to a remote server.<p>
-     * <b>Important:<b> Ajax server requests are asynchronous, and this call will
+     * <p>Sends an HTTP request to a remote server.</p>
+     * <p><b>Important:</b> Ajax server requests are asynchronous, and this call will
      * return before the response has been recieved. Process any returned data
      * in a callback function.
      * @param {Object} options An object which may contain the following properties:<ul>
@@ -105,9 +105,10 @@ Ext.extend(Ext.data.Connection, Ext.util.Observable, {
      * <li><b>params</b> : Object/String/Function (Optional)<p style="margin-left:1em">
      * An object containing properties which are used as parameters to the
      * request, a url encoded string or a function to call to get either.</p></li>
-     * <li><b>method</b> {String} (Optional) The HTTP method to use for the request. Defaults to the configured method, or
-     * if no method was configured, "GET" if no parameters are being sent, and "POST" if parameters are being sent.</li>
-     * <li><b>callback</b> : Function} (Optional)<p style="margin-left:1em">The
+     * <li><b>method</b> : String (Optional)<p style="margin-left:1em">The HTTP method to use
+     * for the request. Defaults to the configured method, or if no method was configured,
+     * "GET" if no parameters are being sent, and "POST" if parameters are being sent.</p></li>
+     * <li><b>callback</b> : Function (Optional)<p style="margin-left:1em">The
      * function to be called upon receipt of the HTTP response. The callback is
      * called regardless of success or failure and is passed the following
      * parameters:<ul>
@@ -144,7 +145,9 @@ Ext.extend(Ext.data.Connection, Ext.util.Observable, {
      * data. Any params will be appended to the URL.</p></li>
      * <li><b>disableCaching</b> : Boolean (Optional)<p style="margin-left:1em">True
      * to add a unique cache-buster param to GET requests.</p></li>
-     * </ul>
+     * </ul></p>
+     * <p>The options object may also contain any other property which might be needed to perform
+     * postprocessing in a callback because it is passed to callback functions.</p>
      * @return {Number} transactionId The id of the server transaction. This may be used
      * to cancel the request.
      */

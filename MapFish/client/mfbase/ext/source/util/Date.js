@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -486,7 +486,7 @@ Date.formatCodeToRegex = function(character, currentGroup) {
     default:
         return {g:0,
             c:null,
-            s:String.escape(character)};
+            s:Ext.escapeRe(character)};
     }
 };
 

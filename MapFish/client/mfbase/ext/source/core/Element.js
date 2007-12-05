@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -1166,16 +1166,16 @@ el.on('click', this.onClick, this, {
      * Code:<pre><code>
 el.on({
     'click' : {
-        fn: this.onClick
+        fn: this.onClick,
         scope: this,
         delay: 100
     },
     'mouseover' : {
-        fn: this.onMouseOver
+        fn: this.onMouseOver,
         scope: this
     },
     'mouseout' : {
-        fn: this.onMouseOut
+        fn: this.onMouseOut,
         scope: this
     }
 });</code></pre>
@@ -1185,7 +1185,7 @@ el.on({
 el.on({
     'click' : this.onClick,
     'mouseover' : this.onMouseOver,
-    'mouseout' : this.onMouseOut
+    'mouseout' : this.onMouseOut,
     scope: this
 });</code></pre>
      */
@@ -1583,10 +1583,10 @@ el.un('click', this.handlerFn);
      */
     getAlignToXY : function(el, p, o){
         el = Ext.get(el);
-        var d = this.dom;
-        if(!el.dom){
-            throw "Element.alignTo with an element that doesn't exist";
+        if(!el || !el.dom){
+            throw "Element.alignToXY with an element that doesn't exist";
         }
+        var d = this.dom;
         var c = false; //constrain to viewport
         var p1 = "", p2 = "";
         o = o || [0,0];
@@ -1843,8 +1843,8 @@ el.alignTo("other-el", "c-bl", [-6, 0]);
     /**
     * Update the innerHTML of this element, optionally searching for and processing scripts
     * @param {String} html The new HTML
-    * @param {Boolean} loadScripts (optional) true to look for and process scripts
-    * @param {Function} callback For async script loading you can be notified when the update completes
+    * @param {Boolean} loadScripts (optional) True to look for and process scripts (defaults to false)
+    * @param {Function} callback (optional) For async script loading you can be notified when the update completes
     * @return {Ext.Element} this
      */
     update : function(html, loadScripts, callback){
@@ -2714,11 +2714,12 @@ el.alignTo("other-el", "c-bl", [-6, 0]);
         if(v.substr(0, 4) == "rgb("){
             var rvs = v.slice(4, v.length -1).split(",");
             for(var i = 0; i < 3; i++){
-                var h = parseInt(rvs[i]).toString(16);
+                var h = parseInt(rvs[i]);
+                var s = h.toString(16);
                 if(h < 16){
-                    h = "0" + h;
+                    s = "0" + s;
                 }
-                color += h;
+                color += s;
             }
         } else {
             if(v.substr(0, 1) == "#"){

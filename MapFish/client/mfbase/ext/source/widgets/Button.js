@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -210,6 +210,7 @@ Ext.Button = Ext.extend(Ext.Component, {
         Ext.ButtonToggleMgr.register(this);
     },
 
+    // private
     initButtonEl : function(btn, btnEl){
 
         this.el = btn;
@@ -267,6 +268,7 @@ Ext.Button = Ext.extend(Ext.Component, {
         btn.on(this.clickEvent, this.onClick, this);
     },
 
+    // private
     afterRender : function(){
         Ext.Button.superclass.afterRender.call(this);
         if(Ext.isIE6){
@@ -276,13 +278,30 @@ Ext.Button = Ext.extend(Ext.Component, {
         }
     },
 
+    /**
+     * Sets the CSS class that provides a background image to use as the button's icon.  This method also changes
+     * the value of the {@link iconCls} config internally.
+     * @param {String} cls The CSS class providing the icon image
+     */
     setIconClass : function(cls){
         if(this.el){
             this.el.child(this.buttonSelector).replaceClass(this.iconCls, cls);
         }
         this.iconCls = cls;
     },
+    
+    // private
+    beforeDestroy: function(){
+        var btn = this.el.child(this.buttonSelector);
+        if(btn){
+            btn.removeAllListeners();
+        }
+        if(this.menu){
+            Ext.destroy(this.menu);
+        }
+    },
 
+    // private
     onDestroy : function(){
         if(this.rendered){
             Ext.ButtonToggleMgr.unregister(this);
@@ -367,6 +386,7 @@ Ext.Button = Ext.extend(Ext.Component, {
         this.el.child(this.buttonSelector).focus();
     },
     
+    // private
     onDisable : function(){
         if(this.el){
             if(!Ext.isIE6){
@@ -377,6 +397,7 @@ Ext.Button = Ext.extend(Ext.Component, {
         this.disabled = true;
     },
 
+    // private
     onEnable : function(){
         if(this.el){
             if(!Ext.isIE6){
@@ -438,10 +459,12 @@ Ext.Button = Ext.extend(Ext.Component, {
         }
     },
 
+    // private
     isMenuTriggerOver : function(e, internal){
         return this.menu && !internal;
     },
 
+    // private
     isMenuTriggerOut : function(e, internal){
         return this.menu && !internal;
     },
@@ -461,6 +484,7 @@ Ext.Button = Ext.extend(Ext.Component, {
         }
     },
 
+    // private
     monitorMouseOver : function(e){
         if(e.target != this.el.dom && !e.within(this.el)){
             Ext.getDoc().un('mouseover', this.monitorMouseOver, this);
@@ -488,6 +512,7 @@ Ext.Button = Ext.extend(Ext.Component, {
         this.el.removeClass("x-btn-focus");
     },
 
+    // private
     getClickEl : function(e, isUp){
        return this.el;
     },
@@ -519,6 +544,7 @@ Ext.Button = Ext.extend(Ext.Component, {
         this.fireEvent('menuhide', this, this.menu);
     },
 
+    // private
     restoreClick : function(){
         this.ignoreNextClick = 0;
     }

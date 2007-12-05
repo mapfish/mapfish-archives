@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -15,7 +15,13 @@
  * // Get it from a Ext.Element object
  * var el = Ext.get("foo");
  * var mgr = el.getUpdater();
- * mgr.update("http://myserver.com/index.php", "param1=1&amp;param2=2");
+ * mgr.update({
+ *     url: "http://myserver.com/index.php", 
+ *     params: {
+ *         param1: "foo",
+ *         param2: "bar"
+ *     }
+ * });
  * ...
  * mgr.formUpdate("myFormId", "http://myserver.com/index.php");
  * <br>
@@ -27,8 +33,8 @@
    // short handed call directly from the element object
    Ext.get("foo").load({
         url: "bar.php",
-        scripts:true,
-        params: "for=bar",
+        scripts: true,
+        params: "param1=foo&amp;param2=bar",
         text: "Loading Foo..."
    });
  * </code></pre>
@@ -155,40 +161,40 @@ Ext.extend(Ext.Updater, Ext.util.Observable, {
     /**
      * Performs an <b>asynchronous</b> request, updating this element with the response.
      * If params are specified it uses POST, otherwise it uses GET.<br><br>
-     * <b>NB:</b> Due to the asynchronous nature of remote server requests, the returned data will
-     * not be available to the line immediately following the load() call. To process the returned
-     * data, use the callback option, or an {@link #event-update update} event handler.
+     * <b>NB:</b> Due to the asynchronous nature of remote server requests, the Element
+     * will not have been fully updated when the function returns. To postprocess the returned
+     * data, use the callback option, or an <b><tt>update</tt></b> event handler.
      * @param {Object} options A config object containing any of the following options:<ul>
-     * <li>url : <b>String/Function</b><p style="margin-left:1em>The URL to
+     * <li>url : <b>String/Function</b><p class="sub-desc">The URL to
      * request or a function which <i>returns</i> the URL.</p></li>
-     * <li>method : <b>String</b><p style="margin-left:1em>The HTTP method to
+     * <li>method : <b>String</b><p class="sub-desc">The HTTP method to
      * use. Defaults to POST if params are present, or GET if not.</p></li>
-     * <li>params : <b>String/Object/Function</b><p style="margin-left:1em>The
+     * <li>params : <b>String/Object/Function</b><p class="sub-desc">The
      * parameters to pass to the server. These may be specified as a urlencoded
      * string, or as an object containing properties which represent parameters,
      * or as a function, which returns an object.</p></li>
-     * <li>scripts : <b>Boolean</b><p style="margin-left:1em>If tt>true</tt>
-     * any &lt;>script> tags embedded in the response text will be extracted
+     * <li><b>scripts</b> : Boolean<p class="sub-desc">If <tt>true</tt>
+     * any &lt;script&gt; tags embedded in the response text will be extracted
      * and executed. If this option is specified, the callback will be
      * called <i>after</i> the execution of the scripts.</p></li>
-     * <li>callback : <b>Function</b><p style="margin-left:1em>A function to
+     * <li><b>callback</b> : Function<p class="sub-desc">A function to
      * be called when the response from the server arrives. The following
      * parameters are passed:<ul>
-     * <li><b>el</b> : Ext.Element<p style="margin-left:1em">The Element being updated.</p></li>
-     * <li><b>success</b> : Boolean<p style="margin-left:1em">True for success, false for failure.</p></li>
-     * <li><b>response</b> : XMLHttpRequest<p style="margin-left:1em">The XMLHttpRequest which processed the update.</p></li>
-     * <li><b>options</b> : Object<p style="margin-left:1em">The config object passed to the update call.</p></li></ul>
+     * <li><b>el</b> : Ext.Element<p class="sub-desc">The Element being updated.</p></li>
+     * <li><b>success</b> : Boolean<p class="sub-desc">True for success, false for failure.</p></li>
+     * <li><b>response</b> : XMLHttpRequest<p class="sub-desc">The XMLHttpRequest which processed the update.</p></li>
+     * <li><b>options</b> : Object<p class="sub-desc">The config object passed to the update call.</p></li></ul>
      * </p></li>
-     * <li>scope : <b>Object</b><p style="margin-left:1em>The scope in which
+     * <li><b>scope</b> : Object<p class="sub-desc">The scope in which
      * to execute the callback (The callback's <tt>this<tt> reference.) If the
      * <tt>params</tt> option is a function, this scope is used for that function also.</p></li>
-     * <li>discardUrl : <b>Boolean</b><p style="margin-left:1em>If not passed
+     * <li><b>discardUrl</b> : Boolean<p class="sub-desc">If not passed
      * as <tt>false</tt> the URL of this request becomes the default URL for
      * this Updater object, and will be subsequently used in {@link #refresh}
      * calls.</p></li>
-     * <li>timeout : <b>Number</b><p style="margin-left:1em>The timeout to use
+     * <li><b>timeout</b> : Number<p class="sub-desc">The timeout to use
      * when waiting for a response.</p></li>
-     * <li>nocache : <b>Boolean</b><p style="margin-left:1em>Only needed for GET
+     * <li><b>nocache</b> : Boolean<p class="sub-desc">Only needed for GET
      * requests, this option causes an extra, generated parameter to be passed
      * to defeat caching.</p></li></ul>
      * <p>
@@ -203,7 +209,7 @@ um.update({
     nocache: false,
     text: "Loading...",
     timeout: 30,
-    scripts: false // Save time by avoiding RexExp execution.
+    scripts: false // Save time by avoiding RegExp execution.
 });
 </code></pre>
      */
@@ -266,9 +272,9 @@ um.update({
      * @param {Boolean} reset (optional) Whether to try to reset the form after the update
      * @param {Function} callback (optional) Callback when transaction is complete. The following
      * parameters are passed:<ul>
-     * <li><b>el</b> : Ext.Element<p style="margin-left:1em">The Element being updated.</p></li>
-     * <li><b>success</b> : Boolean<p style="margin-left:1em">True for success, false for failure.</p></li>
-     * <li><b>response</b> : XMLHttpRequest<p style="margin-left:1em">The XMLHttpRequest which processed the update.</p></li></ul>
+     * <li><b>el</b> : Ext.Element<p class="sub-desc">The Element being updated.</p></li>
+     * <li><b>success</b> : Boolean<p class="sub-desc">True for success, false for failure.</p></li>
+     * <li><b>response</b> : XMLHttpRequest<p class="sub-desc">The XMLHttpRequest which processed the update.</p></li></ul>
      */
     formUpdate : function(form, url, reset, callback){
         if(this.fireEvent("beforeupdate", this.el, form, url) !== false){

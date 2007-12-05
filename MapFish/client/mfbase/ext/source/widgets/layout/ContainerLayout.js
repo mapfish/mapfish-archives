@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -56,7 +56,8 @@ Ext.layout.ContainerLayout.prototype = {
 
     // private
     isValidParent : function(c, target){
-        return c.getEl().dom.parentNode == target.dom;
+		var el = c.getPositionEl ? c.getPositionEl() : c.getEl();
+		return el.dom.parentNode == target.dom;
     },
 
     // private
@@ -113,11 +114,13 @@ Ext.layout.ContainerLayout.prototype = {
 
     // private
     setContainer : function(ct){
-        if(this.monitorResize){
-            if(ct && this.container && ct != this.container){
+        if(this.monitorResize && ct != this.container){
+            if(this.container){
                 this.container.un('resize', this.onResize, this);
             }
-            ct.on('resize', this.onResize, this);
+            if(ct){
+                ct.on('resize', this.onResize, this);
+            }
         }
         this.container = ct;
     },

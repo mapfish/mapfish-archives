@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -12,7 +12,7 @@
  * <p>This is a layout specifically designed for creating forms.
  * This class can be extended or created via the layout:'form' {@link Ext.Container#layout} config,
  * and should generally not need to be created directly via the new keyword.  However, when used in an application,
- * it will usually be preferrable to use a {@link Ext.FormPanel} (which automatically uses FormLayout as its layout
+ * it will usually be preferrable to use a {@link Ext.form.FormPanel} (which automatically uses FormLayout as its layout
  * class) since it also provides built-in functionality for loading, validating and submitting the form.</p>
  * <p>Note that when creating a layout via config, the layout-specific config properties must be passed in via
  * the {@link Ext.Container#layoutConfig} object which will then be applied internally to the layout.  The container
@@ -50,7 +50,7 @@ Ext.QuickTips.init();
 // While you can create a basic Panel with layout:'form', practically
 // you should usually use a FormPanel to also get its form functionality
 // since it already creates a FormLayout internally.
-var form = new Ext.FormPanel({
+var form = new Ext.form.FormPanel({
     labelWidth: 75,
     title: 'Form Layout',
     bodyStyle:'padding:15px',

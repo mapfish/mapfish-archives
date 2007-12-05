@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -160,7 +160,7 @@ Ext.data.Record.prototype = {
 
     /**
      * Get the value of the named field.
-     * @param name {String} The name of the field to get the value of.
+     * @param {String} name The name of the field to get the value of.
      * @return {Object} The value of the field.
      */
     get : function(name){

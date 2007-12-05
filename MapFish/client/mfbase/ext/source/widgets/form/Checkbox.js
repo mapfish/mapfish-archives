@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -39,7 +39,7 @@ Ext.form.Checkbox = Ext.extend(Ext.form.Field,  {
      * @cfg {String} inputValue The value that should go into the generated input element's value attribute
      */
 
-
+	// private
     initComponent : function(){
         Ext.form.Checkbox.superclass.initComponent.call(this);
         this.addEvents(
@@ -53,24 +53,27 @@ Ext.form.Checkbox = Ext.extend(Ext.form.Field,  {
         );
     },
 
+    // private
     onResize : function(){
         Ext.form.Checkbox.superclass.onResize.apply(this, arguments);
         if(!this.boxLabel){
             this.el.alignTo(this.wrap, 'c-c');
         }
     },
-
+    
+    // private
     initEvents : function(){
         Ext.form.Checkbox.superclass.initEvents.call(this);
         this.el.on("click", this.onClick,  this);
         this.el.on("change", this.onClick,  this);
     },
 
-
+	// private
     getResizeEl : function(){
         return this.wrap;
     },
 
+    // private
     getPositionEl : function(){
         return this.wrap;
     },
@@ -101,6 +104,14 @@ Ext.form.Checkbox = Ext.extend(Ext.form.Field,  {
         }else{
             this.checked = this.el.dom.checked;
         }
+    },
+    
+    // private
+    onDestroy : function(){
+        if(this.wrap){
+            this.wrap.remove();
+        }
+        Ext.form.Checkbox.superclass.onDestroy.call(this);
     },
 
     // private

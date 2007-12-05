@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -11,10 +11,10 @@
  * @extends Ext.util.Observable
  * The Store class encapsulates a client side cache of {@link Ext.data.Record Record}
  * objects which provide input data for Components such as the {@link Ext.grid.GridPanel GridPanel},
- * the {@link Ext.form.ComboBox ComboBox}, or the {@link Ext.DataView DataView}</p><br>
+ * the {@link Ext.form.ComboBox ComboBox}, or the {@link Ext.DataView DataView}</p>
  * <p>A Store object uses its {@link #proxy configured} implementation of {@link Ext.data.DataProxy DataProxy}
- * to access a data object unless you call {@link #loadData} directly and pass in your data.</p><br>
- * <p>A Store object has no knowledge of the format of the data returned by the Proxy.</p><br>
+ * to access a data object unless you call {@link #loadData} directly and pass in your data.</p>
+ * <p>A Store object has no knowledge of the format of the data returned by the Proxy.</p>
  * <p>A Store object uses its {@link #reader configured} implementation of {@link Ext.data.DataReader DataReader}
  * to create {@link Ext.data.Record Record} instances from the data object. These Records
  * are cached and made available through accessor functions.</p>
@@ -28,6 +28,10 @@ Ext.data.Store = function(config){
     this.data.getKey = function(o){
         return o.id;
     };
+    /**
+     * An object containing properties which are used as parameters on any HTTP request.
+     * @property
+     */
     this.baseParams = {};
     // private
     this.paramNames = {
@@ -189,11 +193,11 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
     * <p>If remote sorting is specified, then clicking on a column header causes the
     * current page to be requested from the server with the addition of the following
     * two parameters:
-    * <ul>
-    * <li><b>sort</b> : String<p style="margin-left:1em">The name (as specified in
+    * <div class="mdetail-params"><ul>
+    * <li><b>sort</b> : String<p class="sub-desc">The name (as specified in
     * the Record's Field definition) of the field to sort on.</p></li>
-    * <li><b>dir</b> : String<p style="margin-left:1em">The direction of the sort, "ASC" or "DESC".</p></li>
-    * </ul></p>
+    * <li><b>dir</b> : String<p class="sub-desc">The direction of the sort, "ASC" or "DESC".</p></li>
+    * </ul></div></p>
     */
     remoteSort : false,
 
@@ -356,14 +360,14 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
      * and this call will return before the new data has been loaded. Perform any post-processing
      * in a callback function, or in a "load" event handler.</b></p>
      * @param {Object} options An object containing properties which control loading options:<ul>
-     * <li><b>params</b> :Object<p style="margin-left:1em">An object containing properties to pass as HTTP parameters to a remote data source.</p></li>
-     * <li><b>callback</b> : Function}<p style="margin-left:1em">A function to be called after the Records have been loaded. The callback is
+     * <li><b>params</b> :Object<p class="sub-desc">An object containing properties to pass as HTTP parameters to a remote data source.</p></li>
+     * <li><b>callback</b> : Function}<p class="sub-desc">A function to be called after the Records have been loaded. The callback is
      * passed the following arguments:<ul>
      * <li>r : Ext.data.Record[]</li>
      * <li>options: Options object from the load call</li>
      * <li>success: Boolean success indicator</li></ul></p></li>
-     * <li><b>scope</b> : Object<p style="margin-left:1em">Scope with which to call the callback (defaults to the Store object)</p></li>
-     * <li><b>add</b> : Boolean<p style="margin-left:1em">Indicator to append loaded records rather than replace the current cache.</p></li>
+     * <li><b>scope</b> : Object<p class="sub-desc">Scope with which to call the callback (defaults to the Store object)</p></li>
+     * <li><b>add</b> : Boolean<p class="sub-desc">Indicator to append loaded records rather than replace the current cache.</p></li>
      * </ul>
      */
     load : function(options){
@@ -468,8 +472,8 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
     /**
      * Returns an object describing the current sort state of this Store.
      * @return {Object} The sort state of the Store. An object with two properties:<ul>
-     * <li><b>field : String<p style="margin-left:1em">The name of the field by which the Records are sorted.</p></li>
-     * <li><b>direction : String<p style="margin-left:1em">The sort order, "ASC" or "DESC".</p></li>
+     * <li><b>field : String<p class="sub-desc">The name of the field by which the Records are sorted.</p></li>
+     * <li><b>direction : String<p class="sub-desc">The sort order, "ASC" or "DESC".</p></li>
      * </ul>
      */
     getSortState : function(){
@@ -604,9 +608,9 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
      * Record in this Store. If the function returns <tt>true</tt> the Record is included,
      * otherwise it is filtered out.
      * @param {Function} fn The function to be called. It will be passed the following parameters:<ul>
-     * <li><b>record</b> : Ext.data.Record<p style="margin-left:1em">The {@link Ext.data.Record record}
+     * <li><b>record</b> : Ext.data.Record<p class="sub-desc">The {@link Ext.data.Record record}
      * to test for filtering. Access field values using {@link Ext.data.Record#get}.</p></li>
-     * <li><b>id</b> : Object<p style="margin-left:1em">The ID of the Record passed.</p></li>
+     * <li><b>id</b> : Object<p class="sub-desc">The ID of the Record passed.</p></li>
      * </ul>
      * @param {Object} scope (optional) The scope of the function (defaults to this)
      */
@@ -635,9 +639,9 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
      * will be called with each record in this Store. If the function returns <tt>true</tt> the record is
      * included in the results.
      * @param {Function} fn The function to be called. It will be passed the following parameters:<ul>
-     * <li><b>record</b> : Ext.data.Record<p style="margin-left:1em">The {@link Ext.data.Record record}
+     * <li><b>record</b> : Ext.data.Record<p class="sub-desc">The {@link Ext.data.Record record}
      * to test for filtering. Access field values using {@link Ext.data.Record#get}.</p></li>
-     * <li><b>id</b> : Object<p style="margin-left:1em">The ID of the Record passed.</p></li>
+     * <li><b>id</b> : Object<p class="sub-desc">The ID of the Record passed.</p></li>
      * </ul>
      * @param {Object} scope (optional) The scope of the function (defaults to this)
      * @return {MixedCollection} Returns an Ext.util.MixedCollection of the matched records
@@ -649,7 +653,6 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
 
     /**
      * Finds the index of the first matching record in this store by a specific property/value.
-     * Returns a new collection that has been filtered.
      * @param {String} property A property on your objects
      * @param {String/RegExp} value Either string that the property values
      * should start with or a RegExp to test against the property.
@@ -665,11 +668,11 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
 
     /**
      * Find the index of the first matching Record in this Store by a function.
-     * If the function returns <tt>true<tt> it is considered a match.
+     * If the function returns <tt>true</tt> it is considered a match.
      * @param {Function} fn The function to be called. It will be passed the following parameters:<ul>
-     * <li><b>record</b> : Ext.data.Record<p style="margin-left:1em">The {@link Ext.data.Record record}
+     * <li><b>record</b> : Ext.data.Record<p class="sub-desc">The {@link Ext.data.Record record}
      * to test for filtering. Access field values using {@link Ext.data.Record#get}.</p></li>
-     * <li><b>id</b> : Object<p style="margin-left:1em">The ID of the Record passed.</p></li>
+     * <li><b>id</b> : Object<p class="sub-desc">The ID of the Record passed.</p></li>
      * </ul>
      * @param {Object} scope (optional) The scope of the function (defaults to this)
      * @param {Number} startIndex (optional) The index to start searching at

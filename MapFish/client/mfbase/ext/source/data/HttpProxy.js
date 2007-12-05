@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -9,24 +9,27 @@
 /**
  * @class Ext.data.HttpProxy
  * @extends Ext.data.DataProxy
- * An implementation of {@link Ext.data.DataProxy} that reads a data object from an {@link Ext.data.Connection} object
- * configured to reference a certain URL.<br><br>
+ * An implementation of {@link Ext.data.DataProxy} that reads a data object from a {@link Ext.data.Connection Connection} object
+ * configured to reference a certain URL.<br>
  * <p>
- * <em>Note that this class cannot be used to retrieve data from a domain other than the domain
- * from which the running page was served.<br><br>
+ * <b>Note that this class cannot be used to retrieve data from a domain other than the domain
+ * from which the running page was served.<br>
  * <p>
- * For cross-domain access to remote data, use an {@link Ext.data.ScriptTagProxy}.</em><br><br>
+ * For cross-domain access to remote data, use a {@link Ext.data.ScriptTagProxy ScriptTagProxy}.</b><br>
  * <p>
  * Be aware that to enable the browser to parse an XML document, the server must set
  * the Content-Type header in the HTTP response to "text/xml".
  * @constructor
- * @param {Object} conn Connection config options to add to each request (e.g. {url: 'foo.php'} or
- * an {@link Ext.data.Connection} object.  If a Connection config is passed, the singleton {@link Ext.Ajax} object
- * will be used to make the request.
+ * @param {Object} conn an {@link Ext.data.Connection} object, or options parameter to {@link Ext.Ajax.request}.
+ * If an options parameter is passed, the singleton {@link Ext.Ajax} object will be used to make the request.
  */
 Ext.data.HttpProxy = function(conn){
     Ext.data.HttpProxy.superclass.constructor.call(this);
-    // is conn a conn config or a real conn?
+    /**
+     * The Connection object (Or options parameter to {@link Ext.Ajax.request}) which this HttpProxy uses to make requests to the server.
+     * Properties of this object may be changed dynamically to change the way data is requested.
+     * @property
+     */
     this.conn = conn;
     this.useAjax = !conn || !conn.events;
 };

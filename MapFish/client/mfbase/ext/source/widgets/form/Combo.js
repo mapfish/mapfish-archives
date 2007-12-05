@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -306,7 +306,7 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
             this.innerList = this.list.createChild({cls:cls+'-inner'});
             this.innerList.on('mouseover', this.onViewOver, this);
             this.innerList.on('mousemove', this.onViewMove, this);
-            this.innerList.setWidth(lw - this.list.getFrameWidth('lr'))
+            this.innerList.setWidth(lw - this.list.getFrameWidth('lr'));
 
             if(this.pageSize){
                 this.footer = this.list.createChild({cls:cls+'-ft'});

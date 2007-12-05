@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -23,10 +23,14 @@ Ext.grid.EditorGridPanel = Ext.extend(Ext.grid.GridPanel, {
     // private
     isEditor : true,
     // private
-    trackMouseOver: false, // causes very odd FF errors
-    // private
     detectEdit: false,
 
+	/**
+	 * @cfg {Boolean} trackMouseOver @hide
+	 */
+    // private
+    trackMouseOver: false, // causes very odd FF errors
+    
     // private
     initComponent : function(){
         Ext.grid.EditorGridPanel.superclass.initComponent.call(this);

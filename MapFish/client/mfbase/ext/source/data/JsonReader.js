@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -32,6 +32,40 @@ var myReader = new Ext.data.JsonReader({
     { 'id': 2, 'name': 'Ben', occupation: 'Horticulturalist' } ]
 }
 </code></pre>
+ * <p>It is possible to change a JsonReader's metadata at any time by including a
+ * <b><tt>MetaData</tt></b> property in the data object. If this is detected in the
+ * object, a {@link Ext.data.Store Store} object using this Reader will fire its
+ * {@link Ext.data.Store#metachange metachange} event.</p>
+ * <p>The <b><tt>MetaData</tt></b> property may contain any of the configuration
+ * options for this class. Additionally, it may contain a <b><tt>fields</tt></b>
+ * property which the JsonReader will use that as an argument to {@link Ext.data.Record.create}
+ * to configure the layout of the Records which it will produce.<p>
+ * Using the <b><tt>MetaData</tt></b> property, and the Store's {@link Ext.data.Store#metachange metachange} event,
+ * it is possible to have a Store-driven control initialize itself. The metachange
+ * event handler may interrogate the <b><tt>MetaData</tt></b> property (which
+ * may contain any user-defined properties needed) and the <b><tt>MetaData.fields</tt></b>
+ * property to perform any configuration required.</p>
+ * <p>To use this facility to send the same data as the above example without
+ * having to code the creation of the Record constructor, you would create the
+ * JsonReader like this:</p><pre><code>
+var myReader = new Ext.data.JsonReader();
+</code></pre>
+ * <p>The first data packet from the server would configure the reader by 
+ * containing a metaData property as well as the data:</p><pre><code>
+{
+  'metaData': {
+    totalProperty: 'results',
+    root: 'rows',
+    id: 'id',
+    fields: [
+      {name: 'name'},
+      {name: 'occupation'} ]
+   },
+  'results': 2, 'rows': [
+    { 'id': 1, 'name': 'Bill', occupation: 'Gardener' },
+    { 'id': 2, 'name': 'Ben', occupation: 'Horticulturalist' } ]
+}
+</code></pre>
  * @cfg {String} totalProperty Name of the property from which to retrieve the total number of records
  * in the dataset. This is only needed if the whole dataset is not passed in one go, but is being
  * paged from the remote server.
@@ -42,13 +76,19 @@ var myReader = new Ext.data.JsonReader({
  * Create a new JsonReader
  * @param {Object} meta Metadata configuration options.
  * @param {Object} recordType Either an Array of field definition objects as passed to
- * {@link Ext.data.Record#create}, or a Record constructor object created using {@link Ext.data.Record#create}.
+ * {@link Ext.data.Record#create}, or a {@link Ext.data.Record Record} constructor created using {@link Ext.data.Record#create}.
  */
 Ext.data.JsonReader = function(meta, recordType){
     meta = meta || {};
     Ext.data.JsonReader.superclass.constructor.call(this, meta, recordType || meta.fields);
 };
 Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
+    /**
+     * This JsonReader's metadata as passed to the constructor, or as passed in
+     * the last data packet's <b><tt>MetaData</tt></b> property.
+     * @type Mixed
+     * @property meta
+     */
     /**
      * This method is only used by a DataProxy which has retrieved data from a remote server.
      * @param {Object} response The XHR object which contains the JSON data in its responseText.

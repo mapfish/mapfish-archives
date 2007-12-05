@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -41,6 +41,7 @@ Ext.extend(T, Ext.BoxComponent, {
         });
     },
 
+    // private
     autoCreate: {
         cls:'x-toolbar x-small-editor',
         html:'<table cellspacing="0"><tr></tr></table>'

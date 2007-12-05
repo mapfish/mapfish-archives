@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -7,7 +7,7 @@
  */
 
 
-Ext = {version: '2.0-beta1'};
+Ext = {version: '2.0'};
 
 // for old browsers
 window["undefined"] = window["undefined"];

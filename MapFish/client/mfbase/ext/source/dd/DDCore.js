@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -517,10 +517,12 @@ Ext.dd.DragDrop.prototype = {
 
         this.resetConstraints();
         this.setXConstraint(leftSpace - (pad.left||0), // left
-                c.width - leftSpace - b.width - (pad.right||0) //right
+                c.width - leftSpace - b.width - (pad.right||0), //right
+				this.xTickSize
         );
         this.setYConstraint(topSpace - (pad.top||0), //top
-                c.height - topSpace - b.height - (pad.bottom||0) //bottom
+                c.height - topSpace - b.height - (pad.bottom||0), //bottom
+				this.yTickSize
         );
     },
 

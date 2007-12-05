@@ -1,12 +1,4 @@
 /*
- * Ext JS Library 2.0 RC 1
- * Copyright(c) 2006-2007, Ext JS, LLC.
- * licensing@extjs.com
- * 
- * http://extjs.com/license
- */
-
-/*
  * France (France) translation
  * By Perrich
  * 06-08-2007, 09:07 PM

@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -21,12 +21,57 @@ Ext.grid.GridView = function(config){
     Ext.apply(this, config);
     // These events are only used internally by the grid components
     this.addEvents(
+	    /**
+         * @event beforerowremoved
+         * Internal UI Event. Fired before a row is removed.
+         * @param {Ext.grid.GridView} view
+         * @param {Number} rowIndex The index of the row to be removed.
+         * @param {Ext.data.Record} record The Record to be removed
+	     */
 	    "beforerowremoved",
+	    /**
+         * @event beforerowsinserted
+         * Internal UI Event. Fired before rows are inserted.
+         * @param {Ext.grid.GridView} view
+         * @param {Number} firstRow The index of the first row to be inserted.
+         * @param {Number} lastRow The index of the last row to be inserted.
+	     */
 	    "beforerowsinserted",
+	    /**
+         * @event beforerefresh
+         * Internal UI Event. Fired before the view is refreshed.
+         * @param {Ext.grid.GridView} view
+	     */
 	    "beforerefresh",
+	    /**
+         * @event rowremoved
+         * Internal UI Event. Fired after a row is removed.
+         * @param {Ext.grid.GridView} view
+         * @param {Number} rowIndex The index of the row that was removed.
+         * @param {Ext.data.Record} record The Record that was removed
+	     */
 	    "rowremoved",
+	    /**
+         * @event rowsinserted
+         * Internal UI Event. Fired after rows are inserted.
+         * @param {Ext.grid.GridView} view
+         * @param {Number} firstRow The index of the first inserted.
+         * @param {Number} lastRow The index of the last row inserted.
+	     */
 	    "rowsinserted",
+	    /**
+         * @event rowupdated
+         * Internal UI Event. Fired after a row has been updated.
+         * @param {Ext.grid.GridView} view
+         * @param {Number} firstRow The index of the row updated.
+         * @param {Ext.data.record} record The Record backing the row updated.
+	     */
 	    "rowupdated",
+	    /**
+         * @event refresh
+         * Internal UI Event. Fired after the GridView's body has been refreshed.
+         * @param {Ext.grid.GridView} view
+	     */
 	    "refresh"
 	);
     Ext.grid.GridView.superclass.constructor.call(this);
@@ -49,7 +94,7 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
      * <li><code>cols</code> : Number <div class="sub-desc">The column count to apply to the body row's TD colspan attribute (defaults to the current
      * column count of the grid).</div></li>
      * </ul>
-     * @param {Store} ds The {@link Ext.data.Store} this grid is bound to
+     * @param {Store} store The {@link Ext.data.Store} this grid is bound to
      * @method getRowClass
      * @return {String} a CSS class name to add to the row.
      */
@@ -624,22 +669,23 @@ Ext.extend(Ext.grid.GridView, Ext.util.Observable, {
     },
 
     onColumnWidthUpdated : function(col, w, tw){
-
+        // template method
     },
 
     onAllColumnWidthsUpdated : function(ws, tw){
-
+        // template method
     },
 
     onColumnHiddenUpdated : function(col, hidden, tw){
-
+        // template method
     },
 
     updateColumnText : function(col, text){
-
+        // template method
     },
 
     afterMove : function(colIndex){
+        // template method
     },
 
     /* ----------------------------------- Core Specific -------------------------------------------*/

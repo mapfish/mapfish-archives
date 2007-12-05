@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -20,6 +20,11 @@
  * using {@link Ext.data.Record#create}.
  */
 Ext.data.DataReader = function(meta, recordType){
+    /**
+     * This DataReader's configured metadata as passed to the constructor.
+     * @type Mixed
+     * @property meta
+     */
     this.meta = meta;
     this.recordType = recordType instanceof Array ? 
         Ext.data.Record.create(recordType) : recordType;

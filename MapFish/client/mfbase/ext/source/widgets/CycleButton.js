@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -153,12 +153,18 @@ Ext.CycleButton = Ext.extend(Ext.SplitButton, {
      */
     toggleSelected : function(){
         this.menu.render();
-
-        var next = this.activeItem ? this.activeItem.itemIndex+1 : 0;
-        if(next > this.itemCount-1){
-            next = 0;
-        }
-        this.menu.items.itemAt(next).setChecked(true);
+		
+		var nextIdx, checkItem;
+		for (var i = 1; i < this.itemCount; i++) {
+			nextIdx = (this.activeItem.itemIndex + i) % this.itemCount;
+			// check the potential item
+			checkItem = this.menu.items.itemAt(nextIdx);
+			// if its not disabled then check it.
+			if (!checkItem.disabled) {
+				checkItem.setChecked(true);
+				break;
+			}
+		}
     }
 });
 Ext.reg('cycle', Ext.CycleButton);

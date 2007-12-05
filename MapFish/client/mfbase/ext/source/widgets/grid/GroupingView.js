@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -355,6 +355,7 @@ Ext.grid.GroupingView = Ext.extend(Ext.grid.GridView, {
     /**
      * Dynamically tries to determine the groupId of a specific value
      * @param {String} value
+     * @return {String} The group id
      */
     getGroupId : function(value){
         var gidPrefix = this.grid.getGridEl().id;

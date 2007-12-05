@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -61,9 +61,9 @@ Ext.util.Observable.prototype = {
      * function. The handler function's "this" context.
      * @param {Object}   options (optional) An object containing handler configuration
      * properties. This may contain any of the following properties:<ul>
-     * <li>scope {Object} The scope in which to execute the handler function. The handler function's "this" context.</li>
-     * <li>delay {Number} The number of milliseconds to delay the invocation of the handler after the event fires.</li>
-     * <li>single {Boolean} True to add a handler to handle just the next firing of the event, and then remove itself.</li>
+     * <li><b>scope</b> : Object<p class="sub-desc">The scope in which to execute the handler function. The handler function's "this" context.</p></li>
+     * <li><b>delay</b> : Number<p class="sub-desc">The number of milliseconds to delay the invocation of the handler after the event fires.</p></li>
+     * <li><b>single</b> : Boolean<p class="sub-desc">True to add a handler to handle just the next firing of the event, and then remove itself.</p></li>
      * <li>buffer {Number} Causes the handler to be scheduled to run in an {@link Ext.util.DelayedTask} delayed
      * by the specified number of milliseconds. If the event fires again within that time, the original
      * handler is <em>not</em> invoked, but the new handler is scheduled in its place.</li>
@@ -87,16 +87,16 @@ el.on('click', this.onClick, this, {
      * <pre><code>
 foo.on({
     'click' : {
-        fn: this.onClick
+        fn: this.onClick,
         scope: this,
         delay: 100
     },
     'mouseover' : {
-        fn: this.onMouseOver
+        fn: this.onMouseOver,
         scope: this
     },
     'mouseout' : {
-        fn: this.onMouseOut
+        fn: this.onMouseOut,
         scope: this
     }
 });</code></pre>
@@ -106,8 +106,8 @@ foo.on({
 foo.on({
     'click' : this.onClick,
     'mouseover' : this.onMouseOver,
-    'mouseout' : this.onMouseOut
-    scope: this
+    'mouseout' : this.onMouseOut,
+     scope: this
 });</code></pre>
      */
     addListener : function(eventName, fn, scope, o){

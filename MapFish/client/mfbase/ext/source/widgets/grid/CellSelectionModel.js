@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -10,21 +10,23 @@
  * @class Ext.grid.CellSelectionModel
  * @extends Ext.grid.AbstractSelectionModel
  * This class provides the basic implementation for single cell selection in a grid. The object stored
- * as the selection and returned by {@link getSelectedCell} contains the following properties:<ul>
- * <li><b>record</b> : Ext.data.record<p style="margin-left:1em">The {@link Ext.data.Record Record}
+ * as the selection and returned by {@link getSelectedCell} contains the following properties:
+ * <div class="mdetail-params"><ul>
+ * <li><b>record</b> : Ext.data.record<p class="sub-desc">The {@link Ext.data.Record Record}
  * which provides the data for the row containing the selection</p></li>
- * <li><b>cell</b> : Ext.data.record<p style="margin-left:1em">An object containing the
- * following properties:<ul>
- * <li><b>rowIndex</b> : Number<p style="margin-left:1em">The index of the selected row</p></li>
- * <li><b>cellIndex</b> : Number<p style="margin-left:1em">The index of the selected cell<br>
+ * <li><b>cell</b> : Ext.data.record<p class="sub-desc">An object containing the
+ * following properties:
+ * <div class="mdetail-params"><ul>
+ * <li><b>rowIndex</b> : Number<p class="sub-desc">The index of the selected row</p></li>
+ * <li><b>cellIndex</b> : Number<p class="sub-desc">The index of the selected cell<br>
  * <b>Note that due to possible column reordering, the cellIndex should not be used as an index into
  * the Record's data. Instead, the <i>name</i> of the selected field should be determined
  * in order to retrieve the data value from the record by name:</b><pre><code>
     var fieldName = grid.getColumnModel().getDataIndex(cellIndex);
-    var data = record.get(fieldName)
+    var data = record.get(fieldName);
 </code></pre></p></li>
- * </ul></p></li>
- * </ul>
+ * </ul></div></p></li>
+ * </ul></div>
  * @constructor
  * @param {Object} config The object containing the configuration of this model.
  */
@@ -240,6 +242,7 @@ Ext.extend(Ext.grid.CellSelectionModel, Ext.grid.AbstractSelectionModel,  {
             ed.completeEdit();
             e.stopEvent();
         }else if(k == e.ESC){
+        	e.stopEvent();
             ed.cancelEdit();
         }
         if(newCell){

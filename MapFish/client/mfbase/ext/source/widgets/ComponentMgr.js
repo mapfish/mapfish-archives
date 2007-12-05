@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -79,7 +79,7 @@ Ext.ComponentMgr = function(){
          * {@link Ext.Component#xtype}.<br><br>
          * Use this method to register new subclasses of {@link Ext.Component} so
          * that lazy instantiation may be used when specifying child Components.
-         * see {@link Ext.container#items}
+         * see {@link Ext.Container#items}
          * @param {String} xtype The mnemonic string by which the Component class
          * may be looked up.
          * @param {Constructor} cls The new Component class.

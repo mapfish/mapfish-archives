@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -8,40 +8,45 @@
 
 /**
  * @class Ext.QuickTips
- * <p>Provides attractive and customizable tooltips for any element. The QuickTips singleton is used to configure
- * and manage tooltips globally for multiple elements in a generic manner.  To create individual tooltips with
-  * maximum customizability, you should consider either {@link Ext.Tip} or {@link Ext.ToolTip}.</p>
- * <p>Quicktips can be configured via tag attributes directly in markup, or by registering quick tips
- * programmatically via the {@link #register} method.</p>
- * <p>The singleton supports certain configuration options that can be set on the singleton's internal quick tip
- * instance (available via {@link #getQuickTip} that will apply to all quick tips shown by the singleton.
- * Here is the summary of how the configs can be used:</p>
+ * <p>Provides attractive and customizable tooltips for any element. The QuickTips
+ * singleton is used to configure and manage tooltips globally for multiple elements
+ * in a generic manner.  To create individual tooltips with maximum customizability,
+ * you should consider either {@link Ext.Tip} or {@link Ext.ToolTip}.</p>
+ * <p>Quicktips can be configured via tag attributes directly in markup, or by
+ * registering quick tips programmatically via the {@link #register} method.</p>
+ * <p>The singleton's instance of {@link Ext.QuickTip} is available via
+ * {@link #getQuickTip}, and supports all the methods, and all the all the
+ * configuration properties of Ext.QuickTip. These settings will apply to all
+ * tooltips shown by the singleton.</p>
+ * <p>Below is the summary of the configuration properties which can be used.
+ * For detailed descriptions see {@link #getQuickTip}</p>
  * <p><b>QuickTips singleton configs (all are optional)</b></p>
- * <ul><li>dismissDelay</li>
+ * <div class="mdetail-params"><ul><li>dismissDelay</li>
  * <li>hideDelay</li>
  * <li>maxWidth</li>
  * <li>minWidth</li>
  * <li>showDelay</li>
- * <li>trackMouse</li></ul>
+ * <li>trackMouse</li></ul></div>
  * <p><b>Target element configs (optional unless otherwise noted)</b></p>
- * <ul><li>autoHide</li>
+ * <div class="mdetail-params"><ul><li>autoHide</li>
  * <li>cls</li>
  * <li>dismissDelay (overrides singleton value)</li>
  * <li>target (required)</li>
  * <li>text (required)</li>
  * <li>title</li>
- * <li>width</li></ul>
+ * <li>width</li></ul></div>
  * <p>Here is an example showing how some of these config options could be used:</p>
  * <pre><code>
 // Init the singleton.  Any tag-based quick tips will start working.
 Ext.QuickTips.init();
-var q = Ext.QuickTips.getQuickTip();
 
-// Singleton properties shared by all quick tips:
-q.maxWidth = 200;
-q.minWidth = 100;
-q.showDelay = 50;
-q.trackMouse = true;
+// Apply a set of config properties to the singleton
+Ext.apply(Ext.QuickTips.getQuickTip(), {
+    maxWidth: 200,
+    minWidth: 100,
+    showDelay: 50,
+    trackMouse: true
+});
 
 // Manually register a quick tip for a specific element
 q.register({

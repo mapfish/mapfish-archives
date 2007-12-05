@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0 RC 1
+ * Ext JS Library 2.0
  * Copyright(c) 2006-2007, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -79,7 +79,8 @@ key         String/Array     A single keycode or an array of keycodes to handle
 shift       Boolean          True to handle key only when shift is pressed (defaults to false)
 ctrl        Boolean          True to handle key only when ctrl is pressed (defaults to false)
 alt         Boolean          True to handle key only when alt is pressed (defaults to false)
-fn          Function         The function to call when KeyMap finds the expected key combination
+handler     Function         The function to call when KeyMap finds the expected key combination
+fn          Function         Alias of handler (for backwards-compatibility)
 scope       Object           The scope of the callback function
 </pre>
      *
