@@ -40,6 +40,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
     containerScroll: true,
     dropConfig: {appendOnly: true},
     lines: true,
+    ascending: true,
 
     _handleModelChange: function LT__handleModelChange() {
 
@@ -112,8 +113,12 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         // TODO: how to deal with baseLayers?
         var layers = [];
 
-        for (var i = 0; i < this.map.layers.length; i++) {
-            var l = this.map.layers[i];
+        var layersArray = this.map.layers.slice();
+        if (!this.ascending) { 
+            layersArray.reverse(); 
+        }
+        for (var i = 0; i < layersArray.length; i++) {
+            var l = layersArray[i];
             var wmsChildren = [];
 
             if (l instanceof OpenLayers.Layer.WMS ||
