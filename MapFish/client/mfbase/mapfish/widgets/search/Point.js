@@ -141,3 +141,4 @@ Ext.extend(mapfish.widgets.search.Point, Ext.Panel, {
         }
     }
 });
+Ext.reg('point', mapfish.widgets.search.Point);
