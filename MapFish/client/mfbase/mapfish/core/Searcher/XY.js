@@ -29,6 +29,20 @@
 mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
 
     /**
+     * APIProperty: hover
+     * {Boolean} - Trigger search on hover as opposed to click.
+     */
+    hover: false,
+
+    /**
+     * APIProperty: hoverTimeout
+     * {Integer} - Number of milliseconds the mouse should not move
+     *      for search to be triggered. Default is 1000 ms. This
+     *      option only applies if the "hover" option is set.
+     */
+    hoverTimeout: 1000,
+
+    /**
      * Property: map
      * {<OpenLayers.Map>} - The OpenLayers Map object.
      */
@@ -39,6 +53,12 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
      * {<OpenLayers.Event>}
      */
     evt: null,
+
+    /**
+     * Property: timerId
+     * {Integer} - The timer id returned by setTimeout.
+     */
+    timerId: null,
 
     /**
      * Constructor: mapfish.Searcher.XY
@@ -63,7 +83,12 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
      */
     enable: function() {
         if (mapfish.Searcher.prototype.enable.call(this)) {
-            this.map.events.register("click", this, this._onMapClick);
+            if (!this.hover) {
+                this.map.events.register("click", this, this._onMapClick);
+            } else {
+                this.map.events.register("mousemove", this, this._onMoveOverMap);
+                this.map.events.register("mouseout", this, this._onMapOut);
+            }
         }
     },
 
@@ -73,7 +98,12 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
      */
     disable: function() {
         if (mapfish.Searcher.prototype.disable.call(this)) {
-            this.map.events.unregister("click", this, this._onMapClick);
+            if (!this.hover) {
+                this.map.events.unregister("click", this, this._onMapClick);
+            } else {
+                this.map.events.unregister("mousemove", this, this._onMoveOverMap);
+                this.map.events.unregister("mouseout", this, this._onMapOut);
+            }
         }
     },
 
@@ -88,7 +118,66 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
         this.cancelSearch();
         this.doSearch(this.getSearchParams(evt));
         this.evt = evt;
-        OpenLayers.Event.stop(evt);
+        return false;
+    },
+
+    /**
+     * Method: _onMoveOverMap
+     *      Called on move over map.
+     *
+     * Parameters:
+     * evt - {<OpenLayers.Event>}
+     */
+    _onMoveOverMap: function(evt) {
+        if (this.evt == null ||
+            Math.abs(evt.xy.x - this.evt.xy.x) > 2 ||
+            Math.abs(evt.xy.y - this.evt.xy.y) > 2) {
+            this.cancelTimer();
+            // Note: with current OpenLayers code (r5333) aborting Ajax
+            // requests results in exceptions. pgiraud's patch for ticket #1170
+            // fixes that (<http://trac.openlayers.org/ticket/1170>).
+            this.cancelSearch();
+            this.evt = evt;
+            this.timerId = setTimeout(
+                OpenLayers.Function.bind(this._onTimedOut, this), this.hoverTimeout);
+        }
+        return true;
+    },
+
+    /**
+     * Method: _onMapOut
+     *      Called when mouse moves out of map.
+     *
+     * Parameters:
+     * evt - {<OpenLayers.Event>}
+     */
+    _onMapOut: function(evt) {
+        if (OpenLayers.Util.mouseLeft(evt, this.map.div)) {
+            this.cancelTimer();
+        }
+        return true;
+    },
+
+    /**
+     * Method: _onTimedOut
+     *      Called when user hasen't moved the mouse for 1 sec. Triggers
+     *      search request.
+     */
+    _onTimedOut: function() {
+        this.cancelSearch();
+        this.doSearch(this.getSearchParams(this.evt));
+    },
+
+    /**
+     * Method: cancelTimer
+     *      Cancels the timer.
+     */
+    cancelTimer: function() {
+        // warning: timerId can possibly be 0
+        if (this.timerId != null) {
+            clearTimeout(this.timerId);
+            this.timerId = null;
+        }
     },
 
     /**

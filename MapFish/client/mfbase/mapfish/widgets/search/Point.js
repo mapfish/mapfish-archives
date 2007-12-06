@@ -60,9 +60,23 @@ Ext.extend(mapfish.widgets.search.Point, Ext.Panel, {
 
     /**
      * APIProperty: radius
-     * {Integer} - The search radius around the clicked point.
+     * {Integer} - The search radius.
      */
     radius: 100,
+
+    /**
+     * APIProperty: hover
+     * {Boolean} - Specifies if hover must be used instead of click.
+     */
+    hover: false,
+
+    /**
+     * APIProperty: hoverTimeout
+     * {Integer} - Number of milliseconds the mouse should not move
+     *      for search to be triggered. Default is 1000 ms. This
+     *      option only applies if the "hover" option is set.
+     */
+    hoverTimeout: 1000,
 
     /**
      * APIProperty: url
@@ -97,7 +111,10 @@ Ext.extend(mapfish.widgets.search.Point, Ext.Panel, {
         mapfish.widgets.search.Point.superclass.initComponent.call(this);
         // create the core search object
         this.searcher = new mapfish.Searcher.XY(
-            this.map, null, null, {
+            this.map, null, {
+                'hover': this.hover,
+                'hoverTimeout': this.hoverTimeout
+            }, {
                 'url': this.url,
                 'callback': this.onGotFeatures,
                 'params': {
