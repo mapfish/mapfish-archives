@@ -35,18 +35,6 @@ mapfish.widgets.search.Point = function(config) {
 Ext.extend(mapfish.widgets.search.Point, Ext.Panel, {
 
     /**
-     * Property: autoHeight
-     * {Boolean}
-     */
-    autoHeight: true,
-
-    /**
-     * Property: autoWidth
-     * {Boolean}
-     */
-    autoWidth: true,
-
-    /**
      * Property: searcher
      * {<mapfish.Searcher.XY>} - The underlying core search object.
      */
