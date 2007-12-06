@@ -149,8 +149,15 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                     }
                 }
             }
+            var className = '';
+            // we hide the layers using css instead of removing them from the model, 
+            // since this will make drag and drop reordering simpler
+            if (!l.displayInLayerSwitcher) {
+                className = 'x-hidden';
+            }
             layers.push({text: l.name, // TODO: i18n
                          checked: l.getVisibility(),
+                         cls: className,
                          layerName: (wmsChildren.length > 0 ? null : l.name),
                          children: wmsChildren,
                          leaf: wmsChildren.length == 0
