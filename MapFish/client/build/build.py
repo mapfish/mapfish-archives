@@ -71,7 +71,7 @@ except getopt.GetoptError:
     usage()
     sys.exit(1)
 
-configFilename = "mapfish-widgets-with-openlayers.cfg"
+configFilename = "mapfish-widgets.cfg"
 outputFilename = "MapFish.js"
 mfOnly = False
 for o, a in opts:
