@@ -52,7 +52,7 @@ function c2corgCreateMap(mapDiv) {
                     'countries', 'departements_fr', 'cantons_ch',
                     'massifs'];
     c2cwms = new OpenLayers.Layer.WMS("C2C Objects",
-        "http://dev.camptocamp.com/c2corg/wms?",
+        "http://demo.mapfish.org/cgi-bin/mapserv-c2corg-v0.2?",
         {
             singleTile: true,
             layers: c2cwmsLayers,
