@@ -47,6 +47,12 @@ Ext.extend(mapfish.widgets.toolbar.CheckItem, Ext.menu.CheckItem, {
      * {Boolean}
      */
     controlAdded: false,
+    
+    /**
+     * Property: olHandler
+     * {String}
+     */
+    olHandler: null,
 
     // private
     initComponent: function() {
@@ -64,11 +70,26 @@ Ext.extend(mapfish.widgets.toolbar.CheckItem, Ext.menu.CheckItem, {
           this.controlAdded = true;
       }
       if (checked) {
-          // deactivate the other handlers
-          this.control.deactivate(); 
-          eval('this.control.'+this.olHandler+'.activate();');
+          if (!this.olHandler) {
+              // show control, there is currently no real API method to do this
+              if (this.control.div) {
+                  this.control.div.style.display = 'block';
+              }
+          } else {
+              // deactivate the other handlers
+              this.control.deactivate();
+              eval('this.control.'+this.olHandler+'.activate();');
+          }
       } else {
-          this.control.deactivate();
+          if (!this.olHandler) {
+            // hide control, ideally also deregister the events but no API 
+            // method currently
+            if (this.control.div) {
+                this.control.div.style.display = 'none';
+            }
+          } else {
+              this.control.deactivate();
+          }
       }
       this.saveState();
     },
@@ -95,6 +116,8 @@ Ext.extend(mapfish.widgets.toolbar.CheckItem, Ext.menu.CheckItem, {
             return false;
         }
         if (this.control.CLASS_NAME == state.className && this.olHandler == state.olHandler) {
+            this.checked = state.active;
+        } else if (this.control.CLASS_NAME == state.className) {
             this.checked = state.active;
         }
         this.handleChecked(null, this.checked);
