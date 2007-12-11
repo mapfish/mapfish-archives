@@ -43,6 +43,22 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
     hoverTimeout: 1000,
 
     /**
+     * APIProperty: hoverDelta
+     * {Integer} - The distance in pixels the mouse must be moved before
+     *      doing another query. This option only applies if the "hover"
+     *      option is set.  
+     */
+    hoverDelta: 2,
+
+    /**
+     * APIMethod: onMouseMove
+     * {Function} - Method called in hover mode, when the mouse moves. Can be
+     *      used to close a tooltip, for example. The event is passed in
+     *      parameter and "this" will be the XY instance.   
+     */
+    onMouseMove: function(evt) {},
+
+    /**
      * Property: map
      * {<OpenLayers.Map>} - The OpenLayers Map object.
      */
@@ -50,7 +66,7 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
 
     /**
      * Property: evt
-     * {<OpenLayers.Event>}
+     * {<OpenLayers.Event>} - The last mouse click or move event that occured  
      */
     evt: null,
 
@@ -130,13 +146,14 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
      */
     _onMoveOverMap: function(evt) {
         if (this.evt == null ||
-            Math.abs(evt.xy.x - this.evt.xy.x) > 2 ||
-            Math.abs(evt.xy.y - this.evt.xy.y) > 2) {
+            Math.abs(evt.xy.x - this.evt.xy.x) > this.hoverDelta ||
+            Math.abs(evt.xy.y - this.evt.xy.y) > this.hoverDelta) {
             this.cancelTimer();
             // Note: with current OpenLayers code (r5333) aborting Ajax
             // requests results in exceptions. pgiraud's patch for ticket #1170
             // fixes that (<http://trac.openlayers.org/ticket/1170>).
             this.cancelSearch();
+            this.onMouseMove(evt);
             this.evt = evt;
             this.timerId = setTimeout(
                 OpenLayers.Function.bind(this._onTimedOut, this), this.hoverTimeout);
