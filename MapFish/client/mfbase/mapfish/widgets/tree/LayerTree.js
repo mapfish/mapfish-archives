@@ -42,7 +42,40 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
     lines: true,
     ascending: true,
 
-    _handleModelChange: function LT__handleModelChange() {
+    _handleModelChange: function LT__handleModelChange(node, checked) {
+
+        if (node) {
+            function setNodeChecked(node, checked) {
+                if (typeof(node.attributes.checked) != "boolean")
+                    return;
+
+                node.attributes.checked = checked;
+                
+                if (node.ui && node.ui.checkbox)
+                    node.ui.checkbox.checked = checked;
+            }
+
+            // Update descendants
+            node.cascade(function(node) {
+                setNodeChecked(node, checked);
+            });
+
+            // Update ancestors
+            node.parentNode.bubble(function(node) {
+                var allChildrenChecked = true;
+
+                node.eachChild(function(node) {
+                    if (typeof(node.attributes.checked) != "boolean")
+                        return true;
+                    if (node.attributes.checked == false) {
+                        allChildrenChecked = false;
+                        return false;
+                    }
+                    return true;
+                });
+                setNodeChecked(node, allChildrenChecked);
+            });
+        }
 
         if (!this.map) {
             return;
@@ -55,9 +88,8 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
         var wmsLayers = {};
 
-        this.getRootNode().cascade(function() {
+        this.getRootNode().cascade(function(node) {
 
-            var node = this;
             var checked = node.attributes.checked;
             var nodeLayerName = node.attributes.layerName;
 
@@ -137,7 +169,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                             var paramsString = OpenLayers.Util.getParameterString(params);
                             iconUrl = l.url + paramsString;
                         }
-          
+
                         wmsChildren.push({text: w, // TODO: i18n
                                           checked: l.getVisibility(),
                                           icon: iconUrl,
@@ -171,22 +203,48 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
         mapfish.widgets.LayerTree.superclass.initComponent.call(this);
 
-        this.addListener("checkchange", function checkChange() {
-            this._handleModelChange();
+        this.addListener("checkchange", function checkChange(node, checked) {
+            this._handleModelChange(node, checked);
         }, this);
 
+        var userModel = true;
         if (!this.model) {
+            userModel = false;
             this.model = this._extractOLModel();
         }
 
-        // set the root node
-        var root = new Ext.tree.AsyncTreeNode({
+        var root = {
             text: 'Root', 
             draggable: false, // disable root node dragging
             id: 'source',
-            children: this.model
-        });
-        this.setRootNode(root);
+            children: this.model,
+            leaf: false
+        };
+
+        // Pre-build the tree so that non-expanded nodes exist in the model.
+
+        function buildTree(attributes) {
+            var node = new Ext.tree.TreeNode(attributes);
+
+            var cs = attributes.children
+            node.leaf = !cs;
+            if (!cs)
+                return node;
+
+            for (var i = 0; i < cs.length; i++) {
+                node.appendChild(buildTree(cs[i]));
+            }
+            return node;
+        }
+
+        this.setRootNode(buildTree(root));
+
+        // Synchronize the OL layer state if a usermodel is supplied
+        // This means that the layers checked state defined in the model takes
+        // precedence over the OL layer state
+        if (userModel) {
+            this._handleModelChange(null, null);
+        }
     },
 
     // private
