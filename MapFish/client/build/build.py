@@ -61,18 +61,20 @@ def usage():
 Usage: build.py [OPTION]...
     -c --config configfile      Specify configuration file (default value: mapfish-widgets.cfg)
     -o --output outputfile      Specify output file (default value: MapFish.js)
+    -d --debug                  Don't compress the files
     -m --mfonly                 MapFish only build (OpenLayers files not included)
 """
     )
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "c:o:m", ["config=", "output=", "mfonly"]) 
+    opts, args = getopt.getopt(sys.argv[1:], "c:o:dm", ["config=", "output=", "debug", "mfonly"])
 except getopt.GetoptError:
     usage()
     sys.exit(1)
 
 configFilename = "mapfish-widgets.cfg"
 outputFilename = "MapFish.js"
+debug = False
 mfOnly = False
 for o, a in opts:
     if o in ("-c", "--config"):
@@ -81,6 +83,8 @@ for o, a in opts:
             configFilename = a + ".cfg"
     if o in ("-o", "--output"):
         outputFilename = a
+    if o in ("-d", "--debug"):
+        debug = True
     if o in ("-m", "--mfonly"):
         mfOnly = True
 
@@ -128,8 +132,11 @@ merged = mergejs.run(newfiles, neworder)
 #
 # Compress files
 #
-print "Compressing."
-minimized = jsmin.jsmin(merged)
+if debug:
+    minimized = merged
+else:
+    print "Compressing."
+    minimized = jsmin.jsmin(merged)
 
 #
 # Add license
