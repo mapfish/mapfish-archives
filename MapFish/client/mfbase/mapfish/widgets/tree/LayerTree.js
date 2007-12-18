@@ -38,43 +38,128 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
     loader: new Ext.tree.TreeLoader({}),
     enableDD: false,
     containerScroll: true,
-    dropConfig: {appendOnly: true},
-    lines: true,
     ascending: true,
+
+    /**
+     * Method: hasCheckbox
+     * Returns whether a Node has a checkbox attached to it
+     *
+     * Parameters:
+     * node - {Ext.data.Node} node to query
+     *
+     * Returns:
+     * {Boolean} True if the node has a checkbox
+     */
+    hasCheckbox: function (node) {
+        return typeof(node.attributes.checked) == "boolean";
+    },
+
+    /**
+     * Method: setNodeChecked
+     * Sets the checked status on a node
+     *
+     * Parameters:
+     * node - {Ext.data.Node} node to set the checked status
+     * checked - {Boolean} checked status to set
+     */
+    setNodeChecked: function(node, checked) {
+        if (!this.hasCheckbox(node))
+            return;
+
+        node.attributes.checked = checked;
+
+        if (node.ui && node.ui.checkbox)
+            node.ui.checkbox.checked = checked;
+    },
+
+    _updateCheckboxAncestors: function() {
+
+        // Map of all the node ids not yet visited by updateNodeCheckbox
+        var unvisitedNodeIds = {};
+        var tree = this;
+
+        //
+        // This function updates the node checkbox according to the status of
+        // the descendants. It must be called on a node checkbox nodes only.
+        //
+        // It is called recursively and returns a boolean:
+        // - If the node has no children checkboxes, the status of the checkbox
+        //   is returned
+        // - Otherwise, it returns true if all the children witch checkbox are
+        //   checked or false in the other case.
+        //
+        // As a side effect, it will update the checkbox state of the node, and
+        //  remove visited node ids from the unvisitedNodeIds variable, to
+        //  prevent visiting nodes multiple times.
+        function updateNodeCheckbox(node) {
+            if (!tree.hasCheckbox(node)) {
+                console.trace();
+                throw new Error(arguments.callee.name +
+                                " should only be called on checkbox nodes");
+            }
+
+            var checkboxChildren = [];
+            node.eachChild(function(child) {
+                if (tree.hasCheckbox(child))
+                    checkboxChildren.push(child)
+            }, this);
+
+            // If this node has no children with checkbox, its checked state
+            // will be returned.
+            if (checkboxChildren.length == 0) {
+                return node.attributes.checked;
+            }
+
+            var allChecked = true;
+            Ext.each(checkboxChildren, function(child) {
+                if (!updateNodeCheckbox(child)) {
+                    allChecked = false;
+                    return false;
+                }
+            }, this);
+
+            tree.setNodeChecked(node, allChecked);
+            delete unvisitedNodeIds[node.id];
+
+            return allChecked;
+        }
+
+        var checkboxNodes = [];
+
+        this.getRootNode().cascade(function(node) {
+            if (this.hasCheckbox(node)) {
+                checkboxNodes.push(node);
+                unvisitedNodeIds[node.id] = true;
+            }
+        }, this);
+
+        // taking node from the tree order (using shift) should be more efficient
+        var node;
+        while (node = checkboxNodes.shift()) {
+            if (unvisitedNodeIds[node.id])
+                updateNodeCheckbox(node);
+        }
+    },
 
     _handleModelChange: function LT__handleModelChange(node, checked) {
 
+        // Tree can be modified in two situations:
+        //
+        // 1) The user clicks on a checkbox
+        // 2) The user drags a node to another location
+        //
+        // Situation 1) could modify the descendants and ancestors of the checkbox clicked
+        // Situation 2) could only modify ancestors of the moved node and of the ancestors
+        //  of the previous node location.
+        //
+        // Descendants updating is done below
+        //
+        // Ancestors updating is done in the _updateCheckboxAncestors() method.
+
         if (node) {
-            function setNodeChecked(node, checked) {
-                if (typeof(node.attributes.checked) != "boolean")
-                    return;
-
-                node.attributes.checked = checked;
-                
-                if (node.ui && node.ui.checkbox)
-                    node.ui.checkbox.checked = checked;
-            }
-
-            // Update descendants
             node.cascade(function(node) {
-                setNodeChecked(node, checked);
-            });
-
-            // Update ancestors
-            node.parentNode.bubble(function(node) {
-                var allChildrenChecked = true;
-
-                node.eachChild(function(node) {
-                    if (typeof(node.attributes.checked) != "boolean")
-                        return true;
-                    if (node.attributes.checked == false) {
-                        allChildrenChecked = false;
-                        return false;
-                    }
-                    return true;
-                });
-                setNodeChecked(node, allChildrenChecked);
-            });
+                this.setNodeChecked(node, checked);
+            }, this);
         }
 
         if (!this.map) {
@@ -108,7 +193,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
             }
             var layerName = wmsParts[0];
             var wmsName = wmsParts[1];
-            
+
             if (!wmsLayers[layerName]) {
                 wmsLayers[layerName] = [];
             }
@@ -116,6 +201,8 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                 wmsLayers[layerName].push(wmsName);
             }
         });
+
+        this._updateCheckboxAncestors();
 
         for (var layerName in wmsLayers) {
             var layer = layerNameToLayer[layerName];
@@ -132,7 +219,6 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         }
     },
 
-
     _extractOLModel: function LT__extractOLModel() {
         var getLegendParams = {
             service: "WMS",
@@ -146,8 +232,9 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         var layers = [];
 
         var layersArray = this.map.layers.slice();
-        if (!this.ascending) { 
-            layersArray.reverse(); 
+
+        if (!this.ascending) {
+            layersArray.reverse();
         }
         for (var i = 0; i < layersArray.length; i++) {
             var l = layersArray[i];
@@ -157,7 +244,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                 l instanceof OpenLayers.Layer.WMS.Untiled) {
 
                 var wmsLayers = l.params.LAYERS;
-          
+
                 if (wmsLayers instanceof Array) {
                     for (var j = 0; j < wmsLayers.length; j++) {
                         var w = wmsLayers[j];
@@ -182,8 +269,10 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                 }
             }
             var className = '';
-            // we hide the layers using css instead of removing them from the model, 
+            // we hide the layers using css instead of removing them from the model,
             // since this will make drag and drop reordering simpler
+            // FIXME: check if the above comment is still true
+
             if (!l.displayInLayerSwitcher) {
                 className = 'x-hidden';
             }
@@ -197,6 +286,77 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         }
 
         return layers;
+    },
+
+    // XXX maybe merge/refactor with _handleModelChange
+    _updateOrder: function() {
+
+        var layerNameToLayer = {};
+        Ext.each(this.map.layers, function(layer) {
+            layerNameToLayer[layer.name] = layer;
+        });
+
+        // TODO: handle WMS sublayers correctly
+        //var wmsLayers = {};
+
+        // DESIGN CHOICE:
+        // Layers available on map but not on model will be put in the
+        // bottom (beginning of map.layers array)
+
+
+        function layerIndex(layers, name) {
+            for (var i = 0; i < layers.length; i++) {
+                var l = layers[i];
+                if (l.name == name)
+                    return i;
+            }
+            return -1;
+        }
+
+        var orderedLayers = this.map.layers.slice();
+        var seenLayers = {};
+
+        var nodes = [];
+        this.getRootNode().cascade(function(node) {
+            if (this.ascending)
+                nodes.push(node);
+            else
+                nodes.unshift(node);
+        }, this);
+
+        Ext.each(nodes, function(node) {
+            var nodeLayerName = node.attributes.layerName;
+
+            if (!nodeLayerName)
+                return;
+
+            var layerName = nodeLayerName;
+
+            var wmsParts = nodeLayerName.split(":");
+            if (wmsParts.length == 2) {
+                layerName = wmsParts[0];
+            }
+
+            if (seenLayers[layerName])
+                return;
+            seenLayers[layerName] = true;
+
+            var index = layerIndex(orderedLayers, layerName);
+            if (index == -1 || !layerNameToLayer[layerName]) {
+                throw new Error("Layer " + layerName + " not available");
+            }
+
+            orderedLayers.splice(index, 1);
+            orderedLayers.push(layerNameToLayer[layerName]);
+        });
+
+        this._updateCheckboxAncestors();
+
+        this.map.layers = orderedLayers;
+
+        for (var i = 0; i < this.map.layers.length; i++) {
+            this.map.setLayerZIndex(this.map.layers[i], i);
+        }
     },
 
     initComponent: function() {
@@ -214,7 +374,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         }
 
         var root = {
-            text: 'Root', 
+            text: 'Root',
             draggable: false, // disable root node dragging
             id: 'source',
             children: this.model,
@@ -226,12 +386,17 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         function buildTree(attributes) {
             var node = new Ext.tree.TreeNode(attributes);
 
-            var cs = attributes.children
+            var cs = attributes.children;
             node.leaf = !cs;
             if (!cs)
                 return node;
 
             for (var i = 0; i < cs.length; i++) {
+                // XXX This index is sometimes undefined on IE for unknown reason
+                if (!cs[i]) {
+                    continue;
+                }
+
                 node.appendChild(buildTree(cs[i]));
             }
             return node;
@@ -239,11 +404,20 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
         this.setRootNode(buildTree(root));
 
+        this.addListener("dragdrop", function() {
+            this._updateOrder(arguments);
+        }, this);
+
         // Synchronize the OL layer state if a usermodel is supplied
         // This means that the layers checked state defined in the model takes
         // precedence over the OL layer state
+
+        // FIXME: is this still needed in any case if we want the state of a WMS
+        //  layer / sublayers to be udpated?
         if (userModel) {
             this._handleModelChange(null, null);
+            if (this.enableDD)
+                this._updateOrder();
         }
     },
 
