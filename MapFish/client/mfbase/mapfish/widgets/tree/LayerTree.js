@@ -211,6 +211,25 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
             if (wmsSubLayers.length == 0) {
                 layer.setVisibility(false, true);
             } else {
+                // If drag and drop is not active, we try to preserve the
+                //  sublayer order from the one set during layer construction.
+                //  We stick a property on the layer object to remember the 
+                //  the original ordering.
+                if (!this.enableDD) {
+                    if (!layer._origLayers) {
+                        layer._origLayers = layer.params.LAYERS;
+                    }
+                    var origLayers = layer._origLayers;
+                    var orderedLayers = [];
+
+                    for (var i = 0; i < origLayers.length; i++) {
+                        var l = origLayers[i];
+                        if (wmsSubLayers.indexOf(l) != -1)
+                            orderedLayers.push(l);
+                    }
+                    wmsSubLayers = orderedLayers;
+                }
+
                 layer.params.LAYERS = wmsSubLayers;
                 layer.redraw();
 
