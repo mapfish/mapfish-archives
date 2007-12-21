@@ -36,7 +36,7 @@ Ext.namespace('mapfish.widgets.edition');
  */
 mapfish.widgets.edition.FeatureList = function(config) {
     Ext.apply(this, config, {
-        sm: new Ext.grid.RowSelectionModel({singleSelect:true}),
+        sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
         clicksToEdit: 1,
         enableDragDrop: true
     });
@@ -98,12 +98,12 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
      * If 2, make sure the selected geometry is visible (default).
      */
     autoFocusMode: 2,
-    
+
     /**
      * APIProperty: displayNotEdited
      * {Boolean} If "false", display only the edited feature. If "true", shows
      * the edited features and the others. Only relevant when automaticMode
-     * is false. 
+     * is false.
      */
     displayNotEdited: true,
 
@@ -118,7 +118,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
      * edited - {Boolean} true if the geometry is being edited on the map.
      */
     editGeometryVisual: function(geometry, record, edited) {
-        return geometry?(edited ? "->" : "X"):"";
+        return geometry ? (edited ? "->" : "X") : "";
     },
 
     /**
@@ -148,11 +148,11 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
      */
     initComponent: function() {
         // sanity checks
-        if(!this.map && !this.layer) {
+        if (!this.map && !this.layer) {
             OpenLayers.Console.error(
                 "Mandatory param for FeatureList missing: layer and/or map");
         }
-        if(!this.featureType) {
+        if (!this.featureType) {
             OpenLayers.Console.error(
                 "Mandatory param for FeatureList missing: featureType");
         }
@@ -164,9 +164,9 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
         this.setGeoColRenderer();
 
         // take care of the connections with the map
-        if(!this.map) {
+        if (!this.map) {
             this.map = this.layer.map;
-        } else if(!this.layer) {
+        } else if (!this.layer) {
             this.layer = new OpenLayers.Layer.Vector("Geometry edition");
             this.map.addLayer(this.layer);
         }
@@ -181,11 +181,11 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
         var mode = OpenLayers.Control.ModifyFeature.RESHAPE |
                    OpenLayers.Control.ModifyFeature.DRAG;
         this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.layer, {
-            mode: mode, 
+            mode: mode,
             selectStyle: this.selectedStyle,
             onModificationStart: function(feature) {
                 // temporarily activate the modify feature control
-                if(!self.automaticMode) {
+                if (!self.automaticMode) {
                     this.activate();
                 }
                 self.refreshGeometryVisual(feature.data);
@@ -203,13 +203,13 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
             },
             onModificationEnd: function(feature) {
                 // deactivate the modify feature control
-                if(!self.automaticMode) {
+                if (!self.automaticMode) {
                     this.deactivate();
                 }
-                if(feature.data) {
+                if (feature.data) {
                     self.refreshGeometryVisual(feature.data);
                 }
-                if(!self.displayNotEdited) {
+                if (!self.displayNotEdited) {
                     self.layer.removeFeatures(feature);
                 }
                 self.fireEvent('geomodifend', self, feature.data, feature);
@@ -229,7 +229,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
 
         // add added to the layer if a feature is added.
         function add(store, records, index) {
-            if(self.displayNotEdited) {
+            if (self.displayNotEdited) {
                 for(var i = 0; i < records.length; ++i) {
                     self.addGeometries(records[i]);
                 }
@@ -238,11 +238,11 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
         }
         this.getStore().on("add", add);
         this.getStore().on("load", function(store, records, options) {
-            if(!options.add) {
+            if (!options.add) {
                 // On load, the data was cleared, but no other notification was
                 // fired. So we have to do some cleanup. Then, we can add the
                 // geometries.
-                if(this.modifyFeature.feature) {
+                if (this.modifyFeature.feature) {
                     this.modifyFeature.selectControl.unselect(
                         this.modifyFeature.feature);
                 }
@@ -255,7 +255,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
 
     /**
      * Method: onRender
-     * Called by EXT when the component is rendered. 
+     * Called by EXT when the component is rendered.
      */
     onRender: function() {
         mapfish.widgets.edition.FeatureList.superclass.onRender.apply(
@@ -264,18 +264,18 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
         // add the possibility to drag and drop rows for re-ordering them
         var self = this;
         var ddrow = new Ext.dd.DropTarget(this.getView().mainBody, {
-            ddGroup : 'GridDD',
+            ddGroup: 'GridDD',
             notifyOver: function(source, e, data) {
                 var cindex = source.getDragData(e).rowIndex;
-                if(typeof cindex != "undefined") {
+                if (typeof cindex != "undefined") {
                     return this.dropAllowed;
                 }
                 return this.dropNotAllowed;
             },
-            notifyDrop : function(dd, e, data) {
+            notifyDrop: function(dd, e, data) {
                 var dragData = dd.getDragData(e);
                 var destIndex = dragData.rowIndex;
-                if(typeof destIndex != "undefined") {
+                if (typeof destIndex != "undefined") {
                     var record = data.selections[0];
                     self.isDnd = true;
                     data.grid.store.remove(record);
@@ -287,8 +287,8 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
             }
         });
 
-        //draw the features
-        if(this.displayNotEdited) {
+        // draw the features
+        if (this.displayNotEdited) {
             this.drawAllFeatures();
         }
     },
@@ -304,7 +304,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
         for(var i = 0; i < this.colDefs.length; ++i) {
             var col = this.colDefs[i];
             var colDesc = this.featureType.prototype.fields.get(col.dataIndex);
-            if(colDesc.type == 'geo') {
+            if (colDesc.type == 'geo') {
                 callback.call(this, col, colDesc, i);
             }
         }
@@ -318,7 +318,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
         this.eachGeoColumn(function(col, colDesc, colNum) {
             col.renderer = OpenLayers.Function.bind(
                 function(value, cellMetaData, record, rowNum, colNum, store) {
-                    if(value) {
+                    if (value) {
                         var edited = (this.grid.modifyFeature.feature != null) &&
                                      (this.grid.getFeatureByGeometry(value) ==
                                       this.grid.modifyFeature.feature);
@@ -339,12 +339,12 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
      */
     drawAllFeatures: function() {
         this.clearLayer();
-        if(this.displayNotEdited) {
+        if (this.displayNotEdited) {
             var features = [];
             this.eachGeoColumn(function(col, colDesc, colNum) {
                 this.store.each(function (record) {
                     var geometry = record.get(colDesc.name);
-                    if(geometry && !this.getFeatureByGeometry(geometry)) {
+                    if (geometry && !this.getFeatureByGeometry(geometry)) {
                         var vector = new OpenLayers.Feature.Vector(
                             geometry, record, this.unselectedStyle);
                         features.push(vector);
@@ -366,7 +366,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
         var layer = this.layer;
         this.eachGeoColumn(function(col, colDesc, colNum) {
             var geometry = record.get(colDesc.name);
-            if(geometry && !this.getFeatureByGeometry(geometry)) {
+            if (geometry && !this.getFeatureByGeometry(geometry)) {
                 var vector = new OpenLayers.Feature.Vector(
                     geometry, record, this.unselectedStyle);
                 layer.addFeatures(vector);
@@ -384,10 +384,10 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
     removeGeometries: function(record) {
         this.eachGeoColumn(function(col, colDesc, colNum) {
             var geometry = record.get(colDesc.name);
-            if(geometry) {
+            if (geometry) {
                 var feature = this.getFeatureByGeometry(geometry);
-                if(feature) {
-                    if(feature == this.modifyFeature.feature) {
+                if (feature) {
+                    if (feature == this.modifyFeature.feature) {
                         // not to have bad stuff happening
                         // in modifyFeature.onModificationEnd
                         feature.data = null;
@@ -415,7 +415,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
         var features = this.layer.features;
         for(var i = 0; i < features.length; ++i) {
             var cur = features[i];
-            if(cur.geometry == geometry) {
+            if (cur.geometry == geometry) {
                 return cur;
             }
         }
@@ -431,14 +431,14 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
      * record - {<Ext.data.Record>}
      */
     editFirstGeometry: function(record) {
-        if(this.automaticMode) {
+        if (this.automaticMode) {
             return;
         }
         var colName;
         for(var i = 0; i < this.colDefs.length; ++i) {
             var col = this.colDefs[i];
             var colDesc = this.featureType.prototype.fields.get(col.dataIndex);
-            if(colDesc.type == 'geo') {
+            if (colDesc.type == 'geo') {
                 colName = colDesc.name;
                 break;
             }
@@ -454,28 +454,28 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
      * record - {Ext.data.Record}
      * colName - {String}
      * focus - {Boolean} If true and in auto-focus mode, will zoom the map on
-     *                   the geometry 
+     *                   the geometry
      */
     editGeometry: function(record, colName, focus) {
         var geometry = record.get(colName);
-        if(!geometry){
+        if (!geometry){
             return;
         }
         var feature = this.getFeatureByGeometry(geometry);
-        if(!feature && !this.displayNotEdited) {
+        if (!feature && !this.displayNotEdited) {
             feature = new OpenLayers.Feature.Vector(
                 geometry, record, this.unselectedStyle);
             this.layer.addFeatures(feature);
         }
-        if(feature) {
+        if (feature) {
             var previousFeature = this.modifyFeature.feature;
-            if(previousFeature) {
+            if (previousFeature) {
                 this.modifyFeature.selectControl.unselect(
                     this.modifyFeature.feature);
             }
-            if(previousFeature != feature) {
+            if (previousFeature != feature) {
                 this.modifyFeature.selectControl.select(feature);
-                if(focus) {
+                if (focus) {
                     this.manageAutoFocus(geometry);
                 }
             }
@@ -493,9 +493,9 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
      * geometry - {OpenLayers.Geometry}
      */
     manageAutoFocus: function (geometry) {
-         if(this.autoFocusMode == 1) {
+         if (this.autoFocusMode == 1) {
              this.map.zoomToExtent(geometry.getBounds());
-         } else if(this.autoFocusMode == 2) {
+         } else if (this.autoFocusMode == 2) {
              var extent = this.map.getExtent();
              extent.extend(geometry.getBounds());
              var margin = extent.getWidth() * 0.02;
@@ -526,15 +526,15 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
      * automatic - {Boolean}
      */
     setAutomaticMode: function(automatic) {
-        if(automatic == this.automaticMode) {
+        if (automatic == this.automaticMode) {
             return;
         }
         this.automaticMode = automatic;
-        if(this.modifyFeature.feature) {
+        if (this.modifyFeature.feature) {
             this.modifyFeature.selectControl.unselect(
                 this.modifyFeature.feature);
         }
-        if(automatic) {
+        if (automatic) {
             this.modifyFeature.activate();
         } else {
             this.modifyFeature.deactivate();
@@ -549,11 +549,11 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
      * value - {Boolean}
      */
     setDisplayNotEdited: function(value) {
-        if(value == this.displayNotEdited) {
+        if (value == this.displayNotEdited) {
             return;
         }
         this.displayNotEdited = value;
-        if(value) {
+        if (value) {
             this.drawAllFeatures();
         } else {
             this.clearLayer();
@@ -564,7 +564,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
     /**
      * Method: clearLayer
      * Delete all the geometries from the layer with the exception of the
-     * currently edited feature (if any) and its handles. 
+     * currently edited feature (if any) and its handles.
      *
      * Parameters:
      * value - {Boolean}
@@ -575,7 +575,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
         var edited = this.modifyFeature.feature
         for(var i = 0; i < layer.features.length; ++i) {
             var cur = layer.features[i];
-            if(cur != edited &&
+            if (cur != edited &&
                cur.data && cur.data.endEdit) {
                 toRemove.push(cur);
             }
@@ -598,9 +598,9 @@ mapfish.widgets.edition.FeatureList.geometryClickHandler = function(
     gridId, recordId, colName) {
 
     var grid = Ext.getCmp(gridId);
-    if(grid) {
+    if (grid) {
         var record = grid.store.getById(recordId);
-        if(record) {
+        if (record) {
             grid.editGeometry(record, colName, true);
         } else {
             OpenLayers.Console.error("Cannot find record with id=" + recordId);
@@ -628,13 +628,13 @@ mapfish.widgets.edition.FeatureList.geometryClickHandler = function(
 mapfish.widgets.edition.FeatureList.createRecord = function(cols) {
     for(var i = 0; i < cols.length; ++i) {
         var col = cols[i];
-        if(col.type == 'geo') {
-            if(!col.convert) {
+        if (col.type == 'geo') {
+            if (!col.convert) {
                 col.convert = function(v) {
                     return v;
                 }
             }
-            if(!col.sortType) {
+            if (!col.sortType) {
                 col.sortType = Ext.data.SortTypes.none();
             }
         }
