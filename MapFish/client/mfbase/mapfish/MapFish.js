@@ -107,7 +107,8 @@
             "widgets/search/Point.js",
             "widgets/toolbar/Toolbar.js",
             "widgets/toolbar/CheckItem.js",
-            "widgets/toolbar/MenuItem.js"
+            "widgets/toolbar/MenuItem.js",
+            "widgets/edition/FeatureList.js"
         ); // etc.
 
         var allScriptTags = "";
