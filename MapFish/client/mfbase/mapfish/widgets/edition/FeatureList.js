@@ -230,7 +230,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
         // add added to the layer if a feature is added.
         function add(store, records, index) {
             if (self.displayNotEdited) {
-                for(var i = 0; i < records.length; ++i) {
+                for (var i = 0; i < records.length; ++i) {
                     self.addGeometries(records[i]);
                 }
             }
@@ -301,7 +301,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
      * callback - {Function} What to call for each column.
      */
     eachGeoColumn: function(callback) {
-        for(var i = 0; i < this.colDefs.length; ++i) {
+        for (var i = 0; i < this.colDefs.length; ++i) {
             var col = this.colDefs[i];
             var colDesc = this.featureType.prototype.fields.get(col.dataIndex);
             if (colDesc.type == 'geo') {
@@ -413,7 +413,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
      */
     getFeatureByGeometry: function(geometry) {
         var features = this.layer.features;
-        for(var i = 0; i < features.length; ++i) {
+        for (var i = 0; i < features.length; ++i) {
             var cur = features[i];
             if (cur.geometry == geometry) {
                 return cur;
@@ -435,7 +435,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
             return;
         }
         var colName;
-        for(var i = 0; i < this.colDefs.length; ++i) {
+        for (var i = 0; i < this.colDefs.length; ++i) {
             var col = this.colDefs[i];
             var colDesc = this.featureType.prototype.fields.get(col.dataIndex);
             if (colDesc.type == 'geo') {
@@ -573,7 +573,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
         var toRemove = [];
         var layer = this.layer;
         var edited = this.modifyFeature.feature
-        for(var i = 0; i < layer.features.length; ++i) {
+        for (var i = 0; i < layer.features.length; ++i) {
             var cur = layer.features[i];
             if (cur != edited &&
                cur.data && cur.data.endEdit) {
@@ -626,7 +626,7 @@ mapfish.widgets.edition.FeatureList.geometryClickHandler = function(
  * {Function} - Record constructor
  */
 mapfish.widgets.edition.FeatureList.createRecord = function(cols) {
-    for(var i = 0; i < cols.length; ++i) {
+    for (var i = 0; i < cols.length; ++i) {
         var col = cols[i];
         if (col.type == 'geo') {
             if (!col.convert) {
