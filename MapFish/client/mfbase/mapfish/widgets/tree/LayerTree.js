@@ -40,6 +40,10 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
     containerScroll: true,
     ascending: true,
 
+    // set to false automatically if a model is given. Should not be manually
+    // overriden
+    _automaticModel: true,
+
     /**
      * Method: hasCheckbox
      * Returns whether a Node has a checkbox attached to it
@@ -93,7 +97,6 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         //  prevent visiting nodes multiple times.
         function updateNodeCheckbox(node) {
             if (!tree.hasCheckbox(node)) {
-                console.trace();
                 throw new Error(arguments.callee.name +
                                 " should only be called on checkbox nodes");
             }
@@ -141,7 +144,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         }
     },
 
-    _handleModelChange: function LT__handleModelChange(node, checked) {
+    _handleModelChange: function LT__handleModelChange(clickedNode, checked) {
 
         // Tree can be modified in two situations:
         //
@@ -156,86 +159,384 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         //
         // Ancestors updating is done in the _updateCheckboxAncestors() method.
 
-        if (node) {
-            node.cascade(function(node) {
+        if (clickedNode) {
+            clickedNode.cascade(function(node) {
                 this.setNodeChecked(node, checked);
             }, this);
         }
+
+        this._updateCheckboxAncestors();
 
         if (!this.map) {
             return;
         }
 
+        // Some of these variables are used in the functions declared below.
+        // The documentation mentions which variables are accessed if not
+        // given through parameters.
+
+        var currentBaseLayerName;
+        if (this.map.baseLayer)
+            currentBaseLayerName = this.map.baseLayer.name;
+
         var layerNameToLayer = {};
-        Ext.each(this.map.layers, function(layer) {
-            layerNameToLayer[layer.name] = layer;
-        });
+        var baseLayerNames = [];
+        var layersWithSublayers = {};
 
-        var wmsLayers = {};
+        var layerToNodeIds = {};
+        // We can't use this.getNodeById here because it only contains nodes
+        // which have been generated in the DOM, and we can get called before
+        // the DOM is generated. This variable is used to do the mapping ourself
+        var nodeIdToNode = {};
+        var clickedBaseLayer;
 
+        // TODO: maybe cache the layersWithSublayers object
         this.getRootNode().cascade(function(node) {
+            if (!node.attributes.layerNames)
+                return true;
+            var layerNames = node.attributes.layerNames;
 
-            var checked = node.attributes.checked;
-            var nodeLayerName = node.attributes.layerName;
-
-            if (!nodeLayerName) {
-                return;
+            for (var i = 0; i < layerNames.length; i++) {
+                if (layerNames[i].indexOf(":") != -1) {
+                    var name = layerNames[i].split(":")[0];
+                    layersWithSublayers[name] = true;
+                }
             }
+        }, this);
 
-            if (layerNameToLayer[nodeLayerName]) {
-                layerNameToLayer[nodeLayerName].setVisibility(checked, true);
-                return;
-            }
 
-            var wmsParts = nodeLayerName.split(":");
-            if (wmsParts.length != 2) {
-                return;
-            }
-            var layerName = wmsParts[0];
-            var wmsName = wmsParts[1];
+        /**
+         * This function reads the visibility of the layers in the map, and returns
+         * an {Object} which is mapping between {String} layer names and {Boolean}
+         * visibility status of the named layer.
+         *
+         * Sublayers are included in the list using the
+         * <WMS layername:sublayer name> convention.
+         *
+         * Side effects: populates the variables:
+         * - layerNameToLayer
+         * - baseLayerNames
 
-            if (!wmsLayers[layerName]) {
-                wmsLayers[layerName] = [];
-            }
-            if (checked) {
-                wmsLayers[layerName].push(wmsName);
-            }
-        });
+         * Parameters:
+         * layersWithSublayers - {Object} Map of layer name to boolean. Contains
+         *      as keys the name of layers which are using sublayers
+         *
+         * Returns:
+         * {Object} layerVisibility map
+         */
+        function getVisibilityFromMap(layersWithSublayers) {
+            var layerVisibility = {};
 
-        this._updateCheckboxAncestors();
+            Ext.each(this.map.layers, function(layer) {
+                var name = layer.name;
+                layerNameToLayer[name] = layer;
 
-        for (var layerName in wmsLayers) {
-            var layer = layerNameToLayer[layerName];
-            var wmsSubLayers = wmsLayers[layerName];
+                layerVisibility[name] = layer.visibility;
 
-            if (wmsSubLayers.length == 0) {
-                layer.setVisibility(false, true);
-            } else {
-                // If drag and drop is not active, we try to preserve the
-                //  sublayer order from the one set during layer construction.
-                //  We stick a property on the layer object to remember the 
-                //  the original ordering.
-                if (!this.enableDD) {
-                    if (!layer._origLayers) {
-                        layer._origLayers = layer.params.LAYERS;
-                    }
-                    var origLayers = layer._origLayers;
-                    var orderedLayers = [];
+                if (layer.isBaseLayer)
+                    baseLayerNames.push(name);
 
-                    for (var i = 0; i < origLayers.length; i++) {
-                        var l = origLayers[i];
-                        if (wmsSubLayers.indexOf(l) != -1)
-                            orderedLayers.push(l);
-                    }
-                    wmsSubLayers = orderedLayers;
+                if (!(layer instanceof OpenLayers.Layer.WMS) &&
+                    !(layer instanceof OpenLayers.Layer.WMS.Untiled))
+                {
+                    return;
                 }
 
-                layer.params.LAYERS = wmsSubLayers;
-                layer.redraw();
+                if (!layersWithSublayers[layer.name])
+                    return;
 
-                layer.setVisibility(true, true);
+                // FIXME: base layers and WMS do not play well for now...
+                if (layer.isBaseLayer) {
+                    OpenLayers.Console.error("Using sublayers on a base layer " +
+                                             "is not supported (base layer is " +
+                                             name + ")");
+                }
+
+                // Save the original set of sublayers in a property on the
+                // layer object. The layer ordering is kept if drag and drop
+                // is not used (this is implemented in updateMapFromVisibility()
+                // below.
+                if (!layer._origLayers) {
+                    layer._origLayers = layer.params.LAYERS;
+                }
+                var sublayers = layer._origLayers;
+
+                if (sublayers instanceof Array) {
+                    for (var j = 0; j < sublayers.length; j++) {
+                        var sublayer = sublayers[j];
+                        layerVisibility[name + ":" + sublayer] = layer.visibility;
+                    }
+                }
+            }, this);
+
+            return layerVisibility;
+        }
+
+        /**
+         * Walks the tree and updates the given layerVisibility object
+         *
+         * Side effects: populates the variables:
+         * - layerToNodeIds
+         * - nodeIdToNode
+         * - clickedBaseLayer
+         *
+         * Parameters:
+         * layerVisibility - {Object} Map of layer name to {Boolean}
+         *
+         * Returns:
+         * {Object} updated layerVisibility map
+         */
+        function updateVisibilityFromTree(layerVisibility) {
+
+            // Clicked node takes precedence for setting state. This map contains
+            // as keys the layername that were clicked (so that we do not override
+            // them with non clicked nodes).
+            var forcedVisibility = {};
+
+            this.getRootNode().cascade(function(node) {
+                var checked = node.attributes.checked;
+
+                var layerNames = node.attributes.layerNames;
+                if (!layerNames)
+                    return;
+
+                for (var i = 0; i < layerNames.length; i++) {
+                    var layerName = layerNames[i];
+                    if (!layerName)
+                        continue;
+
+                    if (!layerToNodeIds[layerName])
+                        layerToNodeIds[layerName] = [];
+                    layerToNodeIds[layerName].push(node.id);
+                    nodeIdToNode[node.id] = node;
+
+                    if (layerVisibility[layerName] == undefined)
+                        OpenLayers.Console.error("Invalid layer: ", layerName);
+
+                    if (forcedVisibility[layerName])
+                        continue;
+                    if (node == clickedNode) {
+                        if (baseLayerNames.indexOf(layerName) != -1) {
+                            clickedBaseLayer = layerName;
+                        }
+                        forcedVisibility[layerName] = true;
+                    }
+                    layerVisibility[layerName] = checked;
+
+                }
+            }, this);
+
+            return layerVisibility;
+        }
+
+        /**
+         * Ensure only one baseLayer is visible.
+         *
+         * Parameters:
+         * layerVisibility - {Object} Map of layer name to {Boolean}
+         * clickedBaseLayer - {String} name of the base layer that was clicked.
+         *                    can be null/undefined
+         * currentBaseLayerName - {String} name of the selected base layer
+         * baseLayerNames - {Array(String)} list of base layers
+         *
+         * Returns:
+         * {Object} updated layerVisibility map
+         */
+        function applyBaseLayerRestriction(layerVisibility, clickedBaseLayer,
+                                           currentBaseLayerName, baseLayerNames) {
+
+            var numBaseLayer = 0;
+            for (var i = 0; i < baseLayerNames.length; i++) {
+                if (layerVisibility[baseLayerNames[i]])
+                    numBaseLayer++;
+            }
+
+            if (numBaseLayer == 1)
+                return layerVisibility;
+
+            // Here we have 0 or more that 1 active base layer. We need to
+            // change that situation. The strategy is to clear all, and only
+            // select one afterwards.
+
+            for (var i = 0; i < baseLayerNames.length; i++) {
+                layerVisibility[baseLayerNames[i]] = false;
+            }
+
+
+            // Higher priority: if a baseLayer was clicked the user intended to
+            // select it, so we make sure this is the one active. This will do
+            // nothing if the user clicked on an already active base layer.
+
+            if (clickedBaseLayer) {
+                layerVisibility[clickedBaseLayer] = true;
+                return layerVisibility;
+            }
+
+            // Otherwise, restore the initial selected base layer
+            if (!currentBaseLayerName)
+                return layerVisibility;
+
+            layerVisibility[currentBaseLayerName] = true;
+            return layerVisibility;
+        }
+
+        /**
+         * Updates the tree from the given layerVisibility object.
+         *
+         * Parameters:
+         * layerVisibility - {Object} Map of layer name to {Boolean}
+         * layerToNodeIds - {Object} Map of {String} layer name to {String}
+         *                  node identifiers.
+         * nodeIdToNode - {Object} Map of {String} node identifiers to
+         *                {Ext.data.Node} nodes.
+         */
+        function updateTreeFromVisibility(layerVisibility, layerToNodeIds, nodeIdToNode) {
+
+            for (layerName in layerVisibility) {
+
+                var nodeIds = layerToNodeIds[layerName];
+                if (!nodeIds)
+                    continue;
+                for (var i = 0; i < nodeIds.length; i++) {
+
+                    var node = nodeIdToNode[nodeIds[i]];
+                    if (!node)
+                        continue;
+
+                    // only check a node if all the mapped layers are visible
+                    var layerNames = node.attributes.layerNames;
+                    if (!layerNames) {
+                        OpenLayers.Console.error("unexpected state");
+                        continue;
+                    }
+
+                    var allChecked = true;
+                    for (var j = 0; j < layerNames.length; j++) {
+                        var layerName = layerNames[j];
+                        if (!layerName)
+                            continue;
+                        if (!layerVisibility[layerName]) {
+                            allChecked = false;
+                            break;
+                        }
+                    }
+                    this.setNodeChecked(node, allChecked);
+                }
             }
         }
+
+        /**
+         * Updates the map layers from the given visibility variable.
+         *
+         * Parameters:
+         * layerVisibility - {Object} Map of layer name to {Boolean}
+         * layerNameToLayer - {Object} Map of layer name to {<OpenLayers.Layer>}
+         * layersWithSublayers - {Object} Map of layer name to boolean. Contains
+         *      as keys the name of layers which have sublayers
+         * baseLayerNames - {Array(String)} list of base layers
+         */
+        function updateMapFromVisibility(layerVisibility, layerNameToLayer,
+                              layersWithSublayers, baseLayerNames) {
+
+            var wmsLayers = {};
+
+            for (var layerName in layerVisibility) {
+
+                var visible = layerVisibility[layerName];
+
+                var splitName = layerName.split(":");
+                if (splitName.length != 2)
+                    continue;
+
+                delete layerVisibility[layerName];
+
+                layerName = splitName[0];
+                sublayerName = splitName[1];
+
+                if (!wmsLayers[layerName]) {
+                    wmsLayers[layerName] = [];
+                }
+                if (visible) {
+                    wmsLayers[layerName].push(sublayerName);
+                }
+            }
+            // Remove WMS layers from layerVisibility, they are handled
+            // separately.
+            for (layerName in wmsLayers) {
+                if (layerVisibility[layerName] !== undefined)
+                    delete layerVisibility[layerName];
+            }
+
+            for (var layerName in layerVisibility) {
+                var layer = layerNameToLayer[layerName];
+                if (!layer) {
+                    OpenLayers.Console.error("Non existing layer name", layerName);
+                    continue;
+                }
+
+                if (baseLayerNames.indexOf(layerName) != -1) {
+                    if (layerVisibility[layerName]) {
+                        this.map.setBaseLayer(layer);
+                    }
+                } else {
+                    layer.setVisibility(layerVisibility[layerName]);
+                }
+            }
+
+            for (var layerName in wmsLayers) {
+                var layer = layerNameToLayer[layerName];
+                var sublayers = wmsLayers[layerName];
+
+                if (layer.isBaseLayer) {
+                    OpenLayers.Console.error("base layer for WMS sublayer " +
+                                             "are not supported");
+                    return;
+                }
+                if (sublayers.length == 0) {
+                    layer.setVisibility(false, true);
+                } else {
+                    // If drag and drop is not active, we try to preserve the
+                    //  sublayer order from the one set during layer construction.
+                    //  We stick a property on the layer object to remember the
+                    //  the original ordering.
+                    if (!this.enableDD) {
+
+                        if (!layer._origLayers) {
+                            OpenLayers.Console.error("Assertion failure");
+                        }
+                        var origLayers = layer._origLayers;
+                        var orderedLayers = [];
+
+                        for (var i = 0; i < origLayers.length; i++) {
+                            var l = origLayers[i];
+                            if (sublayers.indexOf(l) != -1)
+                                orderedLayers.push(l);
+                        }
+                        sublayers = orderedLayers;
+                    }
+                    layer.params.LAYERS = sublayers;
+                    layer.redraw();
+
+                    layer.setVisibility(true, true);
+                }
+            }
+        }
+
+        // Definition:
+        // A sublayer is a selectable layer inside a WMS layer.
+
+        var layerVisibility = getVisibilityFromMap.call(this, layersWithSublayers);
+
+        layerVisibility = updateVisibilityFromTree.call(this, layerVisibility);
+
+        applyBaseLayerRestriction.call(this, layerVisibility, clickedBaseLayer,
+                                       currentBaseLayerName, baseLayerNames);
+
+        updateTreeFromVisibility.call(this, layerVisibility, layerToNodeIds,
+                                nodeIdToNode);
+
+        updateMapFromVisibility.call(this, layerVisibility, layerNameToLayer,
+                          layersWithSublayers, baseLayerNames);
     },
 
     _extractOLModel: function LT__extractOLModel() {
@@ -262,11 +563,11 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
             if (l instanceof OpenLayers.Layer.WMS ||
                 l instanceof OpenLayers.Layer.WMS.Untiled) {
 
-                var wmsLayers = l.params.LAYERS;
+                var sublayers = l.params.LAYERS;
 
-                if (wmsLayers instanceof Array) {
-                    for (var j = 0; j < wmsLayers.length; j++) {
-                        var w = wmsLayers[j];
+                if (sublayers instanceof Array) {
+                    for (var j = 0; j < sublayers.length; j++) {
+                        var w = sublayers[j];
 
                         var iconUrl;
                         if (this.showWmsLegend) {
@@ -281,17 +582,17 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                                           icon: iconUrl,
                                           layerName: l.name + ":" + w,
                                           children: [],
-                                          leaf: true,
                                           cls: "cf-wms-node"
                                           });
                     }
                 }
             }
-            var className = '';
-            // we hide the layers using css instead of removing them from the model,
-            // since this will make drag and drop reordering simpler
-            // FIXME: check if the above comment is still true
 
+            // We hide the layers using css instead of removing them from the
+            // model, so that their position is remembered when drag and
+            // drop is used.
+
+            var className = '';
             if (!l.displayInLayerSwitcher) {
                 className = 'x-hidden';
             }
@@ -299,8 +600,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                          checked: l.getVisibility(),
                          cls: className,
                          layerName: (wmsChildren.length > 0 ? null : l.name),
-                         children: wmsChildren,
-                         leaf: wmsChildren.length == 0
+                         children: wmsChildren
                          });
         }
 
@@ -386,9 +686,9 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
             this._handleModelChange(node, checked);
         }, this);
 
-        var userModel = true;
+
         if (!this.model) {
-            userModel = false;
+            this._automaticModel = true;
             this.model = this._extractOLModel();
         }
 
@@ -421,7 +721,22 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
             return node;
         }
 
-        this.setRootNode(buildTree(root));
+        // Canonicalize the model (for instance, convert layerName to
+        // layerNames properties).
+        function fixupModel(rootNode) {
+            rootNode.cascade(function(node) {
+                var attrs = node.attributes;
+                if (!attrs.layerNames && attrs.layerName) {
+                    attrs.layerNames = [attrs.layerName];
+                }
+            }, this);
+            return rootNode;
+        }
+
+        var rootNode = buildTree(root);
+        rootNode = fixupModel(rootNode);
+
+        this.setRootNode(rootNode);
 
         this.addListener("dragdrop", function() {
             this._updateOrder(arguments);
@@ -432,8 +747,8 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         // precedence over the OL layer state
 
         // FIXME: is this still needed in any case if we want the state of a WMS
-        //  layer / sublayers to be udpated?
-        if (userModel) {
+        //  layer / sublayers to be updated?
+        if (this._automaticModel) {
             this._handleModelChange(null, null);
             if (this.enableDD)
                 this._updateOrder();
