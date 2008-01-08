@@ -91,6 +91,9 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
      * Parameters:
      * control - {<OpenLayers.Control>}
      * options - the config object
+     *
+     * Returns:
+     * An instance of Ext.Toolbar.Button
      */
     addControl: function (control, options) {
         control.visible = true;
@@ -108,6 +111,7 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
         mb.scope = this;
         mb.handler = function() { this.activateControl(control); }
         this.add(mb);
+        return mb;
     },
 
     /**
