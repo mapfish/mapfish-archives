@@ -235,7 +235,7 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
             return;
         }
         for (var i = 0; i < this.controls.length; i++) {
-            if (this.controls[i] == control) {
+            if (this.controls[i] == control && control.visible) {
                 control.activate();
             } else {
                 if (this.controls[i].type != OpenLayers.Control.TYPE_TOGGLE) {
