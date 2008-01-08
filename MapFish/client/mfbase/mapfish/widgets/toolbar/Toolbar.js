@@ -216,16 +216,31 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
     /**
      * Method: activateControl
      * Activate a control on the map
+     * (Taken from OpenLayers.Panel)
      *
      * Parameters:
      * control - {<OpenLayers.Control>}
      */
     activateControl: function (control) {
+        if (control.type == OpenLayers.Control.TYPE_BUTTON) {
+            control.trigger();
+            return;
+        }
+        if (control.type == OpenLayers.Control.TYPE_TOGGLE) {
+            if (control.active) {
+                control.deactivate();
+            } else {
+                control.activate();
+            }
+            return;
+        }
         for (var i = 0; i < this.controls.length; i++) {
-            if (this.controls[i] == control && control.visible) {
+            if (this.controls[i] == control) {
                 control.activate();
             } else {
-                this.controls[i].deactivate();
+                if (this.controls[i].type != OpenLayers.Control.TYPE_TOGGLE) {
+                    this.controls[i].deactivate();
+                }
             }
         }
     }
