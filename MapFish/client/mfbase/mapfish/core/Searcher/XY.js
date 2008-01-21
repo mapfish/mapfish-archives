@@ -23,7 +23,9 @@
  * @requires core/SearchMediator.js
  * @requires OpenLayers/Map.js
  * @requires OpenLayers/Util.js
- * @requires OpenLayers/Events.js
+ * @requires OpenLayers/Event.js
+ * @requires OpenLayers/Handler/Click.js
+ * @requires OpenLayers/Handler/Hover.js
  */
 
 mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
@@ -35,20 +37,28 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
     hover: false,
 
     /**
-     * APIProperty: hoverTimeout
-     * {Integer} - Number of milliseconds the mouse should not move
-     *      for search to be triggered. Default is 1000 ms. This
-     *      option only applies if the "hover" option is set.
+     * APIProperty: pixelTolerance
+     * {Integer} - The meaning of this property depends whether
+     *      hover is true or false. If hover is false, pixelTolerance
+     *      is the maximum number of pixels between mouseup and mousedown
+     *      for an event to be considered a click. If hover is true,
+     *      pixelTolerance is the maximum number of pixels between
+     *      mousemoves for an event to be considered a pause.
+     *      Default is 2 pixels.
      */
-    hoverTimeout: 1000,
+    pixelTolerance: 2,
 
     /**
-     * APIProperty: hoverDelta
-     * {Integer} - The distance in pixels the mouse must be moved before
-     *      doing another query. This option only applies if the "hover"
-     *      option is set.  
+     * APIProperty: delay
+     * {Integer} - The meaning of this property depends whether
+     *      hover is true or false. If hover is false, delay is
+     *      the number of milliseconds between clicks before the
+     *      event is considered a double-click. If hover is true,
+     *      delay is the number of milliseconds between mousemoves
+     *      before the event is considered a pause.
+     *      Default is 300.
      */
-    hoverDelta: 2,
+    delay: 300,
 
     /**
      * APIMethod: onMouseMove
@@ -71,10 +81,10 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
     evt: null,
 
     /**
-     * Property: timerId
-     * {Integer} - The timer id returned by setTimeout.
+     * Propery: handler
+     * {<OpenLayers.Handler.Click>|<OpenLayers.Handler.Hover>} - The Hover or Click handler
      */
-    timerId: null,
+    handler: null,
 
     /**
      * Constructor: mapfish.Searcher.XY
@@ -99,12 +109,26 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
      */
     enable: function() {
         if (mapfish.Searcher.prototype.enable.call(this)) {
-            if (!this.hover) {
-                this.map.events.register("click", this, this._onMapClick);
+            var handler;
+            /* HACK: the constructors of OpenLayers handlers expect a
+             * control as their first argument. Actually they expect
+             * an object with a map property. So we just pass "this".
+             */
+            if (this.hover) {
+                handler = new OpenLayers.Handler.Hover(
+                    this,
+                    {'pause': this._triggerSearch, 'move': this._cancelSearch},
+                    {'delay': this.delay, 'pixelTolerance': this.pixelTolerance}
+                );
             } else {
-                this.map.events.register("mousemove", this, this._onMoveOverMap);
-                this.map.events.register("mouseout", this, this._onMapOut);
+                handler = new OpenLayers.Handler.Click(
+                    this,
+                    {'click': this._triggerSearch},
+                    {'delay': this.delay, 'pixelTolerance': this.pixelTolerance}
+                );
             }
+            handler.activate();
+            this.handler = handler;
         }
     },
 
@@ -114,87 +138,36 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
      */
     disable: function() {
         if (mapfish.Searcher.prototype.disable.call(this)) {
-            if (!this.hover) {
-                this.map.events.unregister("click", this, this._onMapClick);
-            } else {
-                this.map.events.unregister("mousemove", this, this._onMoveOverMap);
-                this.map.events.unregister("mouseout", this, this._onMapOut);
-            }
+            var handler = this.handler;
+            handler.deactivate();
+            handler.destroy();
+            this.handler = null;
         }
     },
 
     /**
-     * Method: _onMapClick
-     *      Called on click on map.
+     * Method: _triggerSearch
+     *      Called on click or pause.
      *
      * Parameters:
      * evt - {<OpenLayers.Event>}
      */
-    _onMapClick: function(evt) {
+    _triggerSearch: function(evt) {
         this.cancelSearch();
-        this.doSearch(this.getSearchParams(evt));
         this.evt = evt;
-        return false;
+        this.doSearch(this.getSearchParams(evt));
     },
 
     /**
-     * Method: _onMoveOverMap
-     *      Called on move over map.
+     * Method: _cancelSearch
+     *      Called on mousemove.
      *
      * Parameters:
      * evt - {<OpenLayers.Event>}
      */
-    _onMoveOverMap: function(evt) {
-        if (this.evt == null ||
-            Math.abs(evt.xy.x - this.evt.xy.x) > this.hoverDelta ||
-            Math.abs(evt.xy.y - this.evt.xy.y) > this.hoverDelta) {
-            this.cancelTimer();
-            // Note: with current OpenLayers code (r5333) aborting Ajax
-            // requests results in exceptions. pgiraud's patch for ticket #1170
-            // fixes that (<http://trac.openlayers.org/ticket/1170>).
-            this.cancelSearch();
-            this.onMouseMove(evt);
-            this.evt = evt;
-            this.timerId = setTimeout(
-                OpenLayers.Function.bind(this._onTimedOut, this), this.hoverTimeout);
-        }
-        return true;
-    },
-
-    /**
-     * Method: _onMapOut
-     *      Called when mouse moves out of map.
-     *
-     * Parameters:
-     * evt - {<OpenLayers.Event>}
-     */
-    _onMapOut: function(evt) {
-        if (OpenLayers.Util.mouseLeft(evt, this.map.div)) {
-            this.cancelTimer();
-        }
-        return true;
-    },
-
-    /**
-     * Method: _onTimedOut
-     *      Called when user hasen't moved the mouse for 1 sec. Triggers
-     *      search request.
-     */
-    _onTimedOut: function() {
+    _cancelSearch: function(evt) {
         this.cancelSearch();
-        this.doSearch(this.getSearchParams(this.evt));
-    },
-
-    /**
-     * Method: cancelTimer
-     *      Cancels the timer.
-     */
-    cancelTimer: function() {
-        // warning: timerId can possibly be 0
-        if (this.timerId != null) {
-            clearTimeout(this.timerId);
-            this.timerId = null;
-        }
+        this.onMouseMove();
     },
 
     /**
