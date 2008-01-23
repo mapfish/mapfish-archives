@@ -97,6 +97,7 @@
             "core/SearchMediator.js",
             "core/Searcher.js",
             "core/Searcher/XY.js",
+            "core/Searcher/Box.js",
             "core/Searcher/Extent.js",
             "core/Searcher/Form.js",
             "widgets/MapComponent.js",
