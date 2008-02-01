@@ -13,20 +13,32 @@
 <body>
 <!-- 
 to generate the list:
-grep -rl OpenLayers.js .|grep -v svn-base
+grep -rl OpenLayers.js .|grep -v svn-base|sort
  -->
 <pre id="allfiles">
-./demos/routing/epfl.html
 ./demos/c2corg/search.html
+./demos/routing/epfl.html
 ./demos/world_factbk/geostat.html
-./examples/search/c2corg.html
-./examples/map/single_map.html
-./examples/map/multiple_maps.html
-./examples/tree/tree_standalone.html
-./examples/tree/tree_user_model.html
-./examples/tree/tree_automatic.html
-./examples/geostat/proportionalSymbols.html
+./examples/edition/list.html
 ./examples/geostat/choropleths.html
+./examples/geostat/layout.html
+./examples/geostat/proportionalSymbols.html
+./examples/map/layout.html
+./examples/map/layout_spherical_mercator.html
+./examples/map/multiple_maps.html
+./examples/map/single_map.html
+./examples/map/spherical-mercator.html
+./examples/map/toolbar.html
+./examples/map/window.html
+./examples/search/c2corg_ext.html
+./examples/search/c2corg.html
+./examples/shortcuts/layout.html
+./examples/shortcuts/shortcuts.html
+./examples/tree/tree_automatic.html
+./examples/tree/tree_reorder.html
+./examples/tree/tree_standalone.html
+./examples/tree/tree_user_model_complex.html
+./examples/tree/tree_user_model.html
 </pre>
 <script>
 var files = document.getElementById("allfiles").innerHTML.split("\n");
