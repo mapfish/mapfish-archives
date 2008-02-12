@@ -18,30 +18,24 @@
 # along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-
 #
 # Variables
 #
-
 buildpath="$(cd $(dirname $0); pwd)"
 releasepath="${buildpath}/../mfbase/release"
-
 
 #
 # Command path definitions
 #
-
 python="/usr/bin/python"
 mkdir="/bin/mkdir"
 rm="/bin/rm"
 sh="/bin/sh"
 cp="/bin/cp"
 
-
 #
 # MapFish.js build
 #
-
 openlayerspath="${buildpath}/../mfbase/openlayers"
 
 ${mkdir} -p ${releasepath}
@@ -49,13 +43,9 @@ ${mkdir} -p ${releasepath}
 ${rm} -rf "${releasepath}/img" && ${cp} -r "${openlayerspath}/img" ${releasepath}
 ${rm} -rf "${releasepath}/theme" && ${cp} -r "${openlayerspath}/theme" ${releasepath}
 
-
-
 #
 # Dojo build (old stuff, to be removed)
 #
-
 (cd ${buildpath} && ${sh} build-dojo.sh)
-
 
 exit 0
