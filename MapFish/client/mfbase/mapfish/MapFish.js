@@ -93,6 +93,7 @@
         var jsfiles = new Array(
             "core/Color.js",
             "core/GeoStat.js",
+            "core/Routing.js",
             "core/Util.js",
             "core/SearchMediator.js",
             "core/Searcher.js",
