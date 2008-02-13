@@ -44,7 +44,7 @@
          * Property: _scriptName
          * {String} Relative path of this script.
          */
-        _scriptName: (!singleFile) ? "mapfish/MapFish.js" : "MapFish.js",
+        _scriptName: "MapFish.js",
 
         /**
          * Function: _getScriptLocation
@@ -113,7 +113,7 @@
         ); // etc.
 
         var allScriptTags = "";
-        var host = mapfish._getScriptLocation() + "mapfish/";
+        var host = mapfish._getScriptLocation();
     
         for (var i = 0; i < jsfiles.length; i++) {
             if (/MSIE/.test(navigator.userAgent) || /Safari/.test(navigator.userAgent)) {

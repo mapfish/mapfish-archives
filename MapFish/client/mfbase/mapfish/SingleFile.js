@@ -19,7 +19,7 @@
 
 /*
  * This file is to be included in the [first] section of MapFish build
- * config file.
+ * config file, but after OpenLayers initialization files.
  */
 
 (function() {
@@ -45,6 +45,8 @@
 
     if (foolOpenLayers) {
         // poor OpenLayers!
-        window.OpenLayers._scriptName = "MapFish.js";
+        window.OpenLayers._getScriptLocation = function() {
+            return mapfish._getScriptLocation() + "../openlayers/";
+        }
     }
 })();

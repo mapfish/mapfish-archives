@@ -18,6 +18,8 @@
 # along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+set -e
+
 #
 # Variables
 #
@@ -36,12 +38,25 @@ cp="/bin/cp"
 #
 # MapFish.js build
 #
-openlayerspath="${buildpath}/../mfbase/openlayers"
+mapfishpath="${buildpath}/../mfbase/mapfish"
+if [ -d ${releasepath} ]; then
+    ${rm} -rf ${releasepath}
+fi
 
-${mkdir} -p ${releasepath}
-(cd ${buildpath} && ${python} build.py -c mapfish-widgets.cfg -o ${releasepath}/MapFish.js)
-${rm} -rf "${releasepath}/img" && ${cp} -r "${openlayerspath}/img" ${releasepath}
-${rm} -rf "${releasepath}/theme" && ${cp} -r "${openlayerspath}/theme" ${releasepath}
+mapfishreleasepath="${releasepath}/mapfish"
+${mkdir} -p ${mapfishreleasepath}
+(cd ${buildpath} && ${python} build.py -c mapfish-widgets.cfg -o ${mapfishreleasepath}/MapFish.js)
+
+# MapFish resources
+${cp} -r "${mapfishpath}/img" ${mapfishreleasepath}
+
+# OpenLayers resources
+openlayerspath="${buildpath}/../mfbase/openlayers"
+openlayersreleasepath="${releasepath}/openlayers"
+
+mkdir ${openlayersreleasepath}
+${cp} -r "${openlayerspath}/img" ${openlayersreleasepath}
+${cp} -r "${openlayerspath}/theme" ${openlayersreleasepath}
 
 #
 # Dojo build (old stuff, to be removed)
