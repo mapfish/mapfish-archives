@@ -59,11 +59,8 @@ PROJECT=myproject
 # Project subversion URL
 PROJECT_SVN_BASE=http://example.com/path/to/trunk/$PROJECT/
 
-# Set this to "1" to install a MapFish version in this directory
-FETCH_MAPFISH=1
-
-# Specify here the MapFish revision to use. For instance "-r 243"
-MAPFISH_REVISION="-r 243"
+# Set this to "1" if project contains a copy of MapFish (usually using svn:externals)
+HAS_MAPFISH=1
 
 # You can define function that will be run at certain stages in the installation process
 # This is an example function that will be run after initialization

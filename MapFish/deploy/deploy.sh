@@ -34,8 +34,7 @@ fi
 # Default variable definitions, these can be overridden in the deploy file.
 # See deploy-sample.sh for explanation
 
-MAPFISH_BRANCH=trunk
-MAPFISH_BASE=http://www.mapfish.org/svn/mapfish/
+HAS_MAPFISH=1
 
 # Internal definitions, shouldn't be overridden
 
@@ -70,35 +69,8 @@ create_python_env() {
     $PYTHON_ENV/bin/easy_install Pylons psycopg2 sqlalchemy shapely geojson
 }
 
-fetch_mapfish() {
-    run_hook pre_fetch_mapfish
-
-    if [ "$FETCH_MAPFISH" != "1" ]; then
-        return
-    fi
-
-    echo "fetching mapfish (Branch: ${MAPFISH_BRANCH}, rev: ${MAPFISH_REVISION}) "
-    if [ -z "$SKIP_MAPFISH_FETCH" ]; then
-        if [ -d MapFish ]; then
-            rm -rf MapFish
-        fi
-        $SVN co $MAPFISH_REVISION ${MAPFISH_BASE}${MAPFISH_BRANCH}/MapFish
-    fi
-
-    (cd MapFish/client/build/ && sh ./build.sh)
-
-    # Install MapFish in env if fetched
-    if [ "$FETCH_PYTHON_ENV" = "1" ]; then
-        (cd MapFish/server/python && $PYTHON_ENV/bin/python setup.py develop)
-    fi
-
-    run_hook post_fetch_mapfish
-}
-
 init_light() {
     run_hook pre_init_light
-
-    fetch_mapfish
 
     if [ -d $PROJECT ]; then
         rm -rf $PROJECT
@@ -147,11 +119,35 @@ subst_in_files() {
     done
 }
 
+init_mapfish() {
+    run_hook pre_fetch_mapfish
+
+    if [ "$HAS_MAPFISH" != "1" -o "$SKIP_INIT_MAPFISH" = "1" ]; then
+        return
+    fi
+
+    if [ ! -d $PROJECT/MapFish ]; then
+        echo "Error: no MapFish directory in project, but HAS_MAPFISH is set to 1"
+        exit 1
+    fi
+
+    (cd $PROJECT/MapFish/client/build/ && sh ./build.sh)
+
+    # Install MapFish in env if fetched
+    if [ "$FETCH_PYTHON_ENV" = "1" ]; then
+        (cd $PROJECT/MapFish/server/python && $PYTHON_ENV/bin/python setup.py develop)
+    fi
+
+    run_hook post_fetch_mapfish
+}
+
 fetch_project() {
     run_hook pre_fetch_project
 
     echo "Fetching/updating project"
-    $SVN co ${PROJECT_SVN_BASE}
+    $SVN co $SVN_CO_OPTIONS ${PROJECT_SVN_BASE}
+
+    init_mapfish
 
     subst_in_files
 

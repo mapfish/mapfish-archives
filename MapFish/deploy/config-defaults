@@ -26,5 +26,5 @@ export PROJECT=$(basename $PROJECT_DIR)
 export PYTHON_HOME=$BASE/env
 export PASTER=$PYTHON_HOME/bin/paster
 export PASTE_CONFIG=$PROJECT_DIR/$PROJECT/development.ini
-export MAPFISHDIR=$BASE/MapFish
+export MAPFISHDIR=$PROJECT_DIR/MapFish
 
