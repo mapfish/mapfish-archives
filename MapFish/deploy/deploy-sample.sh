@@ -35,7 +35,7 @@ checkout_deploy() {
     if echo "$OUTPUT" | grep -q "deploy/"; then
         REV=$(svn info deploy|grep Revision:|sed "s/Revision: //")
         echo "Deploy script was retrieved or updated (rev: $REV)"
-        $0 $*
+        exec $0 $*
         exit 0
     fi
 }

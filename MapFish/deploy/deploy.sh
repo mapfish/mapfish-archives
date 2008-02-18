@@ -89,7 +89,7 @@ fetch_mapfish() {
 
     # Install MapFish in env if fetched
     if [ "$FETCH_PYTHON_ENV" = "1" ]; then
-        (cd MapFish/server/python && $PYTHON_ENV/bin/python setup.py install)
+        (cd MapFish/server/python && $PYTHON_ENV/bin/python setup.py develop)
     fi
 
     run_hook post_fetch_mapfish
