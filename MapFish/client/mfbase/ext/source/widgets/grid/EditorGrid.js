@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -12,6 +12,7 @@
  * Class for creating and editable grid.
  
  * @constructor
+ * @param {Object} config The config object
  */
 Ext.grid.EditorGridPanel = Ext.extend(Ext.grid.GridPanel, {
     /**
@@ -24,6 +25,12 @@ Ext.grid.EditorGridPanel = Ext.extend(Ext.grid.GridPanel, {
     isEditor : true,
     // private
     detectEdit: false,
+
+	/**
+	 * @cfg {Boolean} autoEncode
+	 * True to automatically HTML encode and decode values pre and post edit (defaults to false)
+	 */
+	autoEncode : false,
 
 	/**
 	 * @cfg {Boolean} trackMouseOver @hide
@@ -96,7 +103,7 @@ Ext.grid.EditorGridPanel = Ext.extend(Ext.grid.GridPanel, {
     initEvents : function(){
         Ext.grid.EditorGridPanel.superclass.initEvents.call(this);
         
-        this.on("bodyscroll", this.stopEditing, this);
+        this.on("bodyscroll", this.stopEditing, this, [true]);
 
         if(this.clicksToEdit == 1){
             this.on("cellclick", this.onCellDblClick, this);
@@ -116,19 +123,23 @@ Ext.grid.EditorGridPanel = Ext.extend(Ext.grid.GridPanel, {
 
     // private
     onAutoEditClick : function(e, t){
+        if(e.button !== 0){
+            return;
+        }
         var row = this.view.findRowIndex(t);
         var col = this.view.findCellIndex(t);
         if(row !== false && col !== false){
-        if(this.selModel.getSelectedCell){ // cell sm
-            var sc = this.selModel.getSelectedCell();
-            if(sc && sc.cell[0] === row && sc.cell[1] === col){
-                this.startEditing(row, col);
+            this.stopEditing();
+            if(this.selModel.getSelectedCell){ // cell sm
+                var sc = this.selModel.getSelectedCell();
+                if(sc && sc.cell[0] === row && sc.cell[1] === col){
+                    this.startEditing(row, col);
+                }
+            }else{
+                if(this.selModel.isSelected(row)){
+                    this.startEditing(row, col);
+                }
             }
-        }else{
-            if(this.selModel.isSelected(row)){
-                this.startEditing(row, col);
-            }
-        }
         }
     },
 
@@ -137,9 +148,10 @@ Ext.grid.EditorGridPanel = Ext.extend(Ext.grid.GridPanel, {
         this.editing = false;
         this.activeEditor = null;
         ed.un("specialkey", this.selModel.onEditorKey, this.selModel);
+		var r = ed.record;
+        var field = this.colModel.getDataIndex(ed.col);
+        value = this.postEditValue(value, startValue, r, field);
         if(String(value) !== String(startValue)){
-            var r = ed.record;
-            var field = this.colModel.getDataIndex(ed.col);
             var e = {
                 grid: this,
                 record: r,
@@ -192,19 +204,28 @@ Ext.grid.EditorGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     ed.on("complete", this.onEditComplete, this, {single: true});
                     ed.on("specialkey", this.selModel.onEditorKey, this.selModel);
                     this.activeEditor = ed;
-                    var v = r.data[field];
+                    var v = this.preEditValue(r, field);
                     ed.startEdit(this.view.getCell(row, col), v);
                 }).defer(50, this);
             }
         }
     },
-        
+    
+	preEditValue : function(r, field){
+		return this.autoEncode && typeof value == 'string' ? Ext.util.Format.htmlDecode(r.data[field]) : r.data[field];
+	},
+	
+	postEditValue : function(value, originalValue, r, field){
+		return this.autoEncode && typeof value == 'string' ? Ext.util.Format.htmlEncode(value) : value;
+	},
+	    
     /**
      * Stops any active editing
+     * @param {Boolean} cancel (optional) True to cancel any changes
      */
-    stopEditing : function(){
+    stopEditing : function(cancel){
         if(this.activeEditor){
-            this.activeEditor.completeEdit();
+            this.activeEditor[cancel === true ? 'cancelEdit' : 'completeEdit']();
         }
         this.activeEditor = null;
     }

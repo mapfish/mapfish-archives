@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -110,7 +110,7 @@ Ext.dd.ScrollManager = function(){
          * @param {Mixed/Array} el The id of or the element to be scrolled or an array of either
          */
         register : function(el){
-            if(el instanceof Array){
+            if(Ext.isArray(el)){
                 for(var i = 0, len = el.length; i < len; i++) {
                 	this.register(el[i]);
                 }
@@ -125,7 +125,7 @@ Ext.dd.ScrollManager = function(){
          * @param {Mixed/Array} el The id of or the element to be removed or an array of either
          */
         unregister : function(el){
-            if(el instanceof Array){
+            if(Ext.isArray(el)){
                 for(var i = 0, len = el.length; i < len; i++) {
                 	this.unregister(el[i]);
                 }

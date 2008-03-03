@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -51,7 +51,7 @@ Ext.grid.GroupingView = Ext.extend(Ext.grid.GridView, {
      */
     hideGroupedColumn:false,
     /**
-     * @cfg {Boolean} showGroupName True to display the name for each set of grouped rows (defaults to false)
+     * @cfg {Boolean} showGroupName True to display the name for each set of grouped rows (defaults to true)
      */
     showGroupName:true,
     /**
@@ -79,9 +79,42 @@ Ext.grid.GroupingView = Ext.extend(Ext.grid.GridView, {
      */
     ignoreAdd: false,
     /**
-     * @cfg {String} groupTextTpl The template used to render the group text
+     * @cfg {String} groupTextTpl The template used to render the group header. This is used to
+     * format an object which contains the following properties:
+     * <div class="mdetail-params"><ul>
+     * <li><b>group</b> : String<p class="sub-desc">The <i>rendered</i> value of the group field.
+     * By default this is the unchanged value of the group field. If a {@link #groupRenderer}
+     * is specified, it is the result of a call to that.</p></li>
+     * <li><b>gvalue</b> : Object<p class="sub-desc">The <i>raw</i> value of the group field.</p></li>
+     * <li><b>text</b> : String<p class="sub-desc">The configured {@link #header} (If
+     * {@link #showGroupName} is true) plus the <i>rendered</i>group field value.</p></li>
+     * <li><b>groupId</b> : String<p class="sub-desc">A unique, generated ID which is applied to the
+     * View Element which contains the group.</p></li>
+     * <li><b>startRow</b> : Number<p class="sub-desc">The row index of the Record which caused group change.</p></li>
+     * <li><b>rs</b> : Array<p class="sub-desc">.Contains a single element: The Record providing the data
+     * for the row which caused group change.</p></li>
+     * <li><b>cls</b> : String<p class="sub-desc">The generated class name string to apply to the group header Element.</p></li>
+     * <li><b>style</b> : String<p class="sub-desc">The inline style rules to apply to the group header Element.</p></li>
+     * </ul></div></p>
+     * See {@link Ext.XTemplate} for information on how to format data using a template.
      */
     groupTextTpl : '{text}',
+    /**
+     * @cfg {Function} groupRenderer The function used to format the grouping field value for
+     * display in the group header. Should return a string value. This takes the following parameters:
+     * <div class="mdetail-params"><ul>
+     * <li><b>v</b> : Object<p class="sub-desc">The new value of the group field.</p></li>
+     * <li><b>unused</b> : undefined<p class="sub-desc">Unused parameter.</p></li>
+     * <li><b>r</b> : Ext.data.Record<p class="sub-desc">The Record providing the data
+     * for the row which caused group change.</p></li>
+     * <li><b>rowIndex</b> : Number<p class="sub-desc">The row index of the Record which caused group change.</p></li>
+     * <li><b>colIndex</b> : Number<p class="sub-desc">The column index of the group field.</p></li>
+     * <li><b>ds</b> : Ext.data.Store<p class="sub-desc">The Store which is providing the data Model.</p></li>
+     * </ul></div></p>
+     */
+    /**
+     * @cfg {String} header The text with which to prefix the group field value in the group header line.
+     */
 
     // private
     gidSeed : 1000,
@@ -157,6 +190,9 @@ Ext.grid.GroupingView = Ext.extend(Ext.grid.GridView, {
         }
         var s = this.hmenu.items.get('showGroups');
         if(s){
+            if (!!field){ // Disable the 'showGroups' checkbox if it is not checked and the field is not groupable
+                s.setDisabled(this.cm.config[this.hdCtxIndex].groupable === false)
+            }
             s.setChecked(!!field);
         }
     },
@@ -190,6 +226,7 @@ Ext.grid.GroupingView = Ext.extend(Ext.grid.GridView, {
     // private
     onGroupByClick : function(){
         this.grid.store.groupBy(this.cm.getDataIndex(this.hdCtxIndex));
+        this.beforeMenuShow(); // Make sure the checkboxes get properly set when changing groups
     },
 
     // private
@@ -207,7 +244,7 @@ Ext.grid.GroupingView = Ext.extend(Ext.grid.GridView, {
      * @param {Boolean} expanded (optional)
      */
     toggleGroup : function(group, expanded){
-        this.grid.stopEditing();
+        this.grid.stopEditing(true);
         group = Ext.getDom(group);
         var gel = Ext.fly(group);
         expanded = expanded !== undefined ?
@@ -310,7 +347,6 @@ Ext.grid.GroupingView = Ext.extend(Ext.grid.GridView, {
         var gidPrefix = this.grid.getGridEl().id;
         var cfg = this.cm.config[colIndex];
         var groupRenderer = cfg.groupRenderer || cfg.renderer;
-        var cls = this.startCollapsed ? 'x-grid-group-collapsed' : '';
         var prefix = this.showGroupName ?
                      (cfg.groupName || cfg.header)+': ' : '';
 
@@ -321,8 +357,11 @@ Ext.grid.GroupingView = Ext.extend(Ext.grid.GridView, {
                 gvalue = r.data[groupField],
                 g = this.getGroup(gvalue, r, groupRenderer, rowIndex, colIndex, ds);
             if(!curGroup || curGroup.group != g){
-                gid = gidPrefix + '-gp-' + groupField + '-' + g;
-                var gcls = cls ? cls : (this.state[gid] === false ? 'x-grid-group-collapsed' : '');
+                gid = gidPrefix + '-gp-' + groupField + '-' + Ext.util.Format.htmlEncode(g);
+               	// if state is defined use it, however state is in terms of expanded
+				// so negate it, otherwise use the default.
+				var isCollapsed  = typeof this.state[gid] !== 'undefined' ? !this.state[gid] : this.startCollapsed;
+				var gcls = isCollapsed ? 'x-grid-group-collapsed' : '';	
                 curGroup = {
                     group: g,
                     gvalue: gvalue,
@@ -364,7 +403,7 @@ Ext.grid.GroupingView = Ext.extend(Ext.grid.GridView, {
         var cfg = this.cm.config[colIndex];
         var groupRenderer = cfg.groupRenderer || cfg.renderer;
         var gtext = this.getGroup(value, {data:{}}, groupRenderer, 0, colIndex, this.ds);
-        return gidPrefix + '-gp-' + groupField + '-' + value;
+        return gidPrefix + '-gp-' + groupField + '-' + Ext.util.Format.htmlEncode(value);
     },
 
     // private

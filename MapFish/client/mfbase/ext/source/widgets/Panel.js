@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -156,6 +156,7 @@ Ext.Panel = Ext.extend(Ext.Container, {
      * <li><tt>help</tt></li>
      * <li><tt>search</tt></li>
      * <li><tt>save</tt></li>
+     * <li><tt>print</tt></li>
      * </ul></div></p></li>
      * <li><b>handler</b> : Function<p class="sub-desc"><b>Required.</b> The function to
      * call when clicked. Arguments passed are:<ul>
@@ -242,6 +243,12 @@ tools:[{
   	 * True to enable dragging of this Panel (defaults to false).  For custom drag/drop implementations, an Ext.Panel.DD
   	 * config could also be passed in this config instead of true, although Ext.Panel.DD is an internal, undocumented class.
      */
+	/**
+  	 * @cfg {String} tabTip
+  	 * Adds a tooltip when mousing over the tab of a Ext.Panel which is an item of a Ext.TabPanel. Ext.QuickTips.init()
+  	 * must be called in order for the tips to render.
+     */
+
 
     /**
     * @cfg {String} baseCls
@@ -634,13 +641,13 @@ tools:[{
         }
 
         if(this.tbar && this.topToolbar){
-            if(this.topToolbar instanceof Array){
+            if(Ext.isArray(this.topToolbar)){
                 this.topToolbar = new Ext.Toolbar(this.topToolbar);
             }
             this.topToolbar.render(this.tbar);
         }
         if(this.bbar && this.bottomToolbar){
-            if(this.bottomToolbar instanceof Array){
+            if(Ext.isArray(this.bottomToolbar)){
                 this.bottomToolbar = new Ext.Toolbar(this.bottomToolbar);
             }
             this.bottomToolbar.render(this.bbar);
@@ -655,7 +662,7 @@ tools:[{
     setIconClass : function(cls){
         var old = this.iconCls;
         this.iconCls = cls;
-        if(this.rendered){
+        if(this.rendered && this.header){
             if(this.frame){
                 this.header.addClass('x-panel-icon');
                 this.header.replaceClass(old, this.iconCls);
@@ -724,6 +731,7 @@ tools:[{
             Ext.apply(bc, config);
         }
         var btn = new Ext.Button(bc);
+        btn.ownerCt = this;
         if(!this.buttons){
             this.buttons = [];
         }
@@ -808,9 +816,7 @@ tools:[{
         if(this.title){
             this.setTitle(this.title);
         }
-        if(this.autoScroll){
-            this.body.dom.style.overflow = 'auto';
-        }
+		this.setAutoScroll();
         if(this.html){
             this.body.update(typeof this.html == 'object' ?
                              Ext.DomHelper.markup(this.html) :
@@ -828,6 +834,13 @@ tools:[{
         }
         Ext.Panel.superclass.afterRender.call(this); // do sizing calcs last
         this.initEvents();
+    },
+    
+    // private
+    setAutoScroll : function(){
+        if(this.rendered && this.autoScroll){
+			this.body.setOverflow('auto');
+        }
     },
 
     // private
@@ -1228,5 +1241,9 @@ panel.load({
             typeof this.autoLoad == 'object' ?
                 this.autoLoad : {url: this.autoLoad});
     }
+
+/**
+ * @cfg {String} autoEl @hide
+ */
 });
 Ext.reg('panel', Ext.Panel);

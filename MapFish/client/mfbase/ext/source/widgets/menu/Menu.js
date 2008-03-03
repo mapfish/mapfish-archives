@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -16,7 +16,7 @@
  * @param {Object} config Configuration options
  */
 Ext.menu.Menu = function(config){
-    if(config instanceof Array){
+    if(Ext.isArray(config)){
         config = {items:config};
     }
     Ext.apply(this, config);
@@ -81,6 +81,12 @@ Ext.menu.Menu = function(config){
     Ext.menu.MenuMgr.register(this);
     Ext.menu.Menu.superclass.constructor.call(this);
     var mis = this.items;
+    /**
+     * A MixedCollection of this Menu's items
+     * @property items
+     * @type Ext.util.MixedCollection
+     */
+
     this.items = new Ext.util.MixedCollection();
     if(mis){
         this.add.apply(this, mis);
@@ -142,8 +148,9 @@ Ext.extend(Ext.menu.Menu, Ext.util.Observable, {
         }
         var el = this.el = this.createEl();
 
-        this.keyNav = new Ext.menu.MenuNav(this);
-
+        if(!this.keyNav){
+            this.keyNav = new Ext.menu.MenuNav(this);
+        }
         if(this.plain){
             el.addClass("x-menu-plain");
         }
@@ -496,7 +503,30 @@ var item = menu.add(
         while(f = this.items.first()){
             this.remove(f);
         }
-    }
+    },
+
+    /**
+     * Destroys the menu by  unregistering it from {@link Ext.menu.MenuMgr}, purging event listeners,
+     * removing all of the menus items, then destroying the underlying {@link Ext.Element}
+     */
+    destroy : function(){
+        this.beforeDestroy();
+        Ext.menu.MenuMgr.unregister(this);
+        if (this.keyNav) {
+        	this.keyNav.disable();	
+        }
+        this.removeAll();
+        if (this.ul) {
+        	this.ul.removeAllListeners();	
+        }
+        if (this.el) {
+        	this.el.destroy();	
+        }
+    },
+
+	// private
+    beforeDestroy : Ext.emptyFn
+
 });
 
 // MenuNav is a private utility class used internally by the Menu

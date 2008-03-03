@@ -1,10 +1,11 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
  */
+
 
 /**
  * @class Ext.Button
@@ -44,6 +45,12 @@ Ext.Button = Ext.extend(Ext.Component, {
      * @type Boolean
      */
     pressed : false,
+    /**
+     * The Button's owner {@link Ext.Panel} (defaults to undefined, and is set automatically when
+     * the Button is added to a container).  Read-only.
+     * @type Ext.Panel
+     * @property ownerCt
+     */
 
     /**
      * @cfg {Number} tabIndex Set a DOM tabIndex for this button (defaults to undefined)
@@ -101,7 +108,7 @@ Ext.Button = Ext.extend(Ext.Component, {
      * @cfg {String} cls
      * A CSS class string to apply to the button's main element.
      */
-    
+
     /**
      * @cfg {Ext.Template} template (Optional)
      * An {@link Ext.Template} with which to create the Button's main element. This Template must
@@ -289,13 +296,15 @@ Ext.Button = Ext.extend(Ext.Component, {
         }
         this.iconCls = cls;
     },
-    
+
     // private
     beforeDestroy: function(){
-        var btn = this.el.child(this.buttonSelector);
-        if(btn){
-            btn.removeAllListeners();
-        }
+    	if(this.rendered){
+	        var btn = this.el.child(this.buttonSelector);
+	        if(btn){
+	            btn.removeAllListeners();
+	        }
+	    }
         if(this.menu){
             Ext.destroy(this.menu);
         }
@@ -334,9 +343,9 @@ Ext.Button = Ext.extend(Ext.Component, {
      */
     setHandler : function(handler, scope){
         this.handler = handler;
-        this.scope = scope;  
+        this.scope = scope;
     },
-    
+
     /**
      * Sets this button's text
      * @param {String} text The button text
@@ -348,15 +357,15 @@ Ext.Button = Ext.extend(Ext.Component, {
         }
         this.autoWidth();
     },
-    
+
     /**
      * Gets the text for this button
      * @return {String} The button text
      */
     getText : function(){
-        return this.text;  
+        return this.text;
     },
-    
+
     /**
      * If a state it passed, it becomes the pressed state otherwise the current state is toggled.
      * @param {Boolean} state (optional) Force a particular state
@@ -378,19 +387,19 @@ Ext.Button = Ext.extend(Ext.Component, {
             }
         }
     },
-    
+
     /**
      * Focus the button
      */
     focus : function(){
         this.el.child(this.buttonSelector).focus();
     },
-    
+
     // private
     onDisable : function(){
         if(this.el){
-            if(!Ext.isIE6){
-                this.el.addClass("x-item-disabled");
+            if(!Ext.isIE6 || !this.text){
+                this.el.addClass(this.disabledClass);
             }
             this.el.dom.disabled = true;
         }
@@ -400,8 +409,8 @@ Ext.Button = Ext.extend(Ext.Component, {
     // private
     onEnable : function(){
         if(this.el){
-            if(!Ext.isIE6){
-                this.el.removeClass("x-item-disabled");
+            if(!Ext.isIE6 || !this.text){
+                this.el.removeClass(this.disabledClass);
             }
             this.el.dom.disabled = false;
         }
@@ -497,7 +506,7 @@ Ext.Button = Ext.extend(Ext.Component, {
         var internal = e.within(this.el) && e.target != this.el.dom;
         this.el.removeClass("x-btn-over");
         this.fireEvent('mouseout', this, e);
-        if(this.isMenuTriggerOut(e), internal){
+        if(this.isMenuTriggerOut(e, internal)){
             this.fireEvent('menutriggerout', this, this.menu, e);
         }
     },
@@ -548,13 +557,19 @@ Ext.Button = Ext.extend(Ext.Component, {
     restoreClick : function(){
         this.ignoreNextClick = 0;
     }
+
+
+
+    /**
+     * @cfg {String} autoEl @hide
+     */
 });
 Ext.reg('button', Ext.Button);
 
 // Private utility class used by Button
 Ext.ButtonToggleMgr = function(){
    var groups = {};
-   
+
    function toggleGroup(btn, state){
        if(state){
            var g = groups[btn.toggleGroup];
@@ -565,7 +580,7 @@ Ext.ButtonToggleMgr = function(){
            }
        }
    }
-   
+
    return {
        register : function(btn){
            if(!btn.toggleGroup){
@@ -578,7 +593,7 @@ Ext.ButtonToggleMgr = function(){
            g.push(btn);
            btn.on("toggle", toggleGroup);
        },
-       
+
        unregister : function(btn){
            if(!btn.toggleGroup){
                return;

@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -105,9 +105,9 @@ Ext.extend(Ext.state.Provider, Ext.util.Observable, {
             enc = "n:" + v;
         }else if(typeof v == "boolean"){
             enc = "b:" + (v ? "1" : "0");
-        }else if(v instanceof Date){
+        }else if(Ext.isDate(v)){
             enc = "d:" + v.toGMTString();
-        }else if(v instanceof Array){
+        }else if(Ext.isArray(v)){
             var flat = "";
             for(var i = 0, len = v.length; i < len; i++){
                 flat += this.encodeValue(v[i]);

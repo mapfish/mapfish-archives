@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -35,11 +35,6 @@
 */
 Ext.grid.ColumnModel = function(config){
 	/**
-     * The config passed into the constructor
-     * @property {Array} config
-     */
-     this.setConfig(config, true);
-    /**
      * The width of columns which have no width specified (defaults to 100)
      * @type Number
      */
@@ -51,6 +46,16 @@ Ext.grid.ColumnModel = function(config){
      */
     this.defaultSortable = false;
 
+    /**
+     * The config passed into the constructor
+     * @property {Array} config
+     */
+    if(config.columns){
+        Ext.apply(this, config);
+        this.setConfig(config.columns, true);
+    }else{
+        this.setConfig(config, true);
+    }
     this.addEvents(
         /**
 	     * @event widthchange
@@ -131,7 +136,15 @@ Ext.extend(Ext.grid.ColumnModel, Ext.util.Observable, {
      * @cfg {Boolean} resizable (optional) False to disable column resizing. Defaults to true.
      */
     /**
+     * @cfg {Boolean} menuDisabled (optional) True to disable the column menu. Defaults to false.
+     */
+    /**
      * @cfg {Boolean} hidden (optional) True to hide the column. Defaults to false.
+     */
+    /**
+     * @cfg {String} tooltip (optional) A text string to use as the column header's tooltip.  If Quicktips are enabled, this
+     * value will be used as the text of the quick tip, otherwise it will be set as the header's HTML title attribute. 
+     * Defaults to ''.
      */
     /**
      * @cfg {Function} renderer (optional) A function used to generate HTML markup for a cell
@@ -140,6 +153,9 @@ Ext.extend(Ext.grid.ColumnModel, Ext.util.Observable, {
      */
     /**
      * @cfg {String} align (optional) Set the CSS text-align property of the column.  Defaults to undefined.
+     */
+    /**
+     * @cfg {String} css (optional) Set custom CSS for all table cells in the column (excluding headers).  Defaults to undefined.
      */
     /**
      * @cfg {Boolean} hideable (optional) Specify as <tt>false</tt> to prevent the user from hiding this column.  Defaults to true.
@@ -305,6 +321,15 @@ Ext.extend(Ext.grid.ColumnModel, Ext.util.Observable, {
             return this.defaultSortable;
         }
         return this.config[col].sortable;
+    },
+
+    /**
+     * Returns true if the specified column menu is disabled.
+     * @param {Number} col The column index
+     * @return {Boolean}
+     */
+    isMenuDisabled : function(col){
+        return !!this.config[col].menuDisabled;
     },
 
     /**

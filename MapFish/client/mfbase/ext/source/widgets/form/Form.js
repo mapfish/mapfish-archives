@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -29,6 +29,9 @@
  * @param {Object} config Configuration options
  */
 Ext.FormPanel = Ext.extend(Ext.Panel, {
+	/**
+	 * @cfg {String} formId (optional) The id of the FORM tag (defaults to an auto-generated id).
+	 */
     /**
      * @cfg {Number} labelWidth The width of labels. This property cascades to child containers.
      */
@@ -78,7 +81,7 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
             /**
              * @event clientvalidation
              * If the monitorValid config option is true, this event fires repetitively to notify of valid state
-             * @param {Form} this
+             * @param {Ext.form.FormPanel} this
              * @param {Boolean} valid true if the form has passed client-side validation
              */
             'clientvalidation'
@@ -152,11 +155,27 @@ Ext.FormPanel = Ext.extend(Ext.Panel, {
     // private
     initEvents : function(){
         Ext.FormPanel.superclass.initEvents.call(this);
-
+		this.items.on('remove', this.onRemove, this);
+		this.items.on('add', this.onAdd, this);
         if(this.monitorValid){ // initialize after render
             this.startMonitoring();
         }
     },
+    
+    // private
+	onAdd : function(ct, c) {
+		if (c.isFormField) {
+			this.form.add(c);
+		}
+	},
+	
+	// private
+	onRemove : function(c) {
+		if (c.isFormField) {
+			Ext.destroy(c.container.up('.x-form-item'));
+			this.form.remove(c);
+		}
+	},
 
     /**
      * Starts monitoring of the valid state of this form. Usually this is done by passing the config

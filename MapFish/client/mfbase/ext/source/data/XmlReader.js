@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -112,7 +112,7 @@ Ext.extend(Ext.data.XmlReader, Ext.data.DataReader, {
 	        for(var j = 0, jlen = fields.length; j < jlen; j++){
 	            var f = fields.items[j];
                 var v = q.selectValue(f.mapping || f.name, n, f.defaultValue);
-	            v = f.convert(v);
+	            v = f.convert(v, n);
 	            values[f.name] = v;
 	        }
 	        var record = new recordType(values, id);

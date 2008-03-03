@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -32,6 +32,7 @@ Ext.grid.CheckboxSelectionModel = Ext.extend(Ext.grid.RowSelectionModel, {
     sortable: false,
 
     // private
+    menuDisabled:true,
     fixed:true,
     dataIndex: '',
     id: 'checker',
@@ -49,7 +50,7 @@ Ext.grid.CheckboxSelectionModel = Ext.extend(Ext.grid.RowSelectionModel, {
 
     // private
     onMouseDown : function(e, t){
-        if(t.className == 'x-grid3-row-checker'){
+        if(e.button === 0 && t.className == 'x-grid3-row-checker'){ // Only fire if left-click
             e.stopEvent();
             var row = e.getTarget('.x-grid3-row');
             if(row){

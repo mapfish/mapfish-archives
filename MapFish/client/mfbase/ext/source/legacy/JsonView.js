@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -170,7 +170,7 @@ Ext.extend(Ext.JsonView, Ext.View, {
  * you get the JSON object for the node
  */
     getNodeData : function(node){
-        if(node instanceof Array){
+        if(Ext.isArray(node)){
             var data = [];
             for(var i = 0, len = node.length; i < len; i++){
                 data.push(this.getNodeData(node[i]));

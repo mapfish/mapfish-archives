@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -70,6 +70,7 @@ Ext.extend(Ext.tree.TreeEditor, Ext.Editor, {
 
     initEditor : function(tree){
         tree.on('beforeclick', this.beforeNodeClick, this);
+        tree.on('dblclick', this.onNodeDblClick, this);
         this.on('complete', this.updateNode, this);
         this.on('beforestartedit', this.fitToTree, this);
         this.on('startedit', this.bindScroll, this, {delay:10});
@@ -89,10 +90,13 @@ Ext.extend(Ext.tree.TreeEditor, Ext.Editor, {
     },
 
     // private
-    triggerEdit : function(node){
+    triggerEdit : function(node, defer){
         this.completeEdit();
-        this.editNode = node;
-        this.startEdit(node.ui.textNode, node.text);
+		if(node.attributes.editable !== false){
+			this.editNode = node;
+            this.autoEditTimer = this.startEdit.defer(this.editDelay, this, [node.ui.textNode, node.text]);
+            return false;
+        }
     },
 
     // private
@@ -102,13 +106,15 @@ Ext.extend(Ext.tree.TreeEditor, Ext.Editor, {
 
     // private
     beforeNodeClick : function(node, e){
-        var sinceLast = (this.lastClick ? this.lastClick.getElapsed() : 0);
-        this.lastClick = new Date();
-        if(sinceLast > this.editDelay && this.tree.getSelectionModel().isSelected(node)){
+        clearTimeout(this.autoEditTimer);
+        if(this.tree.getSelectionModel().isSelected(node)){
             e.stopEvent();
-            this.triggerEdit(node);
-            return false;
+            return this.triggerEdit(node);
         }
+    },
+
+    onNodeDblClick : function(node, e){
+        clearTimeout(this.autoEditTimer);
     },
 
     // private
@@ -121,7 +127,7 @@ Ext.extend(Ext.tree.TreeEditor, Ext.Editor, {
     onHide : function(){
         Ext.tree.TreeEditor.superclass.onHide.call(this);
         if(this.editNode){
-            this.editNode.ui.focus();
+            this.editNode.ui.focus.defer(50, this.editNode.ui);
         }
     },
 

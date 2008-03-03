@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -26,7 +26,7 @@ Ext.data.DataReader = function(meta, recordType){
      * @property meta
      */
     this.meta = meta;
-    this.recordType = recordType instanceof Array ? 
+    this.recordType = Ext.isArray(recordType) ? 
         Ext.data.Record.create(recordType) : recordType;
 };
 

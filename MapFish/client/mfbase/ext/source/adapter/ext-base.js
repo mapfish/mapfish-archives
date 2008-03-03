@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -1235,7 +1235,7 @@
     };
 
     Ext.lib.Point = function(x, y) {
-        if (x instanceof Array) {
+        if (Ext.isArray(x)) {
             y = x[1];
             x = x[0];
         }
@@ -1248,15 +1248,15 @@
 
     Ext.lib.Anim = {
         scroll : function(el, args, duration, easing, cb, scope) {
-            this.run(el, args, duration, easing, cb, scope, Ext.lib.Scroll);
+            return this.run(el, args, duration, easing, cb, scope, Ext.lib.Scroll);
         },
 
         motion : function(el, args, duration, easing, cb, scope) {
-            this.run(el, args, duration, easing, cb, scope, Ext.lib.Motion);
+            return this.run(el, args, duration, easing, cb, scope, Ext.lib.Motion);
         },
 
         color : function(el, args, duration, easing, cb, scope) {
-            this.run(el, args, duration, easing, cb, scope, Ext.lib.ColorAnim);
+            return this.run(el, args, duration, easing, cb, scope, Ext.lib.ColorAnim);
         },
 
         run : function(el, args, duration, easing, cb, scope, type) {
@@ -2056,7 +2056,7 @@
                 var end;
                 var i, len;
 
-                if (control.length > 0 && !(control[0] instanceof Array)) {
+                if (control.length > 0 && !Ext.isArray(control[0])) {
                     control = [control];
                 } else {
                     var tmp = [];

@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -38,5 +38,10 @@ Ext.menu.DateMenu = function(config){
     }, this);
 };
 Ext.extend(Ext.menu.DateMenu, Ext.menu.Menu, {
-    cls:'x-date-menu'
+    cls:'x-date-menu',
+
+    // private
+    beforeDestroy : function() {
+        this.picker.destroy();
+    }
 });

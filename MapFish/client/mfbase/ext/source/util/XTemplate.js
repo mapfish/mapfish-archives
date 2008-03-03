@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -240,7 +240,7 @@ Ext.extend(Ext.XTemplate, Ext.Template, {
         }
         var vs = t.target ? t.target.call(this, values, parent) : values;
         parent = t.target ? values : parent;
-        if(t.target && vs instanceof Array){
+        if(t.target && Ext.isArray(vs)){
             var buf = [];
             for(var i = 0, len = vs.length; i < len; i++){
                 buf[buf.length] = t.compiled.call(this, vs[i], parent, i+1, len);

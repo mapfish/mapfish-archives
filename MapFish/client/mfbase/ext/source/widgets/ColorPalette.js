@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -40,6 +40,9 @@ Ext.ColorPalette = function(config){
     }
 };
 Ext.extend(Ext.ColorPalette, Ext.Component, {
+	/**
+	 * @cfg {String} tpl An existing XTemplate instance to be used in place of the default template for rendering the component.
+	 */
     /**
      * @cfg {String} itemCls
      * The CSS class to apply to the containing element (defaults to "x-color-palette")
@@ -88,7 +91,7 @@ cp.colors = ["000000", "993300", "333300"];
 
     // private
     onRender : function(container, position){
-        var t = new Ext.XTemplate(
+        var t = this.tpl || new Ext.XTemplate(
             '<tpl for="."><a href="#" class="color-{.}" hidefocus="on"><em><span style="background:#{.}" unselectable="on">&#160;</span></em></a></tpl>'
         );
         var el = document.createElement("div");
@@ -137,5 +140,9 @@ cp.colors = ["000000", "993300", "333300"];
             this.fireEvent("select", this, color);
         }
     }
+
+    /**
+     * @cfg {String} autoEl @hide
+     */
 });
 Ext.reg('colorpalette', Ext.ColorPalette);

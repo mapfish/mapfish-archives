@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -145,7 +145,7 @@ Ext.Container = Ext.extend(Ext.BoxComponent, {
         var items = this.items;
         if(items){
             delete this.items;
-            if(items instanceof Array){
+            if(Ext.isArray(items)){
                 this.add.apply(this, items);
             }else{
                 this.add(items);
@@ -191,7 +191,7 @@ Ext.Container = Ext.extend(Ext.BoxComponent, {
             this.doLayout();
         }
         if(this.monitorResize === true){
-            Ext.EventManager.onWindowResize(this.doLayout, this);
+            Ext.EventManager.onWindowResize(this.doLayout, this, [false]);
         }
     },
 
@@ -206,8 +206,11 @@ Ext.Container = Ext.extend(Ext.BoxComponent, {
     },
 
     /**
-     * Adds a Component to this Container. Fires the beforeadd event before adding,
-     * then fires the add event after the component has been added.
+     * Adds a component to this container. Fires the beforeadd event before adding,
+     * then fires the add event after the component has been added.  If the container is
+     * already rendered when add is called, you may need to call {@link #doLayout} to refresh
+     * the view.  This is required so that you can add multiple child components if needed
+     * while only refreshing the layout once.
      * @param {Ext.Component/Object} component The component to add.<br><br>
      * Ext uses lazy rendering, and will only render the added Component should
      * it become necessary.<br><br>
@@ -360,14 +363,15 @@ Ext.Container = Ext.extend(Ext.BoxComponent, {
 
     /**
      * Force this container's layout to be recalculated. A call to this function is required after adding a new component
-     * to an already rendered container. If you are not dynamically adding and removing components after render, this
-     * function will generally not need to be called.
+     * to an already rendered container, or possibly after changing sizing/position properties of child components.
+     * @param {Boolean} shallow (optional) True to only calc the layout of this component, and let child components auto
+     * calc layouts as required (defaults to false, which calls doLayout recursively for each subcontainer)
      */
-    doLayout : function(){
+    doLayout : function(shallow){
         if(this.rendered && this.layout){
             this.layout.layout();
         }
-        if(this.items){
+        if(shallow !== false && this.items){
             var cs = this.items.items;
             for(var i = 0, len = cs.length; i < len; i++) {
                 var c  = cs[i];

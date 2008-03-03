@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -52,6 +52,11 @@ Ext.CycleButton = Ext.extend(Ext.SplitButton, {
      * fire the {@link #change} event on active item change.  The changeHandler function will be called with the
      * following argument list: (SplitButton this, Ext.menu.CheckItem item)
      */
+	/**
+	 * @cfg {String} forceIcon A css class which sets an image to be used as the static icon for this button.  This
+	 * icon will always be displayed regardless of which item is selected in the dropdown list.  This overrides the 
+	 * default behavior of changing the button's icon to match the selected item's icon on change.
+	 */
 
     // private
     getItemText : function(item){
@@ -72,6 +77,9 @@ Ext.CycleButton = Ext.extend(Ext.SplitButton, {
      * @param {Boolean} suppressEvent True to prevent the button's change event from firing (defaults to false)
      */
     setActiveItem : function(item, suppressEvent){
+        if(typeof item != 'object'){
+            item = this.menu.items.get(item);
+        }
         if(item){
             if(!this.rendered){
                 this.text = this.getItemText(item);
@@ -84,6 +92,12 @@ Ext.CycleButton = Ext.extend(Ext.SplitButton, {
                 this.setIconClass(item.iconCls);
             }
             this.activeItem = item;
+            if(!item.checked){
+                item.setChecked(true, true);
+            }
+            if(this.forceIcon){
+                this.setIconClass(this.forceIcon);
+            }
             if(!suppressEvent){
                 this.fireEvent('change', this, item);
             }

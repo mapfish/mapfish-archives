@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -173,11 +173,11 @@ Ext.extend(Ext.Updater, Ext.util.Observable, {
      * parameters to pass to the server. These may be specified as a urlencoded
      * string, or as an object containing properties which represent parameters,
      * or as a function, which returns an object.</p></li>
-     * <li><b>scripts</b> : Boolean<p class="sub-desc">If <tt>true</tt>
+     * <li>scripts : <b>Boolean</b><p class="sub-desc">If <tt>true</tt>
      * any &lt;script&gt; tags embedded in the response text will be extracted
      * and executed. If this option is specified, the callback will be
      * called <i>after</i> the execution of the scripts.</p></li>
-     * <li><b>callback</b> : Function<p class="sub-desc">A function to
+     * <li>callback : <b>Function</b><p class="sub-desc">A function to
      * be called when the response from the server arrives. The following
      * parameters are passed:<ul>
      * <li><b>el</b> : Ext.Element<p class="sub-desc">The Element being updated.</p></li>
@@ -185,16 +185,16 @@ Ext.extend(Ext.Updater, Ext.util.Observable, {
      * <li><b>response</b> : XMLHttpRequest<p class="sub-desc">The XMLHttpRequest which processed the update.</p></li>
      * <li><b>options</b> : Object<p class="sub-desc">The config object passed to the update call.</p></li></ul>
      * </p></li>
-     * <li><b>scope</b> : Object<p class="sub-desc">The scope in which
-     * to execute the callback (The callback's <tt>this<tt> reference.) If the
+     * <li>scope : <b>Object</b><p class="sub-desc">The scope in which
+     * to execute the callback (The callback's <tt>this</tt> reference.) If the
      * <tt>params</tt> option is a function, this scope is used for that function also.</p></li>
-     * <li><b>discardUrl</b> : Boolean<p class="sub-desc">If not passed
+     * <li>discardUrl : <b>Boolean</b><p class="sub-desc">If not passed
      * as <tt>false</tt> the URL of this request becomes the default URL for
      * this Updater object, and will be subsequently used in {@link #refresh}
      * calls.</p></li>
-     * <li><b>timeout</b> : Number<p class="sub-desc">The timeout to use
+     * <li>timeout : <b>Number</b><p class="sub-desc">The timeout to use
      * when waiting for a response.</p></li>
-     * <li><b>nocache</b> : Boolean<p class="sub-desc">Only needed for GET
+     * <li>nocache : <b>Boolean</b><p class="sub-desc">Only needed for GET
      * requests, this option causes an extra, generated parameter to be passed
      * to defeat caching.</p></li></ul>
      * <p>

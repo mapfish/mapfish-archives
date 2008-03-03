@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -204,7 +204,7 @@ Ext.extend(Ext.data.JsonReader, Ext.data.DataReader, {
 	        for(var j = 0; j < fl; j++){
 	            f = fi[j];
                 var v = this.ef[j](n);
-                values[f.name] = f.convert((v !== undefined) ? v : f.defaultValue);
+                values[f.name] = f.convert((v !== undefined) ? v : f.defaultValue, n);
 	        }
 	        var record = new Record(values, id);
 	        record.json = n;

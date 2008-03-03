@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -143,8 +143,12 @@ Ext.data.Store = function(config){
     if(this.proxy){
         this.relayEvents(this.proxy,  ["loadexception"]);
     }
+    
     this.sortToggle = {};
-
+	if(this.sortInfo){
+		this.setDefaultSort(this.sortInfo.field, this.sortInfo.direction);
+	}
+	
     Ext.data.Store.superclass.constructor.call(this);
 
     if(this.storeId || this.id){
@@ -176,15 +180,16 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
     * @cfg {Array} data Inline data to be loaded when the store is initialized.
     */
     /**
-    * @cfg {Ext.data.Reader} reader The Reader object which processes the data object and returns
-    * an Array of Ext.data.record objects which are cached keyed by their <em>id</em> property.
+    * @cfg {Ext.data.DataReader} reader The DataReader object which processes the data object and returns
+    * an Array of Ext.data.Record objects which are cached keyed by their <em>id</em> property.
     */
     /**
     * @cfg {Object} baseParams An object containing properties which are to be sent as parameters
     * on any HTTP request
     */
     /**
-    * @cfg {Object} sortInfo A config object in the format: {field: "fieldName", direction: "ASC|DESC"}
+    * @cfg {Object} sortInfo A config object in the format: {field: "fieldName", direction: "ASC|DESC"}.  The direction
+    * property is case-sensitive.
     */
     /**
     * @cfg {boolean} remoteSort True if sorting is to be handled by requesting the
@@ -196,7 +201,7 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
     * <div class="mdetail-params"><ul>
     * <li><b>sort</b> : String<p class="sub-desc">The name (as specified in
     * the Record's Field definition) of the field to sort on.</p></li>
-    * <li><b>dir</b> : String<p class="sub-desc">The direction of the sort, "ASC" or "DESC".</p></li>
+    * <li><b>dir</b> : String<p class="sub-desc">The direction of the sort, "ASC" or "DESC" (case-sensitive).</p></li>
     * </ul></div></p>
     */
     remoteSort : false,
@@ -361,7 +366,7 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
      * in a callback function, or in a "load" event handler.</b></p>
      * @param {Object} options An object containing properties which control loading options:<ul>
      * <li><b>params</b> :Object<p class="sub-desc">An object containing properties to pass as HTTP parameters to a remote data source.</p></li>
-     * <li><b>callback</b> : Function}<p class="sub-desc">A function to be called after the Records have been loaded. The callback is
+     * <li><b>callback</b> : Function<p class="sub-desc">A function to be called after the Records have been loaded. The callback is
      * passed the following arguments:<ul>
      * <li>r : Ext.data.Record[]</li>
      * <li>options: Options object from the load call</li>
@@ -369,6 +374,7 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
      * <li><b>scope</b> : Object<p class="sub-desc">Scope with which to call the callback (defaults to the Store object)</p></li>
      * <li><b>add</b> : Boolean<p class="sub-desc">Indicator to append loaded records rather than replace the current cache.</p></li>
      * </ul>
+     * @return {Boolean} Whether the load fired (if beforeload failed).
      */
     load : function(options){
         options = options || {};
@@ -381,6 +387,9 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
                 p[pn["dir"]] = this.sortInfo.direction;
             }
             this.proxy.load(p, this.reader, this.loadRecords, this, options);
+            return true;
+        } else {
+          return false;
         }
     },
 
@@ -473,7 +482,7 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
      * Returns an object describing the current sort state of this Store.
      * @return {Object} The sort state of the Store. An object with two properties:<ul>
      * <li><b>field : String<p class="sub-desc">The name of the field by which the Records are sorted.</p></li>
-     * <li><b>direction : String<p class="sub-desc">The sort order, "ASC" or "DESC".</p></li>
+     * <li><b>direction : String<p class="sub-desc">The sort order, "ASC" or "DESC" (case-sensitive).</p></li>
      * </ul>
      */
     getSortState : function(){
@@ -505,7 +514,7 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
     /**
      * Sets the default sort column and order to be used by the next load operation.
      * @param {String} fieldName The name of the field to sort by.
-     * @param {String} dir (optional) The sort order, "ASC" or "DESC" (defaults to "ASC")
+     * @param {String} dir (optional) The sort order, "ASC" or "DESC" (case-sensitive, defaults to "ASC")
      */
     setDefaultSort : function(field, dir){
         dir = dir ? dir.toUpperCase() : "ASC";
@@ -518,7 +527,7 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
      * If remote sorting is used, the sort is performed on the server, and the cache is
      * reloaded. If local sorting is used, the cache is sorted internally.
      * @param {String} fieldName The name of the field to sort by.
-     * @param {String} dir (optional) The sort order, "ASC" or "DESC" (defaults to "ASC")
+     * @param {String} dir (optional) The sort order, "ASC" or "DESC" (case-sensitive, defaults to "ASC")
      */
     sort : function(fieldName, dir){
         var f = this.fields.get(fieldName);
@@ -532,13 +541,23 @@ Ext.extend(Ext.data.Store, Ext.util.Observable, {
                 dir = f.sortDir;
             }
         }
+        var st = (this.sortToggle) ? this.sortToggle[f.name] : null;
+        var si = (this.sortInfo) ? this.sortInfo : null;
+        
         this.sortToggle[f.name] = dir;
         this.sortInfo = {field: f.name, direction: dir};
         if(!this.remoteSort){
             this.applySort();
             this.fireEvent("datachanged", this);
         }else{
-            this.load(this.lastOptions);
+            if (!this.load(this.lastOptions)) {
+                if (st) {
+                    this.sortToggle[f.name] = st;
+                }
+                if (si) {
+                    this.sortInfo = si;
+                }
+            }
         }
     },
 

@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -104,7 +104,7 @@ map.addBinding({
      * @param {Object/Array} config A single KeyMap config or an array of configs
      */
 	addBinding : function(config){
-        if(config instanceof Array){
+        if(Ext.isArray(config)){
             for(var i = 0, len = config.length; i < len; i++){
                 this.addBinding(config[i]);
             }
@@ -125,7 +125,7 @@ map.addBinding({
             }
             keyCode = ks;
         }
-        var keyArray = keyCode instanceof Array;
+        var keyArray = Ext.isArray(keyCode);
         
         var handler = function(e){
             if((!shift || e.shiftKey) && (!ctrl || e.ctrlKey) &&  (!alt || e.altKey)){
@@ -163,7 +163,7 @@ map.addBinding({
      */
     on : function(key, fn, scope){
         var keyCode, shift, ctrl, alt;
-        if(typeof key == "object" && !(key instanceof Array)){
+        if(typeof key == "object" && !Ext.isArray(key)){
             keyCode = key.key;
             shift = key.shift;
             ctrl = key.ctrl;

@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -10,7 +10,7 @@
  * @class Ext.form.Action
  * The subclasses of this class provide actions to perform upon {@link Ext.form.BasicForm Form}s.
  * <br><br>
- * Instances of this class are only created by a {@link Ext.form.BasicForm Form} when 
+ * Instances of this class are only created by a {@link Ext.form.BasicForm Form} when
  * the Form needs to perform an action such as submit or load. The Configuration options
  * listed for this class are set through the Form's action methods: {@link Ext.form.BasicForm#submit submit},
  * {@link Ext.form.BasicForm#load load} and {@link Ext.form.BasicForm#doAction doAction}.
@@ -107,8 +107,8 @@ Ext.form.Action.prototype = {
  */
     type : 'default',
 /**
- * The type of failure detected. See {@link #Ext.form.Action-Action.CLIENT_INVALID CLIENT_INVALID}, {@link #Ext.form.Action-Action.SERVER_INVALID SERVER_INVALID},
- * {@link #Ext.form.Action-Action.CONNECT_FAILURE CONNECT_FAILURE}, {@link #Ext.form.Action-Action.LOAD_FAILURE LOAD_FAILURE}
+ * The type of failure detected. See {@link #Ext.form.Action.CLIENT_INVALID CLIENT_INVALID}, {@link #Ext.form.Action.SERVER_INVALID SERVER_INVALID},
+ * {@link #Ext.form.Action.CONNECT_FAILURE CONNECT_FAILURE}, {@link #Ext.form.Action.LOAD_FAILURE LOAD_FAILURE}
  * @property failureType
  * @type {String}
  *//**
@@ -302,9 +302,9 @@ Ext.extend(Ext.form.Action.Submit, Ext.form.Action, {
  * @class Ext.form.Action.Load
  * @extends Ext.form.Action
  * A class which handles loading of data from a server into the Fields of
- * an {@link Ext.form.BasicForm}. 
+ * an {@link Ext.form.BasicForm}.
  * <br><br>
- * Instances of this class are only created by a {@link Ext.form.BasicForm Form} when 
+ * Instances of this class are only created by a {@link Ext.form.BasicForm Form} when
  * submitting.
  * <br><br>
  * A response packet <b>must</b> contain a boolean <tt style="font-weight:bold">success</tt> property, and

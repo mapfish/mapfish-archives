@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -97,7 +97,7 @@ Ext.TabPanel = Ext.extend(Ext.Panel,  {
      */
     resizeTabs:false,
     /**
-     * @cfg {Number} enableTabScroll True to enable scrolling to tabs that may be invisible due to overflowing the
+     * @cfg {Boolean} enableTabScroll True to enable scrolling to tabs that may be invisible due to overflowing the
      * overall TabPanel width. Only available with tabs on top. (defaults to false).
      */
     enableTabScroll: false,
@@ -169,8 +169,6 @@ var tabs = new Ext.TabPanel({
      * markup can be supported on a page).
      */
     autoTabSelector:'div.x-tab',
-    // private
-    itemCls : 'x-tab-item',
     /**
      * @cfg {String/Number} activeTab A string id or the numeric index of the tab that should be initially
      * activated on render (defaults to none).
@@ -186,11 +184,20 @@ var tabs = new Ext.TabPanel({
      * @cfg {Boolean} plain True to render the tab strip without a background container image (defaults to false).
      */
     plain: false,
-
     /**
      * @cfg {Number} wheelIncrement For scrolling tabs, the number of pixels to increment on mouse wheel scrolling (defaults to 20).
      */
     wheelIncrement : 20,
+
+    /*
+     * This is a protected property used when concatenating tab ids to the TabPanel id for internal uniqueness.
+     * It does not generally need to be changed, but can be if external code also uses an id scheme that can
+     * potentially clash with this one.
+     */
+    idDelimiter : '__',
+
+    // private
+    itemCls : 'x-tab-item',
 
     // private config overrides
     elements: 'body',
@@ -263,17 +270,17 @@ var tabs = new Ext.TabPanel({
         }
 
         var st = this[this.stripTarget];
-        
+
         this.stripWrap = st.createChild({cls:'x-tab-strip-wrap', cn:{
             tag:'ul', cls:'x-tab-strip x-tab-strip-'+this.tabPosition}});
         this.stripSpacer = st.createChild({cls:'x-tab-strip-spacer'});
         this.strip = new Ext.Element(this.stripWrap.dom.firstChild);
-        
+
         this.edge = this.strip.createChild({tag:'li', cls:'x-tab-edge'});
         this.strip.createChild({cls:'x-clear'});
 
         this.body.addClass('x-tab-panel-body-'+this.tabPosition);
-        
+
         if(!this.itemTpl){
             var tt = new Ext.Template(
                  '<li class="{cls}" id="{id}"><a class="x-tab-strip-close" onclick="return false;"></a>',
@@ -316,7 +323,7 @@ var tabs = new Ext.TabPanel({
         var item = null;
         var itemEl = e.getTarget('li', this.strip);
         if(itemEl){
-            item = this.getComponent(itemEl.id.split('__')[1]);
+            item = this.getComponent(itemEl.id.split(this.idDelimiter)[1]);
             if(item.disabled){
                 return {
                     close : null,
@@ -397,8 +404,12 @@ var tabs = new Ext.TabPanel({
         if(item.iconCls){
             cls += ' x-tab-with-icon';
         }
+        if(item.tabCls){
+            cls += ' ' + item.tabCls;
+        }
+        
         var p = {
-            id: this.id + '__' + item.getItemId(),
+            id: this.id + this.idDelimiter + item.getItemId(),
             text: item.title,
             cls: cls,
             iconCls: item.iconCls || ''
@@ -496,7 +507,8 @@ var tabs = new Ext.TabPanel({
      * @return {HTMLElement} The DOM node
      */
     getTabEl : function(item){
-        return document.getElementById(this.id+'__'+item.getItemId());
+        var itemId = (typeof item === 'number')?this.items.items[item].getItemId() : item.getItemId();
+        return document.getElementById(this.id+this.idDelimiter+itemId);
     },
 
     // private
@@ -569,7 +581,7 @@ var tabs = new Ext.TabPanel({
         if(!this.resizeTabs || count < 1 || !aw){ // !aw for display:none
             return;
         }
-        
+
         var each = Math.max(Math.min(Math.floor((aw-4) / count) - this.tabMargin, this.tabWidth), this.minTabWidth); // -4 for float errors in IE
         this.lastTabWidth = each;
         var lis = this.stripWrap.dom.getElementsByTagName('li');
@@ -657,7 +669,8 @@ var tabs = new Ext.TabPanel({
         var tw = this.header.dom.clientWidth;
 
         var wrap = this.stripWrap;
-        var cw = wrap.dom.offsetWidth;
+        var wd = wrap.dom;
+        var cw = wd.offsetWidth;
         var pos = this.getScrollPos();
         var l = this.edge.getOffsetsTo(this.stripWrap)[0] + pos;
 
@@ -665,17 +678,25 @@ var tabs = new Ext.TabPanel({
             return;
         }
         if(l <= tw){
-            wrap.dom.scrollLeft = 0;
+            wd.scrollLeft = 0;
             wrap.setWidth(tw);
             if(this.scrolling){
                 this.scrolling = false;
                 this.header.removeClass('x-tab-scrolling');
                 this.scrollLeft.hide();
                 this.scrollRight.hide();
+                if(Ext.isAir){
+                    wd.style.marginLeft = '';
+                    wd.style.marginRight = '';
+                }
             }
         }else{
             if(!this.scrolling){
                 this.header.addClass('x-tab-scrolling');
+                if(Ext.isAir){
+                    wd.style.marginLeft = '18px';
+                    wd.style.marginRight = '18px';
+                }
             }
             tw -= wrap.getMargins('lr');
             wrap.setWidth(tw > 20 ? tw : 20);
@@ -689,7 +710,7 @@ var tabs = new Ext.TabPanel({
             }
             this.scrolling = true;
             if(pos > (l-tw)){ // ensure it stays within bounds
-                wrap.dom.scrollLeft = l-tw;
+                wd.scrollLeft = l-tw;
             }else{ // otherwise, make sure the active tab is still visible
                 this.scrollToTab(this.activeTab, false);
             }
@@ -801,7 +822,7 @@ var tabs = new Ext.TabPanel({
         var s = Math.min(sw, pos + this.getScrollIncrement());
         if(s != pos){
             this.scrollTo(s, this.animScroll);
-        }        
+        }
     },
 
     // private
@@ -836,6 +857,27 @@ var tabs = new Ext.TabPanel({
      * @property header
      * @hide
      */
+    /**
+     * @property title
+     * @hide
+     */
+    /**
+     * @cfg {Array} tools
+     * @hide
+     */
+    /**
+     * @cfg {Boolean} hideCollapseTool
+     * @hide
+     */
+    /**
+     * @cfg {Boolean} titleCollapse
+     * @hide
+     */
+    /**
+     * @cfg {Boolean} collapsed
+     * @hide
+     */
+
 });
 Ext.reg('tabpanel', Ext.TabPanel);
 

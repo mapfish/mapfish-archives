@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -92,13 +92,13 @@ Ext.apply(Ext, {
     },
 
     dump : function(o){
-        if(typeof o == 'string' || typeof o == 'number' || typeof o == 'undefined' || o instanceof Date){
+        if(typeof o == 'string' || typeof o == 'number' || typeof o == 'undefined' || Ext.isDate(o)){
             Ext.log(o);
         }else if(!o){
             Ext.log("null");
         }else if(typeof o != "object"){
             Ext.log('Unknown return type');
-        }else if(o instanceof Array){
+        }else if(Ext.isArray(o)){
             Ext.log('['+o.join(',')+']');
         }else{
             var b = ["{\n"];

@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -9,7 +9,7 @@
 /**
  @class Ext.grid.RowSelectionModel
  * @extends Ext.grid.AbstractSelectionModel
- * The default SelectionModel used by {@link Ext.grid.Grid}.
+ * The default SelectionModel used by {@link Ext.grid.GridPanel}.
  * It supports multiple selections and keyboard selection/navigation. The objects stored
  * as selections and returned by {@link #getSelected}, and {@link #getSelections} are
  * the {@link Ext.data.Record Record}s which provide the data for the selected rows.
@@ -69,6 +69,10 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
      */
     singleSelect : false,
 
+	/**
+	 * @cfg {Boolean} moveEditorOnEnter
+	 * False to turn off moving the editor to the next cell when the enter key is pressed
+	 */
     // private
     initEvents : function(){
 
@@ -192,23 +196,29 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
     /**
      * Selects the row immediately following the last selected row.
      * @param {Boolean} keepExisting (optional) True to keep existing selections
+     * @return {Boolean} True if there is a next row, else false
      */
     selectNext : function(keepExisting){
         if(this.hasNext()){
             this.selectRow(this.last+1, keepExisting);
             this.grid.getView().focusRow(this.last);
+			return true;
         }
+		return false;
     },
 
     /**
      * Selects the row that precedes the last selected row.
      * @param {Boolean} keepExisting (optional) True to keep existing selections
+     * @return {Boolean} True if there is a previous row, else false
      */
     selectPrevious : function(keepExisting){
         if(this.hasPrevious()){
             this.selectRow(this.last-1, keepExisting);
             this.grid.getView().focusRow(this.last);
+			return true;
         }
+		return false;
     },
 
     /**
@@ -343,7 +353,7 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
     /**
      * Selects multiple rows.
      * @param {Array} rows Array of the indexes of the row to select
-     * @param {Boolean} keepExisting (optional) True to keep existing selections
+     * @param {Boolean} keepExisting (optional) True to keep existing selections (defaults to false)
      */
     selectRows : function(rows, keepExisting){
         if(!keepExisting){
@@ -448,10 +458,11 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
     // private
     onEditorKey : function(field, e){
         var k = e.getKey(), newCell, g = this.grid, ed = g.activeEditor;
+        var shift = e.shiftKey;
         if(k == e.TAB){
             e.stopEvent();
             ed.completeEdit();
-            if(e.shiftKey){
+            if(shift){
                 newCell = g.walkCells(ed.row, ed.col-1, -1, this.acceptsNav, this);
             }else{
                 newCell = g.walkCells(ed.row, ed.col+1, 1, this.acceptsNav, this);
@@ -459,11 +470,13 @@ Ext.extend(Ext.grid.RowSelectionModel, Ext.grid.AbstractSelectionModel,  {
         }else if(k == e.ENTER){
             e.stopEvent();
             ed.completeEdit();
-            if(e.shiftKey){
-                newCell = g.walkCells(ed.row-1, ed.col, -1, this.acceptsNav, this);
-            }else{
-                newCell = g.walkCells(ed.row+1, ed.col, 1, this.acceptsNav, this);
-            }
+			if(this.moveEditorOnEnter !== false){
+				if(shift){
+					newCell = g.walkCells(ed.row - 1, ed.col, -1, this.acceptsNav, this);
+				}else{
+					newCell = g.walkCells(ed.row + 1, ed.col, 1, this.acceptsNav, this);
+				}
+			}
         }else if(k == e.ESC){
             ed.cancelEdit();
         }

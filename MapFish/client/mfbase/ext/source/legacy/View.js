@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -379,7 +379,7 @@ Ext.extend(Ext.View, Ext.util.Observable, {
      * @param {Boolean} suppressEvent (optional) true to skip firing of the selectionchange vent
      */
     select : function(nodeInfo, keepExisting, suppressEvent){
-        if(nodeInfo instanceof Array){
+        if(Ext.isArray(nodeInfo)){
             if(!keepExisting){
                 this.clearSelections(true);
             }

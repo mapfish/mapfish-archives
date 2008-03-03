@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -39,7 +39,7 @@ Ext.data.Record = function(data, id){
  * for example the <em>dataIndex</em> property in column definition objects passed to {@link Ext.grid.ColumnModel}</p></li>
  * <li><b>mapping</b> : String<p style="margin-left:1em">(Optional) A path specification for use by the {@link Ext.data.Reader} implementation
  * that is creating the Record to access the data value from the data object. If an {@link Ext.data.JsonReader}
- * is being used, then this is a string containing the javascript expression to reference the data relative to 
+ * is being used, then this is a string containing the javascript expression to reference the data relative to
  * the record item's root. If an {@link Ext.data.XmlReader} is being used, this is an {@link Ext.DomQuery} path
  * to the data item relative to the record element. If the mapping expression is the same as the field name,
  * this may be omitted.</p></li>
@@ -56,6 +56,8 @@ Ext.data.Record = function(data, id){
  * by the Reader into an object that will be stored in the Record. It is passed the
  * following parameters:<ul>
  * <li><b>v</b> : Mixed<p style="margin-left:1em">The data value as read by the Reader.</p></li>
+ * <li><b>rec</b> : Mixed<p style="margin-left:1em">The data object containting the row as read by the Reader.
+ * Depending on Reader type, this could be an Array, an object, or an XML element.</p></li>
  * </ul></p></li>
  * <li><b>dateFormat</b> : String<p style="margin-left:1em">(Optional) A format String for the Date.parseDate function.</p></li>
  * </ul>
@@ -88,7 +90,7 @@ myStore.add(myNewRecord);
  */
 Ext.data.Record.create = function(o){
     var f = Ext.extend(Ext.data.Record, {});
-    var p = f.prototype;
+	var p = f.prototype;
     p.fields = new Ext.util.MixedCollection(false, function(field){
         return field.name;
     });
@@ -96,7 +98,7 @@ Ext.data.Record.create = function(o){
         p.fields.add(new Ext.data.Field(o[i]));
     }
     f.getField = function(name){
-        return p.fields.get(name);  
+        return p.fields.get(name);
     };
     return f;
 };
@@ -153,9 +155,9 @@ Ext.data.Record.prototype = {
             this.modified[name] = this.data[name];
         }
         this.data[name] = value;
-        if(!this.editing){
+        if(!this.editing && this.store){
             this.store.afterEdit(this);
-        }       
+        }
     },
 
     /**
@@ -164,7 +166,7 @@ Ext.data.Record.prototype = {
      * @return {Object} The value of the field.
      */
     get : function(name){
-        return this.data[name]; 
+        return this.data[name];
     },
 
     /**
@@ -172,7 +174,7 @@ Ext.data.Record.prototype = {
      */
     beginEdit : function(){
         this.editing = true;
-        this.modified = {}; 
+        this.modified = {};
     },
 
     /**
@@ -265,5 +267,14 @@ Ext.data.Record.prototype = {
      */
     copy : function(newId) {
         return new this.constructor(Ext.apply({}, this.data), newId || this.id);
+    },
+
+    /**
+     * Returns true if the field passed has been modified since the load or last commit.
+     * @param {String} fieldName
+     * @return {Boolean}
+     */
+    isModified : function(fieldName){
+        return this.modified && this.modified.hasOwnProperty(fieldName);
     }
 };

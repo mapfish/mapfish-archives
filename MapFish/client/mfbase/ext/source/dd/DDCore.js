@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -1299,7 +1299,7 @@ Ext.dd.DragDropMgr = function() {
         POINT: 0,
 
         /**
-         * In intersect mode, drag and drop interactio nis defined by the
+         * In intersect mode, drag and drop interaction is defined by the
          * overlap of two or more drag and drop objects.
          * @property INTERSECT
          * @type int

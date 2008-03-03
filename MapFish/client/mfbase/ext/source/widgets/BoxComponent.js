@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -18,6 +18,22 @@
  */
 Ext.BoxComponent = Ext.extend(Ext.Component, {
     /**
+     * @cfg {Number} x
+     * The local x (left) coordinate for this component if contained within a positioning container.
+     */
+    /**
+     * @cfg {Number} y
+     * The local y (top) coordinate for this component if contained within a positioning container.
+     */
+    /**
+     * @cfg {Number} pageX
+     * The page level x coordinate for this component if contained within a positioning container.
+     */
+    /**
+     * @cfg {Number} pageY
+     * The page level y coordinate for this component if contained within a positioning container.
+     */
+    /**
      * @cfg {Number} height
      * The height of this component in pixels (defaults to auto).
      */
@@ -27,13 +43,13 @@ Ext.BoxComponent = Ext.extend(Ext.Component, {
      */
     /**
      * @cfg {Boolean} autoHeight
-     * True to use height:'auto', false to use fixed height (defaults to false).
+     * True to use height:'auto', false to use fixed height. Note: although many components inherit this config option, not all will function as expected with a height of 'auto'. (defaults to false).
      */
     /**
      * @cfg {Boolean} autoWidth
-     * True to use width:'auto', false to use fixed width (defaults to false).
+     * True to use width:'auto', false to use fixed width. Note: although many components inherit this config option, not all will function as expected with a width of 'auto'. (defaults to false).
      */
-    /**
+    /* // private internal config
      * @cfg {Boolean} deferHeight
      * True to defer height calculations to an external component, false to allow this component to set its own
      * height (defaults to false).

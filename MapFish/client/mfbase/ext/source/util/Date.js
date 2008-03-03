@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -270,7 +270,7 @@ Date.createParser = function(format) {
 
     var code = "Date." + funcName + " = function(input){\n"
         + "var y = -1, m = -1, d = -1, h = -1, i = -1, s = -1, ms = -1, o, z, u, v;\n"
-        + "var d = new Date();\n"
+        + "input = String(input);var d = new Date();\n"
         + "y = d.getFullYear();\n"
         + "m = d.getMonth();\n"
         + "d = d.getDate();\n"
@@ -447,7 +447,7 @@ Date.formatCodeToRegex = function(character, currentGroup) {
                 "var hr = o.substring(1,3)*1 + Math.floor(o.substring(3,5) / 60);\n", // get hours (performs minutes-to-hour conversion also, just in case)
                 "var mn = o.substring(3,5) % 60;\n", // get minutes
                 "o = ((-12 <= (hr*60 + mn)/60) && ((hr*60 + mn)/60 <= 14))?\n", // -12hrs <= GMT offset <= 14hrs
-                "    (sn + String.leftPad(hr, 2, 0) + String.leftPad(mn, 2, 0)) : null;\n"
+                "    (sn + String.leftPad(hr, 2, '0') + String.leftPad(mn, 2, '0')) : null;\n"
             ].join(""),
             s: "([+\-]\\d{4})"}; // GMT offset in hrs and mins
     case "P":
@@ -458,7 +458,7 @@ Date.formatCodeToRegex = function(character, currentGroup) {
                 "var hr = o.substring(1,3)*1 + Math.floor(o.substring(4,6) / 60);\n", // get hours (performs minutes-to-hour conversion also, just in case)
                 "var mn = o.substring(4,6) % 60;\n", // get minutes
                 "o = ((-12 <= (hr*60 + mn)/60) && ((hr*60 + mn)/60 <= 14))?\n", // -12hrs <= GMT offset <= 14hrs
-                "    (sn + String.leftPad(hr, 2, 0) + String.leftPad(mn, 2, 0)) : null;\n"
+                "    (sn + String.leftPad(hr, 2, '0') + String.leftPad(mn, 2, '0')) : null;\n"
             ].join(""),
             s: "([+\-]\\d{2}:\\d{2})"}; // GMT offset in hrs and mins (with colon separator)
     case "T":
@@ -563,7 +563,7 @@ Date.prototype.getWeekOfYear = function() {
  */
 Date.prototype.isLeapYear = function() {
     var year = this.getFullYear();
-    return ((year & 3) == 0 && (year % 100 || (year % 400 == 0 && year)));
+    return !!((year & 3) == 0 && (year % 100 || (year % 400 == 0 && year)));
 };
 
 /**

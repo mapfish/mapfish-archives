@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -211,12 +211,13 @@ Ext.extend(Ext.tree.TreeDropZone, Ext.dd.DropZone, {
             source: dd,
             rawEvent: e,
             dropNode: dropNode,
-            cancel: !dropNode   
+            cancel: !dropNode,
+            dropStatus: false
         };
         var retval = this.tree.fireEvent("beforenodedrop", dropEvent);
         if(retval === false || dropEvent.cancel === true || !dropEvent.dropNode){
             targetNode.ui.endDrop();
-            return false;
+            return dropEvent.dropStatus;
         }
         // allow target changing
         targetNode = dropEvent.target;
@@ -233,7 +234,7 @@ Ext.extend(Ext.tree.TreeDropZone, Ext.dd.DropZone, {
     // private
     completeDrop : function(de){
         var ns = de.dropNode, p = de.point, t = de.target;
-        if(!(ns instanceof Array)){
+        if(!Ext.isArray(ns)){
             ns = [ns];
         }
         var n;

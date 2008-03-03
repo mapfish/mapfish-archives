@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -412,7 +412,7 @@ Ext.extend(Ext.BasicDialog, Ext.util.Observable, {
      */
     addKeyListener : function(key, fn, scope){
         var keyCode, shift, ctrl, alt;
-        if(typeof key == "object" && !(key instanceof Array)){
+        if(typeof key == "object" && !Ext.isArray(key)){
             keyCode = key["key"];
             shift = key["shift"];
             ctrl = key["ctrl"];
@@ -423,7 +423,7 @@ Ext.extend(Ext.BasicDialog, Ext.util.Observable, {
         var handler = function(dlg, e){
             if((!shift || e.shiftKey) && (!ctrl || e.ctrlKey) &&  (!alt || e.altKey)){
                 var k = e.getKey();
-                if(keyCode instanceof Array){
+                if(Ext.isArray(keyCode)){
                     for(var i = 0, len = keyCode.length; i < len; i++){
                         if(keyCode[i] == k){
                           fn.call(scope || window, dlg, k, e);

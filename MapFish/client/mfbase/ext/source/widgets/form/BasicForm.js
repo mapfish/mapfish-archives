@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -12,14 +12,7 @@
  * Supplies the functionality to do "actions" on forms and initialize Ext.form.Field types on existing markup.
  * <br><br>
  * By default, Ext Forms are submitted through Ajax, using {@link Ext.form.Action}.
- * To enable normal browser submission of an Ext Form, override the Form's onSubmit,
- * and submit methods:<br><br><pre><code>
-    var myForm = new Ext.form.BasicForm("form-el-id", {
-        onSubmit: Ext.emptyFn,
-        submit: function() {
-            this.getEl().dom.submit();
-        }
-    });</code></pre><br>
+ * To enable normal browser submission of an Ext Form, use the {@link #standardSubmit} config option.
  * @constructor
  * @param {Mixed} el The form element or its id
  * @param {Object} config Configuration options
@@ -105,6 +98,10 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
     trackResetOnLoad : false,
 
     /**
+     * @cfg {Boolean} standardSubmit If set to true, standard HTML form submits are used instead of XHR (Ajax) style
+     * form submissions. (defaults to false)
+     */
+    /**
      * By default wait messages are displayed with Ext.MessageBox.wait. You can target a specific
      * element by passing it or its id or mask the form itself by passing in true.
      * @type Mixed
@@ -115,7 +112,9 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
     initEl : function(el){
         this.el = Ext.get(el);
         this.id = this.el.id || Ext.id();
-        this.el.on('submit', this.onSubmit, this);
+        if(!this.standardSubmit){
+            this.el.on('submit', this.onSubmit, this);
+        }
         this.el.addClass('x-form');
     },
 
@@ -137,8 +136,10 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
         this.items.each(function(f){
             Ext.destroy(f);
         });
-		this.el.removeAllListeners();
-		this.el.remove();
+        if(this.el){
+			this.el.removeAllListeners();
+			this.el.remove();
+        }
 		this.purgeListeners();
 	},
 
@@ -208,8 +209,8 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
      * callback functions (The <tt>this</tt> reference for the callback functions).</p></li>
      * <li><b>clientValidation</b> : Boolean<p style="margin-left:1em">Submit Action only.
      * Determines whether a Form's fields are validated in a final call to
-     * {@link Ext.form.BasicForm#isValid isValid} prior to submission. Pass <tt>false</tt>
-     * in the to prevent this. If not defined, pre-submission field validation is performed.</p></li></ul>
+     * {@link Ext.form.BasicForm#isValid isValid} prior to submission. Set to <tt>false</tt>
+     * to prevent this. If undefined, pre-submission field validation is performed.</p></li></ul>
      * @return {BasicForm} this
      */
     doAction : function(action, options){
@@ -229,6 +230,13 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
      * @return {BasicForm} this
      */
     submit : function(options){
+        if(this.standardSubmit){
+            var v = this.isValid();
+            if(v){
+                this.el.dom.submit();
+            }
+            return v;
+        }
         this.doAction('submit', options);
         return this;
     },
@@ -337,7 +345,7 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
      * @return {BasicForm} this
      */
     markInvalid : function(errors){
-        if(errors instanceof Array){
+        if(Ext.isArray(errors)){
             for(var i = 0, len = errors.length; i < len; i++){
                 var fieldError = errors[i];
                 var f = this.findField(fieldError.id);
@@ -371,7 +379,7 @@ Ext.extend(Ext.form.BasicForm, Ext.util.Observable, {
      * @return {BasicForm} this
      */
     setValues : function(values){
-        if(values instanceof Array){ // array of objects
+        if(Ext.isArray(values)){ // array of objects
             for(var i = 0, len = values.length; i < len; i++){
                 var v = values[i];
                 var f = this.findField(v.id);

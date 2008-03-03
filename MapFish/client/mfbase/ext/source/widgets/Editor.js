@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -79,7 +79,6 @@ Ext.extend(Ext.Editor, Ext.Component, {
 
     initComponent : function(){
         Ext.Editor.superclass.initComponent.call(this);
-
         this.addEvents(
             /**
              * @event beforestartedit
@@ -142,6 +141,7 @@ Ext.extend(Ext.Editor, Ext.Component, {
         if(this.field.msgTarget != 'title'){
             this.field.msgTarget = 'qtip';
         }
+        this.field.inEditor = true;
         this.field.render(this.el);
         if(Ext.isGecko){
             this.field.el.dom.setAttribute('autocomplete', 'off');
@@ -188,22 +188,27 @@ Ext.extend(Ext.Editor, Ext.Component, {
         }
         this.startValue = v;
         this.field.setValue(v);
+        this.doAutoSize();
+        this.el.alignTo(this.boundEl, this.alignment);
+        this.editing = true;
+        this.show();
+    },
+
+    // private
+    doAutoSize : function(){
         if(this.autoSize){
             var sz = this.boundEl.getSize();
             switch(this.autoSize){
                 case "width":
-                this.setSize(sz.width,  "");
+                    this.setSize(sz.width,  "");
                 break;
                 case "height":
-                this.setSize("",  sz.height);
+                    this.setSize("",  sz.height);
                 break;
                 default:
-                this.setSize(sz.width,  sz.height);
+                    this.setSize(sz.width,  sz.height);
             }
         }
-        this.el.alignTo(this.boundEl, this.alignment);
-        this.editing = true;
-        this.show();
     },
 
     /**
@@ -212,6 +217,7 @@ Ext.extend(Ext.Editor, Ext.Component, {
      * @param {Number} height The new height
      */
     setSize : function(w, h){
+        delete this.field.lastSize;
         this.field.setSize(w, h);
         if(this.el){
             this.el.sync();

@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -340,7 +340,8 @@ Ext.layout.BorderLayout.Region.prototype = {
                 Ext.layout.BorderLayout.Region.prototype.toolTemplate = tt;
             }
             this.collapsedEl = this.targetEl.createChild({
-                cls: "x-layout-collapsed x-layout-collapsed-"+this.position
+                cls: "x-layout-collapsed x-layout-collapsed-"+this.position,
+                id: this.panel.id + '-xcollapsed'
             });
             this.collapsedEl.enableDisplayMode('block');
 
@@ -864,7 +865,8 @@ Ext.extend(Ext.layout.BorderLayout.SplitRegion, Ext.layout.BorderLayout.Region, 
         var ps = this.position;
 
         this.splitEl = ct.createChild({
-            cls: "x-layout-split x-layout-split-"+ps, html: "&#160;"
+            cls: "x-layout-split x-layout-split-"+ps, html: "&#160;",
+            id: this.panel.id + '-xsplit'
         });
 
         if(this.collapseMode == 'mini'){

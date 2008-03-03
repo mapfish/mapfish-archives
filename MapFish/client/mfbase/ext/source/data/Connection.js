@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -107,7 +107,8 @@ Ext.extend(Ext.data.Connection, Ext.util.Observable, {
      * request, a url encoded string or a function to call to get either.</p></li>
      * <li><b>method</b> : String (Optional)<p style="margin-left:1em">The HTTP method to use
      * for the request. Defaults to the configured method, or if no method was configured,
-     * "GET" if no parameters are being sent, and "POST" if parameters are being sent.</p></li>
+     * "GET" if no parameters are being sent, and "POST" if parameters are being sent.  Note that
+     * the method name is case-sensitive and should be all caps.</p></li>
      * <li><b>callback</b> : Function (Optional)<p style="margin-left:1em">The
      * function to be called upon receipt of the HTTP response. The callback is
      * called regardless of success or failure and is passed the following
@@ -196,7 +197,7 @@ Ext.extend(Ext.data.Connection, Ext.util.Observable, {
                 failure: this.handleFailure,
                 scope: this,
                 argument: {options: o},
-                timeout : this.timeout
+                timeout : o.timeout || this.timeout
             };
 
             var method = o.method||this.method||(p ? "POST" : "GET");
@@ -435,7 +436,8 @@ Ext.Ajax = new Ext.data.Connection({
      */
     /**
      * @property  method
-     * The default HTTP method to be used for requests. (defaults to undefined; if not set but parms are present will use POST, otherwise GET)
+     * The default HTTP method to be used for requests. Note that this is case-sensitive and should be all caps (defaults 
+     * to undefined; if not set but parms are present will use "POST," otherwise "GET.")
      * @type String
      */
     /**

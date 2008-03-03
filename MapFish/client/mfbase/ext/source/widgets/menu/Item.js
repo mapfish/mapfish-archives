@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -70,7 +70,7 @@ Ext.extend(Ext.menu.Item, Ext.menu.BaseItem, {
         el.className = this.itemCls + (this.menu ?  " x-menu-item-arrow" : "") + (this.cls ?  " " + this.cls : "");
         el.innerHTML = String.format(
                 '<img src="{0}" class="x-menu-item-icon {2}" />{1}',
-                this.icon || Ext.BLANK_IMAGE_URL, this.text, this.iconCls || '');
+                this.icon || Ext.BLANK_IMAGE_URL, this.itemText||this.text, this.iconCls || '');
         this.el = el;
         Ext.menu.Item.superclass.onRender.call(this, container, position);
     },

@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -25,7 +25,7 @@ t.append('some-element', {id: 'myid', cls: 'myclass', name: 'foo', value: 'bar'}
 */
 Ext.Template = function(html){
     var a = arguments;
-    if(html instanceof Array){
+    if(Ext.isArray(html)){
         html = html.join("");
     }else if(a.length > 1){
         var buf = [];

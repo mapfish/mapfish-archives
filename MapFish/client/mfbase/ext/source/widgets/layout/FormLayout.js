@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -126,6 +126,7 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
             this.labelAdjust = 0;
         }else{
             this.labelSeparator = ct.labelSeparator || this.labelSeparator;
+            ct.labelWidth = ct.labelWidth || 100;
             if(typeof ct.labelWidth == 'number'){
                 var pad = (typeof ct.labelPad == 'number' ? ct.labelPad : 5);
                 this.labelAdjust = ct.labelWidth+pad;
@@ -181,7 +182,7 @@ Ext.layout.FormLayout = Ext.extend(Ext.layout.AnchorLayout, {
 
     // private
     adjustWidthAnchor : function(value, comp){
-        return value - (comp.hideLabel ? 0 : this.labelAdjust);
+        return value - (comp.isFormField  ? (comp.hideLabel ? 0 : this.labelAdjust) : 0);
     },
 
     // private

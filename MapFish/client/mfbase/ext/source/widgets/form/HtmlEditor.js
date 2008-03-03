@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -154,7 +154,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
         }
         return buf.join('');
     },
-    /**
+    /*
      * Protected method that will not generally be called directly. It
      * is called when the editor creates its toolbar. Override this method if you need to
      * add custom toolbar buttons.
@@ -630,12 +630,32 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
     // private
     adjustFont: function(btn){
         var adjust = btn.itemId == 'increasefontsize' ? 1 : -1;
-        if(Ext.isSafari){ // safari
-            adjust *= 2;
+
+        var v = parseInt(this.doc.queryCommandValue('FontSize') || 2, 10);
+        if(Ext.isSafari3 || Ext.isAir){
+            // Safari 3 values
+            // 1 = 10px, 2 = 13px, 3 = 16px, 4 = 18px, 5 = 24px, 6 = 32px
+            if(v <= 10){
+                v = 1 + adjust;
+            }else if(v <= 13){
+                v = 2 + adjust;
+            }else if(v <= 16){
+                v = 3 + adjust;
+            }else if(v <= 18){
+                v = 4 + adjust;
+            }else if(v <= 24){
+                v = 5 + adjust;
+            }else {
+                v = 6 + adjust;
+            }
+            v = v.constrain(1, 6);
+        }else{
+            if(Ext.isSafari){ // safari
+                adjust *= 2;
+            }
+            v = Math.max(1, v+adjust) + (Ext.isSafari ? 'px' : 0);
         }
-        var v = parseInt(this.doc.queryCommandValue('FontSize')|| 3, 10);
-        v = Math.max(1, v+adjust);
-        this.execCmd('FontSize', v + (Ext.isSafari ? 'px' : 0));
+        this.execCmd('FontSize', v);
     },
 
     onEditorEvent : function(e){
@@ -956,6 +976,73 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
      */
     /**
      * @cfg {String} validateOnBlur @hide
+     */
+    /**
+     * @cfg {Boolean} allowDomMove  @hide
+     */
+    /**
+     * @cfg {String} applyTo @hide
+     */
+    /**
+     * @cfg {String} autoHeight  @hide
+     */
+    /**
+     * @cfg {String} autoWidth  @hide
+     */
+    /**
+     * @cfg {String} cls  @hide
+     */
+    /**
+     * @cfg {String} disabled  @hide
+     */
+    /**
+     * @cfg {String} disabledClass  @hide
+     */
+    /**
+     * @cfg {String} msgTarget  @hide
+     */
+    /**
+     * @cfg {String} readOnly  @hide
+     */
+    /**
+     * @cfg {String} style  @hide
+     */
+    /**
+     * @cfg {String} validationDelay  @hide
+     */
+    /**
+     * @cfg {String} validationEvent  @hide
+     */
+    /**
+     * @cfg {String} tabIndex  @hide
+     */
+    /**
+     * @property disabled
+     * @hide
+     */
+    /**
+     * @method applyToMarkup
+     * @hide
+     */
+    /**
+     * @method disable
+     * @hide
+     */
+    /**
+     * @method enable
+     * @hide
+     */
+    /**
+     * @method validate
+     * @hide
+     */
+    /**
+     * @event valid
+     * @hide
+     */
+    /**
+     * @method setDisabled
+     * @hide
      */
 });
 Ext.reg('htmleditor', Ext.form.HtmlEditor);

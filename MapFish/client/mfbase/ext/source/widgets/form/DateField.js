@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -26,7 +26,7 @@ Ext.form.DateField = Ext.extend(Ext.form.TriggerField,  {
      * Multiple date formats separated by "|" to try when parsing a user input value and it doesn't match the defined
      * format (defaults to 'm/d/Y|m-d-y|m-d-Y|m/d|m-d|d').
      */
-    altFormats : "m/d/Y|m-d-y|m-d-Y|m/d|m-d|md|mdy|mdY|d|Y-m-d",
+    altFormats : "m/d/Y|n/j/Y|n/j/y|m/j/y|n/d/y|m/j/Y|n/d/Y|m-d-y|m-d-Y|m/d|m-d|md|mdy|mdY|d|Y-m-d",
     /**
      * @cfg {Array} disabledDays
      * An array of days to disable, 0 based. For example, [0, 6] disables Sunday and Saturday (defaults to null).
@@ -205,7 +205,7 @@ dateField.setValue('2006-5-4');
 
     // private
     parseDate : function(value){
-        if(!value || value instanceof Date){
+        if(!value || Ext.isDate(value)){
             return value;
         }
         var v = Date.parseDate(value, this.format);
@@ -222,6 +222,9 @@ dateField.setValue('2006-5-4');
 
     // private
     onDestroy : function(){
+        if(this.menu) {
+            this.menu.destroy();
+        }
         if(this.wrap){
             this.wrap.remove();
         }
@@ -230,8 +233,7 @@ dateField.setValue('2006-5-4');
 
     // private
     formatDate : function(date){
-        return (!date || !(date instanceof Date)) ?
-               date : date.dateFormat(this.format);
+        return Ext.isDate(date) ? date.dateFormat(this.format) : date;
     },
 
     // private

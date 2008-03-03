@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -218,5 +218,16 @@ Ext.Action.prototype = {
     // private
     removeComponent : function(comp){
         this.items.remove(comp);
+    },
+
+    /**
+     * Executes this action manually using the default handler specified in the original config object.  Any arguments
+     * passed to this function will be passed on to the handler function.
+     * @param {Mixed} arg1 (optional) Variable number of arguments passed to the handler function 
+     * @param {Mixed} arg2 (optional)
+     * @param {Mixed} etc... (optional)
+     */
+    execute : function(){
+        this.initialConfig.handler.apply(this.initialConfig.scope || window, arguments);
     }
 };

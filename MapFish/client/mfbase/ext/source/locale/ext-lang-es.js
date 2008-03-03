@@ -2,6 +2,7 @@
  * Spanish/Latin American Translation by genius551v 04-08-2007
  * Revised by efege, 2007-04-15.
  * Revised by Rafaga2k 10-01-2007 (mm/dd/yyyy)
+ * Revised by FeDe 12-13-2007 (mm/dd/yyyy)
  */
 
 Ext.UpdateManager.defaults.indicatorText = '<div class="loading-indicator">Cargando...</div>';
@@ -26,6 +27,7 @@ if(Ext.LoadMask){
     Ext.LoadMask.prototype.msg = "Cargando...";
 }
 
+
 Date.monthNames = [
    "Enero",
    "Febrero",
@@ -41,6 +43,29 @@ Date.monthNames = [
    "Diciembre"
 ];
 
+Date.getShortMonthName = function(month) {
+  return Date.monthNames[month].substring(0, 3);
+};
+
+Date.monthNumbers = {
+  Ene : 0,
+  Feb : 1,
+  Mar : 2,
+  Abr : 3,
+  May : 4,
+  Jun : 5,
+  Jul : 6,
+  Ago : 7,
+  Sep : 8,
+  Oct : 9,
+  Nov : 10,
+  Dic : 11
+};
+
+Date.getMonthNumber = function(name) {
+  return Date.monthNumbers[name.substring(0, 1).toUpperCase() + name.substring(1, 3).toLowerCase()];
+};
+
 Date.dayNames = [
    "Domingo",
    "Lunes",
@@ -50,6 +75,12 @@ Date.dayNames = [
    "Viernes",
    "S&#225;bado"
 ];
+
+Date.getShortDayName = function(day) {
+  if (day==3) return "Mié";
+  if (day==6) return "Sáb";
+  return Date.dayNames[day].substring(0, 3);
+};
 
 if(Ext.MessageBox){
    Ext.MessageBox.buttonText = {
@@ -75,13 +106,16 @@ if(Ext.DatePicker){
       maxText           : "Esta fecha es posterior a la fecha m&#225;xima",
       disabledDaysText  : "",
       disabledDatesText : "",
-      monthNames	: Date.monthNames,
-      dayNames		: Date.dayNames,
+      monthNames	    : Date.monthNames,
+      dayNames		    : Date.dayNames,
       nextText          : 'Mes Siguiente (Control+Right)',
       prevText          : 'Mes Anterior (Control+Left)',
       monthYearText     : 'Seleccione un mes (Control+Up/Down para desplazar el a&#241;o)',
       todayTip          : "{0} (Barra espaciadora)",
-      format            : "d/m/Y"
+      format            : "d/m/Y",
+      okText            : "&#160;Ok&#160;",
+      cancelText        : "Cancelar",
+      startDay          : 1
    });
 }
 
@@ -136,135 +170,23 @@ if(Ext.form.ComboBox){
    });
 }
 
-if(Ext.form.VTypes){
-   Ext.apply(Ext.form.VTypes, {
-      emailText    : 'Este campo debe ser una direcci&#243;n de correo electr&#243;nico con el formato "usuario@dominio.com"',
-      urlText      : 'Este campo debe ser una URL con el formato "http:/'+'/www.dominio.com"',
-      alphaText    : 'Este campo solo debe contener letras y _',
-      alphanumText : 'Este campo solo debe contener letras, n&#250;meros y _'
-   });
-}
-
 if(Ext.form.HtmlEditor){
    Ext.apply(Ext.form.HtmlEditor.prototype, {
-	 createLinkText : 'Por favor, ingrese la direccion URL para el enlace:',
-	 buttonTips : {
-           insertimage:{
-              title:'Imagen',
-              text:'Inserta una imagen en la posición actual',
-              cls:'x-html-editor-tip'
-            },
-            bold : {
-               title: 'Negrita (Ctrl+B)',
-               text: 'Pone el texto seleccionado en negrita.',
-               cls: 'x-html-editor-tip'
-            },
-            italic : {
-               title: 'Italica (Ctrl+I)',
-               text: 'Pone el texto seleccionado ent italica.',
-               cls: 'x-html-editor-tip'
-            },
-            underline : {
-               title: 'Linea Baja (Ctrl+U)',
-               text: 'Pone un linea bajo el texto seleccionado.',
-               cls: 'x-html-editor-tip'
-           },
-           increasefontsize : {
-               title: 'Incrementar Texto',
-               text: 'Incrementa el tamaño de la fuente.',
-               cls: 'x-html-editor-tip'
-           },
-           decreasefontsize : {
-               title: 'Decrementar Texto',
-               text: 'Decrementa el tamaño de la fuente.',
-               cls: 'x-html-editor-tip'
-           },
-           backcolor : {
-               title: 'Color de fondo',
-               text: 'Cambia el color de fondo del texto seleccionado.',
-               cls: 'x-html-editor-tip'
-           },
-           forecolor : {
-               title: 'Color de la fuente',
-               text: 'Cambia el color de la fuente del texto seleccionado.',
-               cls: 'x-html-editor-tip'
-           },
-           justifyleft : {
-               title: 'Alinear a la izquierda',
-               text: 'Alinea el texto a la izquierda.',
-               cls: 'x-html-editor-tip'
-           },
-           justifycenter : {
-               title: 'Centrar el texto',
-               text: 'Centra el texto en el editor.',
-               cls: 'x-html-editor-tip'
-           },
-           justifyright : {
-               title: 'Alinear a la derecha',
-               text: 'Alinea el texto a la derecha.',
-               cls: 'x-html-editor-tip'
-           },
-           insertunorderedlist : {
-               title: 'Lista tachada',
-               text: 'Comienza una lista tachada.',
-               cls: 'x-html-editor-tip'
-           },
-           insertorderedlist : {
-               title: 'Lista numerada',
-               text: 'Comienza una lista numerada.',
-               cls: 'x-html-editor-tip'
-           },
-           createlink : {
-               title: 'Enlace',
-               text: 'Convierte el texto seleccionado en un enlace.',
-               cls: 'x-html-editor-tip'
-           },
-           sourceedit : {
-               title: 'Editar codigo',
-               text: 'Cambia al modo de edición de codigo fuente.',
-               cls: 'x-html-editor-tip'
-           }
-        }
-   });
-}
-
-if(Ext.grid.GridView){
-   Ext.apply(Ext.grid.GridView.prototype, {
-      sortAscText  : "Ordenar en forma ascendente",
-      sortDescText : "Ordenar en forma descendente",
-      lockText     : "Bloquear Columna",
-      unlockText   : "Desbloquear Columna",
-      columnsText  : "Columnas"
-   });
-}
-
-if(Ext.grid.PropertyColumnModel){
-   Ext.apply(Ext.grid.PropertyColumnModel.prototype, {
-      nameText   : "Nombre",
-      valueText  : "Valor",
-      dateFormat : "j/m/Y"
-   });
-}
-
-if(Ext.layout.BorderLayout.SplitRegion){
-   Ext.apply(Ext.layout.BorderLayout.SplitRegion.prototype, {
-      splitTip            : "Arrastre para redimensionar.",
-      collapsibleSplitTip : "Arrastre para redimensionar. Doble clic para ocultar."
-   });
-}
-
-if(Ext.form.HtmlEditor){
-   Ext.apply(Ext.form.HtmlEditor.prototype, {
-      createLinkText : "Por favor proporcione el URL para el enlace:",
+      createLinkText : "Por favor proporcione la URL para el enlace:",
           buttonTips : {
+              insertimage:{
+                  title:'Imagen',
+                  text:'Inserta una imagen en la posición actual',
+                  cls:'x-html-editor-tip'
+              },
               bold : {
                   title: 'Negritas (Ctrl+B)',
                   text: 'Transforma el texto seleccionado en Negritas.',
                   cls: 'x-html-editor-tip'
               },
               italic : {
-                  title: 'Italica (Ctrl+I)',
-                  text: 'Transforma el texto seleccionado en Italicas.',
+                  title: 'It&#225;lica (Ctrl+I)',
+                  text: 'Transforma el texto seleccionado en It&#225;licas.',
                   cls: 'x-html-editor-tip'
               },
               underline : {
@@ -323,10 +245,55 @@ if(Ext.form.HtmlEditor){
                   cls: 'x-html-editor-tip'
               },
               sourceedit : {
-                  title: 'Codigo Fuente',
-                  text: 'Pasar al modo de edicion de codigo fuente.',
+                  title: 'C&#243;digo Fuente',
+                  text: 'Pasar al modo de edici&#243;n de c&#243;digo fuente.',
                   cls: 'x-html-editor-tip'
               }
         }
    });
 }
+
+
+if(Ext.form.VTypes){
+   Ext.apply(Ext.form.VTypes, {
+      emailText    : 'Este campo debe ser una direcci&#243;n de correo electr&#243;nico con el formato "usuario@dominio.com"',
+      urlText      : 'Este campo debe ser una URL con el formato "http:/'+'/www.dominio.com"',
+      alphaText    : 'Este campo s&#243;lo debe contener letras y _',
+      alphanumText : 'Este campo s&#243;lo debe contener letras, n&#250;meros y _'
+   });
+}
+
+if(Ext.grid.GridView){
+   Ext.apply(Ext.grid.GridView.prototype, {
+      sortAscText  : "Ordenar en forma ascendente",
+      sortDescText : "Ordenar en forma descendente",
+      lockText     : "Bloquear Columna",
+      unlockText   : "Desbloquear Columna",
+      columnsText  : "Columnas"
+   });
+}
+
+
+if(Ext.grid.GroupingView){
+  Ext.apply(Ext.grid.GroupingView.prototype, {
+    emptyGroupText : '(Ninguno)',
+    groupByText    : 'Agrupar por este campo',
+    showGroupsText : 'Mostrar en grupos'
+  });
+}
+
+if(Ext.grid.PropertyColumnModel){
+   Ext.apply(Ext.grid.PropertyColumnModel.prototype, {
+      nameText   : "Nombre",
+      valueText  : "Valor",
+      dateFormat : "j/m/Y"
+   });
+}
+
+if(Ext.layout.BorderLayout.SplitRegion){
+   Ext.apply(Ext.layout.BorderLayout.SplitRegion.prototype, {
+      splitTip            : "Arrastre para redimensionar.",
+      collapsibleSplitTip : "Arrastre para redimensionar. Doble clic para ocultar."
+   });
+}
+

@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -279,7 +279,7 @@ Ext.extend(Ext.BorderLayout, Ext.LayoutManager, {
         if(typeof ps == 'string'){
             lr.add(new Ext.ContentPanel(ps));
         }
-        else if(ps instanceof Array){
+        else if(Ext.isArray(ps)){
             for(var i =0, len = ps.length; i < len; i++){
                 this.addTypedPanels(lr, ps[i]);
             }

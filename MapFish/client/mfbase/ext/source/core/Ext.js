@@ -1,13 +1,13 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
  */
 
 
-Ext = {version: '2.0'};
+Ext = {version: '2.0.1'};
 
 // for old browsers
 window["undefined"] = window["undefined"];
@@ -46,12 +46,14 @@ Ext.apply = function(o, c, defaults){
     var isStrict = document.compatMode == "CSS1Compat",
         isOpera = ua.indexOf("opera") > -1,
         isSafari = (/webkit|khtml/).test(ua),
+        isSafari3 = isSafari && ua.indexOf('webkit/5') != -1,
         isIE = !isOpera && ua.indexOf("msie") > -1,
         isIE7 = !isOpera && ua.indexOf("msie 7") > -1,
         isGecko = !isSafari && ua.indexOf("gecko") > -1,
         isBorderBox = isIE && !isStrict,
         isWindows = (ua.indexOf("windows") != -1 || ua.indexOf("win32") != -1),
         isMac = (ua.indexOf("macintosh") != -1 || ua.indexOf("mac os x") != -1),
+        isAir = (ua.indexOf("adobeair") != -1),
         isLinux = (ua.indexOf("linux") != -1),
         isSecure = window.location.href.toLowerCase().indexOf("https") === 0;
 
@@ -185,9 +187,40 @@ Ext.addBehaviors({
          * Extends one class with another class and optionally overrides members with the passed literal. This class
          * also adds the function "override()" to the class that can be used to override
          * members on an instance.
-         * @param {Object} subclass The class inheriting the functionality
-         * @param {Object} superclass The class being extended
-         * @param {Object} overrides (optional) A literal with members
+         * @param {Function} subclass The class inheriting the functionality
+         * @param {Function} superclass The class being extended
+         * @param {Object} overrides (optional) A literal with members which are copied into the subclass's
+         * prototype, and are therefore shared between all instances of the new class.
+         * @return {Function} The subclass constructor.
+         * <p>
+         * This function also supports a 2 argument call in which the subclass's constructor is
+         * not passed as an argument. In this form, the parameters as as follows:</p><p>
+         * <div class="mdetail-params"><ul>
+         * <li><code>superclass</code>
+         * <div class="sub-desc">The class being extended</div></li>
+         * <li><code>overrides</code>
+         * <div class="sub-desc">A literal with members which are copied into the subclass's
+         * prototype, and are therefore shared between all instance of the new class.<p>
+         * This may contain a special member named <tt><b>constructor</b></tt>. This is used
+         * to define the constructor of the new class, and is returned. If this property is
+         * <i>not</i> specified, a constructor is generated and returned which just calls the
+         * superclass's constructor passing on its parameters.</p></div></li>
+         * </ul></div></p><p>
+         * For example, to create a subclass of the Ext GridPanel:
+         * <pre><code>
+    MyGridPanel = Ext.extend(Ext.grid.GridPanel, {
+        constructor: function(config) {
+            // Your preprocessing here
+        	MyGridPanel.superclass.constructor.apply(this, arguments);
+            // Your postprocessing here
+        },
+
+        yourMethod: function() {
+            // etc.  
+        }
+    });
+</code></pre>
+         * </p>
          * @method extend
          */
         extend : function(){
@@ -197,18 +230,20 @@ Ext.addBehaviors({
                     this[m] = o[m];
                 }
             };
+            var oc = Object.prototype.constructor;
+            
             return function(sb, sp, overrides){
                 if(typeof sp == 'object'){
                     overrides = sp;
                     sp = sb;
-                    sb = function(){sp.apply(this, arguments);};
+                    sb = overrides.constructor != oc ? overrides.constructor : function(){sp.apply(this, arguments);};
                 }
                 var F = function(){}, sbp, spp = sp.prototype;
                 F.prototype = spp;
                 sbp = sb.prototype = new F();
                 sbp.constructor=sb;
                 sb.superclass=spp;
-                if(spp.constructor == Object.prototype.constructor){
+                if(spp.constructor == oc){
                     spp.constructor=sp;
                 }
                 sb.override = function(o){
@@ -216,6 +251,7 @@ Ext.addBehaviors({
                 };
                 sbp.override = io;
                 Ext.override(sb, overrides);
+                sb.extend = function(o){Ext.extend(sb, o);};
                 return sb;
             };
         }(),
@@ -288,7 +324,7 @@ Company.data.CustomStore = function(config) { ... }
                     buf.push(k, "=&");
                 }else if(type != "function" && type != "object"){
                     buf.push(k, "=", encodeURIComponent(ov), "&");
-                }else if(ov instanceof Array){
+                }else if(Ext.isArray(ov)){
                     if (ov.length) {
 	                    for(var i = 0, len = ov.length; i < len; i++) {
 	                        buf.push(k, "=", encodeURIComponent(ov[i] === undefined ? '' : ov[i]), "&");
@@ -357,7 +393,7 @@ Company.data.CustomStore = function(config) { ... }
             var as = arguments, l = as.length, r = [];
             for(var i = 0; i < l; i++){
                 var a = as[i];
-                if(a instanceof Array){
+                if(Ext.isArray(a)){
                     r = r.concat(a);
                 }else if(a.length !== undefined && !a.substr){
                     r = r.concat(Array.prototype.slice.call(a, 0));
@@ -445,21 +481,20 @@ Company.data.CustomStore = function(config) { ... }
          * {@link Ext.util.Observable} can be passed in.  Any number of elements and/or components can be
          * passed into this function in a single call as separate arguments.
          * @param {Mixed} arg1 An {@link Ext.Element} or {@link Ext.Component} to destroy
-         * @param {Mixed} (optional) arg2
-         * @param {Mixed} (optional) etc...
+         * @param {Mixed} arg2 (optional)
+         * @param {Mixed} etc... (optional)
          */
         destroy : function(){
             for(var i = 0, a = arguments, len = a.length; i < len; i++) {
                 var as = a[i];
                 if(as){
-                    if(as.dom){
-                        as.removeAllListeners();
-                        as.remove();
-                        continue;
-                    }
-                    if(typeof as.destroy == 'function'){
-                        as.destroy();
-                    }
+		            if(typeof as.destroy == 'function'){
+		                as.destroy();
+		            }
+		            else if(as.dom){
+		                as.removeAllListeners();
+		                as.remove();
+		            }
                 }
             }
         },
@@ -467,14 +502,14 @@ Company.data.CustomStore = function(config) { ... }
         removeNode : isIE ? function(){
             var d;
             return function(n){
-                if(n){
+                if(n && n.tagName != 'BODY'){
                     d = d || document.createElement('div');
                     d.appendChild(n);
                     d.innerHTML = '';
                 }
             }
         }() : function(n){
-            if(n && n.parentNode){
+            if(n && n.parentNode && n.tagName != 'BODY'){
                 n.parentNode.removeChild(n);
             }
         },
@@ -537,10 +572,22 @@ Company.data.CustomStore = function(config) { ... }
             return Ext.isEmpty(v, allowBlank) ? defaultValue : v;
         },
 
+		isArray : function(v){
+			return v && typeof v.pop == 'function';
+		},
+
+		isDate : function(v){
+			return v && typeof v.getFullYear == 'function';
+		},
+
         /** @type Boolean */
         isOpera : isOpera,
         /** @type Boolean */
         isSafari : isSafari,
+        /** @type Boolean */
+        isSafari3 : isSafari3,
+        /** @type Boolean */
+        isSafari2 : isSafari && !isSafari3,
         /** @type Boolean */
         isIE : isIE,
         /** @type Boolean */
@@ -558,7 +605,7 @@ Company.data.CustomStore = function(config) { ... }
         /** @type Boolean */
         isMac : isMac,
         /** @type Boolean */
-        isAir : !!window.htmlControl,
+        isAir : isAir,
 
     /**
      By default, Ext intelligently decides whether floating elements should be shimmed. If you are using flash,
@@ -715,13 +762,13 @@ var s = String.leftPad('123', 5, '0');
      */
     leftPad : function (val, size, ch) {
         var result = new String(val);
-        if(ch === null || ch === undefined || ch === '') {
+        if(!ch) {
             ch = " ";
         }
         while (result.length < size) {
             result = ch + result;
         }
-        return result;
+        return result.toString();
     },
 
     /**

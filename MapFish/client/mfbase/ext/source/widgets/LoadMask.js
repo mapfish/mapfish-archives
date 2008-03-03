@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -8,8 +8,8 @@
 
 /**
  * @class Ext.LoadMask
- * A simple utility class for generically masking elements while loading data.  If the element being masked has
- * an underlying {@link Ext.data.Store}, the masking will be automatically synchronized with the store's loading
+ * A simple utility class for generically masking elements while loading data.  If the {@link #store}
+ * config option is specified, the masking will be automatically synchronized with the store's loading
  * process and the mask element will be cached for reuse.  For all other elements, this mask will replace the
  * element's Updater load indicator and will be destroyed after the initial load.
  * @constructor
@@ -36,6 +36,11 @@ Ext.LoadMask = function(el, config){
 };
 
 Ext.LoadMask.prototype = {
+    /**
+     * @cfg {Ext.data.Store} store
+     * Optional Store to which the mask is bound. The mask is displayed when a load request is issued, and
+     * hidden on either load sucess, or load fail.
+     */
     /**
      * @cfg {Boolean} removeMask
      * True to create a single-use mask that is automatically destroyed after loading (useful for page loads),
@@ -84,10 +89,16 @@ Ext.LoadMask.prototype = {
         }
     },
 
+    /**
+     * Show this LoadMask over the configured Element.
+     */
     show: function(){
         this.onBeforeLoad();
     },
 
+    /**
+     * Hide this LoadMask.
+     */
     hide: function(){
         this.onLoad();    
     },

@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -34,8 +34,28 @@ Ext.form.Field = Ext.extend(Ext.BoxComponent,  {
      * @cfg {String} clearCls The CSS class used to provide field clearing (defaults to 'x-form-clear-left')
      */
     /**
-     * @cfg {String} itemCls An additional CSS class to apply to this field (defaults to the container's itemCls
-     * value if set, or '')
+     * @cfg {String} itemCls An additional CSS class to apply to the wrapper element of this field (defaults to the container's itemCls
+     * value if set, or '').  Since it is applied to the wrapper, it allows you to write standard CSS rules that can apply to
+     * the field, the label (if specified) or any other element within the markup for the field.  Example use:
+     * <pre><code>
+// Apply a style to the field's label:
+&lt;style>
+    .required .x-form-item-label {font-weight:bold;color:red;}
+&lt;/style>
+
+new Ext.FormPanel({
+	height: 100,
+	renderTo: document.body,
+	items: [{
+		xtype: 'textfield',
+		fieldLabel: 'Name',
+		itemCls: 'required' //this label will be styled
+	},{
+		xtype: 'textfield',
+		fieldLabel: 'Favorite Color'
+	}]
+});
+</code></pre>
      */
 
     /**
@@ -486,7 +506,7 @@ side          Add an error icon to the right of the field with a popup on hover
         if(typeof w == 'number' && !Ext.isSafari){
             if(Ext.isIE && (tag == 'input' || tag == 'textarea')){
                 if(tag == 'input' && !Ext.isStrict){
-                    return w - 3;
+                    return this.inEditor ? w : w - 3;
                 }
                 if(tag == 'input' && Ext.isStrict){
                     return w - (Ext.isIE6 ? 4 : 1);
@@ -505,6 +525,17 @@ side          Add an error icon to the right of the field with a popup on hover
         }
         return w;
     }
+
+    /**
+     * @cfg {Boolean} autoWidth @hide
+     */
+    /**
+     * @cfg {Boolean} autoHeight @hide
+     */
+
+    /**
+     * @cfg {String} autoEl @hide
+     */
 });
 
 

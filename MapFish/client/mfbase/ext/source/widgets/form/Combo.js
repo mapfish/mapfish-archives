@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -16,11 +16,13 @@
  */
 Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
     /**
-     * @cfg {Mixed} transform The id, DOM node or element of an existing select to convert to a ComboBox
+     * @cfg {Mixed} transform The id, DOM node or element of an existing HTML SELECT to convert to a ComboBox.
+     * Note that if you specify this and the combo is going to be in a {@link Ext.form.BasicForm} or
+     * {@link Ext.form.FormPanel}, you must also set {@link #lazyRender} = true.
      */
     /**
      * @cfg {Boolean} lazyRender True to prevent the ComboBox from rendering until requested (should always be used when
-     * rendering into an Ext.Editor, defaults to false)
+     * rendering into an Ext.Editor, defaults to false).
      */
     /**
      * @cfg {Boolean/Object} autoCreate A DomHelper element spec, or true for a default element spec (defaults to:
@@ -33,7 +35,7 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
      * @cfg {String} title If supplied, a header element is created containing this text and added into the top of
      * the dropdown list (defaults to undefined, with no header element)
      */
-    
+
     // private
     defaultAutoCreate : {tag: "input", type: "text", size: "24", autocomplete: "off"},
     /**
@@ -52,6 +54,11 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
      * @cfg {String} hiddenName If specified, a hidden form field with this name is dynamically generated to store the
      * field's data value (defaults to the underlying DOM element's name). Required for the combo's value to automatically
      * post during a form submission.
+     */
+    /**
+     * @cfg {String} hiddenId If {@link #hiddenName} is specified, hiddenId can also be provided to give the hidden field
+     * a unique id (defaults to the hiddenName).  The hiddenId and combo {@link #id} should be different, since no two DOM
+     * nodes should share the same id.
      */
     /**
      * @cfg {String} listClass CSS class to apply to the dropdown list element (defaults to '')
@@ -80,6 +87,11 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
      * @cfg {Number} maxHeight The maximum height in pixels of the dropdown list before scrollbars are shown (defaults to 300)
      */
     maxHeight: 300,
+    /**
+     * @cfg {Number} minHeight The minimum height in pixels of the dropdown list when the list is constrained by its
+     * distance to the viewport edges (defaults to 90)
+     */
+    minHeight: 90,
     /**
      * @cfg {String} triggerAction The action to execute when the trigger field is activated.  Use 'all' to run the
      * query specified by the allQuery config option (defaults to 'query')
@@ -159,7 +171,7 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
      * @cfg {String} valueNotFoundText When using a name/value combo, if the value passed to setValue is not found in
      * the store, valueNotFoundText will be displayed as the field text if defined (defaults to undefined)
      */
-    
+
     /**
      * @cfg {Boolean} lazyInit True to not initialize the list for this combo until the field is focused. (defaults to true)
      */
@@ -322,7 +334,7 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
 			    /**
 			    * @cfg {String/Ext.XTemplate} tpl The template string, or {@link Ext.XTemplate}
 			    * instance to use to display each item in the dropdown list. Use
-			    * this to create custom UI layouts for items in the list. 
+			    * this to create custom UI layouts for items in the list.
 			    * <p>
 			    * If you wish to preserve the default visual look of list items, add the CSS
 			    * class name <pre>x-combo-list-item</pre> to the template's container element.
@@ -416,7 +428,8 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
 
             "enter" : function(e){
                 this.onViewClick();
-                //return true;
+                this.delayedCheck = true;
+				this.unsetDelayCheck.defer(10, this);
             },
 
             "esc" : function(e){
@@ -466,9 +479,12 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
         Ext.form.ComboBox.superclass.onDestroy.call(this);
     },
 
+	unsetDelayCheck : function(){
+		delete this.delayedCheck;
+	},
     // private
     fireKey : function(e){
-        if(e.isNavKeyPress() && !this.list.isVisible()){
+        if(e.isNavKeyPress() && !this.isExpanded() && !this.delayedCheck){
             this.fireEvent("specialkey", this, e);
         }
     },
@@ -484,10 +500,18 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
     },
 
     // private
+    onEnable: function(){
+        Ext.form.ComboBox.superclass.onEnable.apply(this, arguments);
+        if(this.hiddenField){
+            this.hiddenField.disabled = false;
+        }
+    },
+
+    // private
     onDisable: function(){
         Ext.form.ComboBox.superclass.onDisable.apply(this, arguments);
         if(this.hiddenField){
-            this.hiddenField.disabled = this.disabled;
+            this.hiddenField.disabled = true;
         }
     },
 
@@ -596,6 +620,7 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
         this.setRawValue('');
         this.lastSelectionText = '';
         this.applyEmptyText();
+        this.value = '';
     },
 
     /**
@@ -667,14 +692,19 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
     },
 
     // private
-    restrictHeight : function(){
+	restrictHeight : function(){
         this.innerList.dom.style.height = '';
         var inner = this.innerList.dom;
-        var fw = this.list.getFrameWidth('tb');
+        var pad = this.list.getFrameWidth('tb')+(this.resizable?this.handleHeight:0)+this.assetHeight;
         var h = Math.max(inner.clientHeight, inner.offsetHeight, inner.scrollHeight);
-        this.innerList.setHeight(h < this.maxHeight ? 'auto' : this.maxHeight);
+        var ha = this.getPosition()[1]-Ext.getBody().getScroll().top;
+        var hb = Ext.lib.Dom.getViewHeight()-ha-this.getSize().height;
+        var space = Math.max(ha, hb, this.minHeight || 0)-this.list.shadow.offset-pad-2;
+        h = Math.min(h, space, this.maxHeight);
+        
+        this.innerList.setHeight(h);
         this.list.beginUpdate();
-        this.list.setHeight(this.innerList.getHeight()+fw+(this.resizable?this.handleHeight:0)+this.assetHeight);
+        this.list.setHeight(h+pad);
         this.list.alignTo(this.el, this.listAlign);
         this.list.endUpdate();
     },
@@ -762,7 +792,7 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
 
     // private
     validateBlur : function(){
-        return !this.list || !this.list.isVisible();   
+        return !this.list || !this.list.isVisible();
     },
 
     // private
@@ -822,7 +852,7 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
                 }
             }else{
                 this.selectedIndex = -1;
-                this.onLoad();   
+                this.onLoad();
             }
         }
     },
@@ -867,6 +897,7 @@ Ext.form.ComboBox = Ext.extend(Ext.form.TriggerField, {
         }
         this.list.alignTo(this.wrap, this.listAlign);
         this.list.show();
+        this.innerList.setOverflow('auto'); // necessary for FF 2.0/Mac
         Ext.getDoc().on('mousewheel', this.collapseIf, this);
         Ext.getDoc().on('mousedown', this.collapseIf, this);
         this.fireEvent('expand', this);

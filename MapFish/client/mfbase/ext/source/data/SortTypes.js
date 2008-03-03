@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -65,7 +65,7 @@ Ext.data.SortTypes = {
         if(!s){
             return 0;
         }
-        if(s instanceof Date){
+        if(Ext.isDate(s)){
             return s.getTime();
         }
     	return Date.parse(String(s));

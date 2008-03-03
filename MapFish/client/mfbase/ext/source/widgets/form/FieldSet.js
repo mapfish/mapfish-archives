@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -15,8 +15,9 @@
  */
 Ext.form.FieldSet = Ext.extend(Ext.Panel, {
     /**
-     * @cfg {Boolean} checkboxToggle True to render a checkbox into the fieldset frame just in front of the legend
-     * (defaults to false).  The fieldset will be expanded or collapsed when the checkbox is toggled.
+     * @cfg {Mixed} checkboxToggle True to render a checkbox into the fieldset frame just in front of the legend,
+     * or a DomHelper config object to create the checkbox.  (defaults to false).
+     * The fieldset will be expanded or collapsed when the checkbox is toggled.
      */
     /**
      * @cfg {String} checkboxName The name to assign to the fieldset's checkbox if {@link #checkboxToggle} = true
@@ -36,13 +37,15 @@ Ext.form.FieldSet = Ext.extend(Ext.Panel, {
      * @cfg {String} layout The {@link Ext.Container#layout} to use inside the fieldset (defaults to 'form').
      */
     layout: 'form',
-    
+
     // private
     onRender : function(ct, position){
         if(!this.el){
             this.el = document.createElement('fieldset');
             this.el.id = this.id;
-            this.el.appendChild(document.createElement('legend')).className = 'x-fieldset-header';
+            if (this.title || this.header || this.checkboxToggle) {
+                this.el.appendChild(document.createElement('legend')).className = 'x-fieldset-header';
+            }
         }
 
         Ext.form.FieldSet.superclass.onRender.call(this, ct, position);
@@ -83,43 +86,154 @@ Ext.form.FieldSet = Ext.extend(Ext.Panel, {
         this[this.checkbox.dom.checked ? 'expand' : 'collapse']();
     }
 
-    /** @cfg {String/Number} activeItem @hide */
-    /** @cfg {Mixed} applyTo @hide */
-    /** @cfg {Object/Array} bbar @hide */
-    /** @cfg {Boolean} bodyBorder @hide */
-    /** @cfg {Boolean} border @hide */
-    /** @cfg {Boolean/Number} bufferResize @hide */
-    /** @cfg {String} buttonAlign @hide */
-    /** @cfg {Array} buttons @hide */
-    /** @cfg {Boolean} collapseFirst @hide */
-    /** @cfg {String} defaultType @hide */
-    /** @cfg {String} disabledClass @hide */
-    /** @cfg {String} elements @hide */
-    /** @cfg {Boolean} floating @hide */
-    /** @cfg {Boolean} footer @hide */
-    /** @cfg {Boolean} frame @hide */
-    /** @cfg {Boolean} header @hide */
-    /** @cfg {Boolean} headerAsText @hide  */
-    /** @cfg {Boolean} hideCollapseTool @hide  */
-    /** @cfg {String} iconCls @hide  */
-    /** @cfg {Boolean/String} shadow @hide  */
-    /** @cfg {Number} shadowOffset @hide  */
-    /** @cfg {Boolean} shim @hide  */
-    /** @cfg {Object/Array} tbar @hide  */
-    /** @cfg {Boolean} titleCollapse @hide  */
-    /** @cfg {Array} tools @hide  */
-    /** @cfg {String} xtype @hide  */
-    /** @property header @hide  */
-    /** @property footer @hide  */
-    /** @method focus @hide  */
-    /** @method getBottomToolbar @hide  */
-    /** @method getTopToolbar @hide  */
-    /** @method setIconClass @hide  */
-    /** @event activate @hide  */
-    /** @event beforeclose @hide  */
-    /** @event bodyresize @hide  */
-    /** @event close @hide  */
-    /** @event deactivate @hide  */
+    /**
+     * @cfg {String/Number} activeItem
+     * @hide
+     */
+    /**
+     * @cfg {Mixed} applyTo
+     * @hide
+     */
+    /**
+     * @cfg {Object/Array} bbar
+     * @hide
+     */
+    /**
+     * @cfg {Boolean} bodyBorder
+     * @hide
+     */
+    /**
+     * @cfg {Boolean} border
+     * @hide
+     */
+    /**
+     * @cfg {Boolean/Number} bufferResize
+     * @hide
+     */
+    /**
+     * @cfg {String} buttonAlign
+     * @hide
+     */
+    /**
+     * @cfg {Array} buttons
+     * @hide
+     */
+    /**
+     * @cfg {Boolean} collapseFirst
+     * @hide
+     */
+    /**
+     * @cfg {String} defaultType
+     * @hide
+     */
+    /**
+     * @cfg {String} disabledClass
+     * @hide
+     */
+    /**
+     * @cfg {String} elements
+     * @hide
+     */
+    /**
+     * @cfg {Boolean} floating
+     * @hide
+     */
+    /**
+     * @cfg {Boolean} footer
+     * @hide
+     */
+    /**
+     * @cfg {Boolean} frame
+     * @hide
+     */
+    /**
+     * @cfg {Boolean} header
+     * @hide
+     */
+    /**
+     * @cfg {Boolean} headerAsText
+     * @hide
+     */
+    /**
+     * @cfg {Boolean} hideCollapseTool
+     * @hide
+     */
+    /**
+     * @cfg {String} iconCls
+     * @hide
+     */
+    /**
+     * @cfg {Boolean/String} shadow
+     * @hide
+     */
+    /**
+     * @cfg {Number} shadowOffset
+     * @hide
+     */
+    /**
+     * @cfg {Boolean} shim
+     * @hide
+     */
+    /**
+     * @cfg {Object/Array} tbar
+     * @hide
+     */
+    /**
+     * @cfg {Boolean} titleCollapse
+     * @hide
+     */
+    /**
+     * @cfg {Array} tools
+     * @hide
+     */
+    /**
+     * @cfg {String} xtype
+     * @hide
+     */
+    /**
+     * @property header
+     * @hide
+     */
+    /**
+     * @property footer
+     * @hide
+     */
+    /**
+     * @method focus
+     * @hide
+     */
+    /**
+     * @method getBottomToolbar
+     * @hide
+     */
+    /**
+     * @method getTopToolbar
+     * @hide
+     */
+    /**
+     * @method setIconClass
+     * @hide
+     */
+    /**
+     * @event activate
+     * @hide
+     */
+    /**
+     * @event beforeclose
+     * @hide
+     */
+    /**
+     * @event bodyresize
+     * @hide
+     */
+    /**
+     * @event close
+     * @hide
+     */
+    /**
+     * @event deactivate
+     * @hide
+     */
 });
 Ext.reg('fieldset', Ext.form.FieldSet);
 

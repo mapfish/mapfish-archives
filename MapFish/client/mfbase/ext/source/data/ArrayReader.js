@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -8,7 +8,7 @@
 
 /**
  * @class Ext.data.ArrayReader
- * @extends Ext.data.DataReader
+ * @extends Ext.data.JsonReader
  * Data reader class to create an Array of Ext.data.Record objects from an Array.
  * Each element of that Array represents a row of data fields. The
  * fields are pulled into a Record object using as a subscript, the <em>mapping</em> property
@@ -58,7 +58,7 @@ Ext.data.ArrayReader = Ext.extend(Ext.data.JsonReader, {
                 var f = fields.items[j];
                 var k = f.mapping !== undefined && f.mapping !== null ? f.mapping : j;
                 var v = n[k] !== undefined ? n[k] : f.defaultValue;
-                v = f.convert(v);
+                v = f.convert(v, n);
                 values[f.name] = v;
             }
 	        var record = new recordType(values, id);

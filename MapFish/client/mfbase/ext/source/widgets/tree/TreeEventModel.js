@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -15,8 +15,10 @@ Ext.tree.TreeEventModel.prototype = {
     initEvents : function(){
         var el = this.tree.getTreeEl();
         el.on('click', this.delegateClick, this);
-        el.on('mouseover', this.delegateOver, this);
-        el.on('mouseout', this.delegateOut, this);
+        if(this.tree.trackMouseOver !== false){
+            el.on('mouseover', this.delegateOver, this);
+            el.on('mouseout', this.delegateOut, this);
+        }
         el.on('dblclick', this.delegateDblClick, this);
         el.on('contextmenu', this.delegateContextMenu, this);
     },
@@ -44,8 +46,14 @@ Ext.tree.TreeEventModel.prototype = {
         if(!this.beforeEvent(e)){
             return;
         }
-        t = this.getNodeTarget(e);
-        if(t && !e.within(t, true)){
+        if(e.getTarget('.x-tree-ec-icon', 1)){
+            var n = this.getNode(e);
+            this.onIconOut(e, n);
+            if(n == this.lastEcOver){
+                delete this.lastEcOver;
+            }
+        }
+        if((t = this.getNodeTarget(e)) && !e.within(t, true)){
             this.onNodeOut(e, this.getNode(e));
         }
     },
@@ -54,8 +62,15 @@ Ext.tree.TreeEventModel.prototype = {
         if(!this.beforeEvent(e)){
             return;
         }
-        t = this.getNodeTarget(e);
-        if(t){
+        if(this.lastEcOver){ // prevent hung highlight
+            this.onIconOut(e, this.lastEcOver);
+            delete this.lastEcOver;
+        }
+        if(e.getTarget('.x-tree-ec-icon', 1)){
+            this.lastEcOver = this.getNode(e);
+            this.onIconOver(e, this.lastEcOver);
+        }
+        if(t = this.getNodeTarget(e)){
             this.onNodeOver(e, this.getNode(e));
         }
     },
@@ -98,6 +113,14 @@ Ext.tree.TreeEventModel.prototype = {
 
     onNodeOut : function(e, node){
         node.ui.onOut(e);
+    },
+
+    onIconOver : function(e, node){
+        node.ui.addClass('x-tree-ec-over');
+    },
+
+    onIconOut : function(e, node){
+        node.ui.removeClass('x-tree-ec-over');
     },
 
     onIconClick : function(e, node){

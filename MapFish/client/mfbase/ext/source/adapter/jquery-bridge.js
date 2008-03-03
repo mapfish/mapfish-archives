@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -315,7 +315,7 @@ Ext.lib.Ajax = function(){
             jQuery.ajax({
                 type: Ext.getDom(form).method ||'POST',
                 url: uri,
-                data: jQuery(form).formSerialize()+(data?'&'+data:''),
+                data: jQuery(form).serialize()+(data?'&'+data:''),
                 timeout: cb.timeout,
                 complete: createComplete(cb)
             });
@@ -330,7 +330,7 @@ Ext.lib.Ajax = function(){
         },
 
         serializeForm : function(form){
-            return jQuery(form.dom||form).formSerialize();
+            return jQuery(form.dom||form).serialize();
         }
     };
 }();
@@ -510,7 +510,7 @@ Ext.lib.Region.getRegion = function(el) {
 };
 
 Ext.lib.Point = function(x, y) {
-   if (x instanceof Array) {
+   if (Ext.isArray(x)) {
       y = x[1];
       x = x[0];
    }

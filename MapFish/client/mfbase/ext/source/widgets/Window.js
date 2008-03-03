@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -276,7 +276,8 @@ Ext.Window = Ext.extend(Ext.Panel, {
         Ext.destroy(
             this.resizer,
             this.dd,
-            this.proxy
+            this.proxy,
+            this.mask
         );
         Ext.Window.superclass.beforeDestroy.call(this);
     },
@@ -445,6 +446,9 @@ Ext.Window = Ext.extend(Ext.Panel, {
         if(this.maximized){
             this.fitContainer();
         }
+        if(Ext.isMac && Ext.isGecko){ // work around stupid FF 2.0/Mac scroll bar bug
+        	this.cascade(this.setAutoScroll);
+        }
 
         if(this.monitorResize || this.modal || this.constrain || this.constrainHeader){
             Ext.EventManager.onWindowResize(this.onWindowResize, this);
@@ -590,6 +594,9 @@ Ext.Window = Ext.extend(Ext.Panel, {
         if(show !== false){
             this.el.show();
             this.focus();
+	        if(Ext.isMac && Ext.isGecko){ // work around stupid FF 2.0/Mac scroll bar bug
+	        	this.cascade(this.setAutoScroll);
+	        }
         }
         if(matchPosition !== false){
             this.setPosition(this.activeGhost.getLeft(true), this.activeGhost.getTop(true));

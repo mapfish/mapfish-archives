@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<project path="" name="Ext - JS Lib" author="Ext JS, LLC" version="2.0 RC 1" copyright="Ext JS Library $version&#xD;&#xA;Copyright(c) 2006-2007, $author.&#xD;&#xA;licensing@extjs.com&#xD;&#xA;&#xD;&#xA;http://extjs.com/license" output="C:\apps\www\deploy\ext-2.0-rc1\" source="True" source-dir="$output\source" minify="True" min-dir="$output\build" doc="False" doc-dir="$output\docs" min-dair="$output\build">
+<project path="" name="Ext - JS Lib" author="Ext JS, LLC" version="2.0.2" copyright="Ext JS Library $version&#xD;&#xA;Copyright(c) 2006-2008, $author.&#xD;&#xA;licensing@extjs.com&#xD;&#xA;&#xD;&#xA;http://extjs.com/license" output="C:\apps\www\deploy\ext-2.0.2\" source="True" source-dir="$output\source" minify="True" min-dir="$output\build" doc="False" doc-dir="$output\docs" min-dair="$output\build">
   <directory name="" />
   <target name="Core" file="$output\ext-core.js" debug="True" shorthand="False" shorthand-list="YAHOO.util.Dom.setStyle&#xD;&#xA;YAHOO.util.Dom.getStyle&#xD;&#xA;YAHOO.util.Dom.getRegion&#xD;&#xA;YAHOO.util.Dom.getViewportHeight&#xD;&#xA;YAHOO.util.Dom.getViewportWidth&#xD;&#xA;YAHOO.util.Dom.get&#xD;&#xA;YAHOO.util.Dom.getXY&#xD;&#xA;YAHOO.util.Dom.setXY&#xD;&#xA;YAHOO.util.CustomEvent&#xD;&#xA;YAHOO.util.Event.addListener&#xD;&#xA;YAHOO.util.Event.getEvent&#xD;&#xA;YAHOO.util.Event.getTarget&#xD;&#xA;YAHOO.util.Event.preventDefault&#xD;&#xA;YAHOO.util.Event.stopEvent&#xD;&#xA;YAHOO.util.Event.stopPropagation&#xD;&#xA;YAHOO.util.Event.stopEvent&#xD;&#xA;YAHOO.util.Anim&#xD;&#xA;YAHOO.util.Motion&#xD;&#xA;YAHOO.util.Connect.asyncRequest&#xD;&#xA;YAHOO.util.Connect.setForm&#xD;&#xA;YAHOO.util.Dom&#xD;&#xA;YAHOO.util.Event">
     <include name="core\DomHelper.js" />
@@ -80,6 +80,7 @@
     <include name="widgets\layout\FormLayout.js" />
     <include name="widgets\layout\AccordionLayout.js" />
     <include name="widgets\layout\TableLayout.js" />
+    <include name="widgets\layout\AbsoluteFormLayout.js" />
     <include name="widgets\layout\AbsoluteLayout.js" />
     <include name="widgets\Viewport.js" />
     <include name="widgets\Panel.js" />
@@ -144,6 +145,7 @@
     <include name="widgets\form\FieldSet.js" />
     <include name="widgets\form\HtmlEditor.js" />
     <include name="widgets\form\TimeField.js" />
+    <include name="widgets\form\Label.js" />
     <include name="widgets\form\Action.js" />
     <include name="widgets\form\VTypes.js" />
     <include name="widgets\grid\GridPanel.js" />
@@ -276,13 +278,6 @@
   <file name="UpdateManager.js" path="" />
   <file name="yutil.js" path="" />
   <file name=".DS_Store" path="" />
-  <target name="YUI utilities" file="$output\adapter\yui\yui-utilities.js" debug="False" shorthand="False" shorthand-list="YAHOO.util.Dom.setStyle&#xD;&#xA;YAHOO.util.Dom.getStyle&#xD;&#xA;YAHOO.util.Dom.getRegion&#xD;&#xA;YAHOO.util.Dom.getViewportHeight&#xD;&#xA;YAHOO.util.Dom.getViewportWidth&#xD;&#xA;YAHOO.util.Dom.get&#xD;&#xA;YAHOO.util.Dom.getXY&#xD;&#xA;YAHOO.util.Dom.setXY&#xD;&#xA;YAHOO.util.CustomEvent&#xD;&#xA;YAHOO.util.Event.addListener&#xD;&#xA;YAHOO.util.Event.getEvent&#xD;&#xA;YAHOO.util.Event.getTarget&#xD;&#xA;YAHOO.util.Event.preventDefault&#xD;&#xA;YAHOO.util.Event.stopEvent&#xD;&#xA;YAHOO.util.Event.stopPropagation&#xD;&#xA;YAHOO.util.Event.stopEvent&#xD;&#xA;YAHOO.util.Anim&#xD;&#xA;YAHOO.util.Motion&#xD;&#xA;YAHOO.util.Connect.asyncRequest&#xD;&#xA;YAHOO.util.Connect.setForm&#xD;&#xA;YAHOO.util.Dom&#xD;&#xA;YAHOO.util.Event">
-    <include name="yui\yahoo.js" />
-    <include name="yui\dom.js" />
-    <include name="yui\event.js" />
-    <include name="yui\connection.js" />
-    <include name="yui\animation.js" />
-  </target>
   <file name="widgets\form\Select.js" path="widgets\form" />
   <file name="widgets\Notifier.js" path="widgets" />
   <file name="yui\dragdrop.js" path="yui" />
@@ -342,6 +337,7 @@
     <include name="widgets\form\TriggerField.js" />
     <include name="widgets\form\TextArea.js" />
     <include name="widgets\form\NumberField.js" />
+    <include name="widgets\form\Label.js" />
     <include name="widgets\form\DateField.js" />
     <include name="widgets\form\Checkbox.js" />
     <include name="widgets\form\Radio.js" />
@@ -350,7 +346,6 @@
     <include name="widgets\form\BasicForm.js" />
     <include name="widgets\form\Form.js" />
     <include name="widgets\form\Action.js" />
-    <include name="widgets\form\Layout.js" />
     <include name="widgets\form\VTypes.js" />
   </target>
   <target name="Button" file="$output\package\button\button.js" debug="True" shorthand="False" shorthand-list="YAHOO.util.Dom.setStyle&#xD;&#xA;YAHOO.util.Dom.getStyle&#xD;&#xA;YAHOO.util.Dom.getRegion&#xD;&#xA;YAHOO.util.Dom.getViewportHeight&#xD;&#xA;YAHOO.util.Dom.getViewportWidth&#xD;&#xA;YAHOO.util.Dom.get&#xD;&#xA;YAHOO.util.Dom.getXY&#xD;&#xA;YAHOO.util.Dom.setXY&#xD;&#xA;YAHOO.util.CustomEvent&#xD;&#xA;YAHOO.util.Event.addListener&#xD;&#xA;YAHOO.util.Event.getEvent&#xD;&#xA;YAHOO.util.Event.getTarget&#xD;&#xA;YAHOO.util.Event.preventDefault&#xD;&#xA;YAHOO.util.Event.stopEvent&#xD;&#xA;YAHOO.util.Event.stopPropagation&#xD;&#xA;YAHOO.util.Event.stopEvent&#xD;&#xA;YAHOO.util.Anim&#xD;&#xA;YAHOO.util.Motion&#xD;&#xA;YAHOO.util.Connect.asyncRequest&#xD;&#xA;YAHOO.util.Connect.setForm&#xD;&#xA;YAHOO.util.Dom&#xD;&#xA;YAHOO.util.Event">
@@ -512,4 +507,221 @@
   <file name="state\State.js" path="state" />
   <file name="widgets\layout\AccordianLayout.js" path="widgets\layout" />
   <file name="widgets\QuickTips.js" path="widgets" />
+  <file name="locale\ext-lang-sp.js" path="locale" />
+  <file name="locale\ext-lang-no.js" path="locale" />
+  <file name="widgets\layout\AbsoluteForm.js" path="widgets\layout" />
+  <file name="widgets\layout\AbsoluteFormLayout.js" path="widgets\layout" />
+  <file name="adapter\ext-base.js" path="adapter" />
+  <file name="adapter\jquery-bridge.js" path="adapter" />
+  <file name="adapter\prototype-bridge.js" path="adapter" />
+  <file name="adapter\yui-bridge.js" path="adapter" />
+  <file name="core\CompositeElement.js" path="core" />
+  <file name="core\DomHelper.js" path="core" />
+  <file name="core\DomQuery.js" path="core" />
+  <file name="core\Element.js" path="core" />
+  <file name="core\EventManager.js" path="core" />
+  <file name="core\Ext.js" path="core" />
+  <file name="core\Fx.js" path="core" />
+  <file name="core\Template.js" path="core" />
+  <file name="core\UpdateManager.js" path="core" />
+  <file name="data\ArrayReader.js" path="data" />
+  <file name="data\Connection.js" path="data" />
+  <file name="data\DataField.js" path="data" />
+  <file name="data\DataProxy.js" path="data" />
+  <file name="data\DataReader.js" path="data" />
+  <file name="data\GroupingStore.js" path="data" />
+  <file name="data\HttpProxy.js" path="data" />
+  <file name="data\JsonReader.js" path="data" />
+  <file name="data\JsonStore.js" path="data" />
+  <file name="data\MemoryProxy.js" path="data" />
+  <file name="data\Record.js" path="data" />
+  <file name="data\ScriptTagProxy.js" path="data" />
+  <file name="data\SimpleStore.js" path="data" />
+  <file name="data\SortTypes.js" path="data" />
+  <file name="data\Store.js" path="data" />
+  <file name="data\StoreMgr.js" path="data" />
+  <file name="data\Tree.js" path="data" />
+  <file name="data\XmlReader.js" path="data" />
+  <file name="dd\DDCore.js" path="dd" />
+  <file name="dd\DragSource.js" path="dd" />
+  <file name="dd\DragTracker.js" path="dd" />
+  <file name="dd\DragZone.js" path="dd" />
+  <file name="dd\DropTarget.js" path="dd" />
+  <file name="dd\DropZone.js" path="dd" />
+  <file name="dd\Registry.js" path="dd" />
+  <file name="dd\ScrollManager.js" path="dd" />
+  <file name="dd\StatusProxy.js" path="dd" />
+  <file name="legacy\layout\BasicLayoutRegion.js" path="legacy\layout" />
+  <file name="legacy\layout\BorderLayout.js" path="legacy\layout" />
+  <file name="legacy\layout\BorderLayoutRegions.js" path="legacy\layout" />
+  <file name="legacy\layout\ContentPanels.js" path="legacy\layout" />
+  <file name="legacy\layout\LayoutManager.js" path="legacy\layout" />
+  <file name="legacy\layout\LayoutRegion.js" path="legacy\layout" />
+  <file name="legacy\layout\LayoutStateManager.js" path="legacy\layout" />
+  <file name="legacy\layout\ReaderLayout.js" path="legacy\layout" />
+  <file name="legacy\layout\SplitLayoutRegion.js" path="legacy\layout" />
+  <file name="legacy\AbstractGridView.js" path="legacy" />
+  <file name="legacy\BasicDialog.js" path="legacy" />
+  <file name="legacy\GridView2.js" path="legacy" />
+  <file name="legacy\JsonView.js" path="legacy" />
+  <file name="legacy\MasterTemplate.js" path="legacy" />
+  <file name="legacy\View.js" path="legacy" />
+  <file name="locale\ext-lang-af.js" path="locale" />
+  <file name="locale\ext-lang-bg.js" path="locale" />
+  <file name="locale\ext-lang-ca.js" path="locale" />
+  <file name="locale\ext-lang-cs.js" path="locale" />
+  <file name="locale\ext-lang-da.js" path="locale" />
+  <file name="locale\ext-lang-de.js" path="locale" />
+  <file name="locale\ext-lang-el_GR.js" path="locale" />
+  <file name="locale\ext-lang-en.js" path="locale" />
+  <file name="locale\ext-lang-en_UK.js" path="locale" />
+  <file name="locale\ext-lang-es.js" path="locale" />
+  <file name="locale\ext-lang-fa.js" path="locale" />
+  <file name="locale\ext-lang-fr.js" path="locale" />
+  <file name="locale\ext-lang-fr_CA.js" path="locale" />
+  <file name="locale\ext-lang-gr.js" path="locale" />
+  <file name="locale\ext-lang-he.js" path="locale" />
+  <file name="locale\ext-lang-hr.js" path="locale" />
+  <file name="locale\ext-lang-hu.js" path="locale" />
+  <file name="locale\ext-lang-id.js" path="locale" />
+  <file name="locale\ext-lang-it.js" path="locale" />
+  <file name="locale\ext-lang-ja.js" path="locale" />
+  <file name="locale\ext-lang-ko.js" path="locale" />
+  <file name="locale\ext-lang-lt.js" path="locale" />
+  <file name="locale\ext-lang-lv.js" path="locale" />
+  <file name="locale\ext-lang-mk.js" path="locale" />
+  <file name="locale\ext-lang-nl.js" path="locale" />
+  <file name="locale\ext-lang-no_NB.js" path="locale" />
+  <file name="locale\ext-lang-no_NN.js" path="locale" />
+  <file name="locale\ext-lang-pl.js" path="locale" />
+  <file name="locale\ext-lang-pt.js" path="locale" />
+  <file name="locale\ext-lang-pt_BR.js" path="locale" />
+  <file name="locale\ext-lang-ro.js" path="locale" />
+  <file name="locale\ext-lang-ru.js" path="locale" />
+  <file name="locale\ext-lang-sk.js" path="locale" />
+  <file name="locale\ext-lang-sl.js" path="locale" />
+  <file name="locale\ext-lang-sr.js" path="locale" />
+  <file name="locale\ext-lang-sr_RS.js" path="locale" />
+  <file name="locale\ext-lang-sv_SE.js" path="locale" />
+  <file name="locale\ext-lang-th.js" path="locale" />
+  <file name="locale\ext-lang-tr.js" path="locale" />
+  <file name="locale\ext-lang-ukr.js" path="locale" />
+  <file name="locale\ext-lang-vn.js" path="locale" />
+  <file name="locale\ext-lang-zh_CN.js" path="locale" />
+  <file name="locale\ext-lang-zh_TW.js" path="locale" />
+  <file name="state\CookieProvider.js" path="state" />
+  <file name="state\Provider.js" path="state" />
+  <file name="state\StateManager.js" path="state" />
+  <file name="util\ClickRepeater.js" path="util" />
+  <file name="util\CSS.js" path="util" />
+  <file name="util\Date.js" path="util" />
+  <file name="util\DelayedTask.js" path="util" />
+  <file name="util\Format.js" path="util" />
+  <file name="util\JSON.js" path="util" />
+  <file name="util\KeyMap.js" path="util" />
+  <file name="util\KeyNav.js" path="util" />
+  <file name="util\MixedCollection.js" path="util" />
+  <file name="util\Observable.js" path="util" />
+  <file name="util\TaskMgr.js" path="util" />
+  <file name="util\TextMetrics.js" path="util" />
+  <file name="util\XTemplate.js" path="util" />
+  <file name="widgets\form\Action.js" path="widgets\form" />
+  <file name="widgets\form\BasicForm.js" path="widgets\form" />
+  <file name="widgets\form\Checkbox.js" path="widgets\form" />
+  <file name="widgets\form\Combo.js" path="widgets\form" />
+  <file name="widgets\form\DateField.js" path="widgets\form" />
+  <file name="widgets\form\Field.js" path="widgets\form" />
+  <file name="widgets\form\FieldSet.js" path="widgets\form" />
+  <file name="widgets\form\Form.js" path="widgets\form" />
+  <file name="widgets\form\Hidden.js" path="widgets\form" />
+  <file name="widgets\form\HtmlEditor.js" path="widgets\form" />
+  <file name="widgets\form\Label.js" path="widgets\form" />
+  <file name="widgets\form\NumberField.js" path="widgets\form" />
+  <file name="widgets\form\Radio.js" path="widgets\form" />
+  <file name="widgets\form\TextArea.js" path="widgets\form" />
+  <file name="widgets\form\TextField.js" path="widgets\form" />
+  <file name="widgets\form\TimeField.js" path="widgets\form" />
+  <file name="widgets\form\TriggerField.js" path="widgets\form" />
+  <file name="widgets\form\VTypes.js" path="widgets\form" />
+  <file name="widgets\grid\AbstractSelectionModel.js" path="widgets\grid" />
+  <file name="widgets\grid\CellSelectionModel.js" path="widgets\grid" />
+  <file name="widgets\grid\CheckboxSelectionModel.js" path="widgets\grid" />
+  <file name="widgets\grid\ColumnDD.js" path="widgets\grid" />
+  <file name="widgets\grid\ColumnModel.js" path="widgets\grid" />
+  <file name="widgets\grid\ColumnSplitDD.js" path="widgets\grid" />
+  <file name="widgets\grid\EditorGrid.js" path="widgets\grid" />
+  <file name="widgets\grid\GridDD.js" path="widgets\grid" />
+  <file name="widgets\grid\GridEditor.js" path="widgets\grid" />
+  <file name="widgets\grid\GridPanel.js" path="widgets\grid" />
+  <file name="widgets\grid\GridView.js" path="widgets\grid" />
+  <file name="widgets\grid\GroupingView.js" path="widgets\grid" />
+  <file name="widgets\grid\PropertyGrid.js" path="widgets\grid" />
+  <file name="widgets\grid\RowNumberer.js" path="widgets\grid" />
+  <file name="widgets\grid\RowSelectionModel.js" path="widgets\grid" />
+  <file name="widgets\layout\AbsoluteLayout.js" path="widgets\layout" />
+  <file name="widgets\layout\AccordionLayout.js" path="widgets\layout" />
+  <file name="widgets\layout\AnchorLayout.js" path="widgets\layout" />
+  <file name="widgets\layout\BorderLayout.js" path="widgets\layout" />
+  <file name="widgets\layout\CardLayout.js" path="widgets\layout" />
+  <file name="widgets\layout\ColumnLayout.js" path="widgets\layout" />
+  <file name="widgets\layout\ContainerLayout.js" path="widgets\layout" />
+  <file name="widgets\layout\FitLayout.js" path="widgets\layout" />
+  <file name="widgets\layout\FormLayout.js" path="widgets\layout" />
+  <file name="widgets\layout\TableLayout.js" path="widgets\layout" />
+  <file name="widgets\menu\Adapter.js" path="widgets\menu" />
+  <file name="widgets\menu\BaseItem.js" path="widgets\menu" />
+  <file name="widgets\menu\CheckItem.js" path="widgets\menu" />
+  <file name="widgets\menu\ColorItem.js" path="widgets\menu" />
+  <file name="widgets\menu\ColorMenu.js" path="widgets\menu" />
+  <file name="widgets\menu\DateItem.js" path="widgets\menu" />
+  <file name="widgets\menu\DateMenu.js" path="widgets\menu" />
+  <file name="widgets\menu\Item.js" path="widgets\menu" />
+  <file name="widgets\menu\Menu.js" path="widgets\menu" />
+  <file name="widgets\menu\MenuMgr.js" path="widgets\menu" />
+  <file name="widgets\menu\Separator.js" path="widgets\menu" />
+  <file name="widgets\menu\TextItem.js" path="widgets\menu" />
+  <file name="widgets\tips\QuickTip.js" path="widgets\tips" />
+  <file name="widgets\tips\QuickTips.js" path="widgets\tips" />
+  <file name="widgets\tips\Tip.js" path="widgets\tips" />
+  <file name="widgets\tips\ToolTip.js" path="widgets\tips" />
+  <file name="widgets\tree\AsyncTreeNode.js" path="widgets\tree" />
+  <file name="widgets\tree\TreeDragZone.js" path="widgets\tree" />
+  <file name="widgets\tree\TreeDropZone.js" path="widgets\tree" />
+  <file name="widgets\tree\TreeEditor.js" path="widgets\tree" />
+  <file name="widgets\tree\TreeEventModel.js" path="widgets\tree" />
+  <file name="widgets\tree\TreeFilter.js" path="widgets\tree" />
+  <file name="widgets\tree\TreeLoader.js" path="widgets\tree" />
+  <file name="widgets\tree\TreeNode.js" path="widgets\tree" />
+  <file name="widgets\tree\TreeNodeUI.js" path="widgets\tree" />
+  <file name="widgets\tree\TreePanel.js" path="widgets\tree" />
+  <file name="widgets\tree\TreeSelectionModel.js" path="widgets\tree" />
+  <file name="widgets\tree\TreeSorter.js" path="widgets\tree" />
+  <file name="widgets\Action.js" path="widgets" />
+  <file name="widgets\BoxComponent.js" path="widgets" />
+  <file name="widgets\Button.js" path="widgets" />
+  <file name="widgets\ColorPalette.js" path="widgets" />
+  <file name="widgets\Component.js" path="widgets" />
+  <file name="widgets\ComponentMgr.js" path="widgets" />
+  <file name="widgets\Container.js" path="widgets" />
+  <file name="widgets\CycleButton.js" path="widgets" />
+  <file name="widgets\DataView.js" path="widgets" />
+  <file name="widgets\DatePicker.js" path="widgets" />
+  <file name="widgets\Editor.js" path="widgets" />
+  <file name="widgets\Layer.js" path="widgets" />
+  <file name="widgets\LoadMask.js" path="widgets" />
+  <file name="widgets\MessageBox.js" path="widgets" />
+  <file name="widgets\PagingToolbar.js" path="widgets" />
+  <file name="widgets\Panel.js" path="widgets" />
+  <file name="widgets\PanelDD.js" path="widgets" />
+  <file name="widgets\ProgressBar.js" path="widgets" />
+  <file name="widgets\Resizable.js" path="widgets" />
+  <file name="widgets\Shadow.js" path="widgets" />
+  <file name="widgets\SplitBar.js" path="widgets" />
+  <file name="widgets\SplitButton.js" path="widgets" />
+  <file name="widgets\TabPanel.js" path="widgets" />
+  <file name="widgets\Toolbar.js" path="widgets" />
+  <file name="widgets\Viewport.js" path="widgets" />
+  <file name="widgets\Window.js" path="widgets" />
+  <file name="widgets\WindowManager.js" path="widgets" />
+  <file name="debug.js" path="" />
 </project>

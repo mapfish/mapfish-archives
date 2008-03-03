@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -193,7 +193,7 @@ Ext.Component = function(config){
     this.initComponent();
 
     if(this.plugins){
-        if(this.plugins instanceof Array){
+        if(Ext.isArray(this.plugins)){
             for(var i = 0, len = this.plugins.length; i < len; i++){
                 this.plugins[i].init(this);
             }
@@ -222,6 +222,16 @@ Ext.extend(Ext.Component, Ext.util.Observable, {
     /**
      * @cfg {String} id
      * The unique id of this component (defaults to an auto-assigned id).
+     */
+    /**
+     * @cfg {String/Object} autoEl
+     * A tag name or DomHelper spec to create an element with. This is intended to create shorthand
+     * utility components inline via JSON. It should not be used for higher level components which already create
+     * their own elements. Example usage:
+     * <pre><code>
+{xtype:'box', autoEl: 'div', cls:'my-class'}
+{xtype:'box', autoEl: {tag:'blockquote', html:'autoEl is cool!'}} // with DomHelper
+</code></pre>
      */
     /**
      * @cfg {String} xtype
@@ -275,15 +285,34 @@ Ext.extend(Ext.Component, Ext.util.Observable, {
      * Using this config, a call to render() is not required.
      */
 
-    /* //internal - to be set by subclasses
+    /**
+     * @cfg {Boolean} stateful
+     * A flag which causes the Component to attempt to restore the state of internal properties
+     * from a saved state on startup.<p>
+     * For state saving to work, the state manager's provider must have been set to an implementation
+     * of {@link Ext.state.Provider} which overrides the {@link Ext.state.Provider#set set}
+     * and {@link Ext.state.Provider#get get} methods to save and recall name/value pairs.
+     * A built-in implementation, {@link Ext.state.CookieProvider} is available.</p>
+     * <p>To set the state provider for the current page:</p>	
+     * <pre><code>
+Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
+</code></pre>
+     * <p>Components attempt to save state when one of the events listed in the {@link #stateEvents}
+     * configuration fires.</p>
+     * <p>You can perform extra processing on state save and restore by attaching handlers to the
+     * {@link #beforestaterestore}, {@link staterestore}, {@link beforestatesave} and {@link statesave} events</p>
+     */
+    /**
      * @cfg {String} stateId
      * The unique id for this component to use for state management purposes (defaults to the component id).
+     * <p>See {@link #stateful} for an explanation of saving and restoring Component state.</p>
      */
     /* //internal - to be set by subclasses
      * @cfg {Array} stateEvents
      * An array of events that, when fired, should trigger this component to save its state (defaults to none).
      * These can be any types of events supported by this component, including browser or custom events (e.g.,
      * ['click', 'customerchange']).
+     * <p>See {@link #stateful} for an explanation of saving and restoring Component state.</p>
      */
 
     /**
@@ -524,6 +553,9 @@ Ext.Foo = Ext.extend(Ext.Bar, {
                 var div = document.createElement('div');
                 Ext.DomHelper.overwrite(div, this.autoEl);
                 this.el = div.firstChild;
+            }
+            if (!this.el.id) {
+            	this.el.id = this.getId();
             }
         }
         if(this.el){
@@ -815,6 +847,33 @@ alert(t.getXTypes());  // alerts 'component/box/field/textfield'
             tc.xtypes = c.join('/');
         }
         return tc.xtypes;
+    },
+
+    /**
+     * Find a container above this component at any level by a custom function. If the passed function returns
+     * true, the container will be returned. The passed function is called with the arguments (container, this component).
+     * @param {Function} fcn
+     * @param {Object} scope (optional)
+     * @return {Array} Array of Ext.Components
+     */
+    findParentBy: function(fn) {
+        for (var p = this.ownerCt; (p != null) && !fn(p, this); p = p.ownerCt);
+        return p || null;
+    },
+
+    /**
+     * Find a container above this component at any level by xtype or class
+     * @param {String/Class} xtype The xtype string for a component, or the class of the component directly
+     * @return {Container} The found container
+     */
+    findParentByType: function(xtype) {
+        return typeof xtype == 'function' ?
+            this.findParentBy(function(p){
+                return p.constructor === xtype;
+            }) :
+            this.findParentBy(function(p){
+                return p.constructor.xtype === xtype;
+            });
     }
 });
 

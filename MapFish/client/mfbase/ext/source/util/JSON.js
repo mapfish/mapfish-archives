@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -87,9 +87,9 @@ Ext.util.JSON = new (function(){
     this.encode = function(o){
         if(typeof o == "undefined" || o === null){
             return "null";
-        }else if(o instanceof Array){
+        }else if(Ext.isArray(o)){
             return encodeArray(o);
-        }else if(o instanceof Date){
+        }else if(Ext.isDate(o)){
             return encodeDate(o);
         }else if(typeof o == "string"){
             return encodeString(o);

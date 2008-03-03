@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -57,12 +57,12 @@ Ext.QuickTip = Ext.extend(Ext.ToolTip, {
      * @param {Object} config The config object
      */
     register : function(config){
-        var cs = config instanceof Array ? config : arguments;
+        var cs = Ext.isArray(config) ? config : arguments;
         for(var i = 0, len = cs.length; i < len; i++){
             var c = cs[i];
             var target = c.target;
             if(target){
-                if(target instanceof Array){
+                if(Ext.isArray(target)){
                     for(var j = 0, jlen = target.length; j < jlen; j++){
                         this.targets[Ext.id(target[j])] = c;
                     }
@@ -141,9 +141,11 @@ Ext.QuickTip = Ext.extend(Ext.ToolTip, {
         if(t){
             if(!this.rendered){
                 this.render(Ext.getBody());
+                this.activeTarget = t;
             }
             if(t.width){
                 this.setWidth(t.width);
+                this.body.setWidth(this.adjustBodyWidth(t.width - this.getFrameWidth()));
                 this.measureWidth = false;
             } else{
                 this.measureWidth = true;

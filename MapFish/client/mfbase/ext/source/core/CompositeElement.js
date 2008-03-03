@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -168,7 +168,7 @@ Ext.CompositeElement.prototype = {
     * @return {CompositeElement} this
     */
     removeElement : function(el, removeDom){
-        if(el instanceof Array){
+        if(Ext.isArray(el)){
             for(var i = 0, len = el.length; i < len; i++){
                 this.removeElement(el[i]);
             }
@@ -256,7 +256,7 @@ Ext.CompositeElementLite = function(els){
 Ext.extend(Ext.CompositeElementLite, Ext.CompositeElement, {
     addElements : function(els){
         if(els){
-            if(els instanceof Array){
+            if(Ext.isArray(els)){
                 this.elements = this.elements.concat(els);
             }else{
                 var yels = this.elements;

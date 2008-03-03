@@ -1,6 +1,6 @@
 /*
- * Ext JS Library 2.0
- * Copyright(c) 2006-2007, Ext JS, LLC.
+ * Ext JS Library 2.0.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
  * http://extjs.com/license
@@ -124,7 +124,7 @@ Ext.util.CSS = function(){
     */
    getRule : function(selector, refreshCache){
    		var rs = this.getRules(refreshCache);
-   		if(!(selector instanceof Array)){
+   		if(!Ext.isArray(selector)){
    		    return rs[selector];
    		}
    		for(var i = 0; i < selector.length; i++){
@@ -144,7 +144,7 @@ Ext.util.CSS = function(){
     * @return {Boolean} true If a rule was found and updated
     */
    updateRule : function(selector, property, value){
-   		if(!(selector instanceof Array)){
+   		if(!Ext.isArray(selector)){
    			var rule = this.getRule(selector);
    			if(rule){
    				rule.style[property.replace(camelRe, camelFn)] = value;
