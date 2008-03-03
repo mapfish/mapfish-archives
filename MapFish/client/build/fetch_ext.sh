@@ -3,7 +3,7 @@
 # This script is used to fetch the Ext library into MapFish/client/mfbase/ext
 # Ext sources are then commited to svn, so this script is only needed when updating ext.
 
-EXT_VER=ext-2.0
+EXT_VER=ext-2.0.2
 EXT_URL=http://extjs.com/deploy/$EXT_VER.zip
 
 set -e
@@ -25,6 +25,7 @@ cp -r $EXT_VER/ext-* ../mfbase/ext
 cp -r $EXT_VER/resources/ ../mfbase/ext
 cp -r $EXT_VER/adapter/ ../mfbase/ext
 cp -r $EXT_VER/source/ ../mfbase/ext
+cp -r $EXT_VER/air/ ../mfbase/ext
 
 (cd ../mfbase/ext; svn status|grep "^\!"|sed "s/^\!//"|xargs -n1 --no-run-if-empty svn remove)
 (cd ../mfbase/ext; svn status|grep "^\?"|sed "s/^\?//"|xargs -n1 --no-run-if-empty svn add)
