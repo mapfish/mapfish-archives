@@ -94,6 +94,8 @@ init_all() {
 #
 
 subst_in_files() {
+    run_hook pre_subst_in_files
+
     export PROJECT_DIR=$BASE/$PROJECT
     echo "PROJECT_DIR: $PROJECT_DIR"
 
@@ -117,6 +119,13 @@ subst_in_files() {
         echo "Replacing $i"
         perl -pne 's/%([\w]+)%/$ENV{$1}/ge' $i > ${i%%.in};
     done
+
+    # This script may be generated from a .in, so we need to chmod it afterwards
+    if [ -f $PROJECT/run_standalone.sh ]; then
+        chmod +x $PROJECT/run_standalone.sh
+    fi
+
+    run_hook post_subst_in_files
 }
 
 init_mapfish() {
@@ -151,11 +160,6 @@ fetch_project() {
 
     subst_in_files
 
-    # This script may be generated from a .in, so we need to chmod it afterwards
-    if [ -f $PROJECT/run_standalone.sh ]; then
-        chmod +x $PROJECT/run_standalone.sh
-    fi
-
     run_hook post_fetch_project
 }
 
@@ -171,7 +175,7 @@ main() {
         exit 1
     fi
 
-    while getopts ijuh OPT; do
+    while getopts ijurh OPT; do
         case $OPT in
         i)
             echo "Initializing everything"
@@ -185,12 +189,17 @@ main() {
             echo "Updating project"
             fetch_project
             ;;
+        r)
+            echo "Replace .in files"
+            subst_in_files
+            ;;
         \?|h)
             echo "Usage: $0 OPTION"
             echo " -h: help"
             echo " -i: initialize everything"
             echo " -j: initialize MapFish and project"
             echo " -u: update project"
+            echo " -r: replace .in files"
             exit 1
             ;;
         esac
