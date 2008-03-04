@@ -39,7 +39,9 @@ checkout_deploy() {
     fi
 }
 
-checkout_deploy $*
+if [ -z "$SKIP_UPDATE_CHECK" ]; then
+    checkout_deploy $*
+fi
 
 if [ ! -f deploy/deploy.sh ]; then
     echo "Error while fetching the deploy script"
