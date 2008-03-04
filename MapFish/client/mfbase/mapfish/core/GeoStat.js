@@ -434,15 +434,14 @@ mapfish.GeoStat.Choropleth = OpenLayers.Class(mapfish.GeoStat, {
             var feature = this.layer.features[i];
             var value = feature.attributes[this.indicator];
             for (var j = 0; j < boundsArray.length - 1; j++) {
-                if (value >= boundsArray[j]
-                    && value <= boundsArray[j + 1]) {
+                if (value >= boundsArray[j] && value <= boundsArray[j + 1]) {
                     feature.style.fillOpacity = 1;
                     feature.style.fillColor = this.colorInterpolation[j].toHexString();
                 }
             }
         }
         this.layer.renderer.clear();
-        this.layer.moveTo(null, true);
+        this.layer.redraw();
         this.updateLegend();
     },
     
@@ -670,12 +669,12 @@ mapfish.GeoStat.ProportionalSymbol = OpenLayers.Class(mapfish.GeoStat, {
             var feature = this.layer.features[i];
             var value = feature.attributes[this.indicator];
             var size = (value - this.minVal) / (this.maxVal - this.minVal) * 
-                (this.maxSize - this.minSize) + this.minSize;
+                       (this.maxSize - this.minSize) + this.minSize;
             feature.style.pointRadius = size;
         }
         
         this.layer.renderer.clear();
-        this.layer.moveTo(null, true);
+        this.layer.redraw();
         this.updateLegend();
     },
     
