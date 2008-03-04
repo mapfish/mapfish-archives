@@ -56,9 +56,3 @@ h2 {
   height: 400px;
   border: 1px solid #999;
 }
-
-/* FIXME: this overrides dojo "display: -moz-inline-stack"
-   which does not display the label in Firefox 3 */
-.dijitInlineBox {
-	display: inline;
-}
