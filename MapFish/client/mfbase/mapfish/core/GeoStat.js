@@ -179,9 +179,6 @@ mapfish.GeoStat.selectStyle = {
     cursor: 'pointer'
 }
 
-
-
-
 /**
  * Distribution Class
  */
@@ -435,6 +432,12 @@ mapfish.GeoStat.Choropleth = OpenLayers.Class(mapfish.GeoStat, {
             var value = feature.attributes[this.indicator];
             for (var j = 0; j < boundsArray.length - 1; j++) {
                 if (value >= boundsArray[j] && value <= boundsArray[j + 1]) {
+                    if (!feature.style) {
+                        feature.style = 
+                            OpenLayers.Util.extend({}, 
+                                                   OpenLayers.Feature.Vector.style["default"]);
+                    }
+
                     feature.style.fillOpacity = 1;
                     feature.style.fillColor = this.colorInterpolation[j].toHexString();
                 }
@@ -663,13 +666,18 @@ mapfish.GeoStat.ProportionalSymbol = OpenLayers.Class(mapfish.GeoStat, {
      * This function loops into the layer's features
      *    and updates sizes
      */
-    updateFeatures: function () {
-        
+    updateFeatures: function() {
+
         for (var i = 0; i < this.layer.features.length; i++) {
             var feature = this.layer.features[i];
             var value = feature.attributes[this.indicator];
             var size = (value - this.minVal) / (this.maxVal - this.minVal) * 
                        (this.maxSize - this.minSize) + this.minSize;
+            if (!feature.style) {
+                feature.style = 
+                    OpenLayers.Util.extend({}, 
+                                           OpenLayers.Feature.Vector.style["default"]);
+            }
             feature.style.pointRadius = size;
         }
         
