@@ -29,6 +29,12 @@ log = logging.getLogger(__name__)
 
 class EpflController(BaseController):
 
+    @jsonify
+    def room(self):
+        if 'query' in request.params:
+            rooms = model.Session.query(model.Node).filter(model.Node.room.like(request.params['query'] + '%'))
+            return {'results': [{'id': r.room, 'title': r.room} for r in rooms]}
+
     def routing(self):
         source_id = model.Session.query(model.Node).filter(model.nodes_table.c.room == request.params['from'])[0].node_id
         target_id = model.Session.query(model.Node).filter(model.nodes_table.c.room == request.params['to'])[0].node_id
