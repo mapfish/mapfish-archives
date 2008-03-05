@@ -79,6 +79,13 @@
         });
 
         var routing = new EPFLRouting("../../epfl/routing", map);
+        
+        var store = new Ext.data.JsonStore({
+            url: '../../epfl/room',
+            root: "results",
+            id: "id",
+            fields: ['id', 'title']
+        });
 
         new Ext.FormPanel({
             labelAlign: 'top',
@@ -95,15 +102,31 @@
             },
             defaultType: 'textfield',
             renderTo: 'routingPanel',
-            items: [{
+            items: [
+                    new Ext.form.ComboBox({
                         fieldLabel: 'Departure',
                         name: 'source',
-                        value: 'AAD 1 31'
-                    },{
+                        value: 'AAD 1 31',
+                        displayField: 'title',
+                               
+                        mode: 'remote',
+                        minChars: 2,
+                        typeAhead: true,
+                        valueField: 'id',
+                        store: store
+                    }),
+                    new Ext.form.ComboBox({
                         fieldLabel: 'Arrival',
                         name: 'target',
-                        value: 'BS 112'
-                    },{
+                        value: 'BS 112',
+                        displayField: 'title',
+
+                        mode: 'remote',
+                        minChars: 2,
+                        typeAhead: true,
+                        valueField: 'id',
+                        store: store
+                    }),{
                         xtype: 'panel',
                         bodyStyle: 'padding-bottom: 15px; font-size: xx-small;',
                         html: 'Other valid values are BM 4133 or CH H4 554'
