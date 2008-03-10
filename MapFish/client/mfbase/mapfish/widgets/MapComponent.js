@@ -36,7 +36,12 @@ Ext.namespace('mapfish.widgets');
 
 mapfish.widgets.MapComponent = function(config) {
     Ext.apply(this, config);
-    this.contentEl=this.map.div;
+    this.contentEl = this.map.div;
+
+    var content = Ext.get(this.contentEl);
+    content.setStyle('width', '100%');
+    content.setStyle('height', '100%');
+    
     mapfish.widgets.MapComponent.superclass.constructor.call(this);
 }
 
