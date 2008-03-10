@@ -38,6 +38,9 @@ mapfish.widgets.MapComponent = function(config) {
     Ext.apply(this, config);
     this.contentEl = this.map.div;
 
+    // Set the map container height and width to avoid css 
+    // bug in standard mode. 
+    // See https://trac.mapfish.org/trac/mapfish/ticket/85
     var content = Ext.get(this.contentEl);
     content.setStyle('width', '100%');
     content.setStyle('height', '100%');
