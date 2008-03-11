@@ -15,7 +15,7 @@
     <style type="text/css">
 	html, body {
         font:normal 12px verdana;
-        margin:0;
+        margin: 10px;
         padding:0;
         border:0 none;
         overflow:hidden;
@@ -24,6 +24,7 @@
     #olmap {
         width: 450px;
         height: 300px;
+        border: 1px solid #aaa;
     }
     </style>
 	<script type="text/javascript">
@@ -34,8 +35,6 @@
     var map;
   
     Ext.onReady(function() {
-        
-        
         map = new OpenLayers.Map($('olmap'));
 
         var wms = new OpenLayers.Layer.WMS("OpenLayers WMS", 
@@ -43,9 +42,7 @@
 
         map.addLayers([wms]);
         map.addControl(new OpenLayers.Control.LayerSwitcher());
-        map.zoomToMaxExtent();
-        
-        
+        map.setCenter(new OpenLayers.LonLat(17, 2), 2);
     
         var store = new Ext.data.SimpleStore({
             fields: ['value', 'text', 'bbox'],
