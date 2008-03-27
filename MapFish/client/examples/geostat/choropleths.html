@@ -16,6 +16,7 @@
       var gMfLocation = "../../mfbase/mapfish/";
     </script>
     <script type="text/javascript" src="../../mfbase/mapfish/MapFish.js"></script>
+    <script type="text/javascript" src="../examples.js"></script>
     
     <!-- EXT colorField Extent -->
     <script type="text/javascript" src="../../mfbase/ext-community-extensions/color-field.js" ></script>
@@ -49,7 +50,7 @@
                                 indicators: [['birth_rt', 'Birth Rate'],
                                              ['death_rt', 'Death Rate'],
                                              ['fertility', 'Fertility']],
-                                geoStatUrl: "../../countries"
+                                geoStatUrl: mapfish.SERVER_BASE_URL + "/countries"
                             })
         choropleth.render("myChoroplethDiv");
         
@@ -58,13 +59,10 @@
     </script>
     
     <style type="text/css">
-        @import "../../base.css";
-
         #right {
             float:right;
             width:28%;
         }
-        
         #olmap {
             width: 65%;
             height: 400px;
@@ -73,7 +71,6 @@
     </style>
   </head>
   <body>
-    <div id="header"><a href="../../"><img id="header-logo" src="../../mapfish.png"/></a></div>
     <h1 class="page-title">Choropleths Example</h1>
 
     <div id="content">

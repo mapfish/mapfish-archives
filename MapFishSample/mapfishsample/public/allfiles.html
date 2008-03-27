@@ -13,7 +13,10 @@
 <body>
 <!-- 
 to generate the list:
-grep -rl OpenLayers.js .|grep -v svn-base|sort
+<grep -rl OpenLayers.js . | grep -v svn-base | sort> under this directory
+and
+<grep -rl OpenLayers.js . | grep -v svn-base | sort | sed 's/\.\//.\/examples\//'>
+under MapFish/client/examples directory
  -->
 <pre id="allfiles">
 ./demos/c2corg/search.html

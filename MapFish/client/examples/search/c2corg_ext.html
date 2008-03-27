@@ -17,6 +17,7 @@
       var gMfLocation = "../../mfbase/mapfish/";
     </script>
     <script type="text/javascript" src="../../mfbase/mapfish/MapFish.js"></script>
+    <script type="text/javascript" src="../examples.js"></script>
 
     <script type="text/javascript">
         // make map global - useful for debug
@@ -100,7 +101,8 @@
             map.addControl(new OpenLayers.Control.PanZoomBar());
 
             var searchPoint = new mapfish.widgets.search.Point({
-                el: 'widget', map: map, url: '../../c2corg',
+                el: 'widget', map: map,
+                url: mapfish.SERVER_BASE_URL + "/c2corg",
                 maxFeatures: 10, radius: 10000, autoHeight: true,
                 autoWidth: true});
             searchPoint.render();
@@ -113,7 +115,6 @@
         });
      </script>
      <style type="text/css">
-        @import "../../base.css";
         .float-left {
           float: left;
         }
@@ -137,7 +138,6 @@
   </head>
 
   <body>
-    <div id="header"><a href="../../"><img id="header-logo" src="../../mapfish.png"/></a></div>
     <h1 class="page-title">Search Example</h1>
     <div id="content">
       <div id="map" class="float-left"></div>

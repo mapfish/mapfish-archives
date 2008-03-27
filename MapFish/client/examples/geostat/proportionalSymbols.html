@@ -16,6 +16,7 @@
       var gMfLocation = "../../mfbase/mapfish/";
     </script>
     <script type="text/javascript" src="../../mfbase/mapfish/MapFish.js"></script>
+    <script type="text/javascript" src="../examples.js"></script>
     
     <!-- A Localization Script File comes here -->
     <script type="text/javascript">     
@@ -43,7 +44,7 @@
                                 map: map,
                                 idAttribute: "name",
                                 indicators: [['population', 'Population']],
-                                geoStatUrl: "../../cities"
+                                geoStatUrl: mapfish.SERVER_BASE_URL + "/cities"
                             })
         propSymbol.render("myGeostatDiv");
         
@@ -52,13 +53,10 @@
     </script>
     
     <style type="text/css">
-        @import "../../base.css";
-
         #right {
             float:right;
             width:28%;
         }
-        
         #olmap {
             width: 65%;
             height: 400px;
@@ -67,7 +65,6 @@
     </style>
   </head>
   <body>
-    <div id="header"><a href="../../"><img id="header-logo" src="../../mapfish.png"/></a></div>
     <h1 class="page-title">Proportional symbols Example</h1>
 
     <div id="content">
