@@ -61,6 +61,6 @@ ${cp} -r "${openlayerspath}/theme" ${openlayersreleasepath}
 #
 # Dojo build (old stuff, to be removed)
 #
-(cd ${buildpath} && ${sh} build-dojo.sh)
+#(cd ${buildpath} && ${sh} build-dojo.sh)
 
 exit 0
