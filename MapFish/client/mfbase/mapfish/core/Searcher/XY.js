@@ -181,11 +181,8 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
     onGotFeatures: function(features) {
         if (features && features.length > 0) {
             var lonlat = this.map.getLonLatFromViewPortPx(this.evt.xy);
-            var popup = new OpenLayers.Popup.AnchoredBubble("__tooltip__", lonlat,
-                new OpenLayers.Size(200, 150), null, null, true);
             // build HTML table
-            var html = "<div style=\"overflow:auto;width:190px;height:140px\"><table>";
-            html += "<tr>";
+            var html = "<table><tr>";
             for (var k in features[0].attributes) {
                  html += "<th>" + k + "</th>";
             }
@@ -198,9 +195,15 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
                 }
                 html += "</tr>";
             }
-            html += "</table></div>";
-            popup.setOpacity(0.8);
-            popup.setContentHTML(html);
+            html += "</table>";
+            var popup = new OpenLayers.Popup.FramedCloud(
+                "mapfish_popup",    // popup id
+                lonlat,             // OpenLayers.LonLat object
+                null,               // popup is autosized
+                html,               // html string
+                null,               // no anchor
+                true                // close button
+            );
             this.map.addPopup(popup, true);
         }
         // HACK: reregister onGotFeatures in the mediator. Without this
