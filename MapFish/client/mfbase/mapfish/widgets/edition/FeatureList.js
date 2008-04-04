@@ -632,7 +632,7 @@ mapfish.widgets.edition.FeatureList.createRecord = function(cols) {
             if (!col.convert) {
                 col.convert = function(v) {
                     return v;
-                }
+                };
             }
             if (!col.sortType) {
                 col.sortType = Ext.data.SortTypes.none();
