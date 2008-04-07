@@ -50,7 +50,7 @@
         
             var options = {
                 projection: "EPSG:4326",
-                controls: [new OpenLayers.Control.MouseDefaults()] , 
+                controls: [new OpenLayers.Control.Navigation()] , 
                 maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
                 scales: scales
             };
