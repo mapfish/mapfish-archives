@@ -54,18 +54,18 @@ Ext.extend(mapfish.widgets.Shortcuts, Ext.Container, {
 
     initComponent: function() {
         var combo = new Ext.form.ComboBox({
-                name: 'shortcuts',
-                hiddenName: '',
-                store: this.store,
-                valueField: 'value',
-                displayField:'text',
-                editable: false,
-                mode: 'local',
-                triggerAction: 'all',
-                emptyText:'Select a value ...',
-                lazyRender: true,
-                width: 150
-            })
+            name: 'shortcuts',
+            hiddenName: '',
+            store: this.store,
+            valueField: 'value',
+            displayField:'text',
+            editable: false,
+            mode: 'local',
+            triggerAction: 'all',
+            emptyText:'Select a value ...',
+            lazyRender: true,
+            width: 150
+        });
         combo.on('select', this.recenter, this);
 
         this.items = combo;
