@@ -55,7 +55,7 @@ class EpflController(BaseController):
         target_f.properties['_isTargetNode'] = True
 
         lines = [model.Session.query(model.Line).get(i['edge_id']) for i in route]
-        result = FeatureCollection([line.toFeature() for line in lines if (line is not None and line.geom is not None)])
+        result = FeatureCollection([line.toFeature() for line in lines if line is not None and line.geom is not None])
 
         result.extend([source_f, target_f])
         #length = sum([line.length for line in lines if line is not None])

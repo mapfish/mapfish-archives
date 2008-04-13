@@ -40,7 +40,7 @@ class C2CorgController(BaseController):
         # deal with app-specific query params
         if 'min' in request.params and 'max' in request.params:
             # update query expression
-            if (expr is not None):
+            if expr is not None:
                 expr = and_(
                     model.summits_table.c.elevation >= int(request.params['min']),
                     model.summits_table.c.elevation <= int(request.params['max']),
@@ -54,7 +54,7 @@ class C2CorgController(BaseController):
         if 'name' in request.params:
            e = model.summits_table.c.name.op('ilike')('%' + request.params['name']  + '%')
            # update query expression
-           if (expr is not None):
+           if expr is not None:
                expr = and_(expr, e)
            else:
                expr = e
