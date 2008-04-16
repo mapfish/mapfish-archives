@@ -25,13 +25,11 @@
  * <pre><code>
  * var toolbar = new mapfish.widgets.toolbar.Toolbar({map: map});
  * toolbar.render('buttonbar');
- * toolbar.addControl(new OpenLayers.Control.ZoomBox(), 
- *                    {tooltip: 'Zoom in', 
- *                     iconCls: 'zoomin', 
+ * toolbar.addControl(new OpenLayers.Control.ZoomBox({title: 'Zoom in'}), 
+ *                    {iconCls: 'zoomin', 
  *                     toggleGroup: 'navigation'});
- * toolbar.addControl(new OpenLayers.Control.DragPan({default: true}), 
- *                    {tooltip: 'Pan map', 
- *                     iconCls: 'pan', 
+ * toolbar.addControl(new OpenLayers.Control.DragPan({title: 'Drag or pan', default: true}), 
+ *                    {iconCls: 'pan', 
  *                     toggleGroup: 'navigation'});
  * toolbar.activate();
  * </code></pre>
@@ -100,9 +98,7 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
         this.controls.push(control);
         this.map.addControl(control);
         var mb = new Ext.Toolbar.Button(options);
-        if (this.buttonTips && this.buttonTips[control.CLASS_NAME]) {
-            mb.tooltip = this.buttonTips[control.CLASS_NAME];
-        }
+        mb.tooltip = control.title;
         mb.enableToggle = true;
         if (control.isDefault) {
             mb.pressed = true;

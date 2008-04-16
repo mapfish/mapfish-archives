@@ -32,7 +32,10 @@
         function initToolbarContent() {
         
             toolbar.addControl(
-                new OpenLayers.Control.ZoomToMaxExtent({map: map}), {
+                new OpenLayers.Control.ZoomToMaxExtent({
+                    map: map,
+                    title: 'Zoom to maximum map extent'
+                }), {
                     iconCls: 'zoomfull', 
                     toggleGroup: 'map'
                 }
@@ -41,7 +44,9 @@
             addSeparator(toolbar);
         
             toolbar.addControl(
-                new OpenLayers.Control.ZoomBox(), {
+                new OpenLayers.Control.ZoomBox({
+                    title: 'Zoom in: click in the map or use the left mouse button and drag to create a rectangle'
+                }), {
                     iconCls: 'zoomin', 
                     toggleGroup: 'map'
                 }
@@ -49,7 +54,8 @@
         
             toolbar.addControl(
                 new OpenLayers.Control.ZoomBox({
-                    out: true
+                    out: true,
+                    title: 'Zoom out: click in the map or use the left mouse button and drag to create a rectangle'
                 }), {
                     iconCls: 'zoomout', 
                     toggleGroup: 'map'
@@ -58,7 +64,8 @@
             
             toolbar.addControl(
                 new OpenLayers.Control.DragPan({
-                    isDefault: true
+                    isDefault: true,
+                    title: 'Pan map: keep the left mouse button pressed and drag the map'
                 }), {
                     iconCls: 'pan', 
                     toggleGroup: 'map'
@@ -68,21 +75,27 @@
             addSeparator(toolbar);
             
             toolbar.addControl(
-                new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Point), {
+                new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Point, {
+                    title: 'Draw a point on the map'
+                }), {
                     iconCls: 'drawpoint', 
                     toggleGroup: 'map'
                 }
             );
             
             toolbar.addControl(
-                new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Path), {
+                new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Path, {
+                    title: 'Draw a linestring on the map'
+                }), {
                     iconCls: 'drawline', 
                     toggleGroup: 'map'
                 }
             );
             
             toolbar.addControl(
-                new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Polygon), {
+                new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Polygon, {
+                    title: 'Draw a polygon on the map'
+                }), {
                     iconCls: 'drawpolygon', 
                     toggleGroup: 'map'
                 }
@@ -166,14 +179,6 @@
             map.addLayer(vectorLayer);
 
             map.setCenter(new OpenLayers.LonLat(5,45), 6);
-
-            Ext.apply(mapfish.widgets.toolbar.Toolbar.prototype, {
-                buttonTips : {
-                    'OpenLayers.Control.ZoomBox' : 'Zoom in: click in the map or use the left mouse button and drag to create a rectangle',
-                    'OpenLayers.Control.DragPan' : 'Pan map: keep the left mouse button pressed and drag the map',
-                    'OpenLayers.Control.DrawFeature' : 'Draw a feature on the map'
-                }
-            });
             
             toolbar = new mapfish.widgets.toolbar.Toolbar({
                 map: map, 
