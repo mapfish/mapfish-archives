@@ -128,7 +128,7 @@ mapfish.SearchMediator = OpenLayers.Class({
                 request.responseText &&
                 request.responseText != "") {
                 // extract features from response
-                var features = this.parser.read(request.responseText);
+                features = this.parser.read(request.responseText);
             }
             // pass features to user callback
             this.callback(features);
