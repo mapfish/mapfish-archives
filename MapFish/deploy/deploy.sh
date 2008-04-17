@@ -159,6 +159,12 @@ fetch_project() {
 
     init_mapfish
 
+    # Launch project setup.py to install project dependencies if needed
+    if [ -f $PROJECT/$PROJECT/setup.py -a "$HAS_MAPFISH" = "1" \
+         -a "$SKIP_INIT_MAPFISH" != "1" -a "$FETCH_PYTHON_ENV" = "1" ]; then
+        (cd $PROJECT/$PROJECT && $PYTHON_ENV/bin/python setup.py develop)
+    fi
+
     subst_in_files
 
     run_hook post_fetch_project
