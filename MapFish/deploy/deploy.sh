@@ -205,5 +205,5 @@ main() {
             ;;
         esac
     done
+    echo "Done."
 }
-
