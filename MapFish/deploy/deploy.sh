@@ -66,7 +66,8 @@ create_python_env() {
     (cd $PYTHON_ENV && python virtualenv.py .)
     # FIXME: This shouldn't be needed, as MapFish should fetch the requirements with setup.py
     # However this isn't working right now (failure in simplejson), so let's do this for now.
-    $PYTHON_ENV/bin/easy_install Pylons psycopg2 sqlalchemy shapely geojson
+    # psycopg2 repository is broken right now. Removed from list.
+    $PYTHON_ENV/bin/easy_install Pylons sqlalchemy shapely geojson
 }
 
 init_light() {
