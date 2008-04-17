@@ -58,9 +58,4 @@ mkdir ${openlayersreleasepath}
 ${cp} -r "${openlayerspath}/img" ${openlayersreleasepath}
 ${cp} -r "${openlayerspath}/theme" ${openlayersreleasepath}
 
-#
-# Dojo build (old stuff, to be removed)
-#
-#(cd ${buildpath} && ${sh} build-dojo.sh)
-
 exit 0
