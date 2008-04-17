@@ -38,19 +38,20 @@ class C2CorgController(BaseController):
             32768, 'degrees')
         expr = search.buildExpression(request)
         # deal with app-specific query params
-        if 'min' in request.params and 'max' in request.params:
+        if 'min' in request.params and len(request.params['min']) > 0:
             # update query expression
+            e = model.summits_table.c.elevation >= int(request.params['min'])
             if expr is not None:
-                expr = and_(
-                    model.summits_table.c.elevation >= int(request.params['min']),
-                    model.summits_table.c.elevation <= int(request.params['max']),
-                    expr
-                )
+                expr = and_(expr, e)
             else:
-                expr = and_(
-                    model.summits_table.c.elevation >= int(request.params['min']),
-                    model.summits_table.c.elevation <= int(request.params['max'])
-                )
+                expr = e
+        if 'max' in request.params and len(request.params['max']) > 0:
+            # update query expression
+            e = model.summits_table.c.elevation <= int(request.params['max'])
+            if expr is not None:
+                expr = and_(expr, e)
+            else:
+                expr = e
         if 'name' in request.params:
            e = model.summits_table.c.name.op('ilike')('%' + request.params['name']  + '%')
            # update query expression
@@ -59,6 +60,8 @@ class C2CorgController(BaseController):
            else:
                expr = e
         objects = search.query(model.Session, model.Summit, model.summits_table, expr)
+        response.content_type = 'text/plain'
+        response.charset = 'utf-8'
         if len(objects) != 0:
             return geojson.dumps(FeatureCollection([f.toFeature() for f in objects]))
         return ''
