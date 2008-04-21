@@ -72,18 +72,6 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
     layer: null,
 
     /**
-     * APIProperty: unselectedStyle
-     * {Object} Style to use to draw unselected (not being edited) features.
-     */
-    unselectedStyle: OpenLayers.Feature.Vector.style['default'],
-
-    /**
-     * APIProperty: selectedStyle
-     * {Object} Style to use to draw the feature being edited.
-     */
-    selectedStyle: OpenLayers.Feature.Vector.style['select'],
-
-    /**
      * APIProperty: automaticMode
      * {Boolean} If true, the geometry to edit can be selected on click.
      * Otherwise, the user has to click on the geometry in the list to
@@ -182,7 +170,6 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
                    OpenLayers.Control.ModifyFeature.DRAG;
         this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.layer, {
             mode: mode,
-            selectStyle: this.selectedStyle,
             onModificationStart: function(feature) {
                 // temporarily activate the modify feature control
                 if (!self.automaticMode) {
@@ -346,7 +333,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
                     var geometry = record.get(colDesc.name);
                     if (geometry && !this.getFeatureByGeometry(geometry)) {
                         var vector = new OpenLayers.Feature.Vector(
-                            geometry, record, this.unselectedStyle);
+                            geometry, record);
                         features.push(vector);
                     }
                 }, this);
@@ -368,7 +355,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
             var geometry = record.get(colDesc.name);
             if (geometry && !this.getFeatureByGeometry(geometry)) {
                 var vector = new OpenLayers.Feature.Vector(
-                    geometry, record, this.unselectedStyle);
+                    geometry, record);
                 layer.addFeatures(vector);
             }
         });
@@ -464,7 +451,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
         var feature = this.getFeatureByGeometry(geometry);
         if (!feature && !this.displayNotEdited) {
             feature = new OpenLayers.Feature.Vector(
-                geometry, record, this.unselectedStyle);
+                geometry, record);
             this.layer.addFeatures(feature);
         }
         if (feature) {
