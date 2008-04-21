@@ -67,7 +67,7 @@ summits_table = Table('sommets_out', MetaData(config['pylons.g'].sa_search_engin
                       Column('sommet_id', types.Integer, primary_key=True),
                       Column('elevation', types.Integer),
                       Column('name', types.String),
-                      Column('geom', Geometry))
+                      Column('geom', Geometry(32768)))
 
 class Summit(object):
     def __str__(self):
@@ -109,7 +109,7 @@ cities_table = Table('world_cities', MetaData(config['pylons.g'].sa_geostat_engi
                      Column('name', types.String),
                      Column('attrib', types.Integer),
                      Column('population', types.Integer),
-                     Column('the_geom', Geometry))
+                     Column('the_geom', Geometry(4326)))
 
 class City(object):
     def __str__(self):
