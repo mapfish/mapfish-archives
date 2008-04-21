@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # 
-# Copyright (C) 2007  Camptocamp
+# Copyright (C) 2007-2008  Camptocamp
 #  
 # This file is part of MapFish
 #  
