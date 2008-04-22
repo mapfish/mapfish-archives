@@ -18,28 +18,81 @@
  */
 
 /**
- * @requires OpenLayers/Format/GeoJSON.js
- * @requires core/GeoStat.js
+ * @requires core/GeoStat/Choropleth.js
  * @requires core/Color.js
  */
 
-Ext.namespace('mapfish.widgets');
+Ext.namespace('mapfish.widgets', 'mapfish.widgets.geostat');
 
-Ext.namespace('mapfish.widgets.geostat');
+mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
 
-mapfish.widgets.geostat.Choropleth = function(config) {
-    Ext.apply(this, config);
-    mapfish.widgets.geostat.Choropleth.superclass.constructor.call(this);
-    OpenLayers.loadURL(this.geoStatUrl, "", this, this.parseData);
-}
-Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.FormPanel, {
-    
+    /**
+     * APIProperty: layer
+     * {<OpenLayers.Layer.Vector>} The vector layer containing the features that
+     *      are styled based on statistical values. If none is provided, one will
+     *      be created.
+     */
+    layer: null,
+
+    /**
+     * APIProperty: format
+     * {<OpenLayers.Format>} The OpenLayers format used to get features from
+     *      the HTTP request response. GeoJSON is used if none is provided.
+     */
+    format: null,
+
+    /**
+     * APIProperty: url
+     * {String} The URL to the web service. If none is provided, the features
+     *      found in the provided vector layer will be used.
+     */
+    url: null,
+
+    /**
+     * APIProperty: featureSelection
+     * {Boolean} A boolean value specifying whether feature selection must
+     *      be put in place. If true a popup will be displayed when the
+     *      mouse goes over a feature.
+     */
+    featureSelection: true,
+
+    /**
+     * APIProperty: nameAttribute
+     * {String} The feature attribute that will be used as the popup title.
+     *      Only applies if featureSelection is true.
+     */
+    nameAttribute: null,
+
+    /**
+     * Property: coreComp
+     * {<mapfish.GeoStat.ProportionalSymbol>} The core component object.
+     */
+    coreComp: null,
+
+    /**
+     * Property: classificationApplied
+     * {Boolean} true if the classify was applied
+     */
+    classificationApplied: false,
+
+    /**
+     * Property: ready
+     * {Boolean} true if the widget is ready to accept user commands.
+     */
+    ready: false,
+
     /**
      * Property: border
      *     Styling border
      */
     border: false,
     
+    /**
+     * APIProperty: loadMask
+     *     An Ext.LoadMask config or true to mask the widget while loading (defaults to false).
+     */
+    loadMask : false,
+
     /**
      * Method: initComponent
      *    Inits the component
@@ -61,7 +114,7 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.FormPanel, {
             }),
             listeners: {
                 'select': {
-                    fn: function() {this.classify(false)},
+                    fn: function() {this.classify(false, false)},
                     scope: this
                 }
             }
@@ -83,7 +136,7 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.FormPanel, {
             }),
             listeners: {
                 'select': {
-                    fn: function() {this.classify(false)},
+                    fn: function() {this.classify(false, false)},
                     scope: this
                 }
             }
@@ -103,7 +156,7 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.FormPanel, {
             }),
             listeners: {
                 'select': {
-                    fn: this.updateNumClasses,
+                    fn: function() {this.classify(false, true)},
                     scope: this
                 }
             }
@@ -116,7 +169,7 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.FormPanel, {
             value: "#FFFF00",
             listeners: {
                 'valid': {
-                    fn: this.updateColors,
+                    fn: function() {this.classify(false, true)},
                     scope: this
                 }
             }
@@ -129,7 +182,7 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.FormPanel, {
             value: "#FF0000",
             listeners: {
                 'valid': {
-                    fn: this.updateColors,
+                    fn: function() {this.classify(false, true)},
                     scope: this
                 }
             }
@@ -137,119 +190,112 @@ Ext.extend(mapfish.widgets.geostat.Choropleth, Ext.FormPanel, {
         
         this.buttons = [{
             text: 'OK',
-            handler: function() {this.classify(true)},
+            handler: function() {this.classify(true, true)},
             scope: this
         }];
         mapfish.widgets.geostat.Choropleth.superclass.initComponent.apply(this);
     },
-        
+
     /**
-     * Method: parseData
-     *    Parses the data returned by loadUrl
-     *    reads the returned JSON and adds corresponding features
-     *    to the geostat layer
-     *    
-     * Parameters:
-     * request - {XMLHttpRequest}
+     * Method: requestSuccess
+     *      Calls onReady callback function and mark the widget as ready.
+     *      Called on Ajax request success.
      */
-    parseData: function(request) {
-        var parser = new OpenLayers.Format.GeoJSON();
-        var doc = request.responseText;
-        var features = parser.read(doc);
-        this.features = features;
+    requestSuccess: function(request) {
+        this.ready = true;
+        
+        // if widget is rendered, hide the optional mask
+        if (this.loadMask && this.rendered) {
+            this.loadMask.hide();
+        }
     },
 
     /**
-     * Method: classify
-     *    Reads the features to get the different value for
-     *    the field given for attributeName
-     *    Creates a new Distribution and related Classification
-     *    Then creates an new Choropleths and applies classification
-     *    
-     * Parameters:
-     * exception {Boolean} Will show a message box to user if form is incomplete
+     * Method: requestFailure
+     *      Displays an error message on the console.
+     *      Called on Ajax request failure.
      */
-    classify: function(exception) {
-        var indicator = this.form.findField('indicator').getValue();
-        if (!indicator) {
-            if (exception) {
-                Ext.MessageBox.alert('Error', 'You must choose an indicator');
-            }
-            return;
-        }
-        
-        var method = this.form.findField('method').getValue();
-        if (!method) {
-            if (exception) {
-                Ext.MessageBox.alert('Error', 'You must choose a method');
-            }
-            return;
-        }
-        
-        var numClasses = this.form.findField('numClasses').getValue();
-        
-        if (!this.choropleth) {
-            this.choropleth = new mapfish.GeoStat.Choropleth(this.map, {
-                features: this.features,
-                method: mapfish.GeoStat.Distribution[method],
-                numClasses: numClasses,
-                idAttribute: this.idAttribute,
-                indicator: indicator,
-                colors: this.setColors(),
-                featureCallbacks: this.featureCallbacks
-            });
-        } else {
-            this.choropleth.indicator = indicator;
-            this.choropleth.method = mapfish.GeoStat.Distribution[method];
-            this.choropleth.setClassification();
-            this.choropleth.updateFeatures();
-        }
+    requestFailure: function(request) {
+        OpenLayers.Console.error('Ajax request failed');
     },
-    
+
     /**
-     * Method: setColors
+     * Method: getColors
      *    Retrieves the colors from form elements
      *
      * Returns:
      * {Array(<mapfish.Color>)} an array of two colors (start, end)
      */
-    setColors: function() {
+    getColors: function() {
         var colorA = new mapfish.ColorRgb();
         colorA.setFromHex(this.form.findField('colorA').getValue());
         var colorB = new mapfish.ColorRgb();
         colorB.setFromHex(this.form.findField('colorB').getValue());
-        
         return [colorA, colorB];
     },
-    
+
     /**
-     * Method: updateNumClasses
+     * Method: classify
+     *    
+     * Parameters:
+     * exception - {Boolean} If true show a message box to user if either
+     *      the widget isn't ready, or no indicator is specified, or no
+     *      method is specified.
+     * apply - {Boolean} If true apply classification on the map.
      */
-    updateNumClasses: function(combo, record, index) {
-        if (!this.choropleth) {
-            this.classify();
+    classify: function(exception, apply) {
+        if (!this.ready) {
+            if (exception) {
+                Ext.MessageBox.alert('Error', 'Component init not complete');
+            }
             return;
         }
-        
-        // FIXME, we should have a setMethod method
-        this.choropleth.numClasses = record.data.value;
-        this.choropleth.setClassification();
-        this.choropleth.updateFeatures();
+        var options = {};
+        options.indicator = this.form.findField('indicator').getValue();
+        if (!options.indicator) {
+            if (exception) {
+                Ext.MessageBox.alert('Error', 'You must choose an indicator');
+            }
+            return;
+        }
+        options.method = this.form.findField('method').getValue(); 
+        if (!options.method) {
+            if (exception) {
+                Ext.MessageBox.alert('Error', 'You must choose a method');
+            }
+            return;
+        }
+        options.method = mapfish.GeoStat.Distribution[options.method];
+        options.numClasses = this.form.findField('numClasses').getValue();
+        options.colors = this.getColors();
+        this.coreComp.updateOptions(options);
+        if (apply) {
+            this.coreComp.applyClassification();
+            this.classificationApplied = true;
+        }
     },
-    
+
     /**
-     * Method: updateColors
+     * Method: onRender
+     * Called by EXT when the component is rendered.
      */
-    updateColors: function() {
-        if (!this.choropleth) {
-            this.classify();
-            return;
+    onRender: function(ct, position) {
+        mapfish.widgets.geostat.Choropleth.superclass.onRender.apply(this, arguments);
+        if(this.loadMask){
+            this.loadMask = new Ext.LoadMask(this.bwrap,
+                    this.loadMask);
+            this.loadMask.show();
         }
         
-        // FIXME, we should have a setColors method
-        this.choropleth.colors = this.setColors();
-        this.choropleth.createColorInterpolation();
-        this.choropleth.updateFeatures();
+        this.coreComp = new mapfish.GeoStat.Choropleth(this.map, {
+            'layer': this.layer,
+            'format': this.format,
+            'url': this.url,
+            'requestSuccess': this.requestSuccess.createDelegate(this),
+            'requestFailure': this.requestFailure.createDelegate(this),
+            'featureSelection': this.featureSelection,
+            'nameAttribute': this.nameAttribute
+        });
     }
 });
 Ext.reg('choropleth', mapfish.widgets.geostat.Choropleth);

@@ -88,6 +88,12 @@
 <script type="text/javascript" src="../../mfbase/ext/adapter/ext/ext-base.js"></script>
 <script type="text/javascript" src="../../mfbase/ext/ext-all.js"></script>
 
+<!-- debug mode -->
+<!--
+<script type="text/javascript" src="../../mfbase/openlayers/lib/OpenLayers.js"></script>
+<script type="text/javascript" src="../../mfbase/mapfish/MapFish.js"></script>
+-->
+<!-- production mode -->
 <script type="text/javascript" src="../../mfbase/release/mapfish/MapFish.js"></script>
 
 <!-- EXT colorField Extent -->
@@ -111,22 +117,64 @@
                                            "http://labs.metacarta.com/wms/vmap0", 
                                            {layers: 'basic'});
 
-      map.addLayers([vmap0, jpl_wms]);
+      // define choropleth layer and its syling
+      var choroplethLayer = new OpenLayers.Layer.Vector('Choropleth', {
+          'visibility': false,
+          'styleMap': new OpenLayers.StyleMap({
+              'default': new OpenLayers.Style(
+                  OpenLayers.Util.applyDefaults(
+                      {'fillOpacity': 1},
+                      OpenLayers.Feature.Vector.style['default']
+                  )
+              ),
+              'select': new OpenLayers.Style(
+                  {'strokeColor': 'red', 'cursor': 'pointer'}
+              )
+          })
+      });
+
+      // define proportional symbol layer and its syling
+      var propSymbolLayer = new OpenLayers.Layer.Vector('Proportional Symbol', {
+          'visibility': false,
+          'styleMap': new OpenLayers.StyleMap({
+              'select': new OpenLayers.Style(
+                  {'strokeColor': 'red', 'cursor': 'pointer'}
+              )
+          })
+      });
+
+      map.addLayers([vmap0, jpl_wms, choroplethLayer, propSymbolLayer]);
+
+      // create select feature control for choropleth layer
+      var selectChoropleth = new OpenLayers.Control.SelectFeature(
+          choroplethLayer,
+          {'hover': true}
+      );
+      map.addControl(selectChoropleth);
+      selectChoropleth.activate();
+
+      // create select feature control for proportional symbol layer
+      var selectPropSymbol = new OpenLayers.Control.SelectFeature(
+          propSymbolLayer,
+          {'hover': true}
+      );
+      map.addControl(selectPropSymbol);
+      selectPropSymbol.activate();
 
       map.setCenter(new OpenLayers.LonLat(17, 2), 2);
       
+      // create choropleth widget
       var choropleth = new mapfish.widgets.geostat.Choropleth({
                               map: map,
+                              layer: choroplethLayer,
                               title: 'Choropleth',
-                              idAttribute: "country",
+                              nameAttribute: "country",
                               indicators: [['birth_rt', 'Birth Rate'],
                                            ['death_rt', 'Death Rate'],
                                            ['fertility', 'Fertility']],
-                              geoStatUrl: "../../countries",
-                              featureCallbacks: {
-                                  over: showDetails,
-                                  out: hideDetails
-                              },
+                              url: '../../countries',
+                              featureSelection: false,
+                              loadMask : {msg: 'Loading Data...', msgCls: 'x-mask-loading'},
                               defaults: {
                                   width: 130
                               },
@@ -134,31 +182,38 @@
                                   collapse: {
                                       // hide layer if collapsed
                                       fn: function() {
-                                          if (this.choropleth && this.choropleth.layer) {
-                                              this.choropleth.layer.setVisibility(false);
-                                          }
+                                          this.layer.setVisibility(false);
                                       }
                                   },
                                   expand: {
                                       // show layer if expanded
                                       fn: function() {
-                                          if (this.choropleth && this.choropleth.layer) {
-                                              this.choropleth.layer.setVisibility(true);
+                                          if (this.classificationApplied) {
+                                              this.layer.setVisibility(true);
                                           }
                                       }
                                   }
                               }
                           });
+
+      // register callbacks on 'featureselected' and 'featureunselected' events
+      // on the choropleth layer
+      choroplethLayer.events.on({
+          'featureselected': showDetails,
+          'featureunselected': hideDetails,
+          'scope': choropleth.coreComp
+      });
+
+      // create proportional symbol layer
       var propSymbol = new mapfish.widgets.geostat.ProportionalSymbol({
                                 map: map,
+                                layer: propSymbolLayer,
                                 title: 'Proportional Symbol',
-                                idAttribute: "name",
+                                nameAttribute: "name",
                                 indicators: [['population', 'Population']],
-                                geoStatUrl: "../../cities",
-                                featureCallbacks: {
-                                    over: showDetails,
-                                    out: hideDetails
-                                },
+                                url: "../../cities",
+                                featureSelection: false,
+                                loadMask : {msg: 'Loading Data...', msgCls: 'x-mask-loading'},
                                 defaults: {
                                     width: 130
                                 },
@@ -166,22 +221,29 @@
                                     collapse: {
                                         // hide layer if collapsed
                                         fn: function() {
-                                            if (this.proportionalSymbol && this.proportionalSymbol.layer) {
-                                                this.proportionalSymbol.layer.setVisibility(false);
-                                            }
+                                            this.layer.setVisibility(false);
                                         }
                                     },
                                     expand: {
                                         // show layer if expanded
                                         fn: function() {
-                                            if (this.proportionalSymbol && this.proportionalSymbol.layer) {
-                                                this.proportionalSymbol.layer.setVisibility(true);
+                                            if (this.classificationApplied) {
+                                                this.layer.setVisibility(true);
                                             }
                                         }
                                     }
                                 }
                             });
 
+      // register callbacks on 'featureselected' and 'featureunselected' events
+      // on the proportional symbol layer
+      propSymbolLayer.events.on({
+          'featureselected': showDetails,
+          'featureunselected': hideDetails,
+          'scope': propSymbol.coreComp
+      });
+
+      // create viewport
       var viewport = new Ext.Viewport({
           layout: 'border',
           items:[
@@ -265,20 +327,19 @@
       Ext.get('loading').fadeOut({remove: true});
   });
   
-  function showDetails(feature) {
-      var selectStyle = OpenLayers.Util.extend({}, mapfish.GeoStat.selectStyle);
-      OpenLayers.Util.applyDefaults(selectStyle, feature.style);
+  function showDetails(obj) {
+      var feature = obj.feature;
+      this.layer.drawFeature(feature, 'select');
       
-      this.layer.drawFeature(feature, selectStyle);
-      
-      var html = '<h4 style="margin-top: 5px">'+ feature.attributes[this.idAttribute] +'</h4>';
+      var html = '<h4 style="margin-top: 5px">'+ feature.attributes[this.nameAttribute] +'</h4>';
       html += this.indicator + ": " + feature.attributes[this.indicator];
       
       var infoPanel = Ext.getCmp('south-panel');
       infoPanel.body.dom.innerHTML = html;
   }
-  function hideDetails(feature) {
-      this.layer.drawFeature(feature, feature.style);
+  function hideDetails(obj) {
+      var feature = obj.feature;
+      this.layer.drawFeature(feature);
       
       var infoPanel = Ext.getCmp('south-panel');
       infoPanel.body.dom.innerHTML = '';

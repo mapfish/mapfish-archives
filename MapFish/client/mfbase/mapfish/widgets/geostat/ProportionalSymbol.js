@@ -18,27 +18,80 @@
  */
 
 /**
- * @requires OpenLayers/Format/GeoJSON.js
- * @requires core/GeoStat.js
+ * @requires core/GeoStat/ProportionalSymbol.js
  */
 
-Ext.namespace('mapfish.widgets');
+Ext.namespace('mapfish.widgets', 'mapfish.widgets.geostat');
 
-Ext.namespace('mapfish.widgets.geostat');
+mapfish.widgets.geostat.ProportionalSymbol = Ext.extend(Ext.FormPanel, {
 
-mapfish.widgets.geostat.ProportionalSymbol = function(config) {
-    Ext.apply(this, config);
-    mapfish.widgets.geostat.ProportionalSymbol.superclass.constructor.call(this);
-    OpenLayers.loadURL(this.geoStatUrl, "", this, this.parseData);
-}
-Ext.extend(mapfish.widgets.geostat.ProportionalSymbol, Ext.FormPanel, {
-    
+    /**
+     * APIProperty: layer
+     * {<OpenLayers.Layer.Vector>} The vector layer containing the features that
+     *      are styled based on statistical values. If none is provided, one will
+     *      be created.
+     */
+    layer: null,
+
+    /**
+     * APIProperty: format
+     * {<OpenLayers.Format>} The OpenLayers format used to get features from
+     *      the HTTP request response. GeoJSON is used if none is provided.
+     */
+    format: null,
+
+    /**
+     * APIProperty: url
+     * {String} The URL to the web service. If none is provided, the features
+     *      found in the provided vector layer will be used.
+     */
+    url: null,
+
+    /**
+     * APIProperty: featureSelection
+     * {Boolean} A boolean value specifying whether feature selection must
+     *      be put in place. If true a popup will be displayed when the
+     *      mouse goes over a feature.
+     */
+    featureSelection: true,
+
+    /**
+     * APIProperty: nameAttribute
+     * {String} The feature attribute that will be used as the popup title.
+     *      Only applies if featureSelection is true.
+     */
+    nameAttribute: null,
+
+    /**
+     * Property: coreComp
+     * {<mapfish.GeoStat.ProportionalSymbol>} The core component object.
+     */
+    coreComp: null,
+
+    /**
+     * Property: classificationApplied
+     * {Boolean} true if the classify was applied
+     */
+    classificationApplied: false,
+
+    /**
+     * Property: ready
+     * {Boolean} true if the widget is ready to accept user commands.
+     */
+    ready: false,
+
     /**
      * Property: border
      *     Styling border
      */
     border: false,
     
+    /**
+     * APIProperty: loadMask
+     *     An Ext.LoadMask config or true to mask the widget while loading (defaults to false).
+     */
+    loadMask : false,
+
     /**
      * Method: initComponent
      *    Inits the component
@@ -82,23 +135,30 @@ Ext.extend(mapfish.widgets.geostat.ProportionalSymbol, Ext.FormPanel, {
         }];
         mapfish.widgets.geostat.ProportionalSymbol.superclass.initComponent.apply(this);
     },
-        
+
     /**
-     * Method: parseData
-     *    Parses the data returned by loadUrl
-     *    reads the returned JSON and adds corresponding features
-     *    to the geostat layer
-     *    
-     * Parameters:
-     * request - {XMLHttpRequest}
+     * Method: requestSuccess
+     *      Calls onReady callback function and mark the widget as ready.
+     *      Called on Ajax request success.
      */
-    parseData: function(request) {
-        var parser = new OpenLayers.Format.GeoJSON();
-        var doc = request.responseText;
-        var features = parser.read(doc);
-        this.features = features;
+    requestSuccess: function(request) {
+        this.ready = true;
+        
+        // if widget is rendered, hide the optional mask
+        if (this.loadMask && this.rendered) {
+            this.loadMask.hide();
+        }
     },
 
+    /**
+     * Method: requestFailure
+     *      Displays an error message on the console.
+     *      Called on Ajax request failure.
+     */
+    requestFailure: function(request) {
+        OpenLayers.Console.error('Ajax request failed');
+    },
+        
     /**
      * Method: classify
      *    Reads the features to get the different value for
@@ -107,32 +167,51 @@ Ext.extend(mapfish.widgets.geostat.ProportionalSymbol, Ext.FormPanel, {
      *    Then creates an new ProportionalSymbols and applies classification
      */
     classify: function() {
+        if (!this.ready) {
+            if (exception) {
+                Ext.MessageBox.alert('Error', 'Component init not complete');
+            }
+            return;
+        }
         var indicator = this.form.findField('indicator').getValue();
-        
         if (!indicator) {
             Ext.MessageBox.alert('Error', 'You must choose an indicator');
             return;
         }
-        
         var minSize = this.form.findField('minSize').getValue();
         var maxSize = this.form.findField('maxSize').getValue();
+        this.coreComp.updateOptions({
+            'indicator': indicator,
+            'minSize': minSize,
+            'maxSize': maxSize
+        });
+        this.coreComp.applyClassification();
+        this.classificationApplied = true;
+    },
+
+    /**
+     * Method: onRender
+     * Called by EXT when the component is rendered.
+     */
+    onRender: function(ct, position) {
+        mapfish.widgets.geostat.Choropleth.superclass.onRender.apply(
+                this, arguments);
         
-        if (!this.proportionalSymbol) {
-            this.proportionalSymbol = new mapfish.GeoStat.ProportionalSymbol(this.map, {
-                features: this.features,
-                minSize: minSize,
-                maxSize: maxSize,
-                indicator: indicator,
-                idAttribute: this.idAttribute,
-                featureCallbacks: this.featureCallbacks
-            });
-        } else {
-            this.proportionalSymbol.indicator = indicator;
-            this.proportionalSymbol.minSize = minSize;
-            this.proportionalSymbol.maxSize = maxSize;
-            this.proportionalSymbol.setClassification();
-            this.proportionalSymbol.updateFeatures();
+        if(this.loadMask){
+            this.loadMask = new Ext.LoadMask(this.bwrap,
+                    this.loadMask);
+            this.loadMask.show();
         }
+        
+        this.coreComp = new mapfish.GeoStat.ProportionalSymbol(this.map, {
+            'layer': this.layer,
+            'format': this.format,
+            'url': this.url,
+            'requestSuccess': this.requestSuccess.createDelegate(this),
+            'requestFailure': this.requestFailure.createDelegate(this),
+            'featureSelection': this.featureSelection,
+            'nameAttribute': this.nameAttribute
+        });
     }
 });
-Ext.reg('choropleth', mapfish.widgets.geostat.ProportionalSymbol);
+Ext.reg('proportionalsymbol', mapfish.widgets.geostat.ProportionalSymbol);

@@ -34,6 +34,19 @@ mapfish.ColorRgb = OpenLayers.Class(mapfish.Color, {
         this.greenLevel = green;
         this.blueLevel = blue;
     },
+
+    /**
+     * APIMethod: equals
+     *      Returns true if the colors at the same.
+     *
+     * Parameters:
+     * {<mapfish.ColorRgb>} color
+     */
+    equals: function(color) {
+        return color.redLevel == this.redLevel &&
+               color.greenLevel == this.greenLevel &&
+               color.blueLevel == this.blueLevel;
+    },
     
     getColorRgb: function() {
         return this;
@@ -134,3 +147,40 @@ mapfish.ColorRgb = OpenLayers.Class(mapfish.Color, {
     
     CLASS_NAME: "mapfish.ColorRgb"
 });
+
+/**
+ * APIMethod: getColorsArrayByRgbInterpolation
+ *      Get an array of colors based on RGB interpolation.
+ *
+ * Parameters:
+ * firstColor - {<mapfish.Color>} The first color in the range.
+ * lastColor - {<mapfish.Color>} The last color in the range.
+ * nbColors - {Integer} The number of colors in the range.
+ *
+ * Returns
+ * {Array({<mapfish.Color>})} The resulting array of colors.
+ */
+mapfish.ColorRgb.getColorsArrayByRgbInterpolation =
+    function(firstColor, lastColor, nbColors) {
+
+    var resultColors = [];
+    var colorA = firstColor.getColorRgb();
+    var colorB = lastColor.getColorRgb();
+    var colorAVal = colorA.getRgbArray();
+    var colorBVal = colorB.getRgbArray();
+    if (nbColors == 1) {
+        return [colorA];
+    }
+    for (var i = 0; i < nbColors; i++) {
+        var rgbTriplet = [];
+        rgbTriplet[0] = colorAVal[0] + 
+            i * (colorBVal[0] - colorAVal[0]) / (nbColors - 1);
+        rgbTriplet[1] = colorAVal[1] + 
+            i * (colorBVal[1] - colorAVal[1]) / (nbColors - 1);
+        rgbTriplet[2] = colorAVal[2] + 
+            i * (colorBVal[2] - colorAVal[2]) / (nbColors - 1);
+        resultColors[i] = new mapfish.ColorRgb(parseInt(rgbTriplet[0]), 
+            parseInt(rgbTriplet[1]), parseInt(rgbTriplet[2]));
+    }
+    return resultColors;
+};

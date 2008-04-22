@@ -24,7 +24,6 @@
     
     <!-- A Localization Script File comes here -->
     <script type="text/javascript">     
-
       function createMap(mapDiv) {
           var map = new OpenLayers.Map($('olmap'));
 
@@ -45,15 +44,16 @@
         var map = createMap("map");
         
         var choropleth = new mapfish.widgets.geostat.Choropleth({
-                                map: map,
-                                idAttribute: "country",
-                                indicators: [['birth_rt', 'Birth Rate'],
-                                             ['death_rt', 'Death Rate'],
-                                             ['fertility', 'Fertility']],
-                                geoStatUrl: mapfish.SERVER_BASE_URL + "/countries"
-                            })
-        choropleth.render("myChoroplethDiv");
-        
+            'map': map,
+            'nameAttribute': 'country',
+            'indicators': [['birth_rt', 'Birth Rate'],
+                          ['death_rt', 'Death Rate'],
+                          ['fertility', 'Fertility']],
+            'url': mapfish.SERVER_BASE_URL + "/countries",
+            'loadMask' : {msg: 'Loading Data...', msgCls: 'x-mask-loading'}
+        });
+        choropleth.render('myChoroplethDiv');
+
       }, this);
       
     </script>
