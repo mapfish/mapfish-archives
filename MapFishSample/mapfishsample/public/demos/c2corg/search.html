@@ -239,14 +239,6 @@
       layer.setVisibility(true);
       map.addLayer(layer);  
 
-      layer = new OpenLayers.Layer.WMS("Areas",
-          "http://demo.mapfish.org/cgi-bin/v0.2_tilecache/tilecache.cgi?",
-          {layers: ['c2corg'], format: 'image/png', transparent: true},
-          {reproject: false}
-      );
-      layer.setVisibility(true);
-      map.addLayer(layer);  
-
       var vectorLayer = new OpenLayers.Layer.Vector("vector", {
           styleMap: new OpenLayers.StyleMap({
               'default': new OpenLayers.Style({
