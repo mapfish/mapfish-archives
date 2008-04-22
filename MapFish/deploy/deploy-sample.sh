@@ -65,8 +65,7 @@ HAS_MAPFISH=1
 
 # You can define function that will be run at certain stages in the installation process
 # This is an example function that will be run after initialization
-post_init() {
-    echo "Sample post_init hook"
+post_init_all() {
 }
 
 # === End of configuration ===
