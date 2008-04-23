@@ -340,7 +340,7 @@
         function test_AutomaticModel(t) {
             var map, model, tree, node;
 
-            t.plan(4 + 22 + 22 + 10 + 7);
+            t.plan(4 + 14 + 14 + 10 + 7);
 
             //////////////////////////////////////////////////////////////
             // Test environment 1
@@ -382,9 +382,7 @@
             map.addLayer(wms);
             map.setCenter(new OpenLayers.LonLat(5,45), 6);
 
-            var c2cwmsLayers = ['parkings', 'summits', 'refuges', 'sites',
-                                'countries', 'departements_fr', 'cantons_ch',
-                                'massifs'];
+            var c2cwmsLayers = ['parkings', 'summits', 'refuges', 'sites'];
             c2cwms = new OpenLayers.Layer.WMS("C2C Objects",
                 "http://demo.mapfish.org/cgi-bin/mapserv-c2corg-v0.2?",
                 {
@@ -406,14 +404,10 @@
                 {text: "parkings", attr_checked: false},
                 {text: "summits", attr_checked: false},
                 {text: "refuges", attr_checked: false},
-                {text: "sites", attr_checked: false},
-                {text: "countries", attr_checked: false},
-                {text: "departements_fr", attr_checked: false},
-                {text: "cantons_ch", attr_checked: false},
-                {text: "massifs", attr_checked: false}
+                {text: "sites", attr_checked: false}
             ];
 
-            checkStatus(t, tree, expectedStatus); // 22 tests
+            checkStatus(t, tree, expectedStatus); // 14 tests
 
             resetTree();
 
@@ -428,14 +422,10 @@
                 {text: "summits", attr_checked: false},
                 {text: "refuges", attr_checked: false},
                 {text: "sites", attr_checked: false},
-                {text: "countries", attr_checked: false},
-                {text: "departements_fr", attr_checked: false},
-                {text: "cantons_ch", attr_checked: false},
-                {text: "massifs", attr_checked: false},
                 {text: "vmap0", attr_checked: true}
             ];
 
-            checkStatus(t, tree, expectedStatus); // 22 tests
+            checkStatus(t, tree, expectedStatus); // 14 tests
 
             reset();
 
@@ -1046,8 +1036,7 @@
                 map.setCenter(new OpenLayers.LonLat(5,45), 6);
 
                 var c2cwmsLayers = ["parkings", "summits",
-                                    "countries", "cantons_ch",
-                                    "massifs"];
+                                    "refuges", "sites"];
                 c2cwms = new OpenLayers.Layer.WMS("C2C Objects",
                     "http://demo.mapfish.org/cgi-bin/mapserv-c2corg-v0.2?",
                     {
@@ -1096,12 +1085,12 @@
 
             checkOlStatus(t, map, expectedOlStatus); // 6 tests
 
-            simulateCheck(getNodeByText(tree.getRootNode(), "cantons_ch"), true);
+            simulateCheck(getNodeByText(tree.getRootNode(), "sites"), true);
 
             expectedOlStatus = [
                 {name: "vmap0", visibility: true},
                 {name: "C2C Objects", visibility: true, wmsSubLayers: [
-                    "parkings", "cantons_ch"
+                    "parkings", "sites"
                 ]}
             ];
             checkOlStatus(t, map, expectedOlStatus); // 6 tests
@@ -1118,7 +1107,7 @@
             model = [
                 {text: "group0", expanded: true, children: [
                     {text: "vmap0", checked: true, layerName: "vmap0"},
-                    {text: "g0-massifs", checked: false, layerName: "C2C Objects:massifs"},
+                    {text: "g0-refuges", checked: false, layerName: "C2C Objects:refuges"},
                     {text: "g0-summits", checked: false, layerName: "C2C Objects:summits"}
                 ]},
                 {text: "group1", expanded: true, children: [
@@ -1135,7 +1124,7 @@
             checkOlStatus(t, map, expectedOlStatus); // 5 tests
 
             simulateCheck(getNodeByText(tree.getRootNode(), "g0-summits"), true);
-            simulateCheck(getNodeByText(tree.getRootNode(), "g0-massifs"), true);
+            simulateCheck(getNodeByText(tree.getRootNode(), "g0-refuges"), true);
 
             // NOTE: If there are sublayers in the WMS layer which are not mapped
             // to a node, they will be selected according to the WMS layer status.
@@ -1147,7 +1136,7 @@
             expectedOlStatus = [
                 {name: "vmap0", visibility: true},
                 {name: "C2C Objects", visibility: true , wmsSubLayers: [
-                    "summits", "countries", "cantons_ch", "massifs"
+                    "summits", "refuges", "sites"
                 ]}
             ];
             checkOlStatus(t, map, expectedOlStatus); // 6 tests
