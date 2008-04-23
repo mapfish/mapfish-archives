@@ -48,9 +48,7 @@ function c2corgCreateMap(mapDiv) {
     twms.setVisibility(false);
     map.addLayer(twms);
 
-    c2cwmsLayers = ['parkings', 'summits', 'refuges', 'sites',
-                    'countries', 'departements_fr', 'cantons_ch',
-                    'massifs'];
+    c2cwmsLayers = ['parkings', 'summits', 'refuges', 'sites'];
     c2cwms = new OpenLayers.Layer.WMS("C2C Objects",
         "http://demo.mapfish.org/cgi-bin/mapserv-c2corg-v0.2?",
         {

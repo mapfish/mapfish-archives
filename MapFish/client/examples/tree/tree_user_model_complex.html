@@ -59,9 +59,7 @@
         twms.setVisibility(false);
         map.addLayer(twms);
 
-        var c2cwmsLayers = ["parkings", "summits", "refuges", "sites",
-                            "countries", "departements_fr", "cantons_ch",
-                            "massifs"];
+        var c2cwmsLayers = ["parkings", "summits", "refuges", "sites"];
         c2cwms = new OpenLayers.Layer.WMS("C2C Objects",
             "http://demo.mapfish.org/cgi-bin/mapserv-c2corg-v0.2?",
             {
@@ -128,12 +126,12 @@
                     checked: false
                 }]
             },{
-                text: "Countries and Departments",
-                layerNames: ["C2C Objects:countries", "C2C Objects:departements_fr"],
+                text: "Huts and Spots",
+                layerNames: ["C2C Objects:refuges", "C2C Objects:sites"],
                 checked: false
             },{
-                text: "Countries",
-                layerNames: ["C2C Objects:countries"],
+                text: "Spots",
+                layerNames: ["C2C Objects:sites"],
                 checked: false
             }]
         }];
