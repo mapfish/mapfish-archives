@@ -65,6 +65,12 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
      * Boolean
      */
     configurable: false,
+    
+    /** 
+     * Property: buttons 
+     * Array({<Ext.Toolbar.Button>}) 
+     */ 
+    buttons: [],
 
     /**
      * APIProperty: defaultControl
@@ -88,10 +94,10 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
      *
      * Parameters:
      * control - {<OpenLayers.Control>}
-     * options - the config object
+     * options - the config object for the newly created Ext.Toolbar.Button
      *
      * Returns:
-     * An instance of Ext.Toolbar.Button
+     * {<Ext.Toolbar.Button>} The added button instance
      */
     addControl: function (control, options) {
         control.visible = true;
@@ -99,14 +105,17 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
         this.map.addControl(control);
         var mb = new Ext.Toolbar.Button(options);
         mb.tooltip = control.title;
-        mb.enableToggle = true;
+        mb.enableToggle = (control.type == OpenLayers.Control.TYPE_TOGGLE);
         if (control.isDefault) {
             mb.pressed = true;
             this.defaultControl = control;
         }
         mb.scope = this;
-        mb.handler = function() { this.activateControl(control); }
+        mb.handler = function() { 
+            this.activateControl(control); 
+        };
         this.add(mb);
+        this.buttons.push(mb);
         return mb;
     },
 
@@ -114,8 +123,11 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
      * Method: getControlByClassName
      * Pass in the CLASS_NAME of a control as a string and return the control itself
      *
-     * Paramaters:
+     * Parameters: 
      * className - string
+     *
+     * Returns:
+     * {<OpenLayers.Control>} The requested control.
      */
     getControlByClassName: function(className) {
         if (this.controls) {
@@ -125,10 +137,33 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
                 }
             }
         }
+        return null;
+    },
+
+    /**
+     * Method: getButtonForControl
+     * Pass in a control and return the button attached to this control
+     *
+     * Parameters:
+     * control - {<OpenLayers.Control>} A control which was previously added to the toolbar
+     *
+     * Returns:
+     * {<Ext.Toolbar.Button>} The requested button.
+     */
+    getButtonForControl: function(control) { 
+        if (this.controls) { 
+            for (var i = 0;  i < this.controls.length; i++) { 
+                if (this.controls[i] == control) { 
+                    return this.buttons[i];
+                } 
+            } 
+        } 
+        return null;
     },
 
     /**
      * Method: activate
+     * Activates the toolbar, either by restoring a given state (if configurable) or the default one.
      */
     activate: function() {
         if (this.configurable) {
@@ -137,36 +172,47 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
             var mb = new Ext.Toolbar.Button({'text': '+'});
             mb.menu = new Ext.menu.Menu();
             for(var i = 0; i < this.controls.length; i++) {
-                mb.menu.add({'style': 'height:25px',
-                            'text': '<div style="position: relative; left: 25px; top: -15px;" class="' + this.items.items[i].iconCls + '"/>',
-                            checked: this.controls[i].visible,
-                            scope: {toolbar: this, button: this.items.items[i], control: this.controls[i]},
-                            checkHandler: function(item, checked) {
-                                if (checked) {
-                                    this.control.visible = true;
-                                    if (this.control == this.toolbar.defaultControl) {
-                                        this.toolbar.activateControl(this.control);
-                                    } this.button.show();
-                                } else {
-                                    this.control.visible = false;
-                                    this.control.deactivate();
-                                    this.button.hide();
-                                }
-                                this.toolbar.saveState();
-                        }});
+                mb.menu.add({
+                    'style': 'height:25px',
+                    'text': '<div style="position: relative; left: 25px; top: -15px;" class="' + this.buttons[i].iconCls + '"/>',
+                    checked: this.controls[i].visible,
+                    scope: {
+                        toolbar: this, 
+                        button: this.buttons[i], 
+                        control: this.controls[i]
+                    },
+                    checkHandler: function(item, checked) {
+                        if (checked) {
+                            this.control.visible = true;
+                            if (this.control == this.toolbar.defaultControl) {
+                                this.toolbar.activateControl(this.control);
+                            } 
+                            this.button.show();
+                        } else {
+                            this.control.visible = false;
+                            this.control.deactivate();
+                            this.button.hide();
+                        }
+                        this.toolbar.saveState();
+                    }
+                });
             }
             this.add(mb);
-        } else {
+        } else if (this.defaultControl) {
             this.activateControl(this.defaultControl);
         }
     },
 
     /**
      * Method: deactivate
+     * Deactivates all controls in this toolbar.
      */
     deactivate: function() {
         for(var i = 0; i < this.controls.length; i++) {
             this.controls[i].deactivate();
+            if (this.controls[i].type != OpenLayers.Control.TYPE_BUTTON) { 
+                this.buttons[i].toggle(false); 
+            }
         }
     },
 
@@ -190,7 +236,7 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
                 if (c) {
                     c.visible = s.visible;
                     if (!c.visible) {
-                        this.items.items[i].hide();
+                        this.buttons[i].hide();
                     }
                 }
             }
@@ -215,13 +261,18 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
 
     /**
      * Method: activateControl
-     * Activate a control on the map
+     * Activates a control on the map
      * (Taken from OpenLayers.Panel)
      *
      * Parameters:
      * control - {<OpenLayers.Control>}
      */
     activateControl: function (control) {
+        var button = this.getButtonForControl(control);
+        if (!button) {
+            OpenLayers.Console.warn("Toolbar.activateControl : button was not found");
+            return;
+        }
         if (control.type == OpenLayers.Control.TYPE_BUTTON) {
             control.trigger();
             return;
@@ -229,17 +280,21 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
         if (control.type == OpenLayers.Control.TYPE_TOGGLE) {
             if (control.active) {
                 control.deactivate();
+                button.toggle(false); 
             } else {
                 control.activate();
+                button.toggle(true); 
             }
             return;
         }
         for (var i = 0; i < this.controls.length; i++) {
             if (this.controls[i] == control && control.visible) {
                 control.activate();
+                button.toggle(true); 
             } else {
                 if (this.controls[i].type != OpenLayers.Control.TYPE_TOGGLE) {
                     this.controls[i].deactivate();
+                    this.buttons[i].toggle(false); 
                 }
             }
         }
