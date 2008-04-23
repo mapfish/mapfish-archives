@@ -201,7 +201,7 @@
       choroplethLayer.events.on({
           'featureselected': showDetails,
           'featureunselected': hideDetails,
-          'scope': choropleth.coreComp
+          'scope': choropleth
       });
 
       // create proportional symbol layer
@@ -240,7 +240,7 @@
       propSymbolLayer.events.on({
           'featureselected': showDetails,
           'featureunselected': hideDetails,
-          'scope': propSymbol.coreComp
+          'scope': propSymbol
       });
 
       // create viewport
@@ -329,17 +329,18 @@
   
   function showDetails(obj) {
       var feature = obj.feature;
-      this.layer.drawFeature(feature, 'select');
+      
+      feature.layer.drawFeature(feature, 'select');
       
       var html = '<h4 style="margin-top: 5px">'+ feature.attributes[this.nameAttribute] +'</h4>';
-      html += this.indicator + ": " + feature.attributes[this.indicator];
+      html += this.indicatorText + ": " + feature.attributes[this.indicator];
       
       var infoPanel = Ext.getCmp('south-panel');
       infoPanel.body.dom.innerHTML = html;
   }
   function hideDetails(obj) {
       var feature = obj.feature;
-      this.layer.drawFeature(feature);
+      feature.layer.drawFeature(feature);
       
       var infoPanel = Ext.getCmp('south-panel');
       infoPanel.body.dom.innerHTML = '';

@@ -62,6 +62,23 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
      *      Only applies if featureSelection is true.
      */
     nameAttribute: null,
+    
+    /**
+     * APIProperty: indicator
+     * {String} (read-only) The feature attribute currently chosen
+     *     Useful if callbacks are registered on 'featureselected'
+     *     and 'featureunselected' events
+     */
+    indicator: null,
+    
+    /**
+     * APIProperty: indicatorText
+     * {String} (read-only) The raw value of the currently chosen indicator
+     *     (ie. human readable)
+     *     Useful if callbacks are registered on 'featureselected'
+     *     and 'featureunselected' events
+     */
+    indicatorText: null,
 
     /**
      * Property: coreComp
@@ -251,7 +268,9 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
             return;
         }
         var options = {};
-        options.indicator = this.form.findField('indicator').getValue();
+        this.indicator = this.form.findField('indicator').getValue();
+        this.indicatorText = this.form.findField('indicator').getRawValue();
+        options.indicator = this.indicator;
         if (!options.indicator) {
             if (exception) {
                 Ext.MessageBox.alert('Error', 'You must choose an indicator');

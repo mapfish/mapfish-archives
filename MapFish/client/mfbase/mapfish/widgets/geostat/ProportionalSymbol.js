@@ -61,6 +61,23 @@ mapfish.widgets.geostat.ProportionalSymbol = Ext.extend(Ext.FormPanel, {
      *      Only applies if featureSelection is true.
      */
     nameAttribute: null,
+    
+    /**
+     * APIProperty: indicator
+     * {String} (read-only) The feature attribute currently chosen
+     *     Useful if callbacks are registered on 'featureselected'
+     *     and 'featureunselected' events
+     */
+    indicator: null,
+    
+    /**
+     * APIProperty: indicatorText
+     * {String} (read-only) The raw value of the currently chosen indicator
+     *     (ie. human readable)
+     *     Useful if callbacks are registered on 'featureselected'
+     *     and 'featureunselected' events
+     */
+    indicatorText: null,
 
     /**
      * Property: coreComp
@@ -173,15 +190,16 @@ mapfish.widgets.geostat.ProportionalSymbol = Ext.extend(Ext.FormPanel, {
             }
             return;
         }
-        var indicator = this.form.findField('indicator').getValue();
-        if (!indicator) {
+        this.indicator = this.form.findField('indicator').getValue();
+        this.indicatorText = this.form.findField('indicator').getRawValue();
+        if (!this.indicator) {
             Ext.MessageBox.alert('Error', 'You must choose an indicator');
             return;
         }
         var minSize = this.form.findField('minSize').getValue();
         var maxSize = this.form.findField('maxSize').getValue();
         this.coreComp.updateOptions({
-            'indicator': indicator,
+            'indicator': this.indicator,
             'minSize': minSize,
             'maxSize': maxSize
         });
