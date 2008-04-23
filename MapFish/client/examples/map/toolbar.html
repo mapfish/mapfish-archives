@@ -162,17 +162,6 @@
                 )
             );  
 
-            map.addLayer(
-                new OpenLayers.Layer.WMS("Areas",
-                    "http://demo.mapfish.org/cgi-bin/v0.2_tilecache/tilecache.cgi?", {
-                        layers: ['c2corg'], 
-                        format: 'image/png', 
-                        transparent: true
-                    },
-                    {reproject: false}
-                )
-            );  
-
             vectorLayer = new OpenLayers.Layer.Vector("vector", { 
                 displayInLayerSwitcher: false
             });
