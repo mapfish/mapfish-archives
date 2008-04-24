@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Map in a Complex Layout</title>
+  <title>Google, Yahoo! and OSM maps</title>
     <link rel="stylesheet" type="text/css" href="../../mfbase/ext/resources/css/ext-all.css" />
 
     <script type="text/javascript" src="../../mfbase/openlayers/lib/Firebug/firebug.js"></script>
@@ -91,7 +91,6 @@
 
         map.addLayers([gmap, yahoo, yahoosat, yahoohyb, mapnik, wms]);
                            
-        map.addControl(new OpenLayers.Control.LayerSwitcher());
         map.setCenter(new OpenLayers.LonLat(17, 2), 2);
 
         
