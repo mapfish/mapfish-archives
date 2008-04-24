@@ -32,6 +32,12 @@ mapfish.widgets.LayerTree = function(config) {
 
 Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
+    /**
+     * APIProperty: separator
+     * {String} the separator character to use in between layer name and sublayer.
+     */
+    separator: ":",
+
     rootVisible: false,
     animate: true,
     autoScroll: true,
@@ -197,8 +203,8 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
             var layerNames = node.attributes.layerNames;
 
             for (var i = 0; i < layerNames.length; i++) {
-                if (layerNames[i].indexOf(":") != -1) {
-                    var name = layerNames[i].split(":")[0];
+                if (layerNames[i].indexOf(this.separator) != -1) {
+                    var name = layerNames[i].split(this.separator)[0];
                     layersWithSublayers[name] = true;
                 }
             }
@@ -264,7 +270,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                 if (sublayers instanceof Array) {
                     for (var j = 0; j < sublayers.length; j++) {
                         var sublayer = sublayers[j];
-                        layerVisibility[name + ":" + sublayer] = layer.visibility;
+                        layerVisibility[name + this.separator + sublayer] = layer.visibility;
                     }
                 }
             }, this);
@@ -444,7 +450,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
                 var visible = layerVisibility[layerName];
 
-                var splitName = layerName.split(":");
+                var splitName = layerName.split(this.separator);
                 if (splitName.length != 2)
                     continue;
 
@@ -580,7 +586,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                         wmsChildren.push({text: w, // TODO: i18n
                                           checked: l.getVisibility(),
                                           icon: iconUrl,
-                                          layerName: l.name + ":" + w,
+                                          layerName: l.name + this.separator + w,
                                           children: [],
                                           cls: "cf-wms-node"
                                           });
@@ -651,7 +657,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
             var layerName = nodeLayerName;
 
-            var wmsParts = nodeLayerName.split(":");
+            var wmsParts = nodeLayerName.split(this.separator);
             if (wmsParts.length == 2) {
                 layerName = wmsParts[0];
             }
