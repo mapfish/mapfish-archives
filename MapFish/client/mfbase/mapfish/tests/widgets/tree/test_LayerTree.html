@@ -16,139 +16,21 @@
     </script>
     <script type="text/javascript" src="../../../../mapfish/MapFish.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script type="text/javascript" src="layerTreeTestUtils.js"></script>
+
     <script type="text/javascript"><!--
         // reference local blank image
         Ext.BLANK_IMAGE_URL = '../../../../ext/resources/images/default/s.gif';
 
-        // globals for debugging
-        var gMap, gTree, gModel;
+        // tests to run when giving "?standalone" parameter in location (used
+        // for debugging).
+        var gTests = [
+                        //test_Checkbox, test_AutomaticModel, test_ModelSync,
+                        //test_reorder, test_WMSSubLayer
+                     ];
 
         // TODO: maybe spit this files into separated tests.
-
-        // Tree utils
-
-        //
-        // If no checked argument is given, it toggles the checkbox
-        //
-        function simulateCheck(node, checked) {
-
-            if (checked === undefined)
-                checked = !node.attributes.checked;
-
-            // 1) update model
-            node.attributes.checked = checked;
-
-            // 2) sync ui
-            if (node.ui.checkbox) {
-                node.ui.checkbox.checked = checked;
-            }
-
-            // 3) fire event
-            node.fireEvent('checkchange', node, checked);
-        }
-
-        // TODO: add a getNodeByParentAndText to handle duplicates
-
-        function getNodeByText(root, text) {
-            var retNode;
-            root.cascade(function (node) {
-                if (node.text == text) {
-                    retNode = node;
-                    return false;
-                }
-            });
-            return retNode;
-        }
-
-        function createMap() {
-            // FIXME: good default options?
-            var options = {
-                projection: "EPSG:4326",
-                controls: [new OpenLayers.Control.MouseDefaults()] ,
-                'numZoomLevels': 20
-            };
-
-            var map = new OpenLayers.Map("map", options);
-
-            // for debugging
-            map.addControl(new OpenLayers.Control.LayerSwitcher());
-
-            gMap = map;
-            return map;
-        }
-
-        function createTree(map, model, options) {
-            var treeArgs = {map: map, el: 'tree', model: model};
-            if (options)
-                Ext.apply(treeArgs, options);
-            var tree = new mapfish.widgets.LayerTree(treeArgs);
-            gTree = tree;
-            tree.render();
-            return tree;
-        }
-
-        function resetTree() {
-            gTree.destroy();
-            Ext.get("right").createChild({tag: "div", id: "tree"});
-        }
-
-        function reset() {
-            gMap.destroy();
-            resetTree();
-        }
-
-        // Check the status of the LayerTree current tree
-        function checkStatus(t, tree, expectedStatus) {
-            var nodes = [];
-            tree.getRootNode().cascade(function (node) {
-                nodes.push(node);
-            });
-            t.eq(nodes.length, expectedStatus.length, "Correct number of nodes in tree");
-
-            for (var i = 0; i < expectedStatus.length; i++) {
-                var node = nodes[i];
-                var expectProps = expectedStatus[i];
-
-                for (var p in expectProps) {
-                    var toTest = node;
-                    var expect = expectProps[p];
-
-                    // Special handling for node.attributes properties
-                    var matches = p.match(/^attr_(.*)/);
-                    if (matches) {
-                        p = matches[1];
-                        toTest = node.attributes;
-                    }
-                    t.eq(toTest[p], expect, "Node " + node.text + " has a property " +
-                                            p + " with correct value");
-                }
-            }
-        }
-
-        // Checks the status of the OpenLayer map layers
-        function checkOlStatus(t, map, expectedOlStatus) {
-            var layerMap = {};
-            t.eq(map.layers.length, expectedOlStatus.length, "Map has correct number of layers");
-
-            for (var i = 0; i < expectedOlStatus.length; i++) {
-                var layer = map.layers[i];
-                var expectProps = expectedOlStatus[i];
-
-                for (var p in expectProps) {
-
-                    // Special properties handling
-
-                    if (p == "wmsSubLayers") {
-                        var wmsLayers = expectProps[p];
-                        t.eq(layer.params.LAYERS, wmsLayers, "WMS subLayers are correct");
-                        continue;
-                    }
-
-                    t.eq(layer[p], expectProps[p], "Layer " + layer.name + " has a property " +
-                                   p + " with correct value");
-                }
-            }
-        }
 
         // Tests that checking/unchecking a node update the rest of the tree
         function test_Checkbox(t) {
@@ -1144,76 +1026,7 @@
             reset();
         }
 
-        // Standalone testing without Test.AnotherWay
-        Ext.onReady(function() {
-            if (location.search.indexOf("standalone") == -1)
-                return;
-
-            var t = {
-                count: 0,
-                fail: function(msg, test) {
-                        document.body.style.backgroundColor = "red";
-                        if (console && console.trace)
-                            console.trace();
-                        throw new Error("Test failure: " + msg + " : " + test);
-                },
-                eq: function(value, expect, msg) {
-                    this.count++;
-                    console.info(msg);
-
-                    // XXX constructor.name is not working on Opera
-                    //if (value.length != undefined) {
-                    if (value && value.constructor &&
-                        value.constructor.name == "Array")
-                    {
-                        this.eq(value.length, expect.length, msg);
-                        for (var i = 0; i < expect.length; i++)
-                            this.eq(value[i], expect[i], msg);
-                        return;
-                    }
-
-                    if (expect != value) {
-                        this.fail("got: " + value + " while expecting " + expect, msg);
-                    }
-                },
-                ok: function(value, msg) {
-                    this.count++;
-                    console.info(msg);
-                    if (!value) {
-                        this.fail("Not ok", msg);
-                    }
-                },
-                plan: function(n) { console.log("Planning " + n + " test"); }
-            };
-
-            //test_Checkbox(t);
-            //test_AutomaticModel(t);
-            //test_ModelSync(t);
-            //test_reorder(t);
-            //test_WMSSubLayer(t);
-            console.info("Done: " + t.count + " tests");
-        });
-
      --></script>
-
-    <style type="text/css">
-        #map {
-          width: 600px;
-          height: 400px;
-          border: 1px solid #999;
-        }
-        #right {
-          font-size: 11px;
-          position: absolute;
-          left: 620px;
-          border: 10px dashed #eee;
-        }
-        #tree {
-          height: 400px;
-          width: 200px;
-        }
-    </style>
-  </head>
 
   <body>
     <div id="right">
