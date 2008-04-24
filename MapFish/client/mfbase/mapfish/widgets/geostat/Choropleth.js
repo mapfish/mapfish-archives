@@ -205,11 +205,6 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
             }
         }];
         
-        this.buttons = [{
-            text: 'OK',
-            handler: function() {this.classify(true)},
-            scope: this
-        }];
         mapfish.widgets.geostat.Choropleth.superclass.initComponent.apply(this);
     },
 
