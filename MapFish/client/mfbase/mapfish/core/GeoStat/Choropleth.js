@@ -158,9 +158,6 @@ mapfish.GeoStat.Choropleth = OpenLayers.Class(mapfish.GeoStat, {
             rules[i] = rule;
         }
         this.extendStyle(rules);
-        this.layer.renderer.clear();
-        this.layer.redraw();
-        this.updateLegend();
         mapfish.GeoStat.prototype.applyClassification.apply(this, arguments);
     },
     

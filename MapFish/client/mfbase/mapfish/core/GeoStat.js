@@ -248,6 +248,9 @@ mapfish.GeoStat = OpenLayers.Class({
      * options - {Object}
      */
     applyClassification: function(options) {
+        this.layer.renderer.clear();
+        this.layer.redraw();
+        this.updateLegend();
         this.layer.setVisibility(true);
     },
 

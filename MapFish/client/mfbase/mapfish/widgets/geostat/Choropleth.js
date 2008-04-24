@@ -131,7 +131,7 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
             }),
             listeners: {
                 'select': {
-                    fn: function() {this.classify(false, false)},
+                    fn: function() {this.classify(false)},
                     scope: this
                 }
             }
@@ -153,7 +153,7 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
             }),
             listeners: {
                 'select': {
-                    fn: function() {this.classify(false, false)},
+                    fn: function() {this.classify(false)},
                     scope: this
                 }
             }
@@ -173,7 +173,7 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
             }),
             listeners: {
                 'select': {
-                    fn: function() {this.classify(false, true)},
+                    fn: function() {this.classify(false)},
                     scope: this
                 }
             }
@@ -186,7 +186,7 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
             value: "#FFFF00",
             listeners: {
                 'valid': {
-                    fn: function() {this.classify(false, true)},
+                    fn: function() {this.classify(false)},
                     scope: this
                 }
             }
@@ -199,7 +199,7 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
             value: "#FF0000",
             listeners: {
                 'valid': {
-                    fn: function() {this.classify(false, true)},
+                    fn: function() {this.classify(false)},
                     scope: this
                 }
             }
@@ -207,7 +207,7 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
         
         this.buttons = [{
             text: 'OK',
-            handler: function() {this.classify(true, true)},
+            handler: function() {this.classify(true)},
             scope: this
         }];
         mapfish.widgets.geostat.Choropleth.superclass.initComponent.apply(this);
@@ -258,9 +258,8 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
      * exception - {Boolean} If true show a message box to user if either
      *      the widget isn't ready, or no indicator is specified, or no
      *      method is specified.
-     * apply - {Boolean} If true apply classification on the map.
      */
-    classify: function(exception, apply) {
+    classify: function(exception) {
         if (!this.ready) {
             if (exception) {
                 Ext.MessageBox.alert('Error', 'Component init not complete');
@@ -288,10 +287,8 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
         options.numClasses = this.form.findField('numClasses').getValue();
         options.colors = this.getColors();
         this.coreComp.updateOptions(options);
-        if (apply) {
-            this.coreComp.applyClassification();
-            this.classificationApplied = true;
-        }
+        this.coreComp.applyClassification();
+        this.classificationApplied = true;
     },
 
     /**

@@ -127,7 +127,6 @@ mapfish.GeoStat.ProportionalSymbol = OpenLayers.Class(mapfish.GeoStat, {
             {'pointRadius': '${calculateRadius}'},
             {'calculateRadius': calculateRadius}
         );
-        this.updateLegend();
         mapfish.GeoStat.prototype.applyClassification.apply(this, arguments);
     },
     
