@@ -103,20 +103,22 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
         control.visible = true;
         this.controls.push(control);
         this.map.addControl(control);
-        var mb = new Ext.Toolbar.Button(options);
-        mb.tooltip = control.title;
-        mb.enableToggle = (control.type == OpenLayers.Control.TYPE_TOGGLE);
+        var button = new Ext.Toolbar.Button(options);
+        if (!button.tooltip) {
+            button.tooltip = control.title;
+        }
+        button.enableToggle = (control.type == OpenLayers.Control.TYPE_TOGGLE);
         if (control.isDefault) {
-            mb.pressed = true;
+            button.pressed = true;
             this.defaultControl = control;
         }
-        mb.scope = this;
-        mb.handler = function() { 
+        button.scope = this;
+        button.handler = function() { 
             this.activateControl(control); 
         };
-        this.add(mb);
-        this.buttons.push(mb);
-        return mb;
+        this.add(button);
+        this.buttons.push(button);
+        return button;
     },
 
     /**
