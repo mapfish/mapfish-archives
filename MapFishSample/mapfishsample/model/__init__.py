@@ -66,7 +66,7 @@ mapper(Line, lines_table)
 summits_table = Table('sommets_out', MetaData(config['pylons.g'].sa_search_engine),
                       Column('sommet_id', types.Integer, primary_key=True),
                       Column('elevation', types.Integer),
-                      Column('name', types.String),
+                      Column('name', types.Unicode),
                       Column('geom', Geometry(32768)))
 
 class Summit(object):
