@@ -69,4 +69,4 @@ mapfish.Util.getIconUrl = function(wmsUrl, options) {
     }, options);
     options = OpenLayers.Util.upperCaseObject(options);
     return url + OpenLayers.Util.getParameterString(options);
-}
+};
