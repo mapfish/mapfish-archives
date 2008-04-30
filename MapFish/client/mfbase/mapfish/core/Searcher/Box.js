@@ -120,17 +120,23 @@ mapfish.Searcher.Box = OpenLayers.Class(mapfish.Searcher, {
      *      Get the search parameters.
      *
      * Parameters:
-     * bounds - {<OpenLayers.Bounds>}
+     * position - {<OpenLayers.Bounds>} or {<OpenLayers.Pixel>}
      *
      * Returns:
      * {Object} The params object
      */
-    getSearchParams: function(bounds) {
+    getSearchParams: function(position) {
+        var box;
         var map = this.map;
-        var ll = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.left, bounds.bottom)); 
-        var ur = map.getLonLatFromPixel(new OpenLayers.Pixel(bounds.right, bounds.top)); 
-        var box = ll.lon.toFixed(4) + ", " + ll.lat.toFixed(4) + ", " + 
+        if (position instanceof OpenLayers.Bounds) {
+            var ll = map.getLonLatFromPixel(new OpenLayers.Pixel(position.left, position.bottom));
+            var ur = map.getLonLatFromPixel(new OpenLayers.Pixel(position.right, position.top));
+            box = ll.lon.toFixed(4) + ", " + ll.lat.toFixed(4) + ", " +
                   ur.lon.toFixed(4) + ", " + ur.lat.toFixed(4);
+        } else {
+            box = position.x.toFixed(4) + ", " + position.y.toFixed(4) + ", " + 
+                  position.x.toFixed(4) + ", " + position.y.toFixed(4)
+        }
         var params = {'box': box};
         return OpenLayers.Util.extend(this.params, params);
     }
