@@ -43,9 +43,14 @@ if [ -d ${releasepath} ]; then
     ${rm} -rf ${releasepath}
 fi
 
+cfgfile="mapfish-widgets.cfg"
+if [ -n "$1" -a -f "$1" ]; then
+    cfgfile="$1"
+fi
+
 mapfishreleasepath="${releasepath}/mapfish"
 ${mkdir} -p ${mapfishreleasepath}
-(cd ${buildpath} && ${python} build.py -c mapfish-widgets.cfg -o ${mapfishreleasepath}/MapFish.js)
+(cd ${buildpath} && ${python} build.py -c ${cfgfile} -o ${mapfishreleasepath}/MapFish.js)
 
 # MapFish resources
 ${cp} -r "${mapfishpath}/img" ${mapfishreleasepath}

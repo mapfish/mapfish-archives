@@ -141,7 +141,13 @@ init_mapfish() {
         exit 1
     fi
 
-    (cd $PROJECT/MapFish/client/build/ && sh ./build.sh)
+    CFG_FILE=""
+    if [ -f "$PROJECT/mapfish.cfg" ]; then
+        # This is relative to the build.sh file
+        CFG_FILE="../../../mapfish.cfg"
+    fi
+
+    (cd $PROJECT/MapFish/client/build/ && sh ./build.sh $CFG_FILE)
 
     # Install MapFish in env if fetched
     if [ "$FETCH_PYTHON_ENV" = "1" ]; then
