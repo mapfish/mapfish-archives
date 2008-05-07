@@ -37,6 +37,14 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
     hover: false,
 
     /**
+     * APIProperty: radius
+     * {Float} or {Function} - Search radius in meters. If radius is a
+     *      function, its return value is used as the search radius.
+     *      null by default.
+     */
+    radius: null,
+
+    /**
      * APIProperty: pixelTolerance
      * {Integer} - The meaning of this property depends whether
      *      hover is true or false. If hover is false, pixelTolerance
@@ -224,6 +232,11 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
     getSearchParams: function(evt) {
         var lonlat = this.map.getLonLatFromViewPortPx(evt.xy);
         var params = {'lon': lonlat.lon, 'lat': lonlat.lat};
+        var radius = (typeof this.radius == 'function') ? this.radius(evt.xy) :
+                                                          this.radius;
+        if (radius) {
+            OpenLayers.Util.extend(params, {'radius': radius});
+        }
         return OpenLayers.Util.extend(this.params, params);
     }
 });
