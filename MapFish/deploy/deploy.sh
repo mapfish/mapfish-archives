@@ -209,8 +209,10 @@ main() {
         \?|h)
             echo "Usage: $0 OPTION"
             echo " -h: help"
-            echo " -i: initialize everything"
-            echo " -j: initialize MapFish and project"
+            echo -n " -i: initialize everything "
+            echo "(WARNING: this deletes existing directories)"
+            echo -n " -j: initialize MapFish and project "
+            echo "(WARNING: this deletes existing project and MapFish)"
             echo " -u: update project"
             echo " -r: replace .in files"
             exit 1
