@@ -114,6 +114,8 @@ subst_in_files() {
         fi
     done
 
+    run_hook after_import_subst_in_files
+
     echo "Substituting config variables"
 
     find $PROJECT_DIR -name '*.in' | while read i; do
