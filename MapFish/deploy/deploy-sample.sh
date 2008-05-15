@@ -31,7 +31,7 @@ DEPLOY_SVN=http://www.mapfish.org/svn/mapfish/trunk/MapFish/deploy
 COMPAT_VERSION=1
 
 checkout_deploy() {
-    OUTPUT=$(svn co $DEPLOY_SVN)
+    OUTPUT=$(svn co $SVN_CO_OPTIONS $DEPLOY_SVN)
     if echo "$OUTPUT" | grep -q "deploy/"; then
         REV=$(svn info deploy|grep Revision:|sed "s/Revision: //")
         echo "Deploy script was retrieved or updated (rev: $REV)"
