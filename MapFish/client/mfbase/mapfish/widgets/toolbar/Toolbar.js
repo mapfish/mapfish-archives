@@ -67,10 +67,11 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
     configurable: false,
     
     /** 
-     * Property: buttons 
+     * Property: _buttons 
      * Array({<Ext.Toolbar.Button>}) 
+     * "buttons" is not available (already used in Ext.Toolbar)
      */ 
-    buttons: [],
+    _buttons: null,
 
     /**
      * APIProperty: defaultControl
@@ -83,6 +84,7 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
     initComponent: function() {
         mapfish.widgets.toolbar.Toolbar.superclass.initComponent.call(this);
         this.controls = [];
+        this._buttons = [];
         this.autoWidth = true;
         this.autoHeight = true;
         Ext.QuickTips.init();
@@ -117,7 +119,7 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
             this.activateControl(control); 
         };
         this.add(button);
-        this.buttons.push(button);
+        this._buttons.push(button);
         return button;
     },
 
@@ -156,7 +158,7 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
         if (this.controls) { 
             for (var i = 0;  i < this.controls.length; i++) { 
                 if (this.controls[i] == control) { 
-                    return this.buttons[i];
+                    return this._buttons[i];
                 } 
             } 
         } 
@@ -176,11 +178,11 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
             for(var i = 0; i < this.controls.length; i++) {
                 mb.menu.add({
                     'style': 'height:25px',
-                    'text': '<div style="position: relative; left: 25px; top: -15px;" class="' + this.buttons[i].iconCls + '"/>',
+                    'text': '<div style="position: relative; left: 25px; top: -15px;" class="' + this._buttons[i].iconCls + '"/>',
                     checked: this.controls[i].visible,
                     scope: {
                         toolbar: this, 
-                        button: this.buttons[i], 
+                        button: this._buttons[i], 
                         control: this.controls[i]
                     },
                     checkHandler: function(item, checked) {
@@ -213,7 +215,7 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
         for(var i = 0; i < this.controls.length; i++) {
             this.controls[i].deactivate();
             if (this.controls[i].type != OpenLayers.Control.TYPE_BUTTON) { 
-                this.buttons[i].toggle(false); 
+                this._buttons[i].toggle(false); 
             }
         }
     },
@@ -238,7 +240,7 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
                 if (c) {
                     c.visible = s.visible;
                     if (!c.visible) {
-                        this.buttons[i].hide();
+                        this._buttons[i].hide();
                     }
                 }
             }
@@ -296,7 +298,7 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
             } else {
                 if (this.controls[i].type != OpenLayers.Control.TYPE_TOGGLE) {
                     this.controls[i].deactivate();
-                    this.buttons[i].toggle(false); 
+                    this._buttons[i].toggle(false); 
                 }
             }
         }
