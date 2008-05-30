@@ -60,6 +60,9 @@ PROJECT=myproject
 # Project subversion URL
 PROJECT_SVN_BASE=http://example.com/path/to/trunk/$PROJECT/
 
+# Project MapFish directory
+PROJECT_MAPFISH_DIR=$PROJECT/MapFish
+
 # Set this to "1" if project contains a copy of MapFish (usually using svn:externals)
 HAS_MAPFISH=1
 

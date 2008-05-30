@@ -138,7 +138,7 @@ init_mapfish() {
         return
     fi
 
-    if [ ! -d $PROJECT/MapFish ]; then
+    if [ ! -d $PROJECT_MAPFISH_DIR ]; then
         echo "Error: no MapFish directory in project, but HAS_MAPFISH is set to 1"
         exit 1
     fi
@@ -149,11 +149,11 @@ init_mapfish() {
         CFG_FILE="../../../mapfish.cfg"
     fi
 
-    (cd $PROJECT/MapFish/client/build/ && sh ./build.sh $CFG_FILE)
+    (cd $PROJECT_MAPFISH_DIR/client/build/ && sh ./build.sh $CFG_FILE)
 
     # Install MapFish in env if fetched
     if [ "$FETCH_PYTHON_ENV" = "1" ]; then
-        (cd $PROJECT/MapFish/server/python && $PYTHON_ENV/bin/python setup.py develop)
+        (cd $PROJECT_MAPFISH_DIR/server/python && $PYTHON_ENV/bin/python setup.py develop)
     fi
 
     run_hook post_fetch_mapfish
