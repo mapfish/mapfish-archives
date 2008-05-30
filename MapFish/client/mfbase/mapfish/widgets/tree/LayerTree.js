@@ -63,25 +63,44 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
     hasCheckbox: function (node) {
         return typeof(node.attributes.checked) == "boolean";
     },
-
+    
     /**
-     * Method: setNodeChecked
-     * Sets the checked status on a node
+     * APIMethod: setNodeChecked
+     * Sets the checked status on a node.
      *
      * Parameters:
-     * node - {Ext.data.Node} node to set the checked status
-     * checked - {Boolean} checked status to set
+     * nodeOrId - {String} node id or {Ext.data.Node} to set the checked status.
+     * checked - {Boolean} checked status to set. 
+                If not set, this method toggles the current checkbox state.
+     * fireEvent - {Boolean} whether to fire the 'checkchange' event or not 
+                (which updates the tree). Defaults to true.
      */
-    setNodeChecked: function(node, checked) {
-        if (!this.hasCheckbox(node))
+    setNodeChecked: function(nodeOrId, checked, fireEvent) {
+        var node = (nodeOrId instanceof Ext.data.Node) ?
+            nodeOrId : this.getNodeById(nodeOrId);
+        
+        if (!node || !this.hasCheckbox(node)) {
             return;
-
+        }
+        
+        if (checked === undefined) {
+            checked = !node.attributes.checked;
+        }
+        
+        // update model 
         node.attributes.checked = checked;
 
-        if (node.ui && node.ui.checkbox)
+        // sync ui 
+        if (node.ui && node.ui.checkbox) {
             node.ui.checkbox.checked = checked;
+        }
+        
+        // fire event if required
+        if (fireEvent || (fireEvent === undefined))  {
+            node.fireEvent('checkchange', node, checked);
+        }
     },
-
+    
     _updateCheckboxAncestors: function() {
 
         // Map of all the node ids not yet visited by updateNodeCheckbox
@@ -127,7 +146,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                 }
             }, this);
 
-            tree.setNodeChecked(node, allChecked);
+            tree.setNodeChecked(node, allChecked, false);
             delete unvisitedNodeIds[node.id];
 
             return allChecked;
@@ -167,7 +186,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
         if (clickedNode) {
             clickedNode.cascade(function(node) {
-                this.setNodeChecked(node, checked);
+                this.setNodeChecked(node, checked, false);
             }, this);
         }
 
@@ -426,7 +445,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                             break;
                         }
                     }
-                    this.setNodeChecked(node, allChecked);
+                    this.setNodeChecked(node, allChecked, false);
                 }
             }
         }

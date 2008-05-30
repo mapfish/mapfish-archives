@@ -76,8 +76,8 @@
             // Check that descendents are updated when a parent is checked
 
             node = getNodeByText(tree.getRootNode(), "label-0-0-2");
-            simulateCheck(node, true);
-
+            tree.setNodeChecked(node, true);
+            
             expectedStatus = [
                 {text: "Root"},
                 {text: "label-0", attr_checked: false},
@@ -95,10 +95,10 @@
             // Check that ancestors are checked if all children are checked
 
             node = getNodeByText(tree.getRootNode(), "label-0-0-0");
-            simulateCheck(node, true);
+            tree.setNodeChecked(node, true);
 
             node = getNodeByText(tree.getRootNode(), "label-0-0-1");
-            simulateCheck(node, true);
+            tree.setNodeChecked(node, true);
 
             expectedStatus = [
                 {text: "Root"},
@@ -117,7 +117,7 @@
             // If the root is checked, all nodes should be too
 
             node = getNodeByText(tree.getRootNode(), "label-0");
-            simulateCheck(node, true);
+            tree.setNodeChecked(node, true);
 
             expectedStatus = [
                 {text: "Root"},
@@ -422,7 +422,7 @@
             checkOlStatus(t, map, expectedOlStatus); // 3 tests
 
             node = getNodeByText(tree.getRootNode(), "vmap0");
-            simulateCheck(node, false);
+            tree.setNodeChecked(node, false);
 
             expectedOlStatus = [
                 {name: "vmap0", visibility: true}
@@ -496,7 +496,7 @@
 
 
             node = getNodeByText(tree.getRootNode(), "sat_child");
-            simulateCheck(node, false);
+            tree.setNodeChecked(node, false);
 
             expectedStatus = [
                 {text: "Root"},
@@ -525,7 +525,7 @@
             // TODO: not implemented yet
 
             node = getNodeByText(tree.getRootNode(), "sat_bis");
-            simulateCheck(node, true);
+            tree.setNodeChecked(node, true);
 
             expectedStatus = [
                 {text: "Root"},
@@ -631,7 +631,7 @@
             // base layers.
 
             node = getNodeByText(tree.getRootNode(), "sat");
-            simulateCheck(node, true);
+            tree.setNodeChecked(node, true);
 
             expectedStatus = [
                 {text: "Root"},
@@ -659,7 +659,7 @@
             // that layer.
 
             node = getNodeByText(tree.getRootNode(), "world_map");
-            simulateCheck(node, false);
+            tree.setNodeChecked(node, false);
 
             expectedStatus = [
                 {text: "Root"},
@@ -956,8 +956,8 @@
             // For debug
             getNodeByText(tree.getRootNode(), "C2C Objects").expand();
 
-            simulateCheck(getNodeByText(tree.getRootNode(), "parkings"), true);
-
+            node = getNodeByText(tree.getRootNode(), "parkings");
+            tree.setNodeChecked(node, true);
             expectedOlStatus = [
                 {name: "vmap0", visibility: true},
                 {name: "C2C Objects", visibility: true, wmsSubLayers: [
@@ -967,8 +967,8 @@
 
             checkOlStatus(t, map, expectedOlStatus); // 6 tests
 
-            simulateCheck(getNodeByText(tree.getRootNode(), "sites"), true);
-
+            node = getNodeByText(tree.getRootNode(), "sites");
+            tree.setNodeChecked(node, true);
             expectedOlStatus = [
                 {name: "vmap0", visibility: true},
                 {name: "C2C Objects", visibility: true, wmsSubLayers: [
@@ -1005,8 +1005,10 @@
             ];
             checkOlStatus(t, map, expectedOlStatus); // 5 tests
 
-            simulateCheck(getNodeByText(tree.getRootNode(), "g0-summits"), true);
-            simulateCheck(getNodeByText(tree.getRootNode(), "g0-refuges"), true);
+            node = getNodeByText(tree.getRootNode(), "g0-summits");
+            tree.setNodeChecked(node, true);
+            node = getNodeByText(tree.getRootNode(), "g0-refuges");
+            tree.setNodeChecked(node, true);
 
             // NOTE: If there are sublayers in the WMS layer which are not mapped
             // to a node, they will be selected according to the WMS layer status.

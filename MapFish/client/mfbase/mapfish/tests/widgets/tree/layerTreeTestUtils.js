@@ -1,26 +1,6 @@
 // globals
 var gMap, gTree, gModel;
 
-//
-// If no checked argument is given, it toggles the checkbox
-//
-function simulateCheck(node, checked) {
-
-    if (checked === undefined)
-        checked = !node.attributes.checked;
-
-    // 1) update model
-    node.attributes.checked = checked;
-
-    // 2) sync ui
-    if (node.ui.checkbox) {
-        node.ui.checkbox.checked = checked;
-    }
-
-    // 3) fire event
-    node.fireEvent('checkchange', node, checked);
-}
-
 // TODO: add a getNodeByParentAndText to handle duplicates
 
 function getNodeByText(root, text) {
