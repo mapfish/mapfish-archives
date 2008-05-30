@@ -138,6 +138,10 @@ init_mapfish() {
         return
     fi
 
+    if [ -z $PROJECT_MAPFISH_DIR ]; then
+        PROJECT_MAPFISH_DIR=$PROJECT/MapFish
+    fi
+
     if [ ! -d $PROJECT_MAPFISH_DIR ]; then
         echo "Error: no MapFish directory in project, but HAS_MAPFISH is set to 1"
         exit 1
