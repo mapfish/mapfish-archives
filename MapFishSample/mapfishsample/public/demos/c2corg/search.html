@@ -261,7 +261,8 @@
        */
       var toolbar = new mapfish.widgets.toolbar.Toolbar({
           map: map,
-          configurable: false
+          configurable: false,
+          id: 'toolbarid'
       });
 
       var featureStore = new mapfish.widgets.FeatureStore({
@@ -374,6 +375,7 @@
                   region: 'center',
                   title: 'Map',
                   xtype: 'mapcomponent',
+                  id: 'mapid',
                   map: map,
                   tbar: toolbar
               }
