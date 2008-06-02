@@ -63,44 +63,44 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
     hasCheckbox: function (node) {
         return typeof(node.attributes.checked) == "boolean";
     },
-    
+
     /**
      * APIMethod: setNodeChecked
      * Sets the checked status on a node.
      *
      * Parameters:
      * nodeOrId - {String} node id or {Ext.data.Node} to set the checked status.
-     * checked - {Boolean} checked status to set. 
-                If not set, this method toggles the current checkbox state.
-     * fireEvent - {Boolean} whether to fire the 'checkchange' event or not 
-                (which updates the tree). Defaults to true.
+     * checked - {Boolean} checked status to set.
+     *           If not set, this method toggles the current checkbox state.
+     * fireEvent - {Boolean} whether to fire the 'checkchange' event or not
+     *             (which updates the tree). Defaults to true.
      */
     setNodeChecked: function(nodeOrId, checked, fireEvent) {
         var node = (nodeOrId instanceof Ext.data.Node) ?
             nodeOrId : this.getNodeById(nodeOrId);
-        
+
         if (!node || !this.hasCheckbox(node)) {
             return;
         }
-        
+
         if (checked === undefined) {
             checked = !node.attributes.checked;
         }
-        
-        // update model 
+
+        // update model
         node.attributes.checked = checked;
 
-        // sync ui 
+        // sync ui
         if (node.ui && node.ui.checkbox) {
             node.ui.checkbox.checked = checked;
         }
-        
+
         // fire event if required
         if (fireEvent || (fireEvent === undefined))  {
             node.fireEvent('checkchange', node, checked);
         }
     },
-    
+
     _updateCheckboxAncestors: function() {
 
         // Map of all the node ids not yet visited by updateNodeCheckbox
