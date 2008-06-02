@@ -711,9 +711,9 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
             this._handleModelChange(node, checked);
         }, this);
 
+        this._automaticModel = !this.model;
 
         if (!this.model) {
-            this._automaticModel = true;
             this.model = this._extractOLModel();
         }
 
@@ -773,7 +773,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
         // FIXME: is this still needed in any case if we want the state of a WMS
         //  layer / sublayers to be updated?
-        if (this._automaticModel) {
+        if (!this._automaticModel) {
             this._handleModelChange(null, null);
             if (this.enableDD)
                 this._updateOrder();

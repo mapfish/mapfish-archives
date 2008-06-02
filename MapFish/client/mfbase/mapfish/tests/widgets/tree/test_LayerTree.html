@@ -27,7 +27,7 @@
         // for debugging).
         var gTests = [
                         //test_Checkbox, test_AutomaticModel, test_ModelSync,
-                        //test_reorder, test_WMSSubLayer
+                        //test_reorder, test_WMSSubLayer, test_defaultSelection
                      ];
 
         // TODO: maybe spit this files into separated tests.
@@ -1026,6 +1026,66 @@
             checkOlStatus(t, map, expectedOlStatus); // 6 tests
 
             reset();
+        }
+
+        // This tests that when using a model, the visibility specified in the
+        // model overrides the one set on the OL layers.
+        function test_defaultSelection(t) {
+
+            t.plan(12 + 12);
+
+            function doTest(visibility) {
+                var map, model, tree, node;
+
+                map = createMap();
+    
+                var wms = new OpenLayers.Layer.WMS("vmap0",
+                    "http://labs.metacarta.com/wms/vmap0",
+                    {layers: 'basic'},
+                    {isBaseLayer: true}
+                );
+                map.addLayer(wms);
+    
+                var twms = new OpenLayers.Layer.WMS("World Map",
+                    "http://world.freemap.in/cgi-bin/mapserv?",
+                    {
+                        map: '/www/freemap.in/world/map/factbooktrans.map',
+                        layers: 'factbook',
+                        format: 'image/png',
+                        transparent: true
+                    }
+                );
+                twms.setVisibility(visibility);
+                map.addLayer(twms);
+    
+                map.setCenter(new OpenLayers.LonLat(5,45), 6);
+    
+                model = [
+                    {text: "vmap0", expanded: true, checked: true, layerName: "vmap0"},
+                    {text: "World Map", expanded: true, checked: false, layerName: "World Map"},
+                    {text: "Dummy entry"}
+                ];
+    
+                tree = createTree(map, model);
+    
+                expectedStatus = [
+                    {text: "Root"},
+                    {text: "vmap0", attr_checked: true},
+                    {text: "World Map", attr_checked: false},
+                    {text: "Dummy entry"}
+                ];
+                checkStatus(t, tree, expectedStatus); // 7 tests
+    
+                expectedOlStatus = [
+                    {name: "vmap0", visibility: true},
+                    {name: "World Map", visibility: false}
+                ];
+                checkOlStatus(t, map, expectedOlStatus); // 5 tests
+    
+                reset();
+            }
+            doTest(true); // 12 tests
+            doTest(false); // 12 tess
         }
 
      --></script>
