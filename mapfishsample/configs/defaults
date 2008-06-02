@@ -1,0 +1,17 @@
+# Put here the default options
+
+# Override this to true in your configuration file to enable debugging
+export DEBUG="false"
+
+# Override this if you have a different python version
+export PYTHON_SITE=$PYTHON_HOME/lib/python2.4/site-packages
+
+# You should override this with the version to appear in URL's
+export VERSION="trunk"
+
+# Set to empty string to enable WSGI
+export HAS_WSGI="#"
+
+export DB_ROUTING_URL=postgres://dbuser:dbpassword@dbhost/db
+export DB_SEARCH_URL=postgres://dbuser:dbpassword@dbhost/db
+export DB_GEOSTAT_URL=postgres://dbuser:dbpassword@dbhost/db

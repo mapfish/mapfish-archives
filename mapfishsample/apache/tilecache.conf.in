@@ -1,0 +1,25 @@
+# %GENERATED_WARNING%
+
+SetEnvIf Referer ^http://%FQDN%/.*$ let_me_in
+
+# FIXME: looks like an empty directory in
+#  /var/www/%FQDN%/htdocs/%PROJECT%/%VERSION%/tilecache is required for this to work
+<Location /%PROJECT%/%VERSION%/tilecache>
+    AddHandler python-program .py
+    PythonHandler TileCache.Service 
+
+    Satisfy Any
+    Deny from all
+    Allow from env=let_me_in
+
+    Header append Cache-Control "public"
+
+    PythonOption TileCacheConfig %PROJECT_DIR%/tilecache/tilecache.cfg
+
+    # Disable compression (otherwise apache thinks this is compressible because the URL ends with .py)
+    SetEnv no-gzip
+
+    ExpiresActive on
+    ExpiresDefault "now plus 6 hours"
+</Location>
+

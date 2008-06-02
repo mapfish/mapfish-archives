@@ -1,0 +1,7 @@
+# %GENERATED_WARNING%
+%HAS_WSGI% <IfModule !mod_wsgi.c>
+%HAS_WSGI%     LoadModule wsgi_module /usr/lib/apache2/modules/mod_wsgi.so
+%HAS_WSGI% </IfModule>
+
+%HAS_WSGI% WSGIScriptAlias /%PROJECT%/%VERSION% %PROJECT_DIR%/%PROJECT%/%PROJECT%.wsgi
+

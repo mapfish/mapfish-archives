@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# Tilecache seeding script
+#
+
+set -e
+
+SEED=/usr/sbin/tilecache_seed
+URL="http://%FQDN%/%PROJECT%/%VERSION%/tilecache.py/"
+
+# Configure here the layers to generated
+LAYERS="teleatlas lignes routes_hg"
+
+# Max zoom level
+MAX_ZOOM=6
+
+# Specific BBOX for all the generated layers. If this variable is not set,
+# tilecache will use the layer default value found in
+# %PROJECT_DIR%/tilecache/tilecache.cfg
+#BBOX=519175,1839505,534661,1847724
+
+for n in $LAYERS
+do
+  $ECHO $SEED $URL $n 0 $MAX_ZOOM $BBOX
+done
+
