@@ -103,6 +103,7 @@
             "core/Searcher/Box.js",
             "core/Searcher/Extent.js",
             "core/Searcher/Form.js",
+            "core/Offline.js",
             "widgets/MapComponent.js",
             "widgets/Shortcuts.js",
             "widgets/geostat/Choropleth.js",
