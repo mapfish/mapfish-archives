@@ -37,12 +37,20 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
     hover: false,
 
     /**
-     * APIProperty: radius
-     * {Float} or {Function} - Search radius in meters. If radius is a
-     *      function, its return value is used as the search radius.
-     *      null by default.
+     * APIProperty: searchTolerance
+     * {Integer} - The search tolerance. The units are given by the
+     *     searcToleranceUnits property. Defaults to 3.
      */
-    radius: null,
+    searchTolerance: 3,
+
+    /**
+     * APIProperty: searchTolerance
+     * {String} - Tolerance units.
+     *     Possible values are 'pixels' and 'geo'.
+     *     The latter means that tolerance is given in the current
+     *     map units. Defaults to pixels.
+     */
+    searchToleranceUnits: 'pixels',
 
     /**
      * APIProperty: pixelTolerance
@@ -230,12 +238,14 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
      * {Object} The params object
      */
     getSearchParams: function(evt) {
+        var tolerance = this.searchTolerance;
+        if (tolerance && this.searchToleranceUnits == 'pixels') {
+            tolerance *= this.map.getResolution();
+        }
         var lonlat = this.map.getLonLatFromViewPortPx(evt.xy);
         var params = {'lon': lonlat.lon, 'lat': lonlat.lat};
-        var radius = (typeof this.radius == 'function') ? this.radius(evt.xy) :
-                                                          this.radius;
-        if (radius) {
-            OpenLayers.Util.extend(params, {'radius': radius});
+        if (tolerance) {
+            OpenLayers.Util.extend(params, {'tolerance': tolerance});
         }
         return OpenLayers.Util.extend(this.params, params);
     }
