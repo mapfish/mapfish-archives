@@ -106,6 +106,7 @@
             "core/Offline.js",
             "widgets/MapComponent.js",
             "widgets/Shortcuts.js",
+            "widgets/data/FeatureReader",
             "widgets/geostat/Choropleth.js",
             "widgets/geostat/ProportionalSymbol.js",
             "widgets/tree/LayerTree.js",
