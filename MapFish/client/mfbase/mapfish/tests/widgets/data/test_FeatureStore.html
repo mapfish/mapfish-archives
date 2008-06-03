@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html debug="true">
+  <head>
+    <link rel="stylesheet" type="text/css" href="../../../../ext/resources/css/ext-all.css" />
+
+    <script type="text/javascript" src="../../../../openlayers/lib/Firebug/firebug.js"></script>
+    <script type="text/javascript" src="../../../../openlayers/lib/OpenLayers.js"></script>
+
+    <script type="text/javascript" src="../../../../ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../../../ext/ext-all-debug.js"></script>
+
+    <script type="text/javascript">
+      // Because of a bug in Firefox 2 we need to specify the MapFish base path.
+      // See https://bugzilla.mozilla.org/show_bug.cgi?id=351282
+      var gMfLocation = "../../../../mapfish/";
+    </script>
+    <script type="text/javascript" src="../../../../mapfish/MapFish.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="style.css" />
+
+    <script type="text/javascript"><!--
+        function test_constructor(t) {
+            t.plan(2);
+            var layer = new OpenLayers.Layer.Vector();
+            var fields = [
+                {'name': 'foo'},
+                {'name': 'bar'}
+            ];
+            var store = new mapfish.widgets.data.FeatureStore({
+                'layer': layer,
+                'fields': fields
+            });
+            // 2 tests
+            t.ok(store.layer == layer, 'ctor correctly sets layer');
+            t.ok(store.fields == fields, 'ctor correctly sets fields');
+        }
+        function test_addFeatures(t) {
+            t.plan(2);
+            var layer = new OpenLayers.Layer.Vector();
+            var fields = [
+                {'name': 'foo'},
+                {'name': 'bar'}
+            ];
+            var store = new mapfish.widgets.data.FeatureStore({
+                'layer': layer,
+                'fields': fields
+            });
+            var features = [
+                new OpenLayers.Feature.Vector(null, {
+                    'foo': 'foo_0',
+                    'bar': 'bar_0'
+                }),
+                new OpenLayers.Feature.Vector()
+            ];
+            store.addFeatures(features);
+            // 2 tests
+            t.eq(store.store.getCount(), 2,
+                 'addFeatures adds correct number of features');
+            var record = store.store.getById(features[0].id);
+            t.ok(record.get('feature') == features[0],
+                 'addFeatures correctly adds features');
+        }
+        function test_removeFeatures(t) {
+            t.plan(1);
+            var layer = new OpenLayers.Layer.Vector();
+            var fields = [
+                {'name': 'foo'},
+                {'name': 'bar'}
+            ];
+            var store = new mapfish.widgets.data.FeatureStore({
+                'layer': layer,
+                'fields': fields
+            });
+            var features = [
+                new OpenLayers.Feature.Vector(),
+                new OpenLayers.Feature.Vector()
+            ];
+            store.addFeatures(features);
+            store.removeFeatures(features);
+            // 1 test
+            t.eq(store.store.getCount(), 0,
+                 'removesFeatures correctly removes features');
+        }
+    --></script>
+
+  <body>
+    <div id="map"></div>
+  </body>
+</html>

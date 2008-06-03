@@ -107,6 +107,7 @@
             "widgets/MapComponent.js",
             "widgets/Shortcuts.js",
             "widgets/data/FeatureReader",
+            "widgets/data/FeatureStore",
             "widgets/geostat/Choropleth.js",
             "widgets/geostat/ProportionalSymbol.js",
             "widgets/tree/LayerTree.js",
