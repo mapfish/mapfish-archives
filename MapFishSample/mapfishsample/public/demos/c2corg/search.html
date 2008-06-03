@@ -409,12 +409,12 @@
 
       var searchXYControl = new SearchControl({
           searcher: new mapfish.Searcher.XY(map, null, {
-                  'hover': true
+                  'hover': true,
+                  'searchTolerance': 4
               }, {
                   'url': '../../c2corg',
                   'params': {
-                      'maxfeatures': 10,
-                      'radius': 10000
+                      'maxfeatures': 10
                   }
               }
           ),
