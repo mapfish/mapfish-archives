@@ -1,4 +1,5 @@
 # %GENERATED_WARNING%
+
 <Location /cgi-bin/mapserv>
    Deny from all
 </Location>
@@ -6,8 +7,9 @@
 Alias /%PROJECT%/%VERSION%/wms /usr/lib/cgi-bin/mapserv
 <Location /%PROJECT%/%VERSION%/wms>
    # If you use tilecache and want to prevent direct WMS access:
-   Order allow,deny
-   Allow from 127.0.0.1
+# (commented out since we do want access to mapserv from outside)
+#   Order allow,deny
+#   Allow from 127.0.0.1
 
    SetHandler cgi-script
    SetEnv MS_MAPFILE %PROJECT_DIR%/wms/%PROJECT%.map

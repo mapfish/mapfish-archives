@@ -1,6 +1,8 @@
 # %GENERATED_WARNING%
 
-SetEnvIf Referer ^http://%FQDN%/.*$ let_me_in
+# commented out since we want tilecache accessible from anywhere
+# (see below as well)
+#SetEnvIf Referer ^http://%FQDN%/.*$ let_me_in
 
 # FIXME: looks like an empty directory in
 #  /var/www/%FQDN%/htdocs/%PROJECT%/%VERSION%/tilecache is required for this to work
@@ -8,9 +10,10 @@ SetEnvIf Referer ^http://%FQDN%/.*$ let_me_in
     AddHandler python-program .py
     PythonHandler TileCache.Service 
 
-    Satisfy Any
-    Deny from all
-    Allow from env=let_me_in
+# commented out since we want tilecache accessible from anywhere
+#    Satisfy Any
+#    Deny from all
+#    Allow from env=let_me_in
 
     Header append Cache-Control "public"
 

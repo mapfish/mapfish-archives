@@ -1,0 +1,159 @@
+NAME C2C
+STATUS ON
+#SIZE 400 300
+SYMBOLSET symbols.txt
+EXTENT -180 -90 180 90
+UNITS dd
+SHAPEPATH "data"
+IMAGECOLOR 255 255 255
+FONTSET fonts.txt
+
+WEB
+  METADATA
+    "wms_title"     "C2C WMS Server"                                ##required
+    "wms_onlineresource" "http://%FQDN%/%PROJECT%/%VERSION%/wms?"   ##required
+    "wms_srs"       "EPSG:4326 EPSG:54004"                          ##recommended
+  END
+END
+
+PROJECTION
+  "init=epsg:4326"   ##required
+END
+
+#
+# Start of layer definitions
+#
+
+LAYER
+  NAME parkings
+  METADATA
+    "wms_title"    "Parkings"   ##required
+  END
+  TYPE POINT
+  STATUS ON
+  CONNECTIONTYPE postgis
+  CONNECTION "user=%DB_USER% password=%DB_PASSWORD% host=%DB_HOST% dbname=%DB_VERSION%_c2corg"
+  DATA "geom from parkings_out"
+  PROJECTION
+    "init=epsg:4326"   ##recommended
+  END  
+  LABELITEM "name"
+  LABELMAXSCALE 200000
+  CLASS
+    NAME "Parkings"
+    LABEL
+      TYPE TRUETYPE
+      FONT "Vera"
+      SIZE 8
+      ANTIALIAS false
+      COLOR 0 0 255
+      POSITION ur
+    END
+    STYLE
+      SYMBOL "triangle"
+      COLOR 0 0 255
+      SIZE 5
+    END
+  END
+END # Layer
+
+LAYER
+  NAME summits
+  METADATA
+    "wms_title"    "Summits"   ##required
+  END
+  TYPE POINT
+  STATUS ON
+  CONNECTIONTYPE postgis
+  CONNECTION "user=%DB_USER% password=%DB_PASSWORD% host=%DB_HOST% dbname=%DB_VERSION%_c2corg"
+  DATA "geom from sommets_out"
+  PROJECTION
+    "init=epsg:4326"   ##recommended
+  END  
+  LABELITEM "name"
+  LABELMAXSCALE 200000
+  CLASS
+    NAME "Summits"
+    LABEL
+      TYPE TRUETYPE
+      FONT "Vera"
+      SIZE 8
+      ANTIALIAS false
+      COLOR 255 0 0
+      POSITION ur
+    END
+    STYLE
+      SYMBOL "triangle"
+      COLOR 255 0 0
+      SIZE 5
+    END
+  END
+END # Layer
+
+LAYER
+  NAME refuges
+  METADATA
+    "wms_title"    "Refuges"   ##required
+  END
+  TYPE POINT
+  STATUS ON
+  CONNECTIONTYPE postgis
+  CONNECTION "user=%DB_USER% password=%DB_PASSWORD% host=%DB_HOST% dbname=%DB_VERSION%_c2corg"
+  DATA "geom from refuges_out"
+  PROJECTION
+    "init=epsg:4326"   ##recommended
+  END  
+  LABELITEM "name"
+  LABELMAXSCALE 200000
+  CLASS
+    NAME "Refuges"
+    LABEL
+      TYPE TRUETYPE
+      FONT "Vera"
+      SIZE 8
+      ANTIALIAS false
+      COLOR 0 255 0
+      POSITION ur
+    END
+    STYLE
+      SYMBOL "triangle"
+      COLOR 0 255 0
+      SIZE 5
+    END
+  END
+END # Layer
+
+LAYER
+  NAME sites
+  METADATA
+    "wms_title"    "Sites"   ##required
+  END
+  TYPE POINT
+  STATUS ON
+  CONNECTIONTYPE postgis
+  CONNECTION "user=%DB_USER% password=%DB_PASSWORD% host=%DB_HOST% dbname=%DB_VERSION%_c2corg"
+  DATA "geom from sites_out"
+  PROJECTION
+    "init=epsg:4326"   ##recommended
+  END  
+  LABELITEM "name"
+  LABELMAXSCALE 200000
+  CLASS
+    NAME "Sites"
+    LABEL
+      TYPE TRUETYPE
+      FONT "Vera"
+      SIZE 8
+      ANTIALIAS false
+      COLOR 255 255 0
+      POSITION ur
+    END
+    STYLE
+      SYMBOL "triangle"
+      COLOR 255 255 0
+      SIZE 5
+    END
+  END
+END # Layer
+
+END # Map File

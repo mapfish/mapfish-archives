@@ -1,0 +1,14 @@
+[cache]
+type=DiskCache
+base=/tmp/tilecache_%VERSION%
+
+[epfl]
+type=WMSLayer
+url=http://plan.epfl.ch/wms/?
+layers=fond_cadastre,verdure,eau,eau_line,amenagement,parkings_contours,tsol_ligne,routes,trains,batiments_compl,batiments_compl_line,batiments0,batiments1,batiments2,batiments3,batiments4,batiments5,batiments6,batiments7
+srs=EPSG:21781 
+bbox=526000,147000,543000,161000
+extension=png
+#[1/100, 1/500, 1/1500, 1/3000, 1/5000]
+resolutions=0.035277758727788065,0.17638879363894033,0.529166380916821,1.058332761833642,1.763887936389403
+debug=false
