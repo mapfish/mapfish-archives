@@ -28,7 +28,7 @@ mapfish.SearchMediator = OpenLayers.Class({
  
     /**
      * Property: url
-     * {String} - The search service URL.
+     * {String | Function} - The search service URL.
      */
     url: null,
 
@@ -149,6 +149,9 @@ mapfish.SearchMediator = OpenLayers.Class({
         var paramsString = OpenLayers.Util.getParameterString(allParams);
         // build full request string
         var url = this.url;
+        if (typeof url == "function") {
+            url = url();
+        }
         var requestString = url + (url.match(/\?/) ? '&' : '?') + paramsString;
         // send request
         this.request = new OpenLayers.Ajax.Request(
