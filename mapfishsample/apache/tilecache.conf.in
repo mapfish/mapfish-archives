@@ -7,7 +7,8 @@
 # FIXME: looks like an empty directory in
 #  /var/www/%FQDN%/htdocs/%PROJECT%/%VERSION%/tilecache is required for this to work
 <Location /%PROJECT%/%VERSION%/tilecache>
-    AddHandler python-program .py
+#    AddHandler python-program .py
+    SetHandler python-program
     PythonHandler TileCache.Service 
 
 # commented out since we want tilecache accessible from anywhere

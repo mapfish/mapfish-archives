@@ -5,7 +5,7 @@ base=/tmp/tilecache_%VERSION%
 [epfl]
 type=WMSLayer
 url=http://plan.epfl.ch/wms/?
-layers=fond_cadastre,verdure,eau,eau_line,amenagement,parkings_contours,tsol_ligne,routes,trains,batiments_compl,batiments_compl_line,batiments0,batiments1,batiments2,batiments3,batiments4,batiments5,batiments6,batiments7
+layers=grost,epfl_surface
 srs=EPSG:21781 
 bbox=526000,147000,543000,161000
 extension=png
