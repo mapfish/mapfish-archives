@@ -35,7 +35,7 @@
         // Tests that checking/unchecking a node update the rest of the tree
         function test_Checkbox(t) {
 
-            t.plan(7 * 20);
+            t.plan(7 * 29);
 
             var map = createMap();
 
@@ -71,13 +71,13 @@
                 {text: "label-0-2", attr_checked: false}
             ];
 
-            checkStatus(t, tree, expectedStatus); // 20 tests
+            checkStatus(t, tree, expectedStatus); // 29 tests
 
             // Check that descendents are updated when a parent is checked
 
             node = getNodeByText(tree.getRootNode(), "label-0-0-2");
             tree.setNodeChecked(node, true);
-            
+
             expectedStatus = [
                 {text: "Root"},
                 {text: "label-0", attr_checked: false},
@@ -90,7 +90,7 @@
                 {text: "label-0-1", attr_checked: false},
                 {text: "label-0-2", attr_checked: false}
             ];
-            checkStatus(t, tree, expectedStatus); // 20 tests
+            checkStatus(t, tree, expectedStatus); // 29 tests
 
             // Check that ancestors are checked if all children are checked
 
@@ -112,7 +112,7 @@
                 {text: "label-0-1", attr_checked: false},
                 {text: "label-0-2", attr_checked: false}
             ];
-            checkStatus(t, tree, expectedStatus); // 20 tests
+            checkStatus(t, tree, expectedStatus); // 29 tests
 
             // If the root is checked, all nodes should be too
 
@@ -131,7 +131,7 @@
                 {text: "label-0-1", attr_checked: true},
                 {text: "label-0-2", attr_checked: true}
             ];
-            checkStatus(t, tree, expectedStatus); // 20 tests
+            checkStatus(t, tree, expectedStatus); // 29 tests
 
             resetTree();
 
@@ -168,7 +168,7 @@
                 {text: "label-0-1", attr_checked: false},
                 {text: "label-0-2", attr_checked: false}
             ];
-            checkStatus(t, tree, expectedStatus); // 20 tests
+            checkStatus(t, tree, expectedStatus); // 29 tests
 
             resetTree();
 
@@ -192,7 +192,7 @@
                 {text: "label-0-1", attr_checked: false},
                 {text: "label-0-2", attr_checked: false}
             ];
-            checkStatus(t, tree, expectedStatus); // 20 tests
+            checkStatus(t, tree, expectedStatus); // 29 tests
 
             var sourceNode = getNodeByText(tree.getRootNode(), "label-0-1");
             var targetNode = getNodeByText(tree.getRootNode(), "label-0-0-2");
@@ -213,7 +213,7 @@
                 {text: "label-0-0-2-1", attr_checked: true},
                 {text: "label-0-2", attr_checked: false}
             ];
-            checkStatus(t, tree, expectedStatus); // 20 tests
+            checkStatus(t, tree, expectedStatus); // 29 tests
 
             reset();
         }
@@ -222,7 +222,7 @@
         function test_AutomaticModel(t) {
             var map, model, tree, node;
 
-            t.plan(4 + 14 + 14 + 10 + 7);
+            t.plan(5 + 20 + 20 + 13 + 7);
 
             //////////////////////////////////////////////////////////////
             // Test environment 1
@@ -243,9 +243,9 @@
 
             expectedStatus = [
                 {text: "Root"},
-                {text: "vmap0", attr_checked: true}
+                {text: "vmap0", attr_checked: true, radio: true}
             ];
-            checkStatus(t, tree, expectedStatus); // 4 tests
+            checkStatus(t, tree, expectedStatus); // 5 tests
 
             reset();
 
@@ -281,7 +281,7 @@
 
             expectedStatus = [
                 {text: "Root"},
-                {text: "vmap0", attr_checked: true},
+                {text: "vmap0", attr_checked: true, radio: true},
                 {text: "C2C Objects", attr_checked: false},
                 {text: "parkings", attr_checked: false},
                 {text: "summits", attr_checked: false},
@@ -289,7 +289,7 @@
                 {text: "sites", attr_checked: false}
             ];
 
-            checkStatus(t, tree, expectedStatus); // 14 tests
+            checkStatus(t, tree, expectedStatus); // 20 tests
 
             resetTree();
 
@@ -304,10 +304,10 @@
                 {text: "summits", attr_checked: false},
                 {text: "refuges", attr_checked: false},
                 {text: "sites", attr_checked: false},
-                {text: "vmap0", attr_checked: true}
+                {text: "vmap0", attr_checked: true, radio: true}
             ];
 
-            checkStatus(t, tree, expectedStatus); // 14 tests
+            checkStatus(t, tree, expectedStatus); // 20 tests
 
             reset();
 
@@ -363,11 +363,11 @@
 
             expectedStatus = [
                 {text: "Root"},
-                {text: "vmap0", attr_checked: true, attr_cls: 'x-hidden'},
+                {text: "vmap0", attr_checked: true, attr_cls: 'x-hidden', radio: true},
                 {text: "World Map", attr_checked: false, attr_cls: 'x-hidden'},
                 {text: "Satellite", attr_checked: true}
             ];
-            checkStatus(t, tree, expectedStatus); // 10 tests
+            checkStatus(t, tree, expectedStatus); // 13 tests
 
             expectedOlStatus = [
                 {name: "vmap0", visibility: true},
@@ -387,8 +387,8 @@
             var map, model, tree;
 
             t.plan(3 + 3 +
-                   16 + 5 + 16 + 5 + 16 + 5 +
-                   21 + 7 + 21 + 7 + 21 + 7);
+                   23 + 5 + 23 + 5 + 23 + 5 +
+                   30 + 7 + 30 + 7 + 30 + 7);
 
             //////////////////////////////////////////////////////////////
             // Test environment 1
@@ -475,7 +475,7 @@
             expectedStatus = [
                 {text: "Root"},
                 {text: "root_vmap0", attr_checked: true},
-                {text: "vmap0", attr_checked: true},
+                {text: "vmap0", attr_checked: true, radio: true},
                 {text: "vmap0_child", attr_checked: true},
                 {text: "sat_bis", attr_checked: true},
                 {text: "root_sat", attr_checked: true},
@@ -483,7 +483,7 @@
                 {text: "sat_child", attr_checked: true}
             ];
 
-            checkStatus(t, tree, expectedStatus); // 16 tests
+            checkStatus(t, tree, expectedStatus); // 23 tests
 
             expectedOlStatus = [
                 {name: "vmap0", visibility: true},
@@ -501,14 +501,14 @@
             expectedStatus = [
                 {text: "Root"},
                 {text: "root_vmap0", attr_checked: true},
-                {text: "vmap0", attr_checked: true},
+                {text: "vmap0", attr_checked: true, radio: true},
                 {text: "vmap0_child", attr_checked: true},
                 {text: "sat_bis", attr_checked: false},
                 {text: "root_sat", attr_checked: false},
                 {text: "sat", attr_checked: false},
                 {text: "sat_child", attr_checked: false}
             ];
-            checkStatus(t, tree, expectedStatus); // 16 tests
+            checkStatus(t, tree, expectedStatus); // 23 tests
 
             expectedOlStatus = [
                 {name: "vmap0", visibility: true},
@@ -530,14 +530,14 @@
             expectedStatus = [
                 {text: "Root"},
                 {text: "root_vmap0", attr_checked: true},
-                {text: "vmap0", attr_checked: true},
+                {text: "vmap0", attr_checked: true, radio: true},
                 {text: "vmap0_child", attr_checked: true},
                 {text: "sat_bis", attr_checked: true},
                 {text: "root_sat", attr_checked: false}, // TODO: should be true
                 {text: "sat", attr_checked: true},
                 {text: "sat_child", attr_checked: false} // TODO: should be true
             ];
-            checkStatus(t, tree, expectedStatus); // 16 tests
+            checkStatus(t, tree, expectedStatus); // 23 tests
 
             expectedOlStatus = [
                 {name: "vmap0", visibility: true},
@@ -606,18 +606,18 @@
 
             expectedStatus = [
                 {text: "Root"},
-                {text: "vmap0", attr_checked: true},
+                {text: "vmap0", attr_checked: true, radio: true},
                 {text: "vmap0_child", attr_checked: true},
-                {text: "sat", attr_checked: false},
+                {text: "sat", attr_checked: false, radio: true},
                 {text: "sat_child", attr_checked: true},
-                {text: "vmap_and_sat", attr_checked: false},
-                {text: "vmap0_2", attr_checked: true},
-                {text: "sat_2", attr_checked: false},
+                {text: "vmap_and_sat", attr_checked: false, radio: true},
+                {text: "vmap0_2", attr_checked: true, radio: true},
+                {text: "sat_2", attr_checked: false, radio: true},
                 {text: "dummy"},
                 {text: "world_map", attr_checked: true},
                 {text: "world_map_2", attr_checked: true}
             ];
-            checkStatus(t, tree, expectedStatus); // 21 tests
+            checkStatus(t, tree, expectedStatus); // 30 tests
 
             expectedOlStatus = [
                 {name: "vmap0", visibility: true},
@@ -635,18 +635,18 @@
 
             expectedStatus = [
                 {text: "Root"},
-                {text: "vmap0", attr_checked: false},
+                {text: "vmap0", attr_checked: false, radio: true},
                 {text: "vmap0_child", attr_checked: true},
-                {text: "sat", attr_checked: true},
+                {text: "sat", attr_checked: true, radio: true},
                 {text: "sat_child", attr_checked: true},
-                {text: "vmap_and_sat", attr_checked: false},
-                {text: "vmap0_2", attr_checked: false},
-                {text: "sat_2", attr_checked: true},
+                {text: "vmap_and_sat", attr_checked: false, radio: true},
+                {text: "vmap0_2", attr_checked: false, radio: true},
+                {text: "sat_2", attr_checked: true, radio: true},
                 {text: "dummy"},
                 {text: "world_map", attr_checked: true},
                 {text: "world_map_2", attr_checked: true}
             ];
-            checkStatus(t, tree, expectedStatus); // 21 tests
+            checkStatus(t, tree, expectedStatus); // 30 tests
 
             expectedOlStatus = [
                 {name: "vmap0", visibility: false},
@@ -663,18 +663,18 @@
 
             expectedStatus = [
                 {text: "Root"},
-                {text: "vmap0", attr_checked: false},
+                {text: "vmap0", attr_checked: false, radio: true},
                 {text: "vmap0_child", attr_checked: true},
-                {text: "sat", attr_checked: true},
+                {text: "sat", attr_checked: true, radio: true},
                 {text: "sat_child", attr_checked: true},
-                {text: "vmap_and_sat", attr_checked: false},
-                {text: "vmap0_2", attr_checked: false},
-                {text: "sat_2", attr_checked: true},
+                {text: "vmap_and_sat", attr_checked: false, radio: true},
+                {text: "vmap0_2", attr_checked: false, radio: true},
+                {text: "sat_2", attr_checked: true, radio: true},
                 {text: "dummy"},
                 {text: "world_map", attr_checked: false},
                 {text: "world_map_2", attr_checked: false}
             ];
-            checkStatus(t, tree, expectedStatus); // 21 tests
+            checkStatus(t, tree, expectedStatus); // 30 tests
 
             expectedOlStatus = [
                 {name: "vmap0", visibility: false},
@@ -691,9 +691,9 @@
 
             var map, model, tree;
 
-            t.plan((7 + 7 + 7 + 7) + // ascending = true
-                   (7 + 7 + 7 + 7)   // ascending = false
-                   );
+            t.plan((7 + 7 + 7 + 7) +   // ascending = true
+                   (7 + 7 + 7 + 7) +   // ascending = false
+                   (7 + 26 + 7 + 26)); // multiple layerNames
 
             //////////////////////////////////////////////////////////////
             // Test environment
@@ -741,7 +741,7 @@
             map = createMapForDrag();
             tree = createTree(map, null, {enableDD: true});
 
-            var expectedOlStatus, node;
+            var expectedOlStatus, expectedStatus, node;
 
             // First test generated tree without reordering
 
@@ -889,6 +889,78 @@
 
             reset();
 
+            //////////////////////////////////////////////////////////////
+            // Testing reorder with a model containing multiple layerNames
+            // per node
+
+            // Create map again to restore original layer ordering
+            map = createMapForDrag();
+
+            var model = [
+                {text: "label-0", checked: false, expanded: true, children: [
+                    {text: "label-0-0", checked: false, expanded: true, children: [
+                        {text: "label-0-0-0", checked: true},
+                        {text: "Satellite and World Map", checked: false,
+                         layerNames: ["Satellite", "World Map"]},
+                        {text: "label-0-0-2", checked: true}
+                    ]},
+                    {text: "label-0-1", checked: false},
+                    {text: "vmap0", checked: true, layerName: "vmap0"},
+                    {text: "label-0-3", checked: false}
+                ]}
+            ];
+
+            var tree = createTree(map, model, {enableDD: true});
+            expectedOlStatus = [
+                {name: "Satellite", visibility: false},
+                {name: "World Map", visibility: false},
+                {name: "vmap0", visibility: true}
+            ];
+            checkOlStatus(t, map, expectedOlStatus); // 7 tests
+
+            expectedStatus = [
+                {text: "Root"},
+                {text: "label-0", attr_checked: false},
+                {text: "label-0-0", attr_checked: false},
+                {text: "label-0-0-0", attr_checked: true},
+                {text: "Satellite and World Map", attr_checked: false},
+                {text: "label-0-0-2", attr_checked: true},
+                {text: "label-0-1", attr_checked: false},
+                {text: "vmap0", attr_checked: true, radio: true},
+                {text: "label-0-3", attr_checked: false}
+            ];
+
+            checkStatus(t, tree, expectedStatus); // 26 tests
+
+            var sourceNode = getNodeByText(tree.getRootNode(), "vmap0");
+            var targetNode = getNodeByText(tree.getRootNode(), "Satellite and World Map");
+            targetNode.parentNode.insertBefore(sourceNode, targetNode);
+
+            // Simulate drag event (arguments are ignored)
+            tree.fireEvent("dragdrop");
+
+            expectedOlStatus = [
+                {name: "vmap0", visibility: true},
+                {name: "Satellite", visibility: false},
+                {name: "World Map", visibility: false}
+            ];
+            checkOlStatus(t, map, expectedOlStatus); // 7 tests
+
+            expectedStatus = [
+                {text: "Root"},
+                {text: "label-0", attr_checked: false},
+                {text: "label-0-0", attr_checked: false},
+                {text: "label-0-0-0", attr_checked: true},
+                {text: "vmap0", attr_checked: true, radio: true},
+                {text: "Satellite and World Map", attr_checked: false},
+                {text: "label-0-0-2", attr_checked: true},
+                {text: "label-0-1", attr_checked: false},
+                {text: "label-0-3", attr_checked: false}
+            ];
+            checkStatus(t, tree, expectedStatus); // 26 tests
+
+            reset();
+
             // TODO: more drag/drop test
             // * test drag/dropping of WMS sublayers
 
@@ -1032,20 +1104,20 @@
         // model overrides the one set on the OL layers.
         function test_defaultSelection(t) {
 
-            t.plan(12 + 12);
+            t.plan(14 + 14);
 
             function doTest(visibility) {
                 var map, model, tree, node;
 
                 map = createMap();
-    
+
                 var wms = new OpenLayers.Layer.WMS("vmap0",
                     "http://labs.metacarta.com/wms/vmap0",
                     {layers: 'basic'},
                     {isBaseLayer: true}
                 );
                 map.addLayer(wms);
-    
+
                 var twms = new OpenLayers.Layer.WMS("World Map",
                     "http://world.freemap.in/cgi-bin/mapserv?",
                     {
@@ -1057,35 +1129,37 @@
                 );
                 twms.setVisibility(visibility);
                 map.addLayer(twms);
-    
+
                 map.setCenter(new OpenLayers.LonLat(5,45), 6);
-    
+
                 model = [
-                    {text: "vmap0", expanded: true, checked: true, layerName: "vmap0"},
-                    {text: "World Map", expanded: true, checked: false, layerName: "World Map"},
+                    {text: "vmap0", expanded: true, checked: true,
+                     layerName: "vmap0", radio: true},
+                    {text: "World Map", expanded: true,
+                     checked: false, layerName: "World Map"},
                     {text: "Dummy entry"}
                 ];
-    
+
                 tree = createTree(map, model);
-    
+
                 expectedStatus = [
                     {text: "Root"},
-                    {text: "vmap0", attr_checked: true},
+                    {text: "vmap0", attr_checked: true, radio: true},
                     {text: "World Map", attr_checked: false},
                     {text: "Dummy entry"}
                 ];
-                checkStatus(t, tree, expectedStatus); // 7 tests
-    
+                checkStatus(t, tree, expectedStatus); // 9 tests
+
                 expectedOlStatus = [
                     {name: "vmap0", visibility: true},
                     {name: "World Map", visibility: false}
                 ];
                 checkOlStatus(t, map, expectedOlStatus); // 5 tests
-    
+
                 reset();
             }
-            doTest(true); // 12 tests
-            doTest(false); // 12 tess
+            doTest(true); // 14 tests
+            doTest(false); // 14 tess
         }
 
      --></script>

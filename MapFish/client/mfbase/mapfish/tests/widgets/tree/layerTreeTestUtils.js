@@ -63,6 +63,23 @@ function checkStatus(t, tree, expectedStatus) {
         var node = nodes[i];
         var expectProps = expectedStatus[i];
 
+        var formType = null;
+        if (expectProps.radio !== undefined) {
+            formType = expectProps.radio ? "radio" : "checkbox";
+            delete expectProps.radio;
+        } else if (expectProps.attr_checked !== undefined) {
+            formType = "checkbox";
+        }
+        if (formType) {
+            if (node.ui && node.ui.checkbox)
+                t.eq(node.ui.checkbox.type, formType, "Form of node " +
+                     node.attributes.text + " is of correct type");
+            else
+                // dummy check so that the number of assertion does not depend
+                // on the availability of the checkbox node
+                t.ok(true, "dummy check");
+        }
+
         for (var p in expectProps) {
             var toTest = node;
             var expect = expectProps[p];

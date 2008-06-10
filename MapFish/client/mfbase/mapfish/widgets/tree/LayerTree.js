@@ -25,6 +25,114 @@
 
 Ext.namespace('mapfish.widgets');
 
+/**
+ * Class: mapfish.widgets.RadioTreeNodeUI
+ *
+ * Extends Ext TreeNodeUI to display radio buttons.
+ */
+mapfish.widgets.RadioTreeNodeUI = Ext.extend(Ext.tree.TreeNodeUI, {
+
+    // Unfortunately, IE does not support changing the type attribute of the form
+    // so we need to duplicate the whole method here. Please keep this in sync
+    // with the one from Ext in case of update. The change from Ext is to use
+    // a type="radio" with a "name" attribute on the form.
+    renderElements : function(n, a, targetNode, bulkRender){
+        this.indentMarkup = n.parentNode ? n.parentNode.ui.getChildIndent() : '';
+
+        var cb = typeof a.checked == 'boolean';
+
+        var href = a.href ? a.href : Ext.isGecko ? "" : "#";
+        var buf = ['<li class="x-tree-node"><div ext:tree-node-id="',n.id,'" class="x-tree-node-el x-tree-node-leaf x-unselectable ', a.cls,'" unselectable="on">',
+            '<span class="x-tree-node-indent">',this.indentMarkup,"</span>",
+            '<img src="', this.emptyIcon, '" class="x-tree-ec-icon x-tree-elbow" />',
+            '<img src="', a.icon || this.emptyIcon, '" class="x-tree-node-icon',(a.icon ? " x-tree-node-inline-icon" : ""),(a.iconCls ? " "+a.iconCls : ""),'" unselectable="on" />',
+            cb ? ('<input class="x-tree-node-cb" type="radio" name="radio_' + n.id + '" ' + (a.checked ? 'checked="checked" />' : '/>')) : '',
+            '<a hidefocus="on" class="x-tree-node-anchor" href="',href,'" tabIndex="1" ',
+             a.hrefTarget ? ' target="'+a.hrefTarget+'"' : "", '><span unselectable="on">',n.text,"</span></a></div>",
+            '<ul class="x-tree-node-ct" style="display:none;"></ul>',
+            "</li>"].join('');
+
+        var nel;
+        if(bulkRender !== true && n.nextSibling && (nel = n.nextSibling.ui.getEl())){
+            this.wrap = Ext.DomHelper.insertHtml("beforeBegin", nel, buf);
+        }else{
+            this.wrap = Ext.DomHelper.insertHtml("beforeEnd", targetNode, buf);
+        }
+
+        this.elNode = this.wrap.childNodes[0];
+        this.ctNode = this.wrap.childNodes[1];
+        var cs = this.elNode.childNodes;
+        this.indentNode = cs[0];
+        this.ecNode = cs[1];
+        this.iconNode = cs[2];
+        var index = 3;
+        if(cb){
+            this.checkbox = cs[3];
+            index++;
+        }
+        this.anchor = cs[index];
+        this.textNode = cs[index].firstChild;
+    },
+
+    // Version of renderElements we could use if IE wasn't so fucked up
+    _unused_renderElements : function(n, a, targetNode, bulkRender){
+        mapfish.widgets.RadioTreeNodeUI.superclass.renderElements
+                                                  .apply(this, arguments);
+        var cbNode = Ext.DomQuery.selectNode(".x-tree-node-cb", this.elNode);
+        cbNode.setAttribute("type", "radio");
+        cbNode.setAttribute("name", "radio_" + n.id);
+    },
+
+    // private
+    onRadioChange : function(){
+        var checked = this.checkbox.checked;
+        this.node.attributes.checked = checked;
+        this.fireEvent('radiochange', this.node, checked);
+    }
+});
+
+/**
+ * Class: mapfish.widgets.LayerTreeEventModel
+ *
+ * Extends Ext TreeEventModel to handle radio button events.
+ */
+mapfish.widgets.LayerTreeEventModel = Ext.extend(Ext.tree.TreeEventModel, {
+
+    delegateClick : function(e, t){
+        if(!this.beforeEvent(e)){
+            return;
+        }
+
+        if(e.getTarget('input[type=checkbox]', 1)){
+            this.onCheckboxClick(e, this.getNode(e));
+        }
+        else if(e.getTarget('input[type=radio]', 1)){
+            this.onRadioClick(e, this.getNode(e));
+        }
+        else if(e.getTarget('.x-tree-ec-icon', 1)){
+            this.onIconClick(e, this.getNode(e));
+        }
+        else if(this.getNodeTarget(e)){
+            this.onNodeClick(e, this.getNode(e));
+        }
+    },
+
+    onRadioClick: function(e, node){
+        if (!node.ui.onRadioChange) {
+            OpenLayers.Console.error("Invalid TreeNodeUI Class, no " +
+                                     "onRadioChange is available");
+            return;
+        }
+        node.ui.onRadioChange(e);
+    }
+});
+
+
+/**
+ * Class: mapfish.widgets.LayerTree
+ *
+ * Extension of Ext TreePanel to show a tree that can control OpenLayers layers
+ */
 mapfish.widgets.LayerTree = function(config) {
     Ext.apply(this, config);
     mapfish.widgets.LayerTree.superclass.constructor.call(this);
@@ -47,8 +155,51 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
     ascending: true,
 
     // set to false automatically if a model is given. Should not be manually
-    // overriden
+    // overridden
     _automaticModel: true,
+
+
+    // The instance variables below are cache objects used for faster access
+    // to objects and properties. If the model or one of the map layer changes,
+    // the method updateCachedObjects() has to be called to refresh them.
+
+    /**
+     * Property: layerNameToLayer
+     * {Object} Map of {String} layer name to {<OpenLayers.Layer>}
+     */
+    layerNameToLayer: {},
+    /**
+     * Property: baseLayerNames
+     * {Array(String)} List of base layer names
+     */
+    baseLayerNames: [],
+    /**
+     * Property: layersWithSublayers
+     * {Object} Map of {String} layer name to {Boolean}. Contains as keys the
+     *          name of layers which are using sublayers
+     */
+    layersWithSublayers: {},
+    /**
+     * Property: layerToNodeIds
+     * {Object} Map of {String} layer name to {String} node identifiers. The
+     * layer names may contain sublayers in the format
+     * <WMS layername:sublayer name>.
+     */
+    layerToNodeIds: {},
+    /**
+     * Property: nodeIdToNode
+     * Note: this.getNodeById can't be used because it only contains nodes
+     * which have been generated in the DOM, and we can get called before
+     * the DOM is generated. This variable is used to do the mapping ourself.
+     *
+     * {Object} Map of {String} node identifiers to {<Ext.tree.TreeNode>} objects.
+     */
+    nodeIdToNode: {},
+    /**
+     * Property: nodeIdToLayers
+     * {Object} Map of {String} node identifiers to {<OpenLayers.Layer>} objects.
+     */
+    nodeIdToLayers: {},
 
     /**
      * Method: hasCheckbox
@@ -99,6 +250,76 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         if (fireEvent || (fireEvent === undefined))  {
             node.fireEvent('checkchange', node, checked);
         }
+    },
+
+    /**
+     * Method: _updateCachedObjects
+     * Refreshes the cached objects from the model and OpenLayers map. See the
+     * list of updated variables and their meaning in the list of properties
+     * above.
+     */
+    _updateCachedObjects: function() {
+
+        if (!this.map) {
+            OpenLayers.Console.error("map Object needs to be available when " +
+                                     "calling _updateCachedObjects");
+            return;
+        }
+
+        // Reset objects
+        this.layerNameToLayer = {};
+        this.baseLayerNames = [];
+        this.layersWithSublayers = {};
+        this.layerToNodeIds = {};
+        this.nodeIdToNode = {};
+        this.nodeIdToLayers = {};
+
+        // Fills layerNameToLayer and baseLayerNames
+        Ext.each(this.map.layers, function(layer) {
+            var name = layer.name;
+            this.layerNameToLayer[name] = layer;
+
+            if (layer.isBaseLayer)
+                this.baseLayerNames.push(name);
+        }, this);
+
+        // Fills layersWithSublayers and nodeIdToLayers
+        this.getRootNode().cascade(function(node) {
+            if (!node.attributes.layerNames)
+                return true;
+            var layerNames = node.attributes.layerNames;
+
+            for (var i = 0; i < layerNames.length; i++) {
+                var name = layerNames[i];
+                if (name.indexOf(this.separator) != -1) {
+                    var name = name.split(this.separator)[0];
+                    this.layersWithSublayers[name] = true;
+                }
+                if (!this.nodeIdToLayers[node.id])
+                    this.nodeIdToLayers[node.id] = [];
+                this.nodeIdToLayers[node.id].push(this.layerNameToLayer[name]);
+            }
+        }, this);
+
+        // Fills layerToNodeIds and nodeIdToNode
+        this.getRootNode().cascade(function(node) {
+            var checked = node.attributes.checked;
+
+            var layerNames = node.attributes.layerNames;
+            if (!layerNames)
+                return;
+
+            for (var i = 0; i < layerNames.length; i++) {
+                var layerName = layerNames[i];
+                if (!layerName)
+                    continue;
+
+                if (!this.layerToNodeIds[layerName])
+                    this.layerToNodeIds[layerName] = [];
+                this.layerToNodeIds[layerName].push(node.id);
+                this.nodeIdToNode[node.id] = node;
+            }
+        }, this);
     },
 
     _updateCheckboxAncestors: function() {
@@ -196,39 +417,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
             return;
         }
 
-        // Some of these variables are used in the functions declared below.
-        // The documentation mentions which variables are accessed if not
-        // given through parameters.
-
-        var currentBaseLayerName;
-        if (this.map.baseLayer)
-            currentBaseLayerName = this.map.baseLayer.name;
-
-        var layerNameToLayer = {};
-        var baseLayerNames = [];
-        var layersWithSublayers = {};
-
-        var layerToNodeIds = {};
-        // We can't use this.getNodeById here because it only contains nodes
-        // which have been generated in the DOM, and we can get called before
-        // the DOM is generated. This variable is used to do the mapping ourself
-        var nodeIdToNode = {};
-        var clickedBaseLayer;
-
-        // TODO: maybe cache the layersWithSublayers object
-        this.getRootNode().cascade(function(node) {
-            if (!node.attributes.layerNames)
-                return true;
-            var layerNames = node.attributes.layerNames;
-
-            for (var i = 0; i < layerNames.length; i++) {
-                if (layerNames[i].indexOf(this.separator) != -1) {
-                    var name = layerNames[i].split(this.separator)[0];
-                    layersWithSublayers[name] = true;
-                }
-            }
-        }, this);
-
+        this._updateCachedObjects();
 
         /**
          * This function reads the visibility of the layers in the map, and returns
@@ -238,28 +427,15 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
          * Sublayers are included in the list using the
          * <WMS layername:sublayer name> convention.
          *
-         * Side effects: populates the variables:
-         * - layerNameToLayer
-         * - baseLayerNames
-
-         * Parameters:
-         * layersWithSublayers - {Object} Map of layer name to boolean. Contains
-         *      as keys the name of layers which are using sublayers
-         *
          * Returns:
          * {Object} layerVisibility map
          */
-        function getVisibilityFromMap(layersWithSublayers) {
+        function getVisibilityFromMap() {
             var layerVisibility = {};
 
             Ext.each(this.map.layers, function(layer) {
                 var name = layer.name;
-                layerNameToLayer[name] = layer;
-
                 layerVisibility[name] = layer.visibility;
-
-                if (layer.isBaseLayer)
-                    baseLayerNames.push(name);
 
                 if (!(layer instanceof OpenLayers.Layer.WMS) &&
                     !(layer instanceof OpenLayers.Layer.WMS.Untiled))
@@ -267,7 +443,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                     return;
                 }
 
-                if (!layersWithSublayers[layer.name])
+                if (!this.layersWithSublayers[layer.name])
                     return;
 
                 // FIXME: base layers and WMS do not play well for now...
@@ -300,11 +476,6 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         /**
          * Walks the tree and updates the given layerVisibility object
          *
-         * Side effects: populates the variables:
-         * - layerToNodeIds
-         * - nodeIdToNode
-         * - clickedBaseLayer
-         *
          * Parameters:
          * layerVisibility - {Object} Map of layer name to {Boolean}
          *
@@ -330,18 +501,13 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                     if (!layerName)
                         continue;
 
-                    if (!layerToNodeIds[layerName])
-                        layerToNodeIds[layerName] = [];
-                    layerToNodeIds[layerName].push(node.id);
-                    nodeIdToNode[node.id] = node;
-
                     if (layerVisibility[layerName] == undefined)
                         OpenLayers.Console.error("Invalid layer: ", layerName);
 
                     if (forcedVisibility[layerName])
                         continue;
                     if (node == clickedNode) {
-                        if (baseLayerNames.indexOf(layerName) != -1) {
+                        if (this.baseLayerNames.indexOf(layerName) != -1) {
                             clickedBaseLayer = layerName;
                         }
                         forcedVisibility[layerName] = true;
@@ -362,17 +528,16 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
          * clickedBaseLayer - {String} name of the base layer that was clicked.
          *                    can be null/undefined
          * currentBaseLayerName - {String} name of the selected base layer
-         * baseLayerNames - {Array(String)} list of base layers
          *
          * Returns:
          * {Object} updated layerVisibility map
          */
         function applyBaseLayerRestriction(layerVisibility, clickedBaseLayer,
-                                           currentBaseLayerName, baseLayerNames) {
+                                           currentBaseLayerName) {
 
             var numBaseLayer = 0;
-            for (var i = 0; i < baseLayerNames.length; i++) {
-                if (layerVisibility[baseLayerNames[i]])
+            for (var i = 0; i < this.baseLayerNames.length; i++) {
+                if (layerVisibility[this.baseLayerNames[i]])
                     numBaseLayer++;
             }
 
@@ -383,10 +548,9 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
             // change that situation. The strategy is to clear all, and only
             // select one afterwards.
 
-            for (var i = 0; i < baseLayerNames.length; i++) {
-                layerVisibility[baseLayerNames[i]] = false;
+            for (var i = 0; i < this.baseLayerNames.length; i++) {
+                layerVisibility[this.baseLayerNames[i]] = false;
             }
-
 
             // Higher priority: if a baseLayer was clicked the user intended to
             // select it, so we make sure this is the one active. This will do
@@ -410,21 +574,17 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
          *
          * Parameters:
          * layerVisibility - {Object} Map of layer name to {Boolean}
-         * layerToNodeIds - {Object} Map of {String} layer name to {String}
-         *                  node identifiers.
-         * nodeIdToNode - {Object} Map of {String} node identifiers to
-         *                {Ext.data.Node} nodes.
          */
-        function updateTreeFromVisibility(layerVisibility, layerToNodeIds, nodeIdToNode) {
+        function updateTreeFromVisibility(layerVisibility) {
 
-            for (layerName in layerVisibility) {
+            for (var layerName in layerVisibility) {
 
-                var nodeIds = layerToNodeIds[layerName];
+                var nodeIds = this.layerToNodeIds[layerName];
                 if (!nodeIds)
                     continue;
                 for (var i = 0; i < nodeIds.length; i++) {
 
-                    var node = nodeIdToNode[nodeIds[i]];
+                    var node = this.nodeIdToNode[nodeIds[i]];
                     if (!node)
                         continue;
 
@@ -455,13 +615,8 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
          *
          * Parameters:
          * layerVisibility - {Object} Map of layer name to {Boolean}
-         * layerNameToLayer - {Object} Map of layer name to {<OpenLayers.Layer>}
-         * layersWithSublayers - {Object} Map of layer name to boolean. Contains
-         *      as keys the name of layers which have sublayers
-         * baseLayerNames - {Array(String)} list of base layers
          */
-        function updateMapFromVisibility(layerVisibility, layerNameToLayer,
-                              layersWithSublayers, baseLayerNames) {
+        function updateMapFromVisibility(layerVisibility) {
 
             var wmsLayers = {};
 
@@ -493,13 +648,13 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
             }
 
             for (var layerName in layerVisibility) {
-                var layer = layerNameToLayer[layerName];
+                var layer = this.layerNameToLayer[layerName];
                 if (!layer) {
                     OpenLayers.Console.error("Non existing layer name", layerName);
                     continue;
                 }
 
-                if (baseLayerNames.indexOf(layerName) != -1) {
+                if (this.baseLayerNames.indexOf(layerName) != -1) {
                     if (layerVisibility[layerName]) {
                         this.map.setBaseLayer(layer);
                     }
@@ -509,7 +664,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
             }
 
             for (var layerName in wmsLayers) {
-                var layer = layerNameToLayer[layerName];
+                var layer = this.layerNameToLayer[layerName];
                 var sublayers = wmsLayers[layerName];
 
                 if (layer.isBaseLayer) {
@@ -547,21 +702,24 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
             }
         }
 
+        var currentBaseLayerName;
+        if (this.map.baseLayer)
+            currentBaseLayerName = this.map.baseLayer.name;
+        var clickedBaseLayer;
+
         // Definition:
         // A sublayer is a selectable layer inside a WMS layer.
 
-        var layerVisibility = getVisibilityFromMap.call(this, layersWithSublayers);
+        var layerVisibility = getVisibilityFromMap.call(this);
 
         layerVisibility = updateVisibilityFromTree.call(this, layerVisibility);
 
         applyBaseLayerRestriction.call(this, layerVisibility, clickedBaseLayer,
-                                       currentBaseLayerName, baseLayerNames);
+                                       currentBaseLayerName);
 
-        updateTreeFromVisibility.call(this, layerVisibility, layerToNodeIds,
-                                nodeIdToNode);
+        updateTreeFromVisibility.call(this, layerVisibility);
 
-        updateMapFromVisibility.call(this, layerVisibility, layerNameToLayer,
-                          layersWithSublayers, baseLayerNames);
+        updateMapFromVisibility.call(this, layerVisibility);
     },
 
     _extractOLModel: function LT__extractOLModel() {
@@ -632,13 +790,9 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         return layers;
     },
 
-    // XXX maybe merge/refactor with _handleModelChange
     _updateOrder: function() {
 
-        var layerNameToLayer = {};
-        Ext.each(this.map.layers, function(layer) {
-            layerNameToLayer[layer.name] = layer;
-        });
+        this._updateCachedObjects();
 
         // TODO: handle WMS sublayers correctly
         //var wmsLayers = {};
@@ -646,7 +800,6 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         // DESIGN CHOICE:
         // Layers available on map but not on model will be put in the
         // bottom (beginning of map.layers array)
-
 
         function layerIndex(layers, name) {
             for (var i = 0; i < layers.length; i++) {
@@ -669,30 +822,25 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         }, this);
 
         Ext.each(nodes, function(node) {
-            var nodeLayerName = node.attributes.layerName;
-
-            if (!nodeLayerName)
+            var layers = this.nodeIdToLayers[node.id];
+            if (!layers)
                 return;
+            Ext.each(layers, function(layer) {
+                var layerName = layer.name;
+                if (seenLayers[layerName])
+                    return;
+                seenLayers[layerName] = true;
 
-            var layerName = nodeLayerName;
+                var index = layerIndex(orderedLayers, layerName);
+                if (index == -1 || !this.layerNameToLayer[layerName]) {
+                    throw new Error("Layer " + layerName + " not available");
+                }
 
-            var wmsParts = nodeLayerName.split(this.separator);
-            if (wmsParts.length == 2) {
-                layerName = wmsParts[0];
-            }
+                orderedLayers.splice(index, 1);
+                orderedLayers.push(this.layerNameToLayer[layerName]);
 
-            if (seenLayers[layerName])
-                return;
-            seenLayers[layerName] = true;
-
-            var index = layerIndex(orderedLayers, layerName);
-            if (index == -1 || !layerNameToLayer[layerName]) {
-                throw new Error("Layer " + layerName + " not available");
-            }
-
-            orderedLayers.splice(index, 1);
-            orderedLayers.push(layerNameToLayer[layerName]);
-        });
+            }, this);
+        }, this);
 
         this._updateCheckboxAncestors();
 
@@ -703,11 +851,60 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         }
     },
 
+    /**
+     * Method: _fixupModel
+     *
+     * Canonicalize the model (for instance, convert layerName to layerNames
+     * properties).
+     */
+    _fixupModel: function() {
+
+        // The layerNames property has to be filled before calling
+        // _updateCachedObjects()
+        this.getRootNode().cascade(function(node) {
+            var attrs = node.attributes;
+            if (!attrs.layerNames && attrs.layerName) {
+                attrs.layerNames = [attrs.layerName];
+                delete attrs.layerName;
+            }
+        }, this);
+
+        if (this.map)
+            this._updateCachedObjects();
+
+        this.getRootNode().cascade(function(node) {
+            var layers;
+            if (!this.map || !(layers = this.nodeIdToLayers[node.id]))
+                return;
+
+            var isBaseLayer = true;
+            Ext.each(layers, function(layer) {
+                if (!layer.isBaseLayer) {
+                    isBaseLayer = false;
+                    return false;
+                }
+            }, this);
+
+            if (isBaseLayer) {
+                node.attributes.uiProvider = mapfish.widgets.RadioTreeNodeUI;
+                // The ui may already habe been instanciated here, so we
+                // replace it in this case.
+                if (node.ui)
+                    node.ui = new mapfish.widgets.RadioTreeNodeUI(node);
+            }
+        }, this);
+    },
+
     initComponent: function() {
+
+        this.eventModel = new mapfish.widgets.LayerTreeEventModel(this);
 
         mapfish.widgets.LayerTree.superclass.initComponent.call(this);
 
         this.addListener("checkchange", function checkChange(node, checked) {
+            this._handleModelChange(node, checked);
+        }, this);
+        this.addListener("radiochange", function radioChange(node, checked) {
             this._handleModelChange(node, checked);
         }, this);
 
@@ -746,22 +943,10 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
             return node;
         }
 
-        // Canonicalize the model (for instance, convert layerName to
-        // layerNames properties).
-        function fixupModel(rootNode) {
-            rootNode.cascade(function(node) {
-                var attrs = node.attributes;
-                if (!attrs.layerNames && attrs.layerName) {
-                    attrs.layerNames = [attrs.layerName];
-                }
-            }, this);
-            return rootNode;
-        }
-
         var rootNode = buildTree(root);
-        rootNode = fixupModel(rootNode);
-
         this.setRootNode(rootNode);
+
+        this._fixupModel();
 
         this.addListener("dragdrop", function() {
             this._updateOrder(arguments);
