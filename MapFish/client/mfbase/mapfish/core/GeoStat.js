@@ -31,6 +31,7 @@
  * @requires OpenLayers/Feature/Vector.js
  * @requires OpenLayers/Format/GeoJSON.js
  * @requires OpenLayers/Control/SelectFeature.js
+ * @requires OpenLayers/Ajax.js
  */
 
 mapfish.GeoStat = OpenLayers.Class({
