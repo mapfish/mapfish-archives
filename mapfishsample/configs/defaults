@@ -22,6 +22,8 @@ export DB_ROUTING_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_VERSI
 export DB_SEARCH_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_VERSION}_c2corg
 export DB_GEOSTAT_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_VERSION}_geostat
 
+export MVN=mvn
+
 function post_fetch_project() {
     PRINT_SRC=$PROJECT_MAPFISH_DIR/server/java/print/
     (cd $PRINT_SRC; $MVN clean install)
