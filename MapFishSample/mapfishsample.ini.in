@@ -9,6 +9,8 @@ debug = %DEBUG%
 #email_to = you@yourdomain.com
 smtp_server = localhost
 error_email_from = paste@localhost
+print.jar = %PROJECT_DIR%/print/print-standalone.jar
+print.config = %PROJECT_DIR%/print/config.yaml
 
 [server:main]
 use = egg:Paste#http

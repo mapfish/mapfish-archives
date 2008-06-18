@@ -41,14 +41,16 @@ import jsmin, mergejs
 configDictOpenLayers = {
     'OpenLayers.js':                '../mfbase/openlayers/lib',
     'OpenLayers':                   '../mfbase/openlayers/lib',
-    'Rico':                         '../mfbase/openlayers/lib'
+    'Rico':                         '../mfbase/openlayers/lib',
+    'GoogleGears':                  '../mfbase/openlayers/lib'
 }
 
 configDictMapFish = {
     'SingleFile.js':                '../mfbase/mapfish',
     'MapFish.js':                   '../mfbase/mapfish',
     'widgets':                      '../mfbase/mapfish',
-    'core':                         '../mfbase/mapfish'
+    'core':                         '../mfbase/mapfish',
+    'lang':                         '../mfbase/mapfish'
 }
 
 

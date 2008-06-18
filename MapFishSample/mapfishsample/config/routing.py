@@ -6,6 +6,7 @@ routes manual at http://routes.groovie.org/docs/
 """
 from pylons import config
 from routes import Mapper
+from mapfish.controllers import printer
 
 def make_map():
     """Create, configure and return the routes Mapper"""
@@ -17,6 +18,8 @@ def make_map():
     map.connect('error/:action/:id', controller='error')
 
     # CUSTOM ROUTES HERE
+
+    printer.addRoutes(map, 'print/', 'printer')
 
     map.connect('c2corg/', controller='c2corg', action='show', conditions=dict(method=['GET']))
     map.connect('c2corg/:(id).:(format)', controller='c2corg', action='show', conditions=dict(method=['GET']))

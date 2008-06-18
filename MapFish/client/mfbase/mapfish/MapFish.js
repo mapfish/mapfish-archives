@@ -91,6 +91,7 @@
       */
     if(!singleFile) {
         var jsfiles = new Array(
+            "lang/en.js",
             "core/Color.js",
             "core/GeoStat.js",
             "core/GeoStat/Choropleth.js",
@@ -103,6 +104,7 @@
             "core/Searcher/Box.js",
             "core/Searcher/Extent.js",
             "core/Searcher/Form.js",
+            "core/PrintProtocol.js",
             "core/Offline.js",
             "widgets/MapComponent.js",
             "widgets/Shortcuts.js",
@@ -115,7 +117,10 @@
             "widgets/toolbar/Toolbar.js",
             "widgets/toolbar/CheckItem.js",
             "widgets/toolbar/MenuItem.js",
-            "widgets/edition/FeatureList.js"
+            "widgets/edition/FeatureList.js",
+            "widgets/print/Base.js",
+            "widgets/print/SimpleForm.js",
+            "widgets/print/MultiPage.js"
         ); // etc.
 
         var allScriptTags = "";

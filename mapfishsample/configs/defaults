@@ -21,3 +21,9 @@ export DB_VERSION="v0.3"
 export DB_ROUTING_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_VERSION}_epfl
 export DB_SEARCH_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_VERSION}_c2corg
 export DB_GEOSTAT_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_VERSION}_geostat
+
+function post_fetch_project() {
+    PRINT_SRC=$PROJECT_MAPFISH_DIR/server/java/print/
+    (cd $PRINT_SRC; $MVN clean install)
+    cp $PRINT_SRC/print-standalone/target/print-standalone.jar $PROJECT_DIR/print/
+}

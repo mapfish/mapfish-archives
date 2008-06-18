@@ -15,7 +15,7 @@ import sys, os
 
 # Designed to prevent Open Proxy type stuff.
 
-allowedHosts = ['demo.mapfish.org']
+allowedHosts = ['demo.mapfish.org', 'localhost:5000']
 
 method = os.environ["REQUEST_METHOD"]
 
