@@ -83,50 +83,64 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
         }, this.formConfig);
         var formPanel = this.formPanel = new Ext.form.FormPanel(formConfig);
 
-        var layoutStore = new Ext.data.JsonStore({
-            root: "layouts",
-            fields: ['name'],
-            data: this.config
-        });
+        if(this.config.layouts.length>1) {
+            var layoutStore = new Ext.data.JsonStore({
+                root: "layouts",
+                fields: ['name'],
+                data: this.config
+            });
 
-        var layout = formPanel.add({
-            fieldLabel: OpenLayers.Lang.translate('mf.print.layout'),
-            xtype: 'combo',
-            store: layoutStore,
-            displayField: 'name',
-            valueField: 'name',
-            typeAhead: false,
-            mode: 'local',
-            emptyText: 'Select one...',
-            id: 'layout_' + this.getId(),
-            name: 'layout',
-            editable: false,
-            triggerAction: 'all',
-            value: this.config.layouts[0].name
-        });
-        layout.on('select', this.updateAllRectangles, this);
+            var layout = formPanel.add({
+                fieldLabel: OpenLayers.Lang.translate('mf.print.layout'),
+                xtype: 'combo',
+                store: layoutStore,
+                displayField: 'name',
+                valueField: 'name',
+                typeAhead: false,
+                mode: 'local',
+                id: 'layout_' + this.getId(),
+                name: 'layout',
+                editable: false,
+                triggerAction: 'all',
+                value: this.config.layouts[0].name
+            });
+            layout.on('select', this.updateAllRectangles, this);
+        } else {
+            formPanel.add({
+                xtype: 'hidden',
+                name: '/layout',
+                value: this.config.layouts[0].name
+            });            
+        }
 
-        var dpiStore = new Ext.data.JsonStore({
-            root: "dpis",
-            fields: ['name', 'value'],
-            data: this.config
-        });
+        if(this.config.dpis.length>1) {
+            var dpiStore = new Ext.data.JsonStore({
+                root: "dpis",
+                fields: ['name', 'value'],
+                data: this.config
+            });
 
-        formPanel.add({
-            fieldLabel: OpenLayers.Lang.translate('mf.print.dpi'),
-            xtype: 'combo',
-            store: dpiStore,
-            displayField: 'name',
-            valueField: 'value',
-            typeAhead: false,
-            mode: 'local',
-            emptyText: 'Select one...',
-            id: 'dpi_' + this.getId(),
-            name: 'dpi',
-            editable: false,
-            triggerAction: 'all',
-            value: this.config.dpis[0].value
-        });
+            formPanel.add({
+                fieldLabel: OpenLayers.Lang.translate('mf.print.dpi'),
+                xtype: 'combo',
+                store: dpiStore,
+                displayField: 'name',
+                valueField: 'value',
+                typeAhead: false,
+                mode: 'local',
+                id: 'dpi_' + this.getId(),
+                name: 'dpi',
+                editable: false,
+                triggerAction: 'all',
+                value: this.config.dpis[0].value
+            });
+        } else {
+            formPanel.add({
+                xtype: 'hidden',
+                name: '/dpi',
+                value: this.config.dpis[0].value
+            });
+        }
 
         formPanel.addButton({
             text: OpenLayers.Lang.translate('mf.print.print'),
@@ -155,7 +169,6 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
             valueField: 'value',
             typeAhead: false,
             mode: 'local',
-            emptyText: 'Select one...',
             id: 'scale_' + this.getId(),
             name: 'scale',
             editable: false,
