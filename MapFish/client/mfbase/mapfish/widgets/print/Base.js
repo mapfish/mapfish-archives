@@ -29,6 +29,7 @@
  * @requires OpenLayers/Control/DragFeature.js
  * @requires OpenLayers/Layer/Vector.js
  * @requires OpenLayers/Feature/Vector.js
+ * @requires OpenLayers/Geometry/Polygon.js
  */
 
 Ext.namespace('mapfish.widgets');
