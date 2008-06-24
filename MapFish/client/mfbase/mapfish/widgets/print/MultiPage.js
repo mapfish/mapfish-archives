@@ -53,6 +53,12 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
     grid: null,
 
     /**
+     * Property: printButton
+     * {Ext.Button} - The "print" button.
+     */
+    printButton: null,
+
+    /**
      * Method: fillComponent
      * Called by initComponent to create the component's sub-elements.
      */
@@ -108,7 +114,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
         } else {
             formPanel.add({
                 xtype: 'hidden',
-                name: '/layout',
+                name: 'layout',
                 value: this.config.layouts[0].name
             });            
         }
@@ -137,15 +143,16 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
         } else {
             formPanel.add({
                 xtype: 'hidden',
-                name: '/dpi',
+                name: 'dpi',
                 value: this.config.dpis[0].value
             });
         }
 
-        formPanel.addButton({
+        this.printButton = formPanel.addButton({
             text: OpenLayers.Lang.translate('mf.print.print'),
             scope: this,
-            handler: this.print
+            handler: this.print,
+            disabled: true
         });
 
         innerPanel.add(formPanel);
@@ -238,9 +245,13 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
         }, this);
         grid.getStore().addListener('remove', function (store, record, index) {
             this.layer.removeFeatures(record.data.rectangle);
+            if(store.getCount()==0) {
+                this.printButton.disable();
+            }
         }, this);
         grid.getStore().addListener('clear', function () {
             this.layer.removeFeatures(this.layer.features);
+            this.printButton.disable();
         }, this);
     },
 
@@ -304,6 +315,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
         pages.add(record);
         feature.data.record = record;
         this.grid.getSelectionModel().selectLastRow();
+        this.printButton.enable();
     },
 
     /**
