@@ -87,6 +87,9 @@ mapfish.PrintProtocol = OpenLayers.Class({
             OpenLayers.Request.POST({
                 url: this.config.createURL,
                 data: specTxt,
+                params: {
+                    url: this.config.createURL
+                },
                 headers: {
                     'CONTENT-TYPE': "application/json; charset=" + charset
                 },
@@ -302,6 +305,9 @@ mapfish.PrintProtocol.getConfiguration = function(url, success,
     try {
         OpenLayers.Request.GET({
             url: url,
+            params: {
+                url: url
+            },
             callback: function(request) {
                 if (request.status >= 200 && request.status < 300) {
                     var json = new OpenLayers.Format.JSON();
