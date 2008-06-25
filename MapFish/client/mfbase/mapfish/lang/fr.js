@@ -2,6 +2,7 @@
  * @requires OpenLayers/Lang/fr.js
  */
 OpenLayers.Util.extend(OpenLayers.Lang.fr, {
+    'scale': "Echelle = 1 : ${scaleDenom}",
     'mf.print.unableToPrint': "Impossible d'imprimer",
     'mf.print.generatingPDF': "Génération du PDF...",
     'mf.print.dpi': 'Résolution',
