@@ -73,13 +73,6 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
      */ 
     _buttons: null,
 
-    /**
-     * APIProperty: defaultControl
-     * <OpenLayers.Control> The control which is activated when the control is
-     * activated (turned on), which also happens at instantiation.
-     */
-    defaultControl: null,
-
     // private
     initComponent: function() {
         mapfish.widgets.toolbar.Toolbar.superclass.initComponent.call(this);
@@ -109,15 +102,29 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
         if (!button.tooltip) {
             button.tooltip = control.title;
         }
-        button.enableToggle = (control.type == OpenLayers.Control.TYPE_TOGGLE);
+        button.enableToggle = (control.type != OpenLayers.Control.TYPE_BUTTON);
         if (control.isDefault) {
             button.pressed = true;
-            this.defaultControl = control;
         }
-        button.scope = this;
-        button.handler = function() { 
-            this.activateControl(control); 
-        };
+        if (control.type == OpenLayers.Control.TYPE_BUTTON) {
+            button.on("click", control.trigger, control);
+        } else {
+            button.on("toggle", function(button, pressed) {
+                this.toggleHandler(control, pressed);
+            }, this);
+
+            //make sure the state of the control and the state of the button match
+            var self = this;
+            control.events.on({
+                "activate": function() {
+                    button.toggle(true);
+                },
+                "deactivate": function() {
+                    button.toggle(false);
+                    self.checkDefaultControl(button, control);
+                }
+            });
+        }
         this.add(button);
         this._buttons.push(button);
         return button;
@@ -172,7 +179,6 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
     activate: function() {
         if (this.configurable) {
             this.applyState(this.state);
-            this.activateControl(this.defaultControl);
             var mb = new Ext.Toolbar.Button({'text': '+'});
             mb.menu = new Ext.menu.Menu();
             for(var i = 0; i < this.controls.length; i++) {
@@ -188,8 +194,8 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
                     checkHandler: function(item, checked) {
                         if (checked) {
                             this.control.visible = true;
-                            if (this.control == this.toolbar.defaultControl) {
-                                this.toolbar.activateControl(this.control);
+                            if (this.control.isDefault) {
+                                this.control.activate();
                             } 
                             this.button.show();
                         } else {
@@ -203,7 +209,7 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
             }
             this.add(mb);
         } else if (this.defaultControl) {
-            this.activateControl(this.defaultControl);
+            this.defaultControl.activate();
         }
     },
 
@@ -214,9 +220,6 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
     deactivate: function() {
         for(var i = 0; i < this.controls.length; i++) {
             this.controls[i].deactivate();
-            if (this.controls[i].type != OpenLayers.Control.TYPE_BUTTON) { 
-                this._buttons[i].toggle(false); 
-            }
         }
     },
 
@@ -226,7 +229,7 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
      *
      * Parameters:
      * state - {<Object>}
-    */
+     */
     applyState: function(state){
         if (!state) {
             return false;
@@ -250,7 +253,7 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
     /**
      * Method: getState
      * Function that builds op the state of the toolbar and returns it
-    */
+     */
     getState: function() {
         var o = {controls: []};
         for (var i = 0, c; i < this.controls.length; i++) {
@@ -264,44 +267,54 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
     },
 
     /**
-     * Method: activateControl
-     * Activates a control on the map
-     * (Taken from OpenLayers.Panel)
+     * Method: toggleHandler
+     * Called when a button is toggled.
      *
      * Parameters:
+     * button - {<Ext.Toolbar.Button>}
      * control - {<OpenLayers.Control>}
      */
-    activateControl: function (control) {
-        var button = this.getButtonForControl(control);
-        if (!button) {
-            OpenLayers.Console.warn("Toolbar.activateControl : button was not found");
-            return;
-        }
-        if (control.type == OpenLayers.Control.TYPE_BUTTON) {
-            control.trigger();
-            return;
-        }
-        if (control.type == OpenLayers.Control.TYPE_TOGGLE) {
-            if (control.active) {
+    toggleHandler: function(control, pressed) {
+        if(pressed != control.active) {
+            if (pressed) {
+                control.activate();
+            } else {
                 control.deactivate();
-                button.toggle(false); 
-            } else {
-                control.activate();
-                button.toggle(true); 
             }
-            return;
         }
-        for (var i = 0; i < this.controls.length; i++) {
-            if (this.controls[i] == control && control.visible) {
-                control.activate();
-                button.toggle(true); 
-            } else {
-                if (this.controls[i].type != OpenLayers.Control.TYPE_TOGGLE) {
-                    this.controls[i].deactivate();
-                    this._buttons[i].toggle(false); 
+    },
+
+    /**
+     * Method: checkDefaultControl
+     * Check if there is a control active in the button's group. If not,
+     * activate the default one (if any).
+     *
+     * Parameters:
+     * button - {<Ext.Toolbar.Button>}
+     * control - {<OpenLayers.Control>}
+     */
+    checkDefaultControl: function(button, control) {
+        var group = button.toggleGroup;
+        if(group) {
+            var defaultControl = null;
+            for (var j = 0; j < this.controls.length; j++) {
+                var curButton = this._buttons[j];
+                if(curButton.toggleGroup == group) {
+                    var control = this.controls[j];
+                    if(control.active) {
+                        //found one button active in the group => OK
+                        return;
+                    } else if(control.isDefault) {
+                        defaultControl = control;
+                    }
                 }
             }
-        }
+
+            if(defaultControl) {
+                //no active control found, activate the group's default one
+                defaultControl.activate();
+            }
+        }        
     }
 });
 Ext.reg('toolbar', mapfish.widgets.toolbar.Toolbar);
