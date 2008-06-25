@@ -99,7 +99,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
                         var answer = json.read(request.responseText);
                         if (answer && answer.getURL) {
                             OpenLayers.Console.info(answer.getURL);
-                            if(window.open(answer.getURL)) {
+                            if (window.open(answer.getURL)) {
                                 success.call(context);
                             } else {
                                 failure.call(context, answer);
@@ -149,7 +149,13 @@ mapfish.PrintProtocol = OpenLayers.Class({
                     var layer = handler.call(this, olLayer);
                     if (layer) {
                         this.applyOverrides(layer, layerOverrides);
-                        layers.push(layer)
+
+                        if (olLayer.isBaseLayer) {
+                            // base layers are always first
+                            layers.unshift(layer);
+                        } else {
+                            layers.push(layer);
+                        }
                     }
                 } else if (!handler) {
                     OpenLayers.Console.error(
@@ -312,7 +318,7 @@ mapfish.PrintProtocol.getConfiguration = function(url, success,
                 if (request.status >= 200 && request.status < 300) {
                     var json = new OpenLayers.Format.JSON();
                     var answer = json.read(request.responseText);
-                    if(answer) {
+                    if (answer) {
                         success.call(context, answer);
                     } else {
                         failure.call(context, request);
