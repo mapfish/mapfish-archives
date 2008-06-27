@@ -2,7 +2,7 @@ Format: 1.4
 
 
 Title: MapFish
-#SubTitle: JavaScript Mapping Library
+SubTitle: JavaScript Mapping Library
 
 # You can add a footer to your documentation like this:
 # Footer: [text]
