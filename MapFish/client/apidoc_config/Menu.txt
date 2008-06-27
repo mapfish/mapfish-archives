@@ -108,13 +108,13 @@ Group: MapFish  {
 
       Group: Search  {
 
-         File: Point.js  (no auto-title, widgets/search/Point.js)
+         File: Point  (no auto-title, widgets/search/Point.js)
          }  # Group: Search
 
       Group: Toolbar  {
 
-         File: CheckItem.js  (no auto-title, widgets/toolbar/CheckItem.js)
-         File: Toolbar.js  (no auto-title, widgets/toolbar/Toolbar.js)
+         File: CheckItem  (no auto-title, widgets/toolbar/CheckItem.js)
+         File: Toolbar  (no auto-title, widgets/toolbar/Toolbar.js)
          }  # Group: Toolbar
 
       }  # Group: Widgets
