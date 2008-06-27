@@ -52,10 +52,11 @@ Group: MapFish  {
    Group: Core  {
 
       Group: GeoStat  {
-          File: GeoStat  (no auto-title, core/GeoStat.js)
-          File: Choropleth  (no auto-title, core/GeoStat/Choropleth.js)
-          File: ProportionalSymbol  (no auto-title, core/GeoStat/ProportionalSymbol.js)
-      } # Group: GeoStat
+
+         File: GeoStat  (no auto-title, core/GeoStat.js)
+         File: Choropleth  (no auto-title, core/GeoStat/Choropleth.js)
+         File: ProportionalSymbol  (no auto-title, core/GeoStat/ProportionalSymbol.js)
+         }  # Group: GeoStat
 
       File: Color  (no auto-title, core/Color.js)
       File: Util  (no auto-title, core/Util.js)
@@ -63,6 +64,7 @@ Group: MapFish  {
       File: Offline  (no auto-title, core/Offline.js)
 
       Group: Searcher  {
+
          File: Searcher  (no auto-title, core/Searcher.js)
          File: Box  (no auto-title, core/Searcher/Box.js)
          File: Extent  (no auto-title, core/Searcher/Extent.js)
@@ -75,11 +77,22 @@ Group: MapFish  {
 
    Group: Widgets  {
 
-      File: data.FeatureReader  (no auto-title, widgets/data/FeatureReader.js)
-      File: data.FeatureStore  (no auto-title, widgets/data/FeatureStore.js)
-      File: edition/FeatureList.js  (no auto-title, widgets/edition/FeatureList.js)
-      File: geostat/Choropleth.js  (no auto-title, widgets/geostat/Choropleth.js)
-      File: geostat/ProportionalSymbol.js  (no auto-title, widgets/geostat/ProportionalSymbol.js)
+      Group: Data  {
+
+         File: FeatureReader  (no auto-title, widgets/data/FeatureReader.js)
+         File: FeatureStore  (no auto-title, widgets/data/FeatureStore.js)
+         }  # Group: Data
+
+      Group: Edition  {
+
+         File: FeatureList  (no auto-title, widgets/edition/FeatureList.js)
+         }  # Group: Edition
+
+      Group: Geostat  {
+
+         File: Choropleth  (no auto-title, widgets/geostat/Choropleth.js)
+         File: ProportionalSymbol  (no auto-title, widgets/geostat/ProportionalSymbol.js)
+         }  # Group: Geostat
 
       Group: Print  {
 
@@ -88,12 +101,33 @@ Group: MapFish  {
          File: SimpleForm  (no auto-title, widgets/print/SimpleForm.js)
          }  # Group: Print
 
-      File: RadioTreeNodeUI  (no auto-title, widgets/tree/LayerTree.js)
-      File: search/Point.js  (no auto-title, widgets/search/Point.js)
-      File: toolbar/CheckItem.js  (no auto-title, widgets/toolbar/CheckItem.js)
-      File: toolbar/Toolbar.js  (no auto-title, widgets/toolbar/Toolbar.js)
+      Group: Tree  {
+
+         File: LayerTree  (no auto-title, widgets/tree/LayerTree.js)
+         }  # Group: Tree
+
+      Group: Search  {
+
+         File: Point.js  (no auto-title, widgets/search/Point.js)
+         }  # Group: Search
+
+      Group: Toolbar  {
+
+         File: CheckItem.js  (no auto-title, widgets/toolbar/CheckItem.js)
+         File: Toolbar.js  (no auto-title, widgets/toolbar/Toolbar.js)
+         }  # Group: Toolbar
+
       }  # Group: Widgets
 
    }  # Group: MapFish
 
-# Let use openlayers Index directive when merging this file with OL Menu.txt
+Group: Index  {
+
+   Index: Everything
+   Class Index: Classes
+   Constant Index: Constants
+   File Index: Files
+   Function Index: Functions
+   Property Index: Properties
+   }  # Group: Index
+
