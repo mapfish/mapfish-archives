@@ -116,6 +116,25 @@ subst_in_files() {
 
     run_hook after_import_subst_in_files
 
+    PROCESSED_HTML=$(find $PROJECT_DIR/$PROJECT/$PROJECT/public -name "*.html.in" \
+                     -exec grep -l PROD_COMMENT_START {} \;)
+
+    if [ "$DEBUG" = "true" ]; then
+        export PROD_COMMENT_START="<!--"
+        export PROD_COMMENT_END="-->"
+    else
+        export DEBUG_COMMENT_START="<!--"
+        export DEBUG_COMMENT_END="-->"
+    fi
+
+    for f in $PROCESSED_HTML; do
+        # Create map_debug.html and map_prod.html files
+        perl -pne 's/DEBUG_COMMENT/__/g; s/%PROD_COMMENT_START%/<!--/g; s/%PROD_COMMENT_END%/-->/g' \
+                $f > ${f%%.html.in}_debug.html.in
+        perl -pne 's/PROD_COMMENT/__/g; s/%DEBUG_COMMENT_START%/<!--/g; s/%DEBUG_COMMENT_END%/-->/g' \
+                $f > ${f%%.html.in}_prod.html.in
+    done
+
     echo "Substituting config variables"
 
     find $PROJECT_DIR -name '*.in' | while read i; do
@@ -129,6 +148,10 @@ subst_in_files() {
     fi
 
     run_hook post_subst_in_files
+
+    for f in $PROCESSED_HTML; do
+        python $BASE/deploy/merge_js.py ${f%%.in} ${f%%.html.in}_merged.js
+    done
 }
 
 init_mapfish() {
