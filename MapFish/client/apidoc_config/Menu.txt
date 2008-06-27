@@ -101,10 +101,10 @@ Group: MapFish  {
          File: SimpleForm  (no auto-title, widgets/print/SimpleForm.js)
          }  # Group: Print
 
-      Group: Tree  {
+      Group: LayerTree  {
 
          File: LayerTree  (no auto-title, widgets/tree/LayerTree.js)
-         }  # Group: Tree
+         }  # Group: LayerTree
 
       Group: Search  {
 
