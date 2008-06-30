@@ -121,13 +121,5 @@ Group: MapFish  {
 
    }  # Group: MapFish
 
-Group: Index  {
-
-   Index: Everything
-   Class Index: Classes
-   Constant Index: Constants
-   File Index: Files
-   Function Index: Functions
-   Property Index: Properties
-   }  # Group: Index
+# No index (uses openlayer index block)
 
