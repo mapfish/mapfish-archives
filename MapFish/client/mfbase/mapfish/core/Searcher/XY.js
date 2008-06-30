@@ -39,7 +39,7 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
     /**
      * APIProperty: searchTolerance
      * {Integer} - The search tolerance. The units are given by the
-     *     searcToleranceUnits property. Defaults to 3.
+     *     searchToleranceUnits property. Defaults to 3.
      */
     searchTolerance: 3,
 
