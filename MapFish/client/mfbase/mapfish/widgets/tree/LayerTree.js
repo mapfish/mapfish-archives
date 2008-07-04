@@ -694,9 +694,13 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                         }
                         sublayers = orderedLayers;
                     }
-                    layer.params.LAYERS = sublayers;
-                    layer.redraw();
 
+                    // wms layer has to be redrawn only if its sublayers
+                    // have changed
+                    if (!mapfish.Util.arrayEqual(layer.params.LAYERS, sublayers)) {
+                        layer.params.LAYERS = sublayers;
+                        layer.redraw();
+                    }
                     layer.setVisibility(true, true);
                 }
             }

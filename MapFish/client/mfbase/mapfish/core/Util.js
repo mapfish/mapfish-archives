@@ -17,6 +17,10 @@
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @class mapfish.Util
+ * Utility functions
+ */
 mapfish.Util = {};
 
 mapfish.Util.sum = function(array) {
@@ -35,15 +39,15 @@ mapfish.Util.min = function(array) {
 /**
  * Function: getIconUrl
  * Builds the URL for a layer icon, based on a WMS GetLegendGraphic request.
- * 
+ *
  * Parameters:
  * wmsUrl - {String} The URL of a WMS server.
  * options - {Object} The options to set in the request:
  *                    'layer' - the name of the layer for which the icon is requested (required)
  *                    'rule' - the name of a class for this layer (this is set to the layer name if not specified)
  *                    'format' - "image/png" by default
- *                    ... 
- * 
+ *                    ...
+ *
  * Returns:
  * {String} The URL at which the icon can be found.
  */
@@ -69,4 +73,32 @@ mapfish.Util.getIconUrl = function(wmsUrl, options) {
     }, options);
     options = OpenLayers.Util.upperCaseObject(options);
     return url + OpenLayers.Util.getParameterString(options);
+};
+
+
+/**
+ * Function: arrayEqual
+ * Compare two arrays containing primitive types.
+ *
+ * Parameters:
+ * a - {Array} 1st to be compared.
+ * b - {Array} 2nd to be compared.
+ *
+ * Returns:
+ * {Boolean} True if both given arrays contents are the same (elements value and type).
+ */
+mapfish.Util.arrayEqual = function(a, b) {
+    if(a == null || b == null)
+        return false;
+    if(typeof(a) != 'object' || typeof(b) != 'object')
+        return false;
+    if (a.length != b.length)
+        return false;
+    for (var i = 0; i < a.length; i++) {
+        if (typeof(a[i]) != typeof(b[i]))
+            return false;
+        if (a[i] != b[i])
+            return false;
+    }
+    return true;
 };

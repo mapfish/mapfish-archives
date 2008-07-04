@@ -135,8 +135,9 @@ Ext.onReady(function() {
                     console.trace();
                 throw new Error("Test failure: " + msg + " : " + test);
         },
-        eq: function(value, expect, msg) {
-            this.count++;
+        eq: function(value, expect, msg, noIncrement) {
+            if (!noIncrement)
+                this.count++;
             console.info(msg);
 
             // XXX constructor.name is not working on Opera
@@ -144,9 +145,9 @@ Ext.onReady(function() {
             if (value && value.constructor &&
                 value.constructor.name == "Array")
             {
-                this.eq(value.length, expect.length, msg);
+                this.eq(value.length, expect.length, msg, true);
                 for (var i = 0; i < expect.length; i++)
-                    this.eq(value[i], expect[i], msg);
+                    this.eq(value[i], expect[i], msg, true);
                 return;
             }
 
