@@ -141,25 +141,25 @@
             tree = createTree(map, model);
 
             // OpenLayers.Layer.redraw() hook
-            var test_layer_redraw_called = {};
+            var testLayerRedrawCalled = {};
             var redrawOrig = OpenLayers.Layer.prototype.redraw;
             OpenLayers.Layer.prototype.redraw = function() {
-              test_layer_redraw_called[this.name] = true;
+              testLayerRedrawCalled[this.name] = true;
               redrawOrig.apply(this, arguments);
             }
 
             // Redrawn check data structure
             for (var i=0; i < map.layers.length; i++) {
                 var layerName = map.layers[i].name;
-                test_layer_redraw_called[layerName] = false;
+                testLayerRedrawCalled[layerName] = false;
             }
 
             function checkLayerRedrawCalled(expectedRedrawnLayers) {
                 for (layerName in expectedRedrawnLayers) {
-                    t.eq(test_layer_redraw_called[layerName],
+                    t.eq(testLayerRedrawCalled[layerName],
                             expectedRedrawnLayers[layerName],
                             layerName + ' layer redraw call check OK');
-                    test_layer_redraw_called[layerName] = false;
+                    testLayerRedrawCalled[layerName] = false;
                 }
             }
 
