@@ -34,7 +34,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
      * Constructor: OpenLayers.Layer
      *
      * Parameters:
-     * map - {OpenLayers.Map} The OL MAP.
+     * map - <OpenLayers.Map> The OL MAP.
      * config - {Object} the configuration as returned by the MapPrinterServlet.
      * overrides - {Object} the map that specify the print module overrides for
      *                      each layers.
