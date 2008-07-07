@@ -28,7 +28,7 @@
  * toolbar.addControl(new OpenLayers.Control.ZoomBox({title: 'Zoom in'}), 
  *                    {iconCls: 'zoomin', 
  *                     toggleGroup: 'navigation'});
- * toolbar.addControl(new OpenLayers.Control.DragPan({title: 'Drag or pan', default: true}), 
+ * toolbar.addControl(new OpenLayers.Control.DragPan({title: 'Drag or pan', isDefault: true}), 
  *                    {iconCls: 'pan', 
  *                     toggleGroup: 'navigation'});
  * toolbar.activate();
