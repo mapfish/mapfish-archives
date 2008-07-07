@@ -21,6 +21,13 @@
  * @requires core/GeoStat.js
  */
 
+/**
+ * Class: mapfish.GeoStat.Choropleth
+ * Use this class to create choropleths on a map.
+ *
+ * Inherits from:
+ * - <mapfish.GeoStat>
+ */
 mapfish.GeoStat.Choropleth = OpenLayers.Class(mapfish.GeoStat, {
     
     /**

@@ -23,6 +23,15 @@
  * @requires OpenLayers/Util.js
  */
 
+/**
+ * Class: mapfish.Searcher.Form
+ * Use this class to create a form searcher. A form searcher
+ * gets search criteria from an HTML form and sends search
+ * requests through Ajax.
+ *
+ * Inherits from:
+ * - mapfish.Searcher
+ */
 mapfish.Searcher.Form = OpenLayers.Class(mapfish.Searcher, {
 
     /**

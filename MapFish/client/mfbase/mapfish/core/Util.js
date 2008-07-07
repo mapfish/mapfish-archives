@@ -18,20 +18,32 @@
  */
 
 /**
- * @class mapfish.Util
+ * Namespace: mapfish.Util
  * Utility functions
  */
 mapfish.Util = {};
 
+/**
+ * APIFunction: mapfish.Util.sum
+ * Return the sum of the elements of an array.
+ */
 mapfish.Util.sum = function(array) {
     for (var i=0, sum=0; i < array.length; sum += array[i++]);
     return sum;
 };
 
+/**
+ * APIFunction: mapfish.Util.max
+ * Return the max of the elements of an array.
+ */
 mapfish.Util.max = function(array) {
     return Math.max.apply({}, array);
 };
 
+/**
+ * APIFunction: mapfish.Util.min
+ * Return the min of the elements of an array.
+ */
 mapfish.Util.min = function(array) {
     return Math.min.apply({}, array);
 };
@@ -77,7 +89,7 @@ mapfish.Util.getIconUrl = function(wmsUrl, options) {
 
 
 /**
- * Function: arrayEqual
+ * APIFunction: mapfish.Util.arrayEqual
  * Compare two arrays containing primitive types.
  *
  * Parameters:

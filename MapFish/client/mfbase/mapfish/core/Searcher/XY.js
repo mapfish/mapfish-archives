@@ -28,6 +28,15 @@
  * @requires OpenLayers/Handler/Hover.js
  */
 
+/**
+ * Class: mapfish.Searcher.XY
+ * Use this class to create a XY searcher. A XY searcher
+ * sends search requests as the user clicks or pauses on
+ * the map.
+ *
+ * Inherits from:
+ * - mapfish.Searcher
+ */
 mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
 
     /**

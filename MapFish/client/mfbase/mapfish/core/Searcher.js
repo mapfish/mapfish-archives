@@ -22,6 +22,11 @@
  * @requires OpenLayers/Util.js
  */
 
+/**
+ * Class: mapfish.Searcher
+ * Base searcher class. This class is not meant to be used directly, it serves
+ * as a base class for specific searcher implementations.
+ */
 mapfish.Searcher = OpenLayers.Class({
         
     /**

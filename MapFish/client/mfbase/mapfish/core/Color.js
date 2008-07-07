@@ -18,17 +18,29 @@
  */
 
 /**
- * An abstract representation of color
+ * An abstract representation of color.
  */
 mapfish.Color = OpenLayers.Class({
     getColorRgb: function() {}
 });
 
+/**
+ * Class: mapfish.ColorRgb
+ * Class for representing RGB colors.
+ */
 mapfish.ColorRgb = OpenLayers.Class(mapfish.Color, {
     redLevel: null,
     greenLevel: null,
     blueLevel: null,
-    
+
+    /**
+     * Constructor: mapfish.ColorRgb
+     *
+     * Parameters:
+     * red - {Integer}
+     * green - {Integer}
+     * blue - {Integer}
+     */
     initialize: function(red, green, blue) {
         this.redLevel = red;
         this.greenLevel = green;

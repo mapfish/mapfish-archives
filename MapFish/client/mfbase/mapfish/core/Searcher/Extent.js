@@ -24,6 +24,14 @@
  * @requires OpenLayers/Util.js
  */
 
+/**
+ * Class: mapfish.Searcher.Extent
+ * Use this class to create a extent searcher. An extent searcher
+ * sends search requests as the map extent changes.
+ *
+ * Inherits from:
+ * - mapfish.Searcher
+ */
 mapfish.Searcher.Extent = OpenLayers.Class(mapfish.Searcher, {
 
     /**

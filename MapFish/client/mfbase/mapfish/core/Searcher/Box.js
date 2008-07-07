@@ -26,6 +26,14 @@
  * @requires OpenLayers/Handler/Box.js
  */
 
+/**
+ * Class: mapfish.Searcher.Box
+ * Use this class to create a box searcher. A box searcher sends
+ * search requests as the user draws boxes.
+ *
+ * Inherits from:
+ * - mapfish.Searcher
+ */
 mapfish.Searcher.Box = OpenLayers.Class(mapfish.Searcher, {
 
     /**

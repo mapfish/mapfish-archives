@@ -23,16 +23,20 @@
 
 /**
  * Class: mapfish.GeoStat.ProportionalSymbol
- * 
+ * Use this class to create proportional symbols on a map.
+ *
  * Mandatory options are :
- * features
+ * - features
  * 
  * Example usage :
- * new mapfish.GeoStat.ProportionalSymbol(this.map, {
- *     minSize: 5,
- *     maxSize: 15,
- *     idAttribute:
- *          });
+ * > new mapfish.GeoStat.ProportionalSymbol(this.map, {
+ * >     minSize: 5,
+ * >     maxSize: 15,
+ * >     idAttribute:
+ * > });
+ *
+ * Inherits from:
+ * - <mapfish.GeoStat>
  */
 mapfish.GeoStat.ProportionalSymbol = OpenLayers.Class(mapfish.GeoStat, {
     

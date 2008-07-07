@@ -18,15 +18,19 @@
  */
 
 /*
+ * @requires OpenLayers/Events.js
+ */
+
+/*
+ * TODO: support for automatic offline/online detection with network polling
+ */
+
+/*
+ * Class: mapfish.Offline
  * MapFish Offline core component.
  * This object is a singleton, it can't be instanciated.
  * This API is inspired by The Dojo Offline Toolkit, created by
  * Dojo, SitePen, and Brad Neuberg.
- *
- * TODO: support for automatic offline/online detection with network polling
- *
- * @requires OpenLayers/Events.js
- *
  */
 mapfish.Offline = function() {
 

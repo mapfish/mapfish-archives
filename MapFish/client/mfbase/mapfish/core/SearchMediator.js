@@ -24,6 +24,13 @@
  * @requires OpenLayers/Ajax.js
  */
 
+/**
+ * Class: mapfish.SearchMediator
+ * A SearchMediator object is to be used when multiple searchers must be coupled
+ * (e.g. coupling a search form with a BBOX searcher). This object is also
+ * responsible for sending the search (Ajax) requests, so it is used with or
+ * by searchers even in cases where there's no coupling.
+ */
 mapfish.SearchMediator = OpenLayers.Class({
  
     /**

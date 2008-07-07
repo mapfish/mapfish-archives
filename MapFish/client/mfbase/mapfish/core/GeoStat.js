@@ -34,6 +34,11 @@
  * @requires OpenLayers/Ajax.js
  */
 
+/**
+ * Class: mapfish.GeoStat
+ * Base class for geo-statistics. This class is not meant to be used directly, it serves
+ * as the base for specific geo-statistics implementations.
+ */
 mapfish.GeoStat = OpenLayers.Class({
 
     /**
@@ -441,8 +446,8 @@ mapfish.GeoStat.Distribution.CLASSIFY_BY_QUANTILS = 2;
 
 /**
  * Bin is category of the Classification.
- *     When they are defined, lowerBound is within the class
- *     and upperBound is outside de the class.
+ * When they are defined, lowerBound is within the class
+ * and upperBound is outside de the class.
  */
 mapfish.GeoStat.Bin = OpenLayers.Class({
     label: null,
@@ -463,7 +468,7 @@ mapfish.GeoStat.Bin = OpenLayers.Class({
 });
 
 /**
- * Classification summarize a Distribution by regrouping data within several Bins.
+ * Classification summarizes a Distribution by regrouping data within several Bins.
  */
 mapfish.GeoStat.Classification = OpenLayers.Class({
     bins: [],

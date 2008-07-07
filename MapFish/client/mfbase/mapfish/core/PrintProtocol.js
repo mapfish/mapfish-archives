@@ -1,20 +1,40 @@
+/*
+ * Copyright (C) 2008 Camptocamp
+ *
+ * This file is part of MapFish
+ *
+ * MapFish is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MapFish is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
+ * @requires OpenLayers/Console.js
+ * @requires OpenLayers/Format/JSON.js
+ * @requires OpenLayers/Request/XMLHttpRequest.js
+ */
+
 /**
  * Class: mapfish.PrintProtocol
- *
- * For communicating with the print module.
+ * Class to communicate with the print module.
  *
  * This class will automatically pick the layers from the OL map and create the
  * configuration structure accordingly.
  *
  * As we often want a sligtly different styling or minScale/maxScale, an
  * override functionallity is provided that allows to override the OL layers'
- * configuration. This can be used as well if a layer's URL points to a
+ * configuration, this can be used as well if a layer's URL points to a
  * TileCache service to allow the print module to access the WMS service
  * directly.
- *
- * @requires OpenLayers/Console.js
- * @requires OpenLayers/Format/JSON.js
- * @requires OpenLayers/Request/XMLHttpRequest.js
  */
 mapfish.PrintProtocol = OpenLayers.Class({
     /**
@@ -34,7 +54,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
      * Constructor: OpenLayers.Layer
      *
      * Parameters:
-     * map - <OpenLayers.Map> The OL MAP.
+     * map - {<OpenLayers.Map>} The OL MAP.
      * config - {Object} the configuration as returned by the MapPrinterServlet.
      * overrides - {Object} the map that specify the print module overrides for
      *                      each layers.
