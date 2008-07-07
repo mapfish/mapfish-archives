@@ -17,14 +17,7 @@
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-/**
- * Class: mapfish.widgets.print.Base
- *
- * Base class for the Ext panels used to communicate with the print module
- *
- * Will automatically take the layers from the given {<OpenLayers.Map>} instance.
- *
+/*
  * @requires core/PrintProtocol.js
  * @requires OpenLayers/Control/DragFeature.js
  * @requires OpenLayers/Layer/Vector.js
@@ -34,6 +27,22 @@
 
 Ext.namespace('mapfish.widgets');
 Ext.namespace('mapfish.widgets.print');
+
+/**
+ * Class: mapfish.widgets.print.Base
+ * Base class for the Ext panels used to communicate with the print module,
+ * automatically take the layers from the given {<OpenLayers.Map>} instance.
+ *
+ * Inherits from:
+ * - {Ext.Panel}
+ */
+
+/**
+ * Constructor: mapfish.widgets.print.Base
+ *
+ * Parameters:
+ * config - {Object} Config object
+ */
 
 mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
     /**

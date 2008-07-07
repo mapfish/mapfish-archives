@@ -26,12 +26,17 @@ Ext.namespace('mapfish.widgets', 'mapfish.widgets.data');
 /**
  * Class: mapfish.widgets.data.FeatureStore
  * This class is intended to be used when user wants a store with a
- *      Feature reader. It exposes methods to manipulate the store
- *      like add/remove features into it. It also registers listeners
+ *      Feature reader. It exposes methods to manipulate the store,
+ *      specifically add/remove features into it. It also registers listeners
  *      to layer events "featuresadded", "featuresremoved", and
  *      "featureremoved" to update the store.
  */
 
+/**
+ * Constructor: mapfish.widgets.data.FeatureReader
+ *      Create a feature reader. The arguments passed are similar to those
+ *      passed to {Ext.data.DataReader} constructor.
+ */
 mapfish.widgets.data.FeatureStore = function(config){
     Ext.apply(this, config);
     // sanity checks

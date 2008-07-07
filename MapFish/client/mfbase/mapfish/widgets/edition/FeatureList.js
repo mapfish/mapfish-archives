@@ -17,22 +17,29 @@
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.namespace('mapfish.widgets');
-
-Ext.namespace('mapfish.widgets.edition');
-
 /**
  * @requires OpenLayers/Map.js
  * @requires OpenLayers/Control/ModifyFeature.js
  * @requires OpenLayers/Layer/Vector.js
  */
 
+Ext.namespace('mapfish.widgets');
+
+Ext.namespace('mapfish.widgets.edition');
+
+/**
+ * Class: mapfish.widgets.edition.FeatureList
+ * Use this class to create an editable grid of features.
+ *
+ * Inherits from:
+ * - {Ext.grid.EditorGridPanel}
+ */
+
 /**
  * Constructor: mapfish.widgets.edition.FeatureList
- * An EditorGridPanel with support for 'geo' typed columns.
  *
  * Parameters:
- * config - {Object} The Grid's config.
+ * config - {Object} The Grid config.
  */
 mapfish.widgets.edition.FeatureList = function(config) {
     Ext.apply(this, config, {
@@ -43,17 +50,11 @@ mapfish.widgets.edition.FeatureList = function(config) {
     mapfish.widgets.edition.FeatureList.superclass.constructor.call(this);
 };
 
-
-/**
- * Class: mapfish.widgets.edition.FeatureList
- * An EditorGridPanel with support for 'geo' typed columns.
- * @param config
- */
 Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
 
     /**
      * APIProperty: featureType
-     * {<Ext.data.Record>} Definition of a feature record,
+     * {Ext.data.Record} Definition of a feature record,
      * created by Ext.data.Record.create()
      */
     featureType: null,

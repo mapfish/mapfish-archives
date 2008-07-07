@@ -17,23 +17,28 @@
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @class mapfish.widgets.MapComponent
- * @extends Ext.Container
- * A map container in order to be able to insert a map into a complex layout
- * Its main interest is to update the map size when the container is resized
- * Simple example usage:
- * <pre><code>
- * var mapcomponent = new mapfish.widgets.MapComponent({map: map});
- * </code></pre>
- * Note that the callback method must return a valid <OpenLayers.Map> object
- * @constructor
- * Create a new MapComponent
- * @param {Object} map the OpenLayers map object
- * @param {Object} config The config object
- */
 Ext.namespace('mapfish.widgets');
 
+/**
+ * Class: mapfish.widgets.MapComponent
+ *
+ * A map container in order to be able to insert a map into a complex layout
+ * Its main interest is to update the map size when the container is resized
+ *
+ * Simple example usage:
+ * > var mapcomponent = new mapfish.widgets.MapComponent({map: map});
+ *
+ * Inherits from:
+ * - {Ext.Panel}
+ */
+
+/*
+ * Constructor: mapfish.widgets.MapComponent
+ * Create a new MapComponent.
+ *
+ * Parameters:
+ * config - {Object} The config object
+ */
 mapfish.widgets.MapComponent = function(config) {
     Ext.apply(this, config);
     this.contentEl = this.map.div;
@@ -46,11 +51,11 @@ mapfish.widgets.MapComponent = function(config) {
     content.setStyle('height', '100%');
     
     mapfish.widgets.MapComponent.superclass.constructor.call(this);
-}
+};
 
 Ext.extend(mapfish.widgets.MapComponent, Ext.Panel, {
     /**
-     * The map to display.
+     * Property: map
      * {OpenLayers.Map}  
      */
     map: null,

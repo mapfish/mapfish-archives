@@ -77,6 +77,9 @@ Group: MapFish  {
 
    Group: Widgets  {
 
+      File: MapComponent  (no auto-title, widgets/MapComponent.js)
+      File: Shortcuts  (no auto-title, widgets/Shortcuts.js)
+
       Group: Data  {
 
          File: FeatureReader  (no auto-title, widgets/data/FeatureReader.js)

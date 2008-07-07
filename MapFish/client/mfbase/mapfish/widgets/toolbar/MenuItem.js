@@ -17,22 +17,34 @@
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+Ext.namespace('mapfish.widgets.toolbar');
+
 /**
- * @class mapfish.widgets.toolbar.MenuItem
- * @extends Ext.menu.Item
- * A Menu item is associated with an OpenLayers Control of type BUTTON and will call trigger on it
- * This class also add quicktips
+ * Class: mapfish.widgets.toolbar.MenuItem
+ * A Menu item is associated with an OpenLayers Control of type BUTTON and will call trigger on it.
+ * This class also add quicktips.
+ *
  * Simple example usage:
- * <pre><code>
- * var menuItem = new mapfish.widgets.toolbar.MenuItem({text: 'My menu item', tooltip: 'My tooltip', 
-     icon: 'lib/openlayers/theme/default/img/icon_roi_feature.png', control: new OpenLayers.Control.ROISelect({map: map}) } );
- * </code></pre>
- * @constructor
- * Create a new MenuItem
- * @param {Object} config The config object
+ * (start code)
+ * var menuItem = new mapfish.widgets.toolbar.MenuItem({
+ *     text: 'My menu item',
+ *     tooltip: 'My tooltip', 
+ *     icon: 'lib/openlayers/theme/default/img/icon_roi_feature.png',
+ *     control: new OpenLayers.Control.ROISelect({map: map})
+ * });
+ * (end)
+ *
+ * Inherits from:
+ * - {Ext.menu.Item}
  */
 
-Ext.namespace('mapfish.widgets.toolbar');
+/**
+ * Constructor: mapfish.widgets.toolbar.MenuItem
+ * Create a new MenuItem.
+ *
+ * Parameters:
+ * config - {Object} Config object
+ */
 
 mapfish.widgets.toolbar.MenuItem = function(config) {
     Ext.apply(this, config);

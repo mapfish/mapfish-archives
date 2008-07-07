@@ -17,17 +17,27 @@
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-/**
- * Class: mapfish.widgets.print.SimpleForm
- *
- * Will automatically take the layers from the given {<OpenLayers.Map>} instance.
- *
+/*
  * @requires widgets/print/Base.js
  */
 
 Ext.namespace('mapfish.widgets');
 Ext.namespace('mapfish.widgets.print');
+
+/**
+ * Class: mapfish.widgets.print.SimpleForm
+ * Automatically takes the layers from the given {<OpenLayers.Map>} instance.
+ *
+ * Inherits from:
+ * - {<mapfish.widgets.print.Base>}
+ */
+
+/**
+ * Constructor: mapfish.widgets.print.SimpleForm
+ *
+ * Parameters:
+ * config - {Object} Config object
+ */
 
 mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
     /**

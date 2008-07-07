@@ -17,20 +17,22 @@
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-/**
+/*
  * @requires core/Searcher/XY.js
- * 
- * Class: mapfish.widgets.search.Point
  */
 
 Ext.namespace('mapfish.widgets');
 Ext.namespace('mapfish.widgets.search');
 
+/**
+ * Class: mapfish.widgets.search.Point
+ * DEPRECATED: will go away.
+ */
+
 mapfish.widgets.search.Point = function(config) {
     Ext.apply(this, config);
     mapfish.widgets.search.Point.superclass.constructor.call(this);
-}
+};
 
 Ext.extend(mapfish.widgets.search.Point, Ext.Panel, {
 

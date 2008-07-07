@@ -17,29 +17,36 @@
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+Ext.namespace('mapfish.widgets.toolbar');
+
 /**
- * @class mapfish.widgets.toolbar.Toolbar
- * @extends Ext.Toolbar
- * A toolbar will show a set of OpenLayers Controls and handle activating them
+ * Class: mapfish.widgets.toolbar.Toolbar
+ * A toolbar shows a set of OpenLayers Controls and handle activating them.
+ *
  * Simple example usage:
- * <pre><code>
+ * (start code)
  * var toolbar = new mapfish.widgets.toolbar.Toolbar({map: map});
  * toolbar.render('buttonbar');
- * toolbar.addControl(new OpenLayers.Control.ZoomBox({title: 'Zoom in'}), 
- *                    {iconCls: 'zoomin', 
- *                     toggleGroup: 'navigation'});
- * toolbar.addControl(new OpenLayers.Control.DragPan({title: 'Drag or pan', isDefault: true}), 
- *                    {iconCls: 'pan', 
- *                     toggleGroup: 'navigation'});
+ * toolbar.addControl(
+ *     new OpenLayers.Control.ZoomBox({title: 'Zoom in'}), 
+ *     {iconCls: 'zoomin', toggleGroup: 'navigation'});
+ * toolbar.addControl(
+ *     new OpenLayers.Control.DragPan({title: 'Drag or pan', isDefault: true}), 
+ *     {iconCls: 'pan', toggleGroup: 'navigation'});
  * toolbar.activate();
- * </code></pre>
- * @constructor
- * Create a new Toolbar
- * @param {Object} map the OpenLayers map object
- * @param {Object} config The config object
+ * (end)
+ *
+ * Inherits from:
+ * - {Ext.Toolbar}
  */
 
-Ext.namespace('mapfish.widgets.toolbar');
+/**
+ * Constructor: mapfish.widgets.toolbar.Toolbar
+ * Create a new Toolbar
+ *
+ * Parameters:
+ * config - {Object} Config object
+ */
 
 mapfish.widgets.toolbar.Toolbar = function(config) {
     Ext.apply(this, config);

@@ -18,33 +18,38 @@
  */
 
 /**
- * @class mapfish.widgets.Shortcuts
- * @extends Ext.Container
- * Simple shorcut to get the map zoomed to a preconfigured location<br />
- * Here's an example of typical usage:
- * <pre><code>
-var shortcuts = new mapfish.widgets.Shortcuts({
-    el: 'myDiv',
-    map: map,
-    store: store,
-    templates: {
-        header: new Ext.Template("Choose a continent in the list"),
-        footer: new Ext.Template("The map will automatically center to this location")
-    }
-});
-</code></pre>
- * @constructor
- * Create a new Shortcuts
- * @param {Object} map the OpenLayers map object
- * @param {Object} config The config object
- */
-
-/**
  * @requires OpenLayers/Map.js
  */
 
 Ext.namespace('mapfish.widgets');
 
+/**
+ * Class: mapfish.widgets.Shortcuts
+ * Shorcuts to get the map zoomed to a preconfigured locations.
+ *
+ * Typical usage:
+ * (start code)
+ * var shortcuts = new mapfish.widgets.Shortcuts({
+ *    el: 'myDiv',
+ *    map: map,
+ *    store: store,
+ *    templates: {
+ *        header: new Ext.Template("Choose a continent in the list"),
+ *        footer: new Ext.Template("The map will automatically center to this location")
+ *    }
+ * });
+ * (end)
+ *
+ * Inherits from:
+ * - {Ext.Container}
+ */
+
+/**
+ * Constructor: mapfish.widgets.Shortcuts
+ *
+ * Parameters:
+ * config - {Object} The config object
+ */
 mapfish.widgets.Shortcuts = function(config) {
     Ext.apply(this, config);
     mapfish.widgets.Shortcuts.superclass.constructor.call(this);

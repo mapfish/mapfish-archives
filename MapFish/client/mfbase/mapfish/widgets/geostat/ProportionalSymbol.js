@@ -23,6 +23,14 @@
 
 Ext.namespace('mapfish.widgets', 'mapfish.widgets.geostat');
 
+/**
+ * Class: mapfish.widgets.geostat.ProportionalSymbol
+ * Use this class to create a widget allowing to display proportional
+ * symbols on the map.
+ *
+ * Inherits from:
+ * - {Ext.FormPanel}
+ */
 mapfish.widgets.geostat.ProportionalSymbol = Ext.extend(Ext.FormPanel, {
 
     /**
@@ -108,6 +116,13 @@ mapfish.widgets.geostat.ProportionalSymbol = Ext.extend(Ext.FormPanel, {
      *     An Ext.LoadMask config or true to mask the widget while loading (defaults to false).
      */
     loadMask : false,
+
+    /**
+     * Constructor: mapfish.widgets.geostat.ProportionalSymbol
+     *
+     * Parameters:
+     * config - {Object} Config object.
+     */
 
     /**
      * Method: initComponent

@@ -17,23 +17,34 @@
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+Ext.namespace('mapfish.widgets.toolbar');
+
 /**
- * @class mapfish.widgets.toolbar.CheckItem
- * @extends Ext.menu.CheckItem
- * A Check item is associated with an OpenLayers Handler through an OpenLayers Control
- * This class also add quicktips
+ * Class: mapfish.widgets.toolbar.CheckItem
+ * A Check item is associated with an OpenLayers Handler through an OpenLayers Control.
+ * This class also adds quicktips.
+ *
  * Simple example usage:
- * <pre><code>
- * var checkItem = new mapfish.widgets.toolbar.CheckItem({text: 'My menu item', tooltip: 'My tooltip', 
- *                                                        control: new OpenLayers.Control.Navigation(), 
- *                                                        olHandler: 'wheelHandler'} );
- * </code></pre>
- * @constructor
- * Create a new CheckItem
- * @param {Object} config The config object
+ * (start code)
+ * var checkItem = new mapfish.widgets.toolbar.CheckItem({
+ *     text: 'My menu item',
+ *     tooltip: 'My tooltip', 
+ *     control: new OpenLayers.Control.Navigation(), 
+ *     olHandler: 'wheelHandler'
+ * });
+ * (end)
+ *
+ * Inherits from:
+ * - {Ext.menu.CheckItem}
  */
 
-Ext.namespace('mapfish.widgets.toolbar');
+/**
+ * Constructor: mapfish.widgets.toolbar.CheckItem
+ * Create a new CheckItem
+ *
+ * Parameters:
+ * config - {Object} Config object
+ */
 
 mapfish.widgets.toolbar.CheckItem = function(config) {
     Ext.apply(this, config);

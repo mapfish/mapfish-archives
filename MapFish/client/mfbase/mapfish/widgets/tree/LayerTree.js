@@ -25,9 +25,7 @@
 
 Ext.namespace('mapfish.widgets');
 
-/**
- * Class: mapfish.widgets.RadioTreeNodeUI
- *
+/*
  * Extends Ext TreeNodeUI to display radio buttons.
  */
 mapfish.widgets.RadioTreeNodeUI = Ext.extend(Ext.tree.TreeNodeUI, {
@@ -91,9 +89,7 @@ mapfish.widgets.RadioTreeNodeUI = Ext.extend(Ext.tree.TreeNodeUI, {
     }
 });
 
-/**
- * Class: mapfish.widgets.LayerTreeEventModel
- *
+/*
  * Extends Ext TreeEventModel to handle radio button events.
  */
 mapfish.widgets.LayerTreeEventModel = Ext.extend(Ext.tree.TreeEventModel, {
@@ -130,8 +126,17 @@ mapfish.widgets.LayerTreeEventModel = Ext.extend(Ext.tree.TreeEventModel, {
 
 /**
  * Class: mapfish.widgets.LayerTree
+ * Extension of Ext TreePanel to show a tree that can control OpenLayers layers.
  *
- * Extension of Ext TreePanel to show a tree that can control OpenLayers layers
+ * Inherits from:
+ * - {Ext.tree.TreePanel}
+ */
+
+/**
+ * Constructor: mapfish.widgets.LayerTree
+ *
+ * Parameters:
+ * config - {Object} Config object
  */
 mapfish.widgets.LayerTree = function(config) {
     Ext.apply(this, config);
