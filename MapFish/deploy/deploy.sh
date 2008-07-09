@@ -116,8 +116,12 @@ subst_in_files() {
 
     run_hook after_import_subst_in_files
 
-    PROCESSED_HTML=$(find $PROJECT_DIR/$PROJECT/$PROJECT/public -name "*.html.in" \
-                     -exec grep -l PROD_COMMENT_START {} \;)
+    if [ -d "$PROJECT_DIR/$PROJECT/$PROJECT/public" ]; then
+        PROCESSED_HTML=$(find $PROJECT_DIR/$PROJECT/$PROJECT/public -name "*.html.in" \
+                         -exec grep -l PROD_COMMENT_START {} \;)
+    else
+        PROCESSED_HTML=""
+    fi
 
     if [ "$DEBUG" = "true" ]; then
         export PROD_COMMENT_START="<!--"
