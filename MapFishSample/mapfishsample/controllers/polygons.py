@@ -17,20 +17,17 @@
 # along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import logging
-
 from mapfishsample.lib.base import *
+from mapfishsample.model.polygons import Polygon
 
 from mapfish.lib.filters import *
 from mapfish.lib.protocol import Protocol, create_default_filter
 
-log = logging.getLogger(__name__)
-
-class CountriesController(BaseController):
-    readonly = True
+class PolygonsController(BaseController):
+    readonly = False # if set to True, only GET is supported
 
     def __init__(self):
-        self.protocol = Protocol(model.Session, model.Country, self.readonly)
+        self.protocol = Protocol(model.Session, Polygon, self.readonly)
 
     def index(self, format='json'):
         """GET /: return all features."""
@@ -47,12 +44,12 @@ class CountriesController(BaseController):
         #
         # default_filter = create_default_filter(
         #     request,
-        #     Country.primary_key_column(),
-        #     Country.geometry_column()
+        #     Polygon.primary_key_column(),
+        #     Polygon.geometry_column()
         # )
         # compare_filter = comparison.Comparison(
         #     comparison.Comparison.ILIKE,
-        #     Country.mycolumnname,
+        #     Polygon.mycolumnname,
         #     value=myvalue
         # )
         # filter = logical.Logical(logical.Logical.AND, [default_filter, compare_filter])

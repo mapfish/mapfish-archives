@@ -18,9 +18,7 @@ export DB_PASSWORD="www-data"
 export DB_HOST="localhost"
 export DB_VERSION="v0.3"
 
-export DB_ROUTING_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_VERSION}_epfl
-export DB_SEARCH_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_VERSION}_c2corg
-export DB_GEOSTAT_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_VERSION}_geostat
+export DB_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_VERSION}_mapfishsample
 
 export MVN=mvn
 

@@ -25,31 +25,26 @@ from sqlalchemy.orm import mapper
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from mapfish.sqlalchemygeom import Geometry
-from mapfish.pfpfeature import Feature
+from mapfish.sqlalchemygeom import GeometryTableMixIn
 
-# Global session manager.  Session() returns the session object appropriate for the current web request.
-binds={"nodes2": MetaData(config['pylons.g'].sa_routing_engine),
-       "lines2": MetaData(config['pylons.g'].sa_routing_engine),
-       "sommets_out": MetaData(config['pylons.g'].sa_search_engine),
-       "world_factbk_simplified": MetaData(config['pylons.g'].sa_geostat_engine),
-       "world_cities": MetaData(config['pylons.g'].sa_geostat_engine)}
+from geojson import Feature
 
-Session = scoped_session(sessionmaker(transactional=True, autoflush=True, binds=binds))
+Session = scoped_session(sessionmaker(transactional=True, autoflush=True))
 
 ## routing 
-nodes_table = Table('nodes2', MetaData(config['pylons.g'].sa_routing_engine),
+nodes_table = Table('nodes2', MetaData(config['pylons.g'].sa_mapfishsample_engine),
                     Column('node_id', types.Integer, primary_key=True),
                     Column('room', types.String, unique=True),
                     Column('level', types.Integer),
                     Column('geom', Geometry))
 
 class Node(object):
+    __table__ = nodes_table
     def toFeature(self):
         return Feature(id=int(self.node_id), geometry=self.geom,
-                       room=str(self.room), floor=str(self.level))
+                       properties={'room': str(self.room), 'floor': str(self.level)})
 
-
-lines_table = Table('lines2', MetaData(config['pylons.g'].sa_routing_engine),
+lines_table = Table('lines2', MetaData(config['pylons.g'].sa_mapfishsample_engine),
                     Column('gid', types.Integer, primary_key=True),
                     Column('length', types.Float),
                     Column('geom', Geometry))
@@ -57,31 +52,13 @@ lines_table = Table('lines2', MetaData(config['pylons.g'].sa_routing_engine),
 class Line(object):
     def toFeature(self):
         return Feature(id=int(self.gid), geometry=self.geom,
-                       distance=float(self.length))
+                       properties={'distance': float(self.length)})
 
 mapper(Node, nodes_table)
 mapper(Line, lines_table)
 
-## c2c org
-summits_table = Table('sommets_out', MetaData(config['pylons.g'].sa_search_engine),
-                      Column('sommet_id', types.Integer, primary_key=True),
-                      Column('elevation', types.Integer),
-                      Column('name', types.Unicode),
-                      Column('geom', Geometry(32768)))
-
-class Summit(object):
-    def __str__(self):
-        return self.name
-
-    def toFeature(self):
-        return Feature(id=self.sommet_id, geometry=self.geom,
-                       elevation=float(self.elevation),
-                       name=self.name)
-
-mapper(Summit, summits_table)
-
 ## world_factbk
-countries_table = Table('world_factbk_simplified', MetaData(config['pylons.g'].sa_geostat_engine),
+countries_table = Table('world_factbk_simplified', MetaData(config['pylons.g'].sa_mapfishsample_engine),
                         Column('gid', types.Integer, primary_key=True),
                         Column('country', types.String),
                         Column('birth_rt', types.Float),
@@ -89,19 +66,13 @@ countries_table = Table('world_factbk_simplified', MetaData(config['pylons.g'].s
                         Column('fertility', types.Float),
                         Column('simplify', Geometry))
 
-class Country(object):
-    def __str__(self):
-        return self.country
-
-    def toFeature(self):
-        return Feature(id=self.gid, geometry=self.simplify, country=self.country,
-                       birth_rt=self.birth_rt, death_rt=self.death_rt,
-                       fertility=self.fertility)
+class Country(GeometryTableMixIn):
+    __table__ = countries_table
 
 mapper(Country, countries_table)
 
 ## world_cities
-cities_table = Table('world_cities', MetaData(config['pylons.g'].sa_geostat_engine),
+cities_table = Table('world_cities', MetaData(config['pylons.g'].sa_mapfishsample_engine),
                      Column('id', types.Integer, primary_key=True),
                      Column('ufi', types.Integer),
                      Column('admin_code', types.Integer),
@@ -111,14 +82,8 @@ cities_table = Table('world_cities', MetaData(config['pylons.g'].sa_geostat_engi
                      Column('population', types.Integer),
                      Column('the_geom', Geometry(4326)))
 
-class City(object):
-    def __str__(self):
-        return self.name
-
-    def toFeature(self):
-        return Feature(id=self.id, geometry=self.the_geom, ufi=self.ufi,
-                       admin_code=self.admin_code, mgcc=self.mgcc, name=self.name,
-                       attrib=self.attrib, population=self.population)
+class City(GeometryTableMixIn):
+    __table__ = cities_table
 
 mapper(City, cities_table)
 

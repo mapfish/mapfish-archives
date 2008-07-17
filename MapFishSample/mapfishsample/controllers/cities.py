@@ -19,25 +19,59 @@
 
 import logging
 
-from sqlalchemy.sql import and_
-
 from mapfishsample.lib.base import *
 
-from mapfish.pfpfeature import FeatureCollection
-from mapfish.plugins.search import Search
-
-import geojson
+from mapfish.lib.filters import *
+from mapfish.lib.protocol import Protocol, create_default_filter
 
 log = logging.getLogger(__name__)
 
 class CitiesController(BaseController):
+    readonly = True
 
-    def show(self):
-        search = Search(
-            model.cities_table.c.id,
-            model.cities_table.c.the_geom,
-            4326, 'degrees')
-        expr = search.buildExpression(request)
-        objects = search.query(model.Session, model.City, model.cities_table, expr)
-        if len(objects) != 0:
-            return geojson.dumps(FeatureCollection([f.toFeature() for f in objects]))
+    def __init__(self):
+        self.protocol = Protocol(model.Session, model.City, self.readonly)
+
+    def index(self, format='json'):
+        """GET /: return all features."""
+        # If no filter argument is passed to the protocol index method
+        # then the default MapFish filter is used. This default filter
+        # is constructed based on the box, lon, lat, tolerance GET
+        # params.
+        #
+        # If you need your own filter with application-specific params 
+        # taken into acount, create your own filter and pass it to the
+        # protocol index method.
+        #
+        # E.g.
+        #
+        # default_filter = create_default_filter(
+        #     request,
+        #     City.primary_key_column(),
+        #     City.geometry_column()
+        # )
+        # compare_filter = comparison.Comparison(
+        #     comparison.Comparison.ILIKE,
+        #     City.mycolumnname,
+        #     value=myvalue
+        # )
+        # filter = logical.Logical(logical.Logical.AND, [default_filter, compare_filter])
+        # return self.protocol.index(request, response, format=format, filter=filter)
+        #
+        return self.protocol.index(request, response, format=format)
+
+    def show(self, id, format='json'):
+        """GET /id: Show a specific feature."""
+        return self.protocol.show(request, response, id, format=format)
+
+    def create(self):
+        """POST /: Create a new feature."""
+        return self.protocol.create(request, response)
+
+    def update(self, id):
+        """PUT /id: Update an existing feature."""
+        return self.protocol.update(request, response, id)
+
+    def delete(self, id):
+        """PUT /id: Update an existing feature."""
+        return self.protocol.delete(request, response, id)# 

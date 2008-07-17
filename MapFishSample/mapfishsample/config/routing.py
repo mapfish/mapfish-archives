@@ -21,12 +21,13 @@ def make_map():
 
     printer.addRoutes(map, 'print/', 'printer')
 
-    map.connect('c2corg/', controller='c2corg', action='show', conditions=dict(method=['GET']))
-    map.connect('c2corg/:(id).:(format)', controller='c2corg', action='show', conditions=dict(method=['GET']))
-    map.connect('countries/', controller='countries', action='show', conditions=dict(method=['GET']))
-    map.connect('countries/:(id).:(format)', controller='countries', action='show', conditions=dict(method=['GET']))
-    map.connect('cities/', controller='cities', action='show', conditions=dict(method=['GET']))
-    map.connect('cities/:(id).:(format)', controller='cities', action='show', conditions=dict(method=['GET']))
+    map.resource('summit', 'summits')
+    map.resource('country', 'countries')
+    map.resource('city', 'cities')
+    map.resource('polygon', 'polygons')
+    map.resource('line', 'lines')
+    map.resource('point', 'points')
+
     map.connect(':controller/:action/:id')
     map.connect('*url', controller='template', action='view')
 

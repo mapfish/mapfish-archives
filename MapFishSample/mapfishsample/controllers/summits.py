@@ -17,48 +17,52 @@
 # along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import logging
-
 from mapfishsample.lib.base import *
+from mapfishsample.model.summits import Summit
 
 from mapfish.lib.filters import *
 from mapfish.lib.protocol import Protocol, create_default_filter
 
-log = logging.getLogger(__name__)
-
-class CountriesController(BaseController):
-    readonly = True
+class SummitsController(BaseController):
+    readonly = True # if set to True, only GET is supported
 
     def __init__(self):
-        self.protocol = Protocol(model.Session, model.Country, self.readonly)
+        self.protocol = Protocol(model.Session, Summit, self.readonly)
 
     def index(self, format='json'):
         """GET /: return all features."""
-        # If no filter argument is passed to the protocol index method
-        # then the default MapFish filter is used. This default filter
-        # is constructed based on the box, lon, lat, tolerance GET
-        # params.
-        #
-        # If you need your own filter with application-specific params 
-        # taken into acount, create your own filter and pass it to the
-        # protocol index method.
-        #
-        # E.g.
-        #
-        # default_filter = create_default_filter(
-        #     request,
-        #     Country.primary_key_column(),
-        #     Country.geometry_column()
-        # )
-        # compare_filter = comparison.Comparison(
-        #     comparison.Comparison.ILIKE,
-        #     Country.mycolumnname,
-        #     value=myvalue
-        # )
-        # filter = logical.Logical(logical.Logical.AND, [default_filter, compare_filter])
-        # return self.protocol.index(request, response, format=format, filter=filter)
-        #
-        return self.protocol.index(request, response, format=format)
+        filter = logical.Logical(logical.Logical.AND, [
+            create_default_filter(
+                request,
+                Summit.primary_key_column(),
+                Summit.geometry_column()
+            )
+        ])
+        if 'min' in request.params and len(request.params['min']) > 0:
+            filter.filters.append(
+                comparison.Comparison(
+                    comparison.Comparison.GREATER_THAN_OR_EQUAL_TO,
+                    Summit.elevation,
+                    value=int(request.params['min'])
+                )
+            )
+        if 'max' in request.params and len(request.params['max']) > 0:
+            filter.filters.append(
+                comparison.Comparison(
+                    comparison.Comparison.LOWER_THAN_OR_EQUAL_TO,
+                    Summit.elevation,
+                    value=int(request.params['max'])
+                )
+            )
+        if 'name' in request.params:
+            filter.filters.append(
+                comparison.Comparison(
+                    comparison.Comparison.ILIKE,
+                    Summit.name,
+                    value=request.params['name']
+                )
+            )
+        return self.protocol.index(request, response, format=format, filter=filter)
 
     def show(self, id, format='json'):
         """GET /id: Show a specific feature."""

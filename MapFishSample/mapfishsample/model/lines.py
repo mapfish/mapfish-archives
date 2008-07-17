@@ -25,15 +25,15 @@ from sqlalchemy.orm import mapper
 from mapfish.sqlalchemygeom import Geometry
 from mapfish.sqlalchemygeom import GeometryTableMixIn
 
-${modelTabObj} = Table(
-    '${table}',
-    MetaData(config['pylons.g'].sa_${db}_engine),
-    Column('${geomColName}', Geometry(${epsg})),
+lines_table = Table(
+    'lines',
+    MetaData(config['pylons.g'].sa_mapfishsample_engine),
+    Column('the_geom', Geometry(4326)),
     autoload=True)
 
-class ${modelClass}(GeometryTableMixIn):
+class Line(GeometryTableMixIn):
     # for GeometryTableMixIn to do its job the __table__ property
     # must be set here
-    __table__ = ${modelTabObj}
+    __table__ = lines_table
 
-mapper(${modelClass}, ${modelTabObj})
+mapper(Line, lines_table)

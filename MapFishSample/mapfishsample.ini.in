@@ -41,9 +41,7 @@ beaker.session.key = mapfishsample
 beaker.session.secret = somesecret
 
 # database configuration
-sqlalchemy.routing.url = %DB_ROUTING_URL%
-sqlalchemy.search.url = %DB_SEARCH_URL%
-sqlalchemy.geostat.url = %DB_GEOSTAT_URL%
+sqlalchemy.mapfishsample.url = %DB_URL%
 
 # If you'd like to fine-tune the individual locations of the cache data dirs
 # for the Cache data, or the Session saves, un-comment the desired settings

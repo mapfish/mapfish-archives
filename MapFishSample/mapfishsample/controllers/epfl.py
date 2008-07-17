@@ -21,9 +21,8 @@ import logging
 
 from mapfishsample.lib.base import *
 from mapfish.plugins import pgrouting
-from mapfish.pfpfeature import FeatureCollection
 
-import geojson
+from geojson import FeatureCollection, dumps
 
 log = logging.getLogger(__name__)
 
@@ -44,7 +43,7 @@ class EpflController(BaseController):
         else:
             cost = "length::float8"
             
-        route = pgrouting.shortest_path(config['pylons.g'].sa_routing_engine,
+        route = pgrouting.shortest_path(config['pylons.g'].sa_mapfishsample_engine,
                                         "SELECT gid AS id, node1_id::int4 AS source, node2_id::int4 AS target, %(cost)s AS cost FROM lines2"%{'cost': cost},
                                         int(source_id), int(target_id)).fetchall()
 
@@ -57,8 +56,8 @@ class EpflController(BaseController):
         lines = [model.Session.query(model.Line).get(i['edge_id']) for i in route]
         result = FeatureCollection([line.toFeature() for line in lines if line is not None and line.geom is not None])
 
-        result.extend([source_f, target_f])
+        result.features.extend([source_f, target_f])
         #length = sum([line.length for line in lines if line is not None])
 
-        return geojson.dumps(result)
+        return dumps(result)
 
