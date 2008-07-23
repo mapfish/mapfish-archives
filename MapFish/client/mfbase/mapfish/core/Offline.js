@@ -209,8 +209,12 @@ mapfish.Offline = function() {
                                   transTask: activeTransTaskIds[transTaskId]});
         numActiveTransTasks--;
         delete activeTransTaskIds[transTaskId];
-
-        maybeNotifySyncDone.call(this);
+        
+        // Wait a bit before checking if sync tasks have been added
+        var self = this;
+        setTimeout(function() {
+            maybeNotifySyncDone.call(self);
+        }, 0);
     }
 
     };

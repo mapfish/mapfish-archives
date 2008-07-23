@@ -19,12 +19,36 @@
     <script type="text/javascript"><!--
 
     function test_Offline(t) {
-        t.plan(42);
+        t.plan(51);
 
         var MO = mapfish.Offline;
         var TIMEOUT = 200;
 
         t.wait_result(5);
+
+        var lastTransTaskLabel;
+        var activeTransTasks = 0;
+        function transTaskEventHandler(transTaskEvent) {
+            if (transTaskEvent.type == "transTaskAdded") {
+                activeTransTasks++;
+            } else if (transTaskEvent.type == "transTaskDone") {
+                activeTransTasks--;
+            } else {
+                throw new Error("Unknown transTask type " + transTaskEvent.type);
+            }
+            lastTransTaskLabel = transTaskEvent.transTask.label;
+        }
+
+        var seenDownloadDone = false;
+        var seenUploadDone = false;
+        function syncEventHandler(type) {
+            if (type == "downloadDone") {
+                seenDownloadDone = true;
+            }
+            if (type == "uploadDone") {
+                seenUploadDone = true;
+            }
+        }
 
         function next_0() {
             t.eq(MO.isOnline, true, "online at startup");
@@ -51,7 +75,7 @@
                 seenEvent = true;
             });
             setTimeout(function() {
-                t.eq(seenEvent, false, "No event should be fired");
+                t.eq(seenEvent, false, "No event fired");
 
                 MO.goOnline();
                 setTimeout(function() {
@@ -60,45 +84,38 @@
             }, TIMEOUT);
         }
 
-        var activeTransTasks = 0;
-        var lastTransTaskLabel;
-        function transTaskEventHandler(transTaskEvent) {
-            if (transTaskEvent.type == "transTaskAdded") {
-                activeTransTasks++;
-            } else if (transTaskEvent.type == "transTaskDone") {
-                activeTransTasks--;
-            } else {
-                throw new Error("Unknown transTask type " + transTaskEvent.type);
-            }
-            lastTransTaskLabel = transTaskEvent.transTask.label;
-        }
-
         function next_2() {
             t.eq(MO.isOnline, true, "went online");
 
-            var transTaskId1, transTaskId2;
+            var transTaskId1, transTaskId2, transTaskId3;
             MO.events.register("transtask", null, transTaskEventHandler);
 
             MO.events.register("sync", null, function(type) {
                 if (type == "download") {
                     MO.events.unregister("sync", null, arguments.callee);
                     t.eq(activeTransTasks, 0, "no transTask yet")
+
                     transTaskId1 = MO.addTransitionTask("Sample transTask 1");
                     t.eq(activeTransTasks, 1, "1 active transTask")
                     t.eq(lastTransTaskLabel, "Sample transTask 1", "correct last task label");
+
+                    // for transTask 2, addTransitionTask and transitionTaskDone are called
+                    // in the same execution flow, in that case check that downloadDone is
+                    // not fired after transitionTaskDone
                     transTaskId2 = MO.addTransitionTask("Sample transTask 2");
                     t.eq(activeTransTasks, 2, "2 active transTasks")
                     t.eq(lastTransTaskLabel, "Sample transTask 2", "correct last task label");
+                    MO.transitionTaskDone(transTaskId2);
+                    t.eq(seenDownloadDone, false, "downloadDone not yet fired");
+                    t.eq(activeTransTasks, 1, "1 active transTasks");
+
+                    transTaskId3 = MO.addTransitionTask("Sample transTask 3");
+                    t.eq(activeTransTasks, 2, "2 active transTasks")
+                    t.eq(lastTransTaskLabel, "Sample transTask 3", "correct last task label");
                 }
             });
 
-            var seenDownloadDone = false;
-            MO.events.register("sync", null, function(type) {
-                if (type == "downloadDone") {
-                    MO.events.unregister("sync", null, arguments.callee);
-                    seenDownloadDone = true;
-                }
-            });
+            MO.events.register("sync", null, syncEventHandler);
 
             t.eq(MO.syncState, null, "not syncing");
             MO.goOffline();
@@ -113,45 +130,55 @@
                 t.eq(lastTransTaskLabel, "Sample transTask 1", "correct last task label");
                 t.eq(seenDownloadDone, false, "downloadDone not yet fired");
 
-                t.eq(MO.isOnline, true, "Not yet offline, syntTasks are pending");
-                MO.transitionTaskDone(transTaskId2);
+                t.eq(MO.isOnline, true, "Not yet offline, syncTasks are pending");
+                MO.transitionTaskDone(transTaskId3);
                 t.eq(activeTransTasks, 0, "0 active tasks")
-                t.eq(lastTransTaskLabel, "Sample transTask 2", "correct last task label");
-                t.eq(seenDownloadDone, true, "downloadDone should have fired");
+                t.eq(lastTransTaskLabel, "Sample transTask 3", "correct last task label");
+                t.eq(seenDownloadDone, false, "downloadDone not yet fired");
 
-                t.eq(MO.isOnline, false, "went offline, transTasks are done");
-                t.eq(MO.syncState, null, "finished sync");
                 MO.events.unregister("transtask", null, transTaskEventHandler);
-                next_3();
+                setTimeout(function() {
+                    MO.events.unregister("sync", null, syncEventHandler);
+                    next_3();
+                }, TIMEOUT);
             }, TIMEOUT);
         }
 
         function next_3() {
-            t.eq(MO.isOnline, false, "is offline");
+            t.eq(seenDownloadDone, true, "downloadDone fired");
+            seenDownloadDone = false;
+            t.eq(MO.isOnline, false, "went offline, transTasks are done");
+            t.eq(MO.syncState, null, "finished sync");
 
-            var transTaskId1, transTaskId2;
+            var transTaskId1, transTaskId2, transTaskId3;
             MO.events.register("transtask", null, transTaskEventHandler);
 
             MO.events.register("sync", null, function(type) {
                 if (type == "upload") {
                     MO.events.unregister("sync", null, arguments.callee);
                     t.eq(activeTransTasks, 0, "no transTask yet")
+
                     transTaskId1 = MO.addTransitionTask("Sample transTask 1");
                     t.eq(activeTransTasks, 1, "1 active transTask")
                     t.eq(lastTransTaskLabel, "Sample transTask 1", "correct last task label");
+
+                    // for transTask 2, addTransitionTask and transitionTaskDone are called
+                    // in the same execution flow, in that case check that downloadDone is
+                    // not fired after transitionTaskDone
                     transTaskId2 = MO.addTransitionTask("Sample transTask 2");
                     t.eq(activeTransTasks, 2, "2 active transTasks")
                     t.eq(lastTransTaskLabel, "Sample transTask 2", "correct last task label");
+                    MO.transitionTaskDone(transTaskId2);
+                    t.eq(seenUploadDone, false, "uploadDone not yet fired");
+                    t.eq(activeTransTasks, 1, "1 active transTasks");
+
+                    transTaskId3 = MO.addTransitionTask("Sample transTask 3");
+                    t.eq(activeTransTasks, 2, "2 active transTasks")
+                    t.eq(lastTransTaskLabel, "Sample transTask 3", "correct last task label");
                 }
             });
 
-            var seenUploadDone = false;
-            MO.events.register("sync", null, function(type) {
-                if (type == "uploadDone") {
-                    MO.events.unregister("sync", null, arguments.callee);
-                    seenUploadDone = true;
-                }
-            });
+            MO.events.register("sync", null, syncEventHandler);
 
             t.eq(MO.syncState, null, "not syncing");
             MO.goOnline();
@@ -167,15 +194,23 @@
                 t.eq(seenUploadDone, false, "uploadDone not yet fired");
 
                 t.eq(MO.isOnline, true, "Not yet offline, transTasks are pending");
-                MO.transitionTaskDone(transTaskId2);
+                MO.transitionTaskDone(transTaskId3);
                 t.eq(activeTransTasks, 0, "0 active tasks")
-                t.eq(lastTransTaskLabel, "Sample transTask 2", "correct last task label");
-                t.eq(seenUploadDone, true, "uploadDone should have fired");
+                t.eq(lastTransTaskLabel, "Sample transTask 3", "correct last task label");
+                t.eq(seenUploadDone, false, "uploadDone not yet fired");
 
-                t.eq(MO.isOnline, true, "is offline, transTasks are done");
-                t.eq(MO.syncState, null, "finished sync");
-                MO.events.unregister("transtask", null, transTaskEventHandler);
+                setTimeout(function() {
+                    MO.events.unregister("sync", null, syncEventHandler);
+                    next_4();
+                }, TIMEOUT);
             }, TIMEOUT);
+        }
+
+        function next_4() {
+            t.eq(seenUploadDone, true, "uploadDone fired");
+            seenUploadDone = false;
+            t.eq(MO.isOnline, true, "went online, transTasks are done");
+            t.eq(MO.syncState, null, "finished sync");
         }
 
         next_0();
