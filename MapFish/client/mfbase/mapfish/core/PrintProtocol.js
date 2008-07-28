@@ -93,9 +93,11 @@ mapfish.PrintProtocol = OpenLayers.Class({
      * Parameters:
      * success - {Function} The function to call in case of success.
      * failure - {Function} The function to call in case of failure. Gets the
-     *                      request object in parameter.
+     *                      request object in parameter. If getURL is defined,
+     *                      the popup where blocked and the PDF can still be
+     *                      recovered using this URL.
      * context - {Object} The context to use to call the success of failure
-     *                    method
+     *                    method.
      */
     createPDF: function(success, failure, context) {
         try {
@@ -118,12 +120,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
                         var json = new OpenLayers.Format.JSON();
                         var answer = json.read(request.responseText);
                         if (answer && answer.getURL) {
-                            OpenLayers.Console.info(answer.getURL);
-                            if (window.open(answer.getURL)) {
-                                success.call(context);
-                            } else {
-                                failure.call(context, answer);
-                            }
+                            this.openPdf(answer, success, failure, context);
                         } else {
                             failure.call(context, request);
                         }
@@ -140,6 +137,47 @@ mapfish.PrintProtocol = OpenLayers.Class({
             //try the other method
             window.open(this.getAllInOneUrl());
             success.call(context, err);
+        }
+    },
+
+    /**
+     * Method: openPdf
+     *
+     * Work around the browsers security "features" and open the given PDF
+     * document.
+     *
+     * answer - {Object} The answer for the AJAX call to the print service.
+     * success - {Function} The function to call in case of success.
+     * failure - {Function} The function to call in case of failure. Gets the
+     *                      request object in parameter. If getURL is defined,
+     *                      the popup where blocked and the PDF can still be
+     *                      recovered using this URL.
+     * context - {Object} The context to use to call the success of failure
+     *                    method
+     */
+    openPdf: function(answer, success, failure, context) {
+        OpenLayers.Console.info(answer.getURL);
+        var popup = window.open(answer.getURL, '_blank');
+        if (popup) {
+            // OK, we can at least open the popup
+            if (mapfish.Util.isIE7()) {
+                // IE7's anti-popup system tends to close the popup window
+                // afterwards. We have to check if it has not done that.
+                function checkWindowStillOpen() {
+                    if (!popup.closed) {
+                        success.call(context);
+                    } else {
+                        failure.call(context, answer);
+                    }
+                }
+                window.setTimeout(checkWindowStillOpen, 100);
+            } else {
+                // we can assume the user received his PDF
+                success.call(context);
+            }
+        } else {
+            // we can say for sure that popups are blocked
+            failure.call(context, answer);
         }
     },
 

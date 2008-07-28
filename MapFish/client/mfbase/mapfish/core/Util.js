@@ -114,3 +114,14 @@ mapfish.Util.arrayEqual = function(a, b) {
     }
     return true;
 };
+
+/**
+ * Function: isIE7
+ *
+ * Returns:
+ * {Boolean} True if the browser is Internet Explorer V7
+ */
+mapfish.Util.isIE7 = function () {
+    var ua = navigator.userAgent.toLowerCase();
+    return ua.indexOf("msie 7") > -1;
+}
