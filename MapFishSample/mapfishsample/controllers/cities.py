@@ -73,5 +73,5 @@ class CitiesController(BaseController):
         return self.protocol.update(request, response, id)
 
     def delete(self, id):
-        """PUT /id: Update an existing feature."""
-        return self.protocol.delete(request, response, id)# 
+        """DELETE /id: Delete an existing feature."""
+        return self.protocol.delete(request, response, id)

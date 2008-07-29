@@ -77,5 +77,5 @@ class SummitsController(BaseController):
         return self.protocol.update(request, response, id)
 
     def delete(self, id):
-        """PUT /id: Update an existing feature."""
+        """DELETE /id: Delete an existing feature."""
         return self.protocol.delete(request, response, id)
