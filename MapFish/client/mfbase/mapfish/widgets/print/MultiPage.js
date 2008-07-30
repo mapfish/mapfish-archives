@@ -57,6 +57,13 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
     columns: null,
 
     /**
+     * APIProperty: zoomToExtentEnabled
+     * {boolean} - If true, the map will try to always show the selected page's
+     *             extent by zooming out if necessary.
+     */
+    zoomToExtentEnabled: true,
+
+    /**
      * Property: grid
      * {Ext.grid.EditorGridPanel} - The pages.
      */
@@ -126,7 +133,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
                 xtype: 'hidden',
                 name: 'layout',
                 value: this.config.layouts[0].name
-            });            
+            });
         }
 
         if(this.config.dpis.length>1) {
@@ -276,9 +283,11 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
         var removeButton = Ext.getCmp(this.getId() + '_remove');
         var selected = this.grid.getSelectionModel().getSelected();
         if (selected) {
-            var bounds = selected.data.rectangle.geometry.getBounds().clone();
-            bounds.extend(this.map.getExtent());
-            this.map.zoomToExtent(bounds);
+            if(this.zoomToExtentEnabled) {
+                var bounds = selected.data.rectangle.geometry.getBounds().clone();
+                bounds.extend(this.map.getExtent());
+                this.map.zoomToExtent(bounds);
+            }
             removeButton.enable();
         } else {
             removeButton.disable();
@@ -399,9 +408,15 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
      */
     afterLayerCreated: function() {
         var sm = this.grid.getSelectionModel();
+        var self = this;
         this.pageDrag.onStart = function(feature) {
             OpenLayers.Control.DragFeature.prototype.onStart.apply(this, arguments);
+
+            //make sure the dragged page is selected in the grid (no zooming) 
+            var prev = self.zoomToExtentEnabled;
+            self.zoomToExtentEnabled = false;
             sm.selectRecords([feature.data.record]);
+            self.zoomToExtentEnabled = prev;
         }
         this.grid.getStore().each(function(record) {
             this.layer.addFeatures(record.data.rectangle);
