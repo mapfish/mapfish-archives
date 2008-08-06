@@ -152,7 +152,9 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
         this.rectangle = this.createRectangle(this.map.getCenter(),
                 this.getCurScale(), this.getCurLayout(),
                 this.rotation && layout.rotation ? this.rotation.getValue() : 0);
-        this.createRotateHandle(this.rectangle);
+        if (layout.rotation) {
+            this.createRotateHandle(this.rectangle);
+        }
     },
 
     /**
