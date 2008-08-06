@@ -62,6 +62,12 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
     rectangle: null,
 
     /**
+     * Property: rotation
+     * {Ext.form.TextField} - The text field for editing the rotation.
+     */
+    rotation: null,
+
+    /**
      * Method: fillComponent
      * Called by initComponent to create the component's sub-elements.
      */
@@ -73,86 +79,28 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
         }, this.formConfig);
         var formPanel = this.formPanel = new Ext.form.FormPanel(formConfig);
 
-        if(this.config.layouts.length>1) {
-            var layoutStore = new Ext.data.JsonStore({
-                root: "layouts",
-                fields: ['name'],
-                data: this.config
-            });
-
-            var layout = formPanel.add({
-                fieldLabel: OpenLayers.Lang.translate('mf.print.layout'),
-                xtype: 'combo',
-                store: layoutStore,
-                displayField: 'name',
-                valueField: 'name',
-                typeAhead: false,
-                mode: 'local',
-                id: 'layout_' + this.getId(),
-                name: '/layout',
-                editable: false,
-                triggerAction: 'all',
-                value: this.config.layouts[0].name
-            });
+        var layout = this.createLayoutCombo("/layout");
+        if (this.config.layouts.length > 1) {
             layout.on('select', this.updateRectangle, this);
-        } else {
-            formPanel.add({
-                xtype: 'hidden',
-                name: '/layout',
-                value: this.config.layouts[0].name
-            });
         }
+        formPanel.add(layout);
 
-        if(this.config.dpis.length>1) {
-            var dpiStore = new Ext.data.JsonStore({
-                root: "dpis",
-                fields: ['name', 'value'],
-                data: this.config
-            });
+        formPanel.add(this.createDpiCombo("/dpi"));
 
-            formPanel.add({
-                fieldLabel: OpenLayers.Lang.translate('mf.print.dpi'),
-                xtype: 'combo',
-                store: dpiStore,
-                displayField: 'name',
-                valueField: 'value',
-                typeAhead: false,
-                mode: 'local',
-                id: 'dpi_' + this.getId(),
-                name: '/dpi',
-                editable: false,
-                triggerAction: 'all',
-                value: this.config.dpis[0].value
-            });
-        } else {
-            formPanel.add({
-                xtype: 'hidden',
-                name: '/dpi',
-                value: this.config.dpis[0].value
-            });
-        }
-
-        var scaleStore = new Ext.data.JsonStore({
-            root: "scales",
-            fields: ['name', 'value'],
-            data: this.config
-        });
-
-        this.scale = formPanel.add({
-            fieldLabel: OpenLayers.Lang.translate('mf.print.scale'),
-            xtype: 'combo',
-            store: scaleStore,
-            displayField: 'name',
-            valueField: 'value',
-            typeAhead: false,
-            mode: 'local',
-            id: 'scale_' + this.getId(),
-            name: 'scale',
-            editable: false,
-            triggerAction: 'all',
-            value: this.config.scales[this.config.scales.length - 1].value
-        });
+        this.scale = formPanel.add(this.createScaleCombo());
         this.scale.on('select', this.updateRectangle, this);
+
+        this.rotation = this.createRotationTextField();
+        if (this.rotation != null) {
+            this.rotation.setDisabled(!this.config.layouts[0].rotation);
+            formPanel.add(this.rotation);
+            this.rotation.on('change', function() {
+                if (!this.rotation.isValid(true)) {
+                    this.rotation.setValue(0);
+                }
+                this.updateRectangle();
+            }, this);
+        }
 
         formPanel.addButton({
             text: OpenLayers.Lang.translate('mf.print.resetPos'),
@@ -175,19 +123,36 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
     /**
      * Method: updateRectangle
      *
-     * Used when the layout has been changed
+     * Called when the layout or the scale has been changed
      */
     updateRectangle: function() {
         this.layer.removeFeatures(this.rectangle);
         var center = this.rectangle.geometry.getBounds().getCenterLonLat();
+        var layout = this.getCurLayout();
         this.rectangle = this.createRectangle(center,
-                this.getCurScale(), this.getCurLayout());
+                this.getCurScale(), layout,
+                this.rotation && layout.rotation ? this.rotation.getValue() : 0);
+        if (this.rotation) {
+            //some layouts may have rotation disabled
+            this.rotation.setDisabled(!layout.rotation);
+            if (!layout.rotation) {
+                this.rotation.setValue(0);
+            }
+        }
+        if (layout.rotation) {
+            this.createRotateHandle(this.rectangle);
+        } else {
+            this.removeRotateHandle();
+        }
     },
 
     createTheRectangle: function() {
         if (this.rectangle) this.layer.removeFeatures(this.rectangle);
+        var layout = this.getCurLayout();
         this.rectangle = this.createRectangle(this.map.getCenter(),
-                this.getCurScale(), this.getCurLayout());
+                this.getCurScale(), this.getCurLayout(),
+                this.rotation && layout.rotation ? this.rotation.getValue() : 0);
+        this.createRotateHandle(this.rectangle);
     },
 
     /**
@@ -199,6 +164,12 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
         this.createTheRectangle();
     },
 
+    /**
+     * Method: getCurLayout
+     *
+     * Returns:
+     * {Object} - The current layout config object
+     */
     getCurLayout: function() {
         var values = this.formPanel.getForm().getValues();
         var layoutName = values['/layout'];
@@ -221,6 +192,18 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
     getCurDpi: function() {
         var values = this.formPanel.getForm().getValues();
         return this.getDpiForName(values["dpi"]);
+    },
+
+    /**
+     * Method: setCurRotation
+     *
+     * Called when the rotation of the current page has been changed.
+     *
+     * Parameters:
+     * rotation - {float}
+     */
+    setCurRotation: function(rotation) {
+        this.rotation.setValue(rotation);
     },
 
     /**

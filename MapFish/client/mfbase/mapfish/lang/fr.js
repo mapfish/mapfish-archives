@@ -7,6 +7,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     'mf.print.generatingPDF': "Génération du PDF...",
     'mf.print.dpi': 'Résolution',
     'mf.print.scale': 'Échelle',
+    'mf.print.rotation': 'Rotation',
     'mf.print.print': 'Imprimer',
     'mf.print.resetPos': 'Réinit. pos.',
     'mf.print.layout': 'Format',
@@ -14,5 +15,6 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     'mf.print.remove': 'Enlever page',
     'mf.print.clearAll': 'Supprimer toutes',
     'mf.print.popupBlocked': 'Fenêtres bloquées par votre navigateur.<br />' +
-                             '<br />Utilisez cette adresse pour charger votre document:'
+                             '<br />Utilisez cette adresse pour charger votre document:',
+    'mf.print.noPage': 'Pas de page sélectionnée, appuyez sur le bouton "Ajouter page" pour en créer une.'
 });

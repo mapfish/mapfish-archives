@@ -75,9 +75,15 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
 
     /**
      * Property: pageDrag
-     * {<OpenLayers.Control.DragFeature>} - The control to move the extent
+     * {<OpenLayers.Control.DragFeature>} - The control to move the extent.
      */
     pageDrag: null,
+
+    /**
+     * Property: rotateHandle
+     * {<OpenLayers.Feature.Vector>} - The handle used to rotate the page.
+     */
+    rotateHandle: null,
 
     /**
      * Property: layer
@@ -176,6 +182,7 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
             this.pageDrag.destroy();
             this.pageDrag = null;
 
+            this.removeRotateHandle();
             this.layer.removeFeatures(this.layer.features);
             this.layer.destroy();
             this.layer = null;
@@ -192,6 +199,8 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
      */
     getOrCreateLayer: function() {
         if (!this.layer) {
+            var self = this;
+
             this.layer = new OpenLayers.Layer.Vector("Print" + this.getId(), {
                 displayInLayerSwitcher: false,
                 calculateInRange: function() {
@@ -201,10 +210,145 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
 
             this.pageDrag = new OpenLayers.Control.DragFeature(this.layer);
             this.map.addControl(this.pageDrag);
+            var curFeature = null;
+            this.pageDrag.onStart = function(feature) {
+                OpenLayers.Control.DragFeature.prototype.onStart.apply(this, arguments);
+                curFeature = feature;
+                if (feature.attributes.rotate) {
+                    self.pageRotateStart(feature);
+                } else {
+                    self.pageDragStart(feature);
+                }
+            }
+            this.pageDrag.onDrag = function(feature) {
+                OpenLayers.Control.DragFeature.prototype.onDrag.apply(this, arguments);
+                if (!feature) feature = curFeature;
+                if (feature.attributes.rotate) {
+                    self.pageRotated(feature);
+                }
+            }
+            this.pageDrag.onComplete = function(feature) {
+                OpenLayers.Control.DragFeature.prototype.onComplete.apply(this, arguments);
+                if (!feature) feature = curFeature;
+                if (feature.attributes.rotate) {
+                    self.pageRotateComplete(feature);
+                } else {
+                    self.pageDragComplete(feature);
+                }
+                curFeature = null;
+            }
 
             this.afterLayerCreated();
         }
         return this.layer;
+    },
+
+    /**
+     * Method: pageRotateStart
+     *
+     * Called when the user starts to move the rotate handle.
+     *
+     * Parameters:
+     * feature - {<OpenLayers.Feature.Vector>} The rotate handle.
+     */
+    pageRotateStart: function(feature) {
+    },
+
+    /**
+     * Method: pageRotated
+     *
+     * Called when rotate handle is being moved.
+     *
+     * Parameters:
+     * feature - {<OpenLayers.Feature.Vector>} The rotate handle.
+     */
+    pageRotated: function(feature) {
+        var center = feature.attributes.center;
+        var pos = feature.geometry;
+        var angle = Math.atan2(pos.x - center.x, pos.y - center.y) * 180 / Math.PI;
+        var page = feature.attributes.page;
+        page.attributes.rotation = angle;
+        page.geometry.rotate(feature.attributes.prevAngle - angle, center);
+        this.layer.drawFeature(page);
+        this.setCurRotation(Math.round(angle));
+        feature.attributes.prevAngle = angle;
+    },
+
+    /**
+     * Method: pageRotateComplete
+     *
+     * Called when rotate handle is being released.
+     *
+     * Parameters:
+     * feature - {<OpenLayers.Feature.Vector>} The rotate handle.
+     */
+    pageRotateComplete: function(feature) {
+        //put back the rotate handle at the page's edge
+        this.createRotateHandle(feature.attributes.page);
+    },
+
+    /**
+     * Method: pageDragStart
+     *
+     * Called when we start editing a page.
+     *
+     * Parameters:
+     * feature - {<OpenLayers.Feature.Vector>} The selected page.
+     */
+    pageDragStart: function(feature) {
+        this.removeRotateHandle();
+    },
+
+    /**
+     * Method: removeRotateHandle
+     *
+     * Remove the rotation handle, if any.
+     */
+    removeRotateHandle: function() {
+        if (this.rotateHandle) {
+            this.rotateHandle.destroy();
+            this.rotateHandle = null;
+        }
+    },
+
+    /**
+     * Method: pageDragComplete
+     *
+     * Called when we stop editing a page.
+     *
+     * Parameters:
+     * feature - {<OpenLayers.Feature.Vector>} The selected page.
+     */
+    pageDragComplete: function(feature) {
+        if (this.getCurLayout().rotation) {
+            this.createRotateHandle(feature);
+        }
+    },
+
+    /**
+     * Method: createRotateHandle
+     *
+     * Create the handle used to rotate the page.
+     *
+     * Parameters:
+     * feature - {<OpenLayers.Feature.Vector>} The selected page.
+     */
+    createRotateHandle: function(feature) {
+        this.removeRotateHandle();
+
+        var firstPoint = feature.geometry.components[0].components[2];
+        var secondPoint = feature.geometry.components[0].components[3];
+        var lon = (firstPoint.x + secondPoint.x) / 2;
+        var lat = (firstPoint.y + secondPoint.y) / 2;
+        var rotatePoint = new OpenLayers.Geometry.Point(lon, lat);
+        var center = this.getCenterRectangle(feature);
+        this.rotateHandle = new OpenLayers.Feature.Vector(rotatePoint, {
+            rotate: true,
+            page: feature,
+            center: {x: center[0], y: center[1]},
+            prevAngle: feature.attributes.rotation
+        });
+        this.layer.addFeatures(this.rotateHandle);
     },
 
     /**
@@ -216,14 +360,16 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
      * center - {<OpenLayers.LonLat>} The center of the rectangle.
      * scale - {Integer} The page's scale
      * layout - {Object} The current layout object from the configuration.
+     * rotation - {float} The current rotation in degrees.
      *
      * Returns:
      * {<OpenLayers.Feature.Vector>}
      */
-    createRectangle: function(center, scale, layout) {
+    createRectangle: function(center, scale, layout, rotation) {
         var extent = this.getExtent(center, scale, layout);
         var rect = extent.toGeometry();
-        var feature = new OpenLayers.Feature.Vector(rect);
+        rect.rotate(-rotation, {x:center.lon, y:center.lat});
+        var feature = new OpenLayers.Feature.Vector(rect, {rotation: rotation});
         this.layer.addFeatures(feature);
 
         return feature;
@@ -430,6 +576,126 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
     },
 
     /**
+     * Method: createScaleCombo
+     */
+    createScaleCombo: function() {
+        var scaleStore = new Ext.data.JsonStore({
+            root: "scales",
+            fields: ['name', 'value'],
+            data: this.config
+        });
+
+        return new Ext.form.ComboBox({
+            fieldLabel: OpenLayers.Lang.translate('mf.print.scale'),
+            store: scaleStore,
+            displayField: 'name',
+            valueField: 'value',
+            typeAhead: false,
+            mode: 'local',
+            id: 'scale_' + this.getId(),
+            name: "scale",
+            editable: false,
+            triggerAction: 'all',
+            value: this.config.scales[this.config.scales.length - 1].value
+        });
+    },
+
+    /**
+     * Method: createDpiCombo
+     */
+    createDpiCombo: function(name) {
+        if (this.config.dpis.length > 1) {
+            var dpiStore = new Ext.data.JsonStore({
+                root: "dpis",
+                fields: ['name', 'value'],
+                data: this.config
+            });
+
+            return {
+                fieldLabel: OpenLayers.Lang.translate('mf.print.dpi'),
+                xtype: 'combo',
+                store: dpiStore,
+                displayField: 'name',
+                valueField: 'value',
+                typeAhead: false,
+                mode: 'local',
+                id: 'dpi_' + this.getId(),
+                name: name,
+                editable: false,
+                triggerAction: 'all',
+                value: this.config.dpis[0].value
+            };
+        } else {
+            return {
+                xtype: 'hidden',
+                name: name,
+                value: this.config.dpis[0].value
+            };
+        }
+    },
+
+    /**
+     * Method: createLayoutCombo
+     */
+    createLayoutCombo: function(name) {
+        if (this.config.layouts.length > 1) {
+            var layoutStore = new Ext.data.JsonStore({
+                root: "layouts",
+                fields: ['name'],
+                data: this.config
+            });
+
+            return new Ext.form.ComboBox({
+                fieldLabel: OpenLayers.Lang.translate('mf.print.layout'),
+                store: layoutStore,
+                displayField: 'name',
+                valueField: 'name',
+                typeAhead: false,
+                mode: 'local',
+                id: 'layout_' + this.getId(),
+                name: name,
+                editable: false,
+                triggerAction: 'all',
+                value: this.config.layouts[0].name
+            });
+        } else {
+            return new Ext.form.Hidden({
+                name: name,
+                value: this.config.layouts[0].name
+            });
+        }
+    },
+
+    /**
+     * Method: createRotationTextField
+     *
+     * Creates a text field for editing the rotation. Only if the config
+     * has at least one layout allowing rotations, otherwise, returns null.
+     */
+    createRotationTextField: function() {
+        var layouts = this.config.layouts;
+        var hasRotation = false;
+        for (var i = 0; i < layouts.length && ! hasRotation; ++i) {
+            hasRotation = layouts[i].rotation;
+        }
+        if (hasRotation) {
+            var num = /^-?[0-9]+$/;
+            return new Ext.form.TextField({
+                fieldLabel: OpenLayers.Lang.translate('mf.print.rotation'),
+                name: 'rotation',
+                value: '0',
+                maskRe: /^[-0-9]$/,
+                msgTarget: 'side',
+                validator: function(v) {
+                    return num.test(v) ? true : "Not a number";
+                }
+            });
+        } else {
+            return null;
+        }
+    },
+
+    /**
      * Method: fillComponent
      *
      * Called by initComponent to create the component's sub-elements. To be
@@ -460,5 +726,23 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
      * Parameters:
      * printCommand - {<mapfish.PrintProtocol>} The print definition to fill.
      */
-    fillSpec: null
+    fillSpec: null,
+
+    /**
+     * Method: getCurLayout
+     *
+     * Returns:
+     * {Object} - The current layout config object
+     */
+    getCurLayout: null,
+
+    /**
+     * Method: setCurRotation
+     *
+     * Called when the rotation of the current page has been changed.
+     *
+     * Parameters:
+     * rotation - {float}
+     */
+    setCurRotation: null
 });

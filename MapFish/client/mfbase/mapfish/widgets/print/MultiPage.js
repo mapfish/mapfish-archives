@@ -76,6 +76,14 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
     printButton: null,
 
     /**
+     * Property: freezeGeometryRefresh
+     *
+     * When true, the page's geometry is not refreshed when the data store is
+     * modified.
+     */
+    freezeGeometryRefresh: false,
+
+    /**
      * Method: fillComponent
      * Called by initComponent to create the component's sub-elements.
      */
@@ -106,64 +114,13 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
         }, this.formConfig);
         var formPanel = this.formPanel = new Ext.form.FormPanel(formConfig);
 
-        if(this.config.layouts.length>1) {
-            var layoutStore = new Ext.data.JsonStore({
-                root: "layouts",
-                fields: ['name'],
-                data: this.config
-            });
-
-            var layout = formPanel.add({
-                fieldLabel: OpenLayers.Lang.translate('mf.print.layout'),
-                xtype: 'combo',
-                store: layoutStore,
-                displayField: 'name',
-                valueField: 'name',
-                typeAhead: false,
-                mode: 'local',
-                id: 'layout_' + this.getId(),
-                name: 'layout',
-                editable: false,
-                triggerAction: 'all',
-                value: this.config.layouts[0].name
-            });
-            layout.on('select', this.updateAllRectangles, this);
-        } else {
-            formPanel.add({
-                xtype: 'hidden',
-                name: 'layout',
-                value: this.config.layouts[0].name
-            });
+        var layout = this.createLayoutCombo("layout");
+        if (this.config.layouts.length > 1) {
+            layout.on('select', this.layoutChanged, this);
         }
+        formPanel.add(layout);
 
-        if(this.config.dpis.length>1) {
-            var dpiStore = new Ext.data.JsonStore({
-                root: "dpis",
-                fields: ['name', 'value'],
-                data: this.config
-            });
-
-            formPanel.add({
-                fieldLabel: OpenLayers.Lang.translate('mf.print.dpi'),
-                xtype: 'combo',
-                store: dpiStore,
-                displayField: 'name',
-                valueField: 'value',
-                typeAhead: false,
-                mode: 'local',
-                id: 'dpi_' + this.getId(),
-                name: 'dpi',
-                editable: false,
-                triggerAction: 'all',
-                value: this.config.dpis[0].value
-            });
-        } else {
-            formPanel.add({
-                xtype: 'hidden',
-                name: 'dpi',
-                value: this.config.dpis[0].value
-            });
-        }
+        formPanel.add(this.createDpiCombo("dpi"));
 
         this.printButton = formPanel.addButton({
             text: OpenLayers.Lang.translate('mf.print.print'),
@@ -181,24 +138,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
      * Create the grid for editing pages' parameters.
      */
     createGrid: function(innerPanel) {
-        var scaleStore = new Ext.data.JsonStore({
-            root: "scales",
-            fields: ['name', 'value'],
-            data: this.config
-        });
-
-        var scale = new Ext.form.ComboBox({
-            store: scaleStore,
-            displayField: 'name',
-            valueField: 'value',
-            typeAhead: false,
-            mode: 'local',
-            id: 'scale_' + this.getId(),
-            name: 'scale',
-            editable: false,
-            triggerAction: 'all',
-            value: this.config.scales[this.config.scales.length - 1].value
-        });
+        var scale = this.createScaleCombo();
         scale.on('select', this.updateCurrentRectangle, this);
 
         var self = this;
@@ -208,8 +148,19 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
                 dataIndex: 'scale',
                 editor: scale,
                 renderer: function(value) { return self.getScaleName(value); }
-            }
-        ];
+            }];
+
+        var rotation = this.createRotationTextField();
+        if (rotation != null) {
+            columns.push({
+                header: OpenLayers.Lang.translate('mf.print.rotation'),
+                dataIndex: 'rotation',
+                editor: rotation,
+                id: this.id + '_rotation',
+                hidden: !this.config.layouts[0].rotation
+            });
+        }
+
         if (this.columns) {
             columns.push.apply(columns, this.columns);
         }
@@ -229,8 +180,13 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
             border: false,
             id: this.getId() + 'Grid',
             autoScroll: true,
+            enableColumnHide: false,
+            enableHdMenu: false,
             store: pages,
-            viewConfig: {forceFit: true},
+            viewConfig: {
+                forceFit: true,
+                emptyText: OpenLayers.Lang.translate('mf.print.noPage')
+            },
             sm: new Ext.grid.RowSelectionModel({singleSelect:true}),
             clicksToEdit: 1,
             columns: columns,
@@ -258,10 +214,14 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
 
         grid.getSelectionModel().addListener('selectionchange', this.selectionChanged, this);
         grid.getStore().addListener('update', function (store, record, operation) {
-            this.updateRectangle(record);
+            if (!this.freezeGeometryRefresh) {
+                this.updateRectangle(record);
+                this.updatePrintLayerStyle();
+            }
         }, this);
         grid.getStore().addListener('remove', function (store, record, index) {
             this.layer.removeFeatures(record.data.rectangle);
+            this.removeRotateHandle();
             if(store.getCount()==0) {
                 this.printButton.disable();
             }
@@ -289,6 +249,11 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
                 this.map.zoomToExtent(bounds);
             }
             removeButton.enable();
+
+            var layoutData = this.getCurLayout();
+            if (layoutData.rotation) {
+                this.createRotateHandle(selected.data.rectangle);
+            }
         } else {
             removeButton.disable();
         }
@@ -297,14 +262,22 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
     /**
      * Method: updatePrintLayerStyle
      *
-     * Update the styles of the rectangle according the selected row in the grid
+     * Update the styles of the rectangle according the selected row in the
+     * grid. Makes sure the selected one is on top.
      */
     updatePrintLayerStyle: function() {
         var selected = this.grid.getSelectionModel().getSelected();
+        var theOne = null;
         for (var i = 0; i < this.layer.features.length; ++i) {
             var feature = this.layer.features[i];
-            feature.style = OpenLayers.Feature.Vector.style[feature.data.record == selected ? 'select' : 'default'];
+            var isTheOne = feature.data.record == selected;
+            feature.style = OpenLayers.Feature.Vector.style[isTheOne ? 'select' : 'default'];
+            if (isTheOne && i != this.layer.features.length - 1) {
+                theOne = feature;
+                this.layer.removeFeatures(feature);
+            }
         }
+        if (theOne) this.layer.addFeatures(theOne);
         this.layer.redraw();
     },
 
@@ -314,12 +287,12 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
      * Add a page that will fit the current extent.
      */
     addPage: function() {
-        var layout = this.getCurLayoutName();
-        var layoutData = this.getLayoutForName(layout);
+        var layoutData = this.getCurLayout();
         var scale = this.fitScale(layoutData);
-        var feature = this.createRectangle(this.map.getCenter(), scale, layoutData);
+        var feature = this.createRectangle(this.map.getCenter(), scale, layoutData, 0);
         var newPage = {
             scale: scale,
+            rotation: 0,
             rectangle: feature
         }
         for (var i = 0; i < this.columns.length; ++i) {
@@ -359,16 +332,23 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
     },
 
     /**
-     * Method: updateAllRectangles
+     * Method: layoutChanged
      *
-     * Called when the layout changes or something. Will re-create all the
-     * rectangles.
+     * Called when the layout changes. Will re-create all the
+     * rectangles and check if rotation is enabled.
      */
-    updateAllRectangles: function() {
+    layoutChanged: function() {
         this.grid.getStore().each(function(record) {
             this.updateRectangle(record);
         }, this);
         this.updatePrintLayerStyle();
+
+        var cm = this.grid.getColumnModel();
+        var rotationIndex = cm.getIndexById(this.id + '_rotation');
+        if (rotationIndex >= 0) {
+            var layoutData = this.getCurLayout();
+            cm.setHidden(rotationIndex, !layoutData.rotation);
+        }
     },
 
     /**
@@ -392,13 +372,22 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
     updateRectangle: function(record) {
         this.grid.stopEditing();
         this.layer.removeFeatures(record.data.rectangle);
-        var layout = this.getCurLayoutName();
-        var layoutData = this.getLayoutForName(layout);
+        var layoutData = this.getCurLayout();
         var scale = record.get('scale');
+        var angle = layoutData.rotation ? record.get('rotation') : 0;
         var center = record.data.rectangle.geometry.getBounds().getCenterLonLat();
-        var feature = this.createRectangle(center, scale, layoutData);
+        var feature = this.createRectangle(center, scale, layoutData, angle);
         feature.data.record = record;
         record.data.rectangle = feature;
+
+        var sm = this.grid.getSelectionModel();
+        if (sm.getSelected() == record) {
+            if (layoutData.rotation) {
+                this.createRotateHandle(feature);
+            } else {
+                this.removeRotateHandle();
+            }
+        }
     },
 
     /**
@@ -407,21 +396,55 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
      * Called just after the layer has been created
      */
     afterLayerCreated: function() {
-        var sm = this.grid.getSelectionModel();
-        var self = this;
-        this.pageDrag.onStart = function(feature) {
-            OpenLayers.Control.DragFeature.prototype.onStart.apply(this, arguments);
+        if (this.grid.getStore().getCount() != 0) {
+            this.grid.getStore().each(function(record) {
+                this.layer.addFeatures(record.data.rectangle);
+            }, this);
+            this.updatePrintLayerStyle();
 
-            //make sure the dragged page is selected in the grid (no zooming) 
-            var prev = self.zoomToExtentEnabled;
-            self.zoomToExtentEnabled = false;
-            sm.selectRecords([feature.data.record]);
-            self.zoomToExtentEnabled = prev;
+            var sm = this.grid.getSelectionModel();
+            var selected = sm.getSelected();
+            if (selected && this.getCurLayout().rotation) {
+                this.createRotateHandle(selected.data.rectangle);
+            }
+        } else {
+            this.addPage();
         }
-        this.grid.getStore().each(function(record) {
-            this.layer.addFeatures(record.data.rectangle);
-        }, this);
-        this.updatePrintLayerStyle();
+    },
+
+    /**
+     * Method: pageRotateStart
+     *
+     * Called when the user starts to move the rotate handle.
+     *
+     * Parameters:
+     * feature - {<OpenLayers.Feature.Vector>} The rotate handle.
+     */
+    pageRotateStart: function(feature) {
+        mapfish.widgets.print.Base.prototype.pageRotateStart.call(this, feature);
+        this.grid.stopEditing();
+    },
+
+    /**
+     * Method: pageDragStart
+     *
+     * Called when we start editing a page.
+     *
+     * Parameters:
+     * feature - {<OpenLayers.Feature.Vector>} The selected page.
+     */
+    pageDragStart: function(feature) {
+        mapfish.widgets.print.Base.prototype.pageDragStart.call(this, feature);
+
+        //make sure the dragged page is selected in the grid (no zooming)
+        var prev = this.zoomToExtentEnabled;
+        var sm = this.grid.getSelectionModel();
+        if (sm.getSelected() != feature.data.record) {
+            this.zoomToExtentEnabled = false;
+            sm.selectRecords([feature.data.record]);
+            this.zoomToExtentEnabled = prev;
+        }
+        this.grid.stopEditing();
     },
 
     /**
@@ -443,6 +466,32 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
     },
 
     /**
+     * Method: getCurLayout
+     *
+     * Returns:
+     * {Object} - The current layout config object
+     */
+    getCurLayout: function() {
+        var layout = this.getCurLayoutName();
+        return this.getLayoutForName(layout);
+    },
+
+    /**
+     * Method: setCurRotation
+     *
+     * Called when the rotation of the current page has been changed.
+     *
+     * Parameters:
+     * rotation - {float}
+     */
+    setCurRotation: function(rotation) {
+        var selected = this.grid.getSelectionModel().getSelected();
+        this.freezeGeometryRefresh = true;
+        selected.set('rotation', rotation);
+        this.freezeGeometryRefresh = false;
+    },
+
+    /**
      * Method: fillSpec
      * 
      * Add the page definitions and set the other parameters.
@@ -452,6 +501,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
      */
     fillSpec: function(printCommand) {
         var params = printCommand.spec;
+        var layout = this.getCurLayout();
 
         //take care of the global values
         this.formPanel.getForm().items.each(function(cur) {
@@ -464,6 +514,8 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
             for (var key in record.data) {
                 if (key == 'rectangle') {
                     page.center = this.getCenterRectangle(record.data.rectangle);
+                } else if (key == 'rotation' && !layout.rotation) {
+                    //no rotation
                 } else {
                     page[key] = record.data[key];
                 }
