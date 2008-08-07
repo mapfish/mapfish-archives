@@ -9,6 +9,13 @@ IMAGECOLOR 255 255 255
 FONTSET fonts.txt
 MAXSIZE 20480
 
+OUTPUTFORMAT
+ NAME 'AGG'
+ DRIVER AGG/PNG
+ IMAGEMODE RGBA
+ MIMETYPE "image/png"
+END
+
 WEB
   METADATA
     "wms_title"     "C2C WMS Server"                                ##required
@@ -153,6 +160,39 @@ LAYER
       SYMBOL "triangle"
       COLOR 255 255 0
       SIZE 5
+    END
+  END
+END # Layer
+
+LAYER
+  NAME countries
+  METADATA
+    "wms_title"    "Countries"   ##required
+  END
+  TYPE POLYGON
+  STATUS ON
+  CONNECTIONTYPE postgis
+  CONNECTION "user=%DB_USER% password=%DB_PASSWORD% host=%DB_HOST% dbname=%DB_VERSION%_mapfishsample"
+  DATA "simplify from world_factbk_simplified"
+  PROJECTION
+    "init=epsg:4326"   ##recommended
+  END  
+  LABELITEM "country"
+  LABELMAXSCALE 200000
+  CLASS
+    NAME "Countries"
+    LABEL
+      TYPE TRUETYPE
+      FONT "Vera"
+      SIZE 8
+      ANTIALIAS false
+      COLOR 255 255 0
+      POSITION cc
+    END
+    STYLE
+      WIDTH 2
+      OUTLINECOLOR 255 255 0
+      SIZE 2
     END
   END
 END # Layer
