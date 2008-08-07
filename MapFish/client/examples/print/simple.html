@@ -44,18 +44,24 @@
             "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}, {buffer: 0});
     map.addLayers([wms]);
 
-    //var summits = new OpenLayers.Layer.WMS("Summits",
-    //        "http://demo.mapfish.org/mapfishsample/trunk/wms?",
-    //        {layers: ['summits'], format: 'image/png', transparent: true,
-    //         singleTile: true},
-    //        {visibility: false}
-    //);
-    //map.addLayer(summits);
+    var summits = new OpenLayers.Layer.WMS("Summits",
+            "http://demo.mapfish.org/mapfishsample/trunk/wms?",
+            {layers: ['summits'], format: 'image/png', transparent: true},
+            {visibility: false, singleTile: true}
+    );
+    map.addLayer(summits);
+
+    var countries = new OpenLayers.Layer.WMS("Countries",
+            "http://demo.mapfish.org/mapfishsample/trunk/wms?",
+            {layers: ['countries'], format: 'image/png', transparent: true},
+            {visibility: true, singleTile: true}
+    );
+    map.addLayer(countries);
 
     map.addControl(new OpenLayers.Control.LayerSwitcher());
 
     var layerOverrides={
-        //'Summits': { format: 'image/svg+xml' }
+        'Countries': { format: 'image/svg+xml' }
     };
 
     var viewport = new Ext.Viewport({
@@ -92,7 +98,8 @@
               formConfig: {
                 labelWidth: 65,
                 defaults: {
-                  width: 140
+                  width: 140,
+                  listWidth: 140
                 },
                 items: [
                   {
@@ -106,7 +113,7 @@
                     fieldLabel: 'Comments',
                     name: 'comment',
                     height: 100,
-                    value: ''
+                    value: 'Some comments'
                   }
                 ]
               },
@@ -122,8 +129,9 @@
                 labelWidth: 65,
                 bodyStyle: 'padding: 7px;',
                 defaults: {
-                  width: 140
-                },
+                  width: 140,
+                  listWidth: 140
+                }/*,
                 items: [
                   {
                     xtype: 'textfield',
@@ -131,7 +139,7 @@
                     name: 'title',
                     value: 'Map title'
                   }
-                ]
+                ]*/
               },
               columns: [
                   {
@@ -160,7 +168,7 @@
       }]
     });
     
-    map.setCenter(new OpenLayers.LonLat(8.5, 47), 6);
+    map.setCenter(new OpenLayers.LonLat(8.5, 0), 3);
 
   });
 </script>
