@@ -29,7 +29,7 @@ from mapfish.sqlalchemygeom import GeometryTableMixIn
 
 from geojson import Feature
 
-Session = scoped_session(sessionmaker(transactional=True, autoflush=True))
+Session = scoped_session(sessionmaker())
 
 ## routing 
 nodes_table = Table('nodes2', MetaData(config['pylons.g'].sa_mapfishsample_engine),
