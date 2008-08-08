@@ -34,13 +34,14 @@
           "srs":"EPSG:4326",
           "layers":[
             {
+              "baseURL":"http://labs.metacarta.com/wms/vmap0",
+              "opacity": 1,
+              "singleTile": false,
+              customParams: {FOO: 'bar'},
               "type":"WMS",
               "layers":["basic", "toto"],
-              "baseURL":"http://labs.metacarta.com/wms/vmap0",
               "format":wms.DEFAULT_PARAMS.format,
-              styles: ['s1', 's2'],
-              "opacity": 1,
-              customParams: {FOO: 'bar'}
+              styles: ['s1', 's2']
             }
           ]
         };
@@ -84,13 +85,14 @@
           "srs":"EPSG:4326",
           "layers":[
             {
+              "baseURL":"http://labs.metacarta.com/wms/vmap0",
+              "opacity": 1,
+              "singleTile": false,
+              "customParams":{},
               "type":"WMS",
               "layers":["basic", "toto"],
-              "baseURL":"http://labs.metacarta.com/wms/vmap0",
               "format":wms.DEFAULT_PARAMS.format,
-              "styles":[],
-              "opacity": 1,
-              "customParams":{}
+              "styles":[]
             }
           ]
         };
@@ -103,15 +105,16 @@
         wms2.setVisibility(true);
         print = new mapfish.PrintProtocol(map, "/print.pdf", {}, 100);
         expected.layers.push({
-          "type":"WMS",
-          "layers":["tutu", "titi"],
           "baseURL":"http://labs.metacarta.com/wms/vmap0",
-          "format":"image/png",
-          "styles":[],
           "opacity": 1,
+          "singleTile": false,
           "customParams":{
             FOO:'bar'   //I don't know why, but OL makes the name uppercase
-          }
+          },
+          "type":"WMS",
+          "layers":["tutu", "titi"],
+          "format":"image/png",
+          "styles":[]
         });
         t.eq(json.write(print.spec), json.write(expected), "Results with two layers (two visible)");
     }

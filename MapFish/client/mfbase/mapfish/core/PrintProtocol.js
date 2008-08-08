@@ -197,7 +197,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
             var olLayer = map.layers[i];
             var layerOverrides = OpenLayers.Util.extend({}, overrides[olLayer.name]);
 
-            //allows to have some attributes averriden in fct of the resolution
+            //allows to have some attributes overriden in fct of the resolution
             OpenLayers.Util.extend(layerOverrides, layerOverrides[dpi]);
 
             if (olLayer.getVisibility() && layerOverrides.visibility != false) {
@@ -246,44 +246,64 @@ mapfish.PrintProtocol = OpenLayers.Class({
     },
 
     /**
+     * Method: convertLayer
+     *
+     * Handles the common parameters of all supported layer types.
+     *
+     * Parameters:
+     * olLayer - {OpenLayers.Layer} The OL layer.
+     *
+     * Returns:
+     * {Object} The config for this layer
+     */
+    convertLayer: function(olLayer) {
+        var url = olLayer.url;
+        if (url instanceof Array) {
+            url = url[0];
+        }
+        return {
+            baseURL: url,
+            opacity: (olLayer.opacity != null) ? olLayer.opacity : 1.0,
+            singleTile: olLayer.singleTile,
+            customParams: {}
+        };
+    },
+
+    /**
      * Method: convertWMSLayer
      *
      * Builds the layer configuration from an {OpenLayers.Layer.WMS} layer.
      * The structure expected from the print module is:
-     * <pre>
+     * (start code)
      * {
      *   type: 'WMS'
      *   baseURL: {String}
      *   layers: [{String}]
      *   styles: [{String}]
      *   format: {String}
+     *   opacity: {Float}
+     *   singleTile: {boolean}
      *   customParams: {
      *     {String}: {String}
      *   }
      * }
-     * </pre>
+     * (end)
      *
      * Parameters:
      * olLayer - {OpenLayers.Layer.WMS} The OL layer.
      *
      * Returns:
-     * {Object} The configfor this layer
+     * {Object} The config for this layer
      */
     convertWMSLayer: function(olLayer) {
-        var url = olLayer.url;
-        if (url instanceof Array) {
-            url = url[0];
-        }
-        var layer = {
+        var layer = OpenLayers.Util.extend(this.convertLayer(olLayer),
+        {
             type: 'WMS',
             layers: this.fixArray(olLayer.params.LAYERS),
-            baseURL: url,
             format: olLayer.params.FORMAT || olLayer.DEFAULT_PARAMS.format,
             styles: this.fixArray(olLayer.params.STYLES ||
-                                  olLayer.DEFAULT_PARAMS.styles),
-            opacity: (olLayer.opacity != null) ? olLayer.opacity : 1.0,
-            customParams: {}
-        };
+                                  olLayer.DEFAULT_PARAMS.styles)
+        });
         for (var paramName in olLayer.params) {
             var paramNameLow = paramName.toLowerCase();
             if (olLayer.DEFAULT_PARAMS[paramNameLow] == null &&
@@ -295,6 +315,41 @@ mapfish.PrintProtocol = OpenLayers.Class({
             }
         }
         return layer;
+    },
+
+    /**
+     * Method: convertTileCacheLayer
+     *
+     * Builds the layer configuration from an {OpenLayers.Layer.TileCache} layer.
+     * The structure expected from the print module is:
+     * (start code)
+     * {
+     *   type: 'TileCache'
+     *   baseURL: {String}
+     *   layer: {String}
+     *   opacity: {Float}
+     *   maxExtent: [minx, miny]
+     *   tileSize: [width, height]
+     *   extension: {String}
+     *   resolutions: [{Float}]
+     * }
+     * (end)
+     *
+     * Parameters:
+     * olLayer - {OpenLayers.Layer.TileCache} The OL layer.
+     *
+     * Returns:
+     * {Object} The config for this layer
+     */
+    convertTileCacheLayer: function(olLayer) {
+        return OpenLayers.Util.extend(this.convertLayer(), {
+            type: 'TileCache',
+            layer: olLayer.layername,
+            maxExtent: olLayer.maxExtent.toArray(),
+            tileSize: [olLayer.tileSize.w, olLayer.tileSize.h],
+            extension: olLayer.extension,
+            resolutions: olLayer.resolutions
+        });
     },
 
     /**
@@ -399,6 +454,7 @@ mapfish.PrintProtocol.IGNORED = function() {
 mapfish.PrintProtocol.SUPPORTED_TYPES = {
     'OpenLayers.Layer': mapfish.PrintProtocol.IGNORED,
     'OpenLayers.Layer.WMS': mapfish.PrintProtocol.prototype.convertWMSLayer,
-    'OpenLayers.Layer.WMS.Untiled': mapfish.PrintProtocol.prototype.convertWMSLayer
+    'OpenLayers.Layer.WMS.Untiled': mapfish.PrintProtocol.prototype.convertWMSLayer,
+    'OpenLayers.Layer.TileCache': mapfish.PrintProtocol.prototype.convertTileCacheLayer
 };
 
