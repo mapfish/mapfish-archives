@@ -87,7 +87,7 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
 
     /**
      * Property: layer
-     * {<OpenLayers.Layer>} - The layer to draw the extent
+     * {<OpenLayers.Layer.Vector>} - The layer to draw the extent
      */
     layer: null,
 
