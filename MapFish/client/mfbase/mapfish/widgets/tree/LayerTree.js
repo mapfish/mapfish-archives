@@ -21,6 +21,7 @@
  * @requires OpenLayers/Map.js
  * @requires OpenLayers/Layer/WMS.js
  * @requires OpenLayers/Layer/WMS/Untiled.js
+ * @requires OpenLayers/Layer/MapServer.js
  */
 
 Ext.namespace('mapfish.widgets');
@@ -188,7 +189,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
      * Property: layerToNodeIds
      * {Object} Map of {String} layer name to {String} node identifiers. The
      * layer names may contain sublayers in the format
-     * <WMS layername:sublayer name>.
+     * <layer name:sublayer name>.
      */
     layerToNodeIds: {},
     /**
@@ -430,7 +431,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
          * visibility status of the named layer.
          *
          * Sublayers are included in the list using the
-         * <WMS layername:sublayer name> convention.
+         * <layer name:sublayer name> convention.
          *
          * Returns:
          * {Object} layerVisibility map
@@ -443,7 +444,8 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                 layerVisibility[name] = layer.visibility;
 
                 if (!(layer instanceof OpenLayers.Layer.WMS) &&
-                    !(layer instanceof OpenLayers.Layer.WMS.Untiled))
+                    !(layer instanceof OpenLayers.Layer.WMS.Untiled) &&
+                    !(layer instanceof OpenLayers.Layer.MapServer))
                 {
                     return;
                 }
@@ -451,7 +453,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                 if (!this.layersWithSublayers[layer.name])
                     return;
 
-                // FIXME: base layers and WMS do not play well for now...
+                // FIXME: base layers and sublayers do not play well for now...
                 if (layer.isBaseLayer) {
                     OpenLayers.Console.error("Using sublayers on a base layer " +
                                              "is not supported (base layer is " +
@@ -463,7 +465,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                 // is not used (this is implemented in updateMapFromVisibility()
                 // below.
                 if (!layer._origLayers) {
-                    layer._origLayers = layer.params.LAYERS;
+                    layer._origLayers = layer.params.LAYERS || layer.params.layers;
                 }
                 var sublayers = layer._origLayers;
 
@@ -645,7 +647,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                     wmsLayers[layerName].push(sublayerName);
                 }
             }
-            // Remove WMS layers from layerVisibility, they are handled
+            // Remove layers with sublayers from layerVisibility, they are handled
             // separately.
             for (layerName in wmsLayers) {
                 if (layerVisibility[layerName] !== undefined)
@@ -673,7 +675,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                 var sublayers = wmsLayers[layerName];
 
                 if (layer.isBaseLayer) {
-                    OpenLayers.Console.error("base layer for WMS sublayer " +
+                    OpenLayers.Console.error("base layer for sublayer " +
                                              "are not supported");
                     return;
                 }
@@ -700,12 +702,14 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                         sublayers = orderedLayers;
                     }
 
-                    // wms layer has to be redrawn only if its sublayers
+                    // layer has to be redrawn only if its sublayers
                     // have changed
-                    if (!mapfish.Util.arrayEqual(layer.params.LAYERS, sublayers)) {
-                        layer.params.LAYERS = sublayers;
+                    var layerParamName = layer.params.LAYERS ? "LAYERS" : "layers";
+                    if (!mapfish.Util.arrayEqual(layer.params[layerParamName], sublayers)) {
+                        layer.params[layerParamName] = sublayers;
                         layer.redraw();
                     }
+                        
                     layer.setVisibility(true, true);
                 }
             }
@@ -717,7 +721,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         var clickedBaseLayer;
 
         // Definition:
-        // A sublayer is a selectable layer inside a WMS layer.
+        // A sublayer is a selectable layer inside a layer.
 
         var layerVisibility = getVisibilityFromMap.call(this);
 
@@ -753,9 +757,10 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
             var wmsChildren = [];
 
             if (l instanceof OpenLayers.Layer.WMS ||
-                l instanceof OpenLayers.Layer.WMS.Untiled) {
+                l instanceof OpenLayers.Layer.WMS.Untiled ||
+                l instanceof OpenLayers.Layer.MapServer) {
 
-                var sublayers = l.params.LAYERS;
+                var sublayers = l.params.LAYERS || l.params.layers;
 
                 if (sublayers instanceof Array) {
                     for (var j = 0; j < sublayers.length; j++) {
@@ -803,8 +808,8 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
         this._updateCachedObjects();
 
-        // TODO: handle WMS sublayers correctly
-        //var wmsLayers = {};
+        // TODO: handle sublayers correctly
+        //var subLayers = {};
 
         // DESIGN CHOICE:
         // Layers available on map but not on model will be put in the
@@ -965,7 +970,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         // This means that the layers checked state defined in the model takes
         // precedence over the OL layer state
 
-        // FIXME: is this still needed in any case if we want the state of a WMS
+        // FIXME: is this still needed in any case if we want the state of a
         //  layer / sublayers to be updated?
         if (!this._automaticModel) {
             this._handleModelChange(null, null);

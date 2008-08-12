@@ -109,9 +109,11 @@ function checkOlStatus(t, map, expectedOlStatus) {
 
             // Special properties handling
 
-            if (p == "wmsSubLayers") {
+            if (p == "subLayers") {
                 var wmsLayers = expectProps[p];
-                t.eq(layer.params.LAYERS, wmsLayers, "WMS subLayers are correct");
+                var layersPropertyNameInParams = layer.params.LAYERS !== undefined ?
+                                                 layer.params.LAYERS : layer.params.layers;
+                t.eq(layersPropertyNameInParams, wmsLayers, "subLayers are correct");
                 continue;
             }
 
