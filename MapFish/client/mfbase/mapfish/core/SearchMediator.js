@@ -151,24 +151,37 @@ mapfish.SearchMediator = OpenLayers.Class({
      * params - {Object}
      */
     doSearch: function(searcher, params) {
-        // build parameters string
-        var allParams = this.getSearchParams(searcher, params);
-        var paramsString = OpenLayers.Util.getParameterString(allParams);
-        // build full request string
-        var url = this.url;
-        if (typeof url == "function") {
-            url = url();
-        }
-        var requestString = url + (url.match(/\?/) ? '&' : '?') + paramsString;
+        var url = this.getUrl(this.getSearchParams(searcher, params));
+
         // send request
-        this.request = new OpenLayers.Ajax.Request(
-            requestString,
-            {
-                method: "GET",
-                onSuccess: OpenLayers.Function.bind(this.onSuccess, this),
-                onFailure: function() { alert('Ajax request failed'); }
-            }
-        );
+        this.request = new OpenLayers.Ajax.Request(url, {
+            method: "GET",
+            onSuccess: OpenLayers.Function.bind(this.onSuccess, this),
+            onFailure: function() { alert('Ajax request failed'); }
+        });
+    },
+
+    /**
+     * Method: getUrl
+     *
+     * Parameters:
+     * params - {Object} The search params.
+     *
+     * Returns:
+     * {String} The complete URL string.
+     */
+    getUrl: function(params) {
+        var url = typeof this.url == "function" ? this.url() : this.url;
+        var idx = url.indexOf("?");
+        if (idx < 0) {
+            url += "?";
+        } else {
+            params = OpenLayers.Util.extend(params,
+                OpenLayers.Util.getParameters(url));
+            url = url.substring(0, idx + 1);
+        }
+        url += OpenLayers.Util.getParameterString(params);
+        return url;
     },
 
     /**
@@ -200,5 +213,7 @@ mapfish.SearchMediator = OpenLayers.Class({
             OpenLayers.Util.extend(allParams, s.getSearchParams());
         }
         return allParams;
-    }
+    },
+
+    CLASS_NAME: "mapfish.SearchMediator"
 });

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html debug="true">
+  <head>
+    <link rel="stylesheet" type="text/css" href="../../../ext/resources/css/ext-all.css" />
+
+    <script type="text/javascript" src="../../../../openlayers/lib/Firebug/firebug.js"></script>
+    <script type="text/javascript" src="../../../../openlayers/lib/OpenLayers.js"></script>
+
+    <script type="text/javascript" src="../../../../ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../../../ext/ext-all-debug.js"></script>
+
+    <script type="text/javascript">
+      // Because of a bug in Firefox 2 we need to specify the MapFish base path.
+      // See https://bugzilla.mozilla.org/show_bug.cgi?id=351282
+      var gMfLocation = "../../../../mapfish/";
+    </script>
+    <script type="text/javascript" src="../../../../mapfish/MapFish.js"></script>
+
+    <script type="text/javascript"><!--
+    function test_Box_initialize(t) {
+        t.plan(1);
+
+        var map = {"fake": "map"};
+        var box = new mapfish.Searcher.Box(map);
+
+        t.ok(box.map == map,
+             "ctor correctly sets map property");
+    }
+
+    function test_Box_enable(t) {
+        t.plan(5);
+
+        var box;
+
+        // monkey patch
+        var ohb = OpenLayers.Handler.Box;
+        OpenLayers.Handler.Box = function(control, callbacks, options) {
+            t.ok(control == box,
+                 "box handler ctor called with correct control object");
+            t.ok(callbacks.done == box._triggerSearch,
+                 "box handler ctor called with correct callbacks");
+            t.ok(options.boxDivClassName == box.boxDivClassName,
+                 "box handler ctor called with correct options");
+        };
+        OpenLayers.Handler.Box.prototype.activate = function() {
+            t.ok(true,
+                 "box handler is activated");
+        };
+
+        // 5 tests
+        box = new mapfish.Searcher.Box("fake map");
+        box.enable();
+        t.ok(box.handler != null,
+             "disable sets handler property");
+
+        // cleanup
+        OpenLayers.Handler.Box = ohb;
+    }
+
+    function test_Box_disable(t) {
+        t.plan(3);
+
+        var box = new mapfish.Searcher.Box("fake map");
+
+        // monkey patch
+        box.enabled = true;
+
+        // monkey path
+        box.handler = {
+            "deactivate": function() {
+                t.ok(true,
+                     "disable deactivates handler");
+            },
+            "destroy": function() {
+                t.ok(true,
+                     "disable destroys handler");
+            }
+        };
+
+        // 3 tests
+        box.disable();
+        t.eq(box.handler, null,
+             "disable nullifies handler property");
+    }
+
+    function test_Box__triggerSearch(t) {
+        t.plan(3);
+
+        var box = new mapfish.Searcher.Box("fake map");
+
+        var bounds = {"fake": "bounds"};
+
+        // monkey patch
+        box.cancelSearch = function() {
+            t.ok(true,
+                 "_triggerSearch cancels ongoing search");
+        };
+        box.doSearch = function() {
+            t.ok(true,
+                 "_triggerSearch calls its parent's doSearch method");
+        };
+        box.getSearchParams = function(b) {
+            t.ok(b == bounds,
+                 "_triggerSearch passes correct bounds to getSearchParams");
+        };
+
+        // 3 tests
+        box._triggerSearch(bounds);
+    }
+
+    function test_Box_getSearchParams(t) {
+        t.plan(4);
+
+        var left, bottom, right, top;
+        var params, position, expected;
+
+        // fake map
+        var map = {
+            "getLonLatFromPixel": function(px) {
+                t.ok(true,
+                     "getSearchParams calls getLonLatFromPixel");
+                return new OpenLayers.LonLat(px.x, px.y);
+            }
+        };
+        var box = new mapfish.Searcher.Box(map);
+
+        // getSearchParams is passed bounds - 3 tests
+        left = -100, bottom = -20, right = 100, top = 20;
+        expected = left.toFixed(4) + "," + bottom.toFixed(4) + "," +
+                   right.toFixed(4) + "," + top.toFixed(4);
+        position = new OpenLayers.Bounds(left, bottom, right, top);
+        params = box.getSearchParams(position);
+        t.eq(params.box, expected,
+             "getSearchParams returns expected params");
+
+        // getSearchParams is passed pixel - 1 test
+        position = new OpenLayers.Pixel(left, bottom); 
+        expected = left.toFixed(4) + "," + bottom.toFixed(4) + "," +
+                   left.toFixed(4) + "," + bottom.toFixed(4);
+        params = box.getSearchParams(position);
+        t.eq(params.box, expected,
+             "getSearchParams returns expected params");
+    }
+--></script>
+
+  </head>
+  <body>
+  </body>
+</html>

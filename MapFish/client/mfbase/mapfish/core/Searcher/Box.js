@@ -83,7 +83,8 @@ mapfish.Searcher.Box = OpenLayers.Class(mapfish.Searcher, {
      *      Enable search.
      */
     enable: function() {
-        if (mapfish.Searcher.prototype.enable.call(this)) {
+        var disabled = mapfish.Searcher.prototype.enable.call(this);
+        if (disabled) {
             /* HACK: the constructors of OpenLayers handlers expect a
              * control as their first argument. Actually they expect
              * an object with a map property. So we just pass "this".
@@ -96,6 +97,7 @@ mapfish.Searcher.Box = OpenLayers.Class(mapfish.Searcher, {
             handler.activate();
             this.handler = handler;
         }
+        return disabled;
     },
 
     /**
@@ -103,12 +105,14 @@ mapfish.Searcher.Box = OpenLayers.Class(mapfish.Searcher, {
      *      Disable search.
      */
     disable: function() {
-        if (mapfish.Searcher.prototype.disable.call(this)) {
+        var enabled = mapfish.Searcher.prototype.disable.call(this);
+        if (enabled) {
             var handler = this.handler;
             handler.deactivate();
             handler.destroy();
             this.handler = null;
         }
+        return enabled;
     },
 
     /**
@@ -137,15 +141,19 @@ mapfish.Searcher.Box = OpenLayers.Class(mapfish.Searcher, {
         var box;
         var map = this.map;
         if (position instanceof OpenLayers.Bounds) {
-            var ll = map.getLonLatFromPixel(new OpenLayers.Pixel(position.left, position.bottom));
-            var ur = map.getLonLatFromPixel(new OpenLayers.Pixel(position.right, position.top));
-            box = ll.lon.toFixed(4) + ", " + ll.lat.toFixed(4) + ", " +
-                  ur.lon.toFixed(4) + ", " + ur.lat.toFixed(4);
+            var ll = map.getLonLatFromPixel(
+                new OpenLayers.Pixel(position.left, position.bottom));
+            var ur = map.getLonLatFromPixel(
+                new OpenLayers.Pixel(position.right, position.top));
+            box = ll.lon.toFixed(4) + "," + ll.lat.toFixed(4) + "," +
+                  ur.lon.toFixed(4) + "," + ur.lat.toFixed(4);
         } else {
-            box = position.x.toFixed(4) + ", " + position.y.toFixed(4) + ", " + 
-                  position.x.toFixed(4) + ", " + position.y.toFixed(4)
+            box = position.x.toFixed(4) + "," + position.y.toFixed(4) + "," +
+                  position.x.toFixed(4) + "," + position.y.toFixed(4);
         }
         var params = {'box': box};
         return OpenLayers.Util.extend(this.params, params);
-    }
+    },
+
+    CLASS_NAME: "mapfish.Searcher.Box"
 });

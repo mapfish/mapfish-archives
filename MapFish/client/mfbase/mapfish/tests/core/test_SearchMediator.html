@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html debug="true">
+  <head>
+    <link rel="stylesheet" type="text/css" href="../../ext/resources/css/ext-all.css" />
+
+    <script type="text/javascript" src="../../../openlayers/lib/Firebug/firebug.js"></script>
+    <script type="text/javascript" src="../../../openlayers/lib/OpenLayers.js"></script>
+
+    <script type="text/javascript" src="../../../ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../../ext/ext-all-debug.js"></script>
+
+    <script type="text/javascript">
+      // Because of a bug in Firefox 2 we need to specify the MapFish base path.
+      // See https://bugzilla.mozilla.org/show_bug.cgi?id=351282
+      var gMfLocation = "../../../mapfish/";
+    </script>
+    <script type="text/javascript" src="../../../mapfish/MapFish.js"></script>
+
+    <script type="text/javascript"><!--
+    function test_SearchMediator_initialize(t) {
+        t.plan(5);
+
+        var url = 'url';
+        var callback = function() {};
+        var params = {'fake': 'params'};
+
+        var mediator = new mapfish.SearchMediator(url, callback, params);
+
+        t.eq(mediator.url, url,
+             "ctor correctly sets url");
+        t.ok(mediator.callback == callback,
+             "ctor correctly sets callback");
+        t.eq(mediator.params.fake, params.fake,
+             "ctor correctly sets params");
+        t.eq(mediator.searchers.length, 0,
+             "ctor correctly initializes array of searchers");
+        t.eq(mediator.parser.CLASS_NAME, "OpenLayers.Format.GeoJSON",
+             "ctor correctly creates GeoJSON format object");
+    }
+
+    function test_SearchMediator_setOptions(t) {
+        t.plan(3);
+
+        var options = {
+            "url": "url",
+            "callback": function() {},
+            "params": {"fake": "params"}
+        };
+
+        var mediator = new mapfish.SearchMediator();
+        mediator.setOptions(options);
+
+        t.eq(mediator.url, options.url,
+             "setOptions correctly sets url");
+        t.ok(mediator.callback == options.callback,
+             "setOptions correctly sets callback");
+        t.eq(mediator.params.fake, options.params.fake,
+             "setOptions correctly sets params");
+    }
+
+    function test_SearchMediator_register(t) {
+        t.plan(3);
+
+        var mediator = new mapfish.SearchMediator();
+
+        var searcher1 = 'fake searcher 1';
+        var searcher2 = 'fake searcher 2';
+
+        mediator.register(searcher1);
+        mediator.register(searcher2);
+
+        t.eq(mediator.searchers.length, 2,
+             "register correctly registers two searchers");
+        t.eq(mediator.searchers[0], searcher1,
+             "register correctly registers searcher 1");
+        t.eq(mediator.searchers[1], searcher2,
+             "register correctly registers searcher 2");
+    }
+
+    function test_SearchMediator_onSuccess(t) {
+        t.plan(4);
+
+        var mediator = new mapfish.SearchMediator();
+
+        // monkey patch
+        mediator.parser.read = function(responseText) {
+            return responseText;
+        };
+
+        var expected;
+
+        mediator.callback = function(f) {
+            t.ok(f == expected,
+                 "callback called with expected arg");
+        };
+
+        // test with no request - 1 test
+        expected = null;
+        mediator.onSuccess();
+
+        // test with no responseText - 1 test
+        expected = null;
+        mediator.onSuccess({"fake": "request"});
+
+        // test with empty responseText - 1 test
+        expected = null;
+        mediator.onSuccess({"responseText": ""});
+
+        // test with non-empty responseText - 1 test
+        expected = "fake";
+        mediator.onSuccess({"responseText": expected});
+    }
+
+    function test_SearchMediator_doSearch(t) {
+        t.plan(1);
+
+        var mediator = new mapfish.SearchMediator();
+
+        // monkey patch
+        mediator.getSearchParams = function() {};
+
+        // monkey patch
+        mediator.getUrl = function() {return "url"};
+
+        // monkey patch
+        var oar = OpenLayers.Ajax.Request;
+        OpenLayers.Ajax.Request = function(url) {
+            t.eq(url, "url",
+                 "OpenLayers.Ajax.Request called with correct URL");
+        };
+
+        // 1 test
+        mediator.doSearch();
+
+        // cleanup
+        OpenLayers.Ajax.Request = oar;
+    }
+
+    function test_SearchMediator_getUrl(t) {
+        t.plan(3);
+
+        var mediator = new mapfish.SearchMediator();
+
+        var url;
+        var params;
+        var expectedUrl;
+
+        // 1 test
+        params = {"foo": "foo", "bar": "bar"};
+        mediator.url = "url";
+        expectedUrl = "url?foo=foo&bar=bar";
+        url = mediator.getUrl(params);
+        t.eq(url, expectedUrl,
+             "getUrl returns expected URL");
+
+        // 1 test
+        params = {"foo": "foo", "bar": "bar"};
+        mediator.url = "url?";
+        expectedUrl = "url?foo=foo&bar=bar";
+        url = mediator.getUrl(params);
+        t.eq(url, expectedUrl,
+             "getUrl returns expected URL");
+
+        // 1 test
+        params = {"foo": "foo", "bar": "bar"};
+        mediator.url = "url?p=p";
+        expectedUrl = "url?foo=foo&bar=bar&p=p";
+        url = mediator.getUrl(params);
+        t.eq(url, expectedUrl,
+             "getUrl returns expected URL");
+    }
+
+    function test_SearchMediator_cancelSearch(t) {
+        t.plan(1);
+
+        var mediator = new mapfish.SearchMediator();
+        
+        mediator.request = {
+            "transport": {
+                "abort": function() {
+                    t.ok(true, "abort method called");
+                }
+            }
+        };
+
+        mediator.cancelSearch();
+    }
+
+    function test_SearchMediator_getSearchParams(t) {
+        t.plan(1);
+
+        var mediator = new mapfish.SearchMediator();
+
+        var paramsArray = [
+            {"1_p1": "1_p1", "1_p2": "1_p2"},
+            {"2_p1": "2_p1", "2_p2": "2_p2"},
+            {"3_p1": "3_p1", "3_p2": "3_p2"}
+        ];
+
+        var searcher1 = {
+            "getSearchParams": function() {
+                return paramsArray[0];
+            }
+        };
+        var searcher2 = {
+            "getSearchParams": function() {
+                return paramsArray[1];
+            }
+        };
+        var searcher3 = {
+            "getSearchParams": function() {
+                return paramsArray[2];
+            }
+        };
+
+        mediator.register(searcher1);
+        mediator.register(searcher2);
+        mediator.register(searcher3);
+
+        var allParams = mediator.getSearchParams(searcher2, paramsArray[1]);
+
+        var ok = true;
+        for (var i = 0; i < paramsArray.length; i++) {
+            var params = paramsArray[i];
+            for (var k in params) {
+                if (allParams[k] != params[k]) {
+                    ok = false;
+                }
+            }
+        }
+
+        // 1 test
+        t.ok(ok,
+             "getSearchParams correctly gathers search params");
+    }
+            
+--></script>
+
+  </head>
+  <body>
+  </body>
+</html>

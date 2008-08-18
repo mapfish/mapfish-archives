@@ -62,9 +62,11 @@ mapfish.Searcher.Extent = OpenLayers.Class(mapfish.Searcher, {
      *      Enable search.
      */
     enable: function() {
-        if (mapfish.Searcher.prototype.enable.call(this)) {
+        var disabled = mapfish.Searcher.prototype.enable.call(this);
+        if (disabled) {
             this.map.events.register('moveend', this, this._onMoveend);
         }
+        return disabled;
     },
 
     /**
@@ -72,9 +74,11 @@ mapfish.Searcher.Extent = OpenLayers.Class(mapfish.Searcher, {
      *      Disable search.
      */
     disable: function() {
-        if (mapfish.Searcher.prototype.disable.call(this)) {
+        var enabled = mapfish.Searcher.prototype.disable.call(this);
+        if (enabled) {
             this.map.events.unregister('moveend', this, this._onMoveend);
         }
+        return enabled;
     },
 
     /**
@@ -100,5 +104,7 @@ mapfish.Searcher.Extent = OpenLayers.Class(mapfish.Searcher, {
         var bbox = this.map.getExtent().toBBOX();
         var params = {'box': bbox};
         return OpenLayers.Util.extend(this.params, params);
-    }
+    },
+
+    CLASS_NAME: "mapfish.Searcher.Extent"
 });

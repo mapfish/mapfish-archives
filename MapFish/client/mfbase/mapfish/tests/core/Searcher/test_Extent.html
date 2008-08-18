@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html debug="true">
+  <head>
+    <link rel="stylesheet" type="text/css" href="../../../ext/resources/css/ext-all.css" />
+
+    <script type="text/javascript" src="../../../../openlayers/lib/Firebug/firebug.js"></script>
+    <script type="text/javascript" src="../../../../openlayers/lib/OpenLayers.js"></script>
+
+    <script type="text/javascript" src="../../../../ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../../../ext/ext-all-debug.js"></script>
+
+    <script type="text/javascript">
+      // Because of a bug in Firefox 2 we need to specify the MapFish base path.
+      // See https://bugzilla.mozilla.org/show_bug.cgi?id=351282
+      var gMfLocation = "../../../../mapfish/";
+    </script>
+    <script type="text/javascript" src="../../../../mapfish/MapFish.js"></script>
+
+    <script type="text/javascript"><!--
+    function test_Extent_initialize(t) {
+        t.plan(1);
+
+        var map = {"fake": "map"};
+        var extent = new mapfish.Searcher.Extent(map);
+
+        t.ok(extent.map == map,
+             "ctor correctly sets map property");
+    }
+
+    function test_Extent_enable(t) {
+        t.plan(3);
+
+        var extent;
+
+        // fake map
+        var map = {
+            "events": {
+                "register": function(type, scope, cb) {
+                    t.eq(type, "moveend",
+                         "register called with correct event type");
+                    t.ok(scope == extent,
+                         "register called with correct scope");
+                    t.ok(cb == extent._onMoveend,
+                         "register called with correct callback");
+                }
+            }
+        };
+
+        // 3 tests
+        extent = new mapfish.Searcher.Extent(map);
+        extent.enable();
+    }
+
+    function test_Extent_disable(t) {
+        t.plan(3);
+
+        var extent;
+
+        // fake map
+        var map = {
+            "events": {
+                "unregister": function(type, scope, cb) {
+                    t.eq(type, "moveend",
+                         "register called with correct event type");
+                    t.ok(scope == extent,
+                         "register called with correct scope");
+                    t.ok(cb == extent._onMoveend,
+                         "register called with correct callback");
+                }
+            }
+        };
+
+        // 3 test
+        extent = new mapfish.Searcher.Extent(map);
+        extent.enabled = true;
+        extent.disable();
+    }
+
+    function test_Extent___onMoveend(t) {
+        t.plan(2);
+
+        var extent = new mapfish.Searcher.Extent("fake map");
+
+        // monkey patch
+        extent.doSearch = function() {
+            t.ok(true,
+                 "__onMoveend calls its parent's doSearch method");
+        };
+        extent.getSearchParams = function() {
+            t.ok(true,
+                 "_onMoveend calls getSearchParams");
+        };
+
+        // 2 tests
+        extent._onMoveend({"fake": "event"});
+    }
+
+    function test_Extent_getSearchParams(t) {
+        t.plan(1);
+
+        var bbox = "-180,-90,180,90";
+        var expected = {"box": bbox};
+
+        // fake map
+        var map = {
+            "getExtent": function() {
+                return {
+                    "toBBOX": function() {
+                        return bbox;
+                    }
+                };
+            }
+        };
+
+        var extent = new mapfish.Searcher.Extent(map);
+
+        // 1 test
+        var params = extent.getSearchParams();
+        t.eq(params.box, expected.box,
+             "getSearchParams returns expected params");
+    }
+--></script>
+
+  </head>
+  <body>
+  </body>
+</html>

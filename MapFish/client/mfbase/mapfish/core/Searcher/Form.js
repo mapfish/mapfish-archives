@@ -153,5 +153,7 @@ mapfish.Searcher.Form = OpenLayers.Class(mapfish.Searcher, {
             ret[paramName] = null;
         }
         return ret;
-    }
+    },
+
+    CLASS_NAME: "mapfish.Searcher.Form"
 });

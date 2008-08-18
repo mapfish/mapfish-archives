@@ -133,7 +133,8 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
      *      Enable search.
      */
     enable: function() {
-        if (mapfish.Searcher.prototype.enable.call(this)) {
+        var disabled = mapfish.Searcher.prototype.enable.call(this);
+        if (disabled) {
             var handler;
             /* HACK: the constructors of OpenLayers handlers expect a
              * control as their first argument. Actually they expect
@@ -155,6 +156,7 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
             handler.activate();
             this.handler = handler;
         }
+        return disabled;
     },
 
     /**
@@ -162,12 +164,14 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
      *      Disable search.
      */
     disable: function() {
-        if (mapfish.Searcher.prototype.disable.call(this)) {
+        var enabled = mapfish.Searcher.prototype.disable.call(this);
+        if (enabled) {
             var handler = this.handler;
             handler.deactivate();
             handler.destroy();
             this.handler = null;
         }
+        return enabled;
     },
 
     /**
@@ -257,5 +261,7 @@ mapfish.Searcher.XY = OpenLayers.Class(mapfish.Searcher, {
             OpenLayers.Util.extend(params, {'tolerance': tolerance});
         }
         return OpenLayers.Util.extend(this.params, params);
-    }
+    },
+
+    CLASS_NAME: "mapfish.Searcher.XY"
 });

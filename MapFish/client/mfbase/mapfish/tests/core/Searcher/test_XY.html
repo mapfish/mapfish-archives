@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html debug="true">
+  <head>
+    <link rel="stylesheet" type="text/css" href="../../../ext/resources/css/ext-all.css" />
+
+    <script type="text/javascript" src="../../../../openlayers/lib/Firebug/firebug.js"></script>
+    <script type="text/javascript" src="../../../../openlayers/lib/OpenLayers.js"></script>
+
+    <script type="text/javascript" src="../../../../ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../../../ext/ext-all-debug.js"></script>
+
+    <script type="text/javascript">
+      // Because of a bug in Firefox 2 we need to specify the MapFish base path.
+      // See https://bugzilla.mozilla.org/show_bug.cgi?id=351282
+      var gMfLocation = "../../../../mapfish/";
+    </script>
+    <script type="text/javascript" src="../../../../mapfish/MapFish.js"></script>
+
+    <script type="text/javascript"><!--
+    function test_XY_initialize(t) {
+        t.plan(1);
+
+        var map = {"fake": "map"};
+        var xy = new mapfish.Searcher.XY(map);
+
+        t.ok(xy.map == map,
+             "ctor correctly sets map property");
+    }
+
+    function test_XY_enable(t) {
+        t.plan(12);
+
+        var xy, create_hover, activate_hover;
+
+        // monkey patch
+        var ohc = OpenLayers.Handler.Click;
+        OpenLayers.Handler.Click = function(control, callbacks, options) {
+            t.ok(control == xy,
+                 "click handler ctor called with correct control object");
+            t.ok(callbacks.click == xy._triggerSearch,
+                 "click handler ctor called with correct callbacks");
+            t.ok((options.delay == xy.delay) &&
+                 (options.pixelTolerance == xy.pixelTolerance),
+                 "click handler ctor called with correct options");
+            create_hover = false;
+        };
+        OpenLayers.Handler.Click.prototype.activate = function() {
+            t.ok(true,
+                 "click handler is activated");
+            activate_hover = false;
+        };
+
+        // monkey patch
+        var ohh = OpenLayers.Handler.Hover;
+        OpenLayers.Handler.Hover = function(control, callbacks, options) {
+            t.ok(control == xy,
+                 "hover handler ctor called with correct control object");
+            t.ok((callbacks.pause == xy._triggerSearch) &&
+                 (callbacks.move == xy._cancelSearch),
+                 "hover handler ctor called with correct callbacks");
+            t.ok((options.delay == xy.delay) &&
+                 (options.pixelTolerance == xy.pixelTolerance),
+                 "hover handler ctor called with correct options");
+            create_hover = true;
+        };
+        OpenLayers.Handler.Hover.prototype.activate = function() {
+            t.ok(true,
+                 "hover handler is activated");
+            activate_hover = true;
+        };
+
+        // click mode - 6 tests
+        create_hover = activate_hover = true;
+        xy = new mapfish.Searcher.XY("fake map");
+        xy.enable();
+        t.eq(create_hover, false,
+             "ctor creates click handler");
+        t.eq(activate_hover, false,
+             "ctor activates click handler");
+
+        // hover mode - 6 tests
+        create_hover = activate_hover = false;
+        xy = new mapfish.Searcher.XY("fake map", null, {"hover": true});
+        xy.enable();
+        t.eq(create_hover, true,
+             "ctor creates hover handler");
+        t.eq(activate_hover, true,
+             "ctor activates hover handler");
+
+        // cleanup
+        OpenLayers.Handler.Click = ohc;
+        OpenLayers.Handler.Hover = ohh;
+    }
+
+    function test_XY_disable(t) {
+        t.plan(3);
+
+        var xy = new mapfish.Searcher.XY("fake map");
+
+        // monkey patch
+        xy.enabled = true;
+
+        // monkey path
+        xy.handler = {
+            "deactivate": function() {
+                t.ok(true,
+                    "disable deactivates handler");
+            },
+            "destroy": function() {
+                t.ok(true,
+                    "disable destroys handler");
+            }
+        };
+
+        // 3 tests
+        xy.disable();
+        t.eq(xy.handler, null,
+             "disable nullifies handler property");
+    }
+
+    function test_XY__triggerSearch(t) {
+        t.plan(3);
+
+        var xy = new mapfish.Searcher.XY("fake map");
+
+        var _event = {"fake": "event"};
+
+        // monkey patch
+        xy.cancelSearch = function() {
+            t.ok(true,
+                 "_triggerSearch cancels ongoing search");
+        };
+        xy.doSearch = function() {
+            t.ok(true,
+                 "_triggerSearch calls its parent's doSearch method");
+        };
+        xy.getSearchParams = function(evt) {
+            t.ok(evt == _event,
+                 "_triggerSearch passes correct event to getSearchParams");
+        };
+
+        // 3 tests
+        xy._triggerSearch(_event);
+    }
+
+    function test_XY__cancelSearch(t) {
+        t.plan(2);
+
+        var xy = new mapfish.Searcher.XY("fake map", null, {
+            "onMouseMove": function() {
+                t.ok(true,
+                     "_cancelSearch calls user-defined onMouseMove func");
+            }
+        });
+
+        var _event = {"fake": "event"};
+
+        // monkey patch
+        xy.cancelSearch = function() {
+            t.ok(true,
+                 "_cancelSearch cancels ongoing search");
+        };
+
+        // 2 tests
+        xy._cancelSearch(_event);
+    }
+
+    function test_XY_getSearchParams(t) {
+        t.plan(4);
+
+        var params, expectedParams;
+
+        var resolution = 0.5;
+        var lon = 180;
+        var lat = 90;
+
+        // fake event
+        var _event = {"xy": "fake pixel"};
+
+        // fake map
+        var map = {
+            "getLonLatFromViewPortPx": function() {
+                t.ok(true,
+                     "getSearchParams calls getLonLatFromViewPortPx");
+                return new OpenLayers.LonLat(lon, lat);
+            },
+            "getResolution": function() {
+                return resolution;
+            }
+        };
+        var xy = new mapfish.Searcher.XY(map);
+
+        // 2 tests
+        expectedParams = {
+            "lon": lon,
+            "lat": lat,
+            "tolerance": xy.searchTolerance * resolution
+        };
+        params = xy.getSearchParams(_event);
+        t.ok((params.lon == expectedParams.lon) &&
+             (params.lat == expectedParams.lat) &&
+             (params.tolerance == expectedParams.tolerance),
+             "getSearchParams returns expected params");
+
+        // 2 tests
+        xy.searchToleranceUnits = "geo";
+        expectedParams = {
+            "lon": lon,
+            "lat": lat,
+            "tolerance": xy.searchTolerance
+        };
+        params = xy.getSearchParams(_event);
+        t.ok((params.lon == expectedParams.lon) &&
+             (params.lat == expectedParams.lat) &&
+             (params.tolerance == expectedParams.tolerance),
+             "getSearchParams returns expected params");
+    }
+--></script>
+
+  </head>
+  <body>
+  </body>
+</html>

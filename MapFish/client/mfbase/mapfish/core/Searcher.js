@@ -117,65 +117,7 @@ mapfish.Searcher = OpenLayers.Class({
     cancelSearch: function() {
         this.mediator.cancelSearch();
     },
- 
-    /**
-     * Method: addLayers
-     *      Add layers as request params.
-     *
-     * FIXME: this function should be moved elsewhere or removed.
-     *
-     * Parameters:
-     * layers - {Array}
-     */
-    addLayers: function(layers) {
-        if (!(layers instanceof Array)) {
-            layers = [layers];
-        }
-        this.addParams({'layers': layers.join(',')});
-    },
 
-    /**
-     * Method: removeLayers
-     *      Remove layers from the params.
-     *
-     * FIXME: this function should be moved elsewhere or removed.
-     *
-     * Parameters:
-     * layers - {Array}
-     */
-    removeLayers: function(layers) {
-        if (!this.params['layers']) {
-            return;
-        }
-        if (!layers) {
-            // remove all
-            this.params['layers'] = null;
-        } else {
-            // remove specified layers
-            if (!(layers instanceof Array)) {
-                layers = [layers];
-            }
-            var layerArray = this.params['layers'].split(',');
-            for (var i = 0; i < layers.length; i++) {
-                OpenLayers.Util.removeItem(layerArray, layers[i]);
-            }
-        }
-    },
-
-    /**
-     * Method: addParams
-     *      Add request params.
-     *
-     * Parameters:
-     * params - {Object}
-     *
-     * Returns:
-     * {Object} The resulting params object.
-     */
-    addParams: function(params) {
-        return OpenLayers.Util.extend(this.params, params);
-    },
- 
     /**
      * Method: getSearchParams
      *      Get the search params.
@@ -190,5 +132,7 @@ mapfish.Searcher = OpenLayers.Class({
      *
      * to be overriden by subclasses
      */
-    onGotFeatures: function() {}
+    onGotFeatures: function() {},
+
+    CLASS_NAME: "mapfish.Searcher"
 });
