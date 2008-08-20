@@ -64,10 +64,6 @@ create_python_env() {
     mkdir $PYTHON_ENV
     (cd $PYTHON_ENV && wget http://svn.colorstudy.com/virtualenv/trunk/virtualenv.py)
     (cd $PYTHON_ENV && python virtualenv.py .)
-    # FIXME: This shouldn't be needed, as MapFish should fetch the requirements with setup.py
-    # However this isn't working right now (failure in simplejson), so let's do this for now.
-    # psycopg2 repository is broken right now. Removed from list.
-    $PYTHON_ENV/bin/easy_install Pylons sqlalchemy shapely geojson
 }
 
 init_light() {
