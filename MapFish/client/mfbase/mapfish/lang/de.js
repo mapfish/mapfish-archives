@@ -13,7 +13,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.en, {
     'mf.print.resetPos': 'Reset Pos.',
     'mf.print.layout': 'Layout',
     'mf.print.addPage': 'Seite hinzufügen',
-    'mf.print.remove': 'Seite entferne',
+    'mf.print.remove': 'Seite entfernen',
     'mf.print.clearAll': 'Alles löschen',
     'mf.print.popupBlocked': 'Popup-Fenster blockiert werden von Ihrem Browser.<br />' +
                              '<br />Verwenden Sie diese URL zum Download Ihr Dokument:',
