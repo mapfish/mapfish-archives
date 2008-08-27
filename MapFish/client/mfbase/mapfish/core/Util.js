@@ -124,4 +124,4 @@ mapfish.Util.arrayEqual = function(a, b) {
 mapfish.Util.isIE7 = function () {
     var ua = navigator.userAgent.toLowerCase();
     return ua.indexOf("msie 7") > -1;
-}
+};
