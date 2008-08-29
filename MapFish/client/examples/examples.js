@@ -32,5 +32,5 @@
     // want to rely on the MapFish services provided on demo.mapfish.org/trunk,
     // leave this variable untouched; otherwise modify it appropriately. You
     // may want to use ''.
-    mapfish.SERVER_BASE_URL = 'http://demo.mapfish.org/trunk/';
+    mapfish.SERVER_BASE_URL = 'http://demo.mapfish.org/mapfishsample/trunk/';
 })();
