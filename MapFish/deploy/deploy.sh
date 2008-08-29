@@ -190,8 +190,12 @@ fetch_project() {
     run_hook pre_fetch_project
 
     echo "Fetching/updating project"
-    $SVN co $SVN_CO_OPTIONS ${PROJECT_SVN_BASE}
-
+    if [ -d "project_source/$PROJECT" ]; then
+        echo "Detected directory project_source/$PROJECT, using it instead of SVN"
+        rsync -av project_source/$PROJECT .
+    else
+        $SVN co $SVN_CO_OPTIONS ${PROJECT_SVN_BASE}
+    fi
     init_mapfish
 
     # Launch project setup.py to install project dependencies if needed
