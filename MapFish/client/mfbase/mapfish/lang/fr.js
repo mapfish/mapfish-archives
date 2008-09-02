@@ -3,6 +3,8 @@
  */
 OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     'scale': "Echelle = 1 : ${scaleDenom}",
+    'mf.print.mapTitle': 'Titre',
+    'mf.print.comment': 'Commentaires',
     'mf.print.unableToPrint': "Impossible d'imprimer",
     'mf.print.generatingPDF': "Génération du PDF...",
     'mf.print.dpi': 'Résolution',

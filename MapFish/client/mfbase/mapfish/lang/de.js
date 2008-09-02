@@ -2,6 +2,8 @@
  * @requires OpenLayers/Lang/en.js
  */
 OpenLayers.Util.extend(OpenLayers.Lang.en, {
+    'mf.print.mapTitle': 'Titel',
+    'mf.print.comment': 'Bemerkung',
     'mf.print.loadingConfig': 'Laden der Konfiguration...',
     'mf.print.serverDown': ' Der Druck-Systemdienst funktioniert nicht',
     'mf.print.unableToPrint': "Unable to print",

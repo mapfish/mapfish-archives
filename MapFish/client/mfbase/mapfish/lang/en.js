@@ -2,6 +2,8 @@
  * @requires OpenLayers/Lang/en.js
  */
 OpenLayers.Util.extend(OpenLayers.Lang.en, {
+    'mf.print.mapTitle': 'Title',
+    'mf.print.comment': 'Comments',
     'mf.print.loadingConfig': 'Loading the configuration...',
     'mf.print.serverDown': 'The print service is not working',
     'mf.print.unableToPrint': "Unable to print",
