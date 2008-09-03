@@ -78,18 +78,7 @@
             }
         );
 
-        // create WMS layer
-        var wms = new OpenLayers.Layer.WMS(
-            "World Map",
-            "http://world.freemap.in/tiles/",
-            {'layers': 'factbook-overlay', 'format':'png'},
-            {
-                'reproject': false, 'opacity': 0.4,
-                'isBaseLayer': false,'wrapDateLine': true
-            }
-        );
-
-        map.addLayers([gmap, yahoo, yahoosat, yahoohyb, mapnik, wms]);
+        map.addLayers([gmap, yahoo, yahoosat, yahoohyb, mapnik]);
                            
         map.setCenter(new OpenLayers.LonLat(17, 2), 2);
 
