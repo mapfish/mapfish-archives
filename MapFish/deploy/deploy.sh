@@ -139,7 +139,7 @@ subst_in_files() {
 
     find $PROJECT_DIR -name '*.in' | while read i; do
         echo "Replacing $i"
-        perl -pne 's/%([\w]+)%/$ENV{$1}/ge' $i > ${i%%.in};
+        perl -pne 's/%(?!\\)([\w]+)%/$ENV{$1}/ge; s/%\\([\w]+)%/%$1%/g' $i > ${i%%.in};
     done
 
     # This script may be generated from a .in, so we need to chmod it afterwards
