@@ -106,6 +106,8 @@
             "core/Searcher/Form.js",
             "core/PrintProtocol.js",
             "core/Offline.js",
+            "core/Protocol.js",
+            "core/Protocol/MapFish.js",
             "widgets/MapComponent.js",
             "widgets/Shortcuts.js",
             "widgets/data/FeatureReader.js",
