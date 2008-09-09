@@ -36,6 +36,15 @@ Ext.namespace('mapfish.widgets.toolbar');
  * toolbar.activate();
  * (end)
  *
+ * Some attributes from the control are used by the toolbar:
+ *  - isDefault: true for the default button of the given group.
+ *  - title: will be used for the tooltip.
+ *
+ * On the Ext button side (second parameter of addControl), some options are of
+ * interest:
+ *  - toggleGroup: Name of the toggle group the button is member of.
+ *  - iconCls: The CSS class for displaying the button.
+ *
  * Inherits from:
  * - {Ext.Toolbar}
  */
@@ -215,8 +224,13 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
                 });
             }
             this.add(mb);
-        } else if (this.defaultControl) {
-            this.defaultControl.activate();
+        } else {
+            for (var j = 0, c; j < this.controls.length; j++) {
+                c = this.controls[j];
+                if(c.isDefault) {
+                    c.activate();
+                }
+            }
         }
     },
 
