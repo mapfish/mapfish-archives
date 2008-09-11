@@ -74,6 +74,13 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
     config: null,
 
     /**
+     * APIProperty: layerTree
+     * {mapfish.widgets.LayerTree} - An optional layer tree. Needed only if you
+      *                              want to display legends.
+     */
+    layerTree: null,
+
+    /**
      * Property: pageDrag
      * {<OpenLayers.Control.DragFeature>} - The control to move the extent.
      */
@@ -467,7 +474,9 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
 
         var printCommand = new mapfish.PrintProtocol(this.map, this.config,
                 this.overrides, this.getCurDpi());
-
+        if (this.layerTree) {
+            this.addLegends(printCommand.spec);
+        }
         this.fillSpec(printCommand);
 
         this.mask.msg = OpenLayers.Lang.translate('mf.print.generatingPDF');
@@ -489,6 +498,47 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
                 }
                 this.mask.hide();
             }, this);
+    },
+
+    /**
+     * Method: addLegends
+     *
+     * Add the layerTree's legends to the given printCommand.
+     *
+     * Parameters:
+     * printCommand - {<mapfish.PrintProtocol>} The print definition to fill.
+     */
+    addLegends: function(spec) {
+        var legends = spec.legends = [];
+
+        function addLayer(layerNode) {
+            var layerInfo = {
+                name: layerNode.attributes.text,
+                icon:  mapfish.Util.relativeToAbsoluteURL(layerNode.attributes.icon)
+            };
+            var classesInfo = layerInfo.classes = [];
+            layerNode.eachChild(function(classNode) {
+                classesInfo.push({
+                    name: classNode.attributes.text,
+                    icon:  mapfish.Util.relativeToAbsoluteURL(classNode.attributes.icon)
+                });
+            }, this);
+            if(classesInfo.length>0) {
+                legends.push(layerInfo);
+            }
+        }
+
+        function goDeep(root) {
+            root.eachChild(function(node) {
+                var attr = node.attributes;
+                if (attr.checked && attr.layerNames) {
+                    addLayer(node);
+                } else {
+                    goDeep(node);
+                }
+            }, this);
+        }
+        goDeep(this.layerTree.getRootNode());
     },
 
     /**

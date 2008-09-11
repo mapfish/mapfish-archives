@@ -262,7 +262,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
             url = url[0];
         }
         return {
-            baseURL: url,
+            baseURL: mapfish.Util.relativeToAbsoluteURL(url),
             opacity: (olLayer.opacity != null) ? olLayer.opacity : 1.0,
             singleTile: olLayer.singleTile,
             customParams: {}

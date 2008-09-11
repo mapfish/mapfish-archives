@@ -125,3 +125,26 @@ mapfish.Util.isIE7 = function () {
     var ua = navigator.userAgent.toLowerCase();
     return ua.indexOf("msie 7") > -1;
 };
+
+/**
+ * Function: relativeToAbsoluteURL
+ *
+ * Parameters:
+ * source - {String} the source URL
+ *
+ * Returns:
+ * {String} An absolute URL
+ */
+mapfish.Util.relativeToAbsoluteURL = function(source) {
+    if (/^\w+:/.test(source) || !source) {
+        return source;
+    }
+
+    var h = location.protocol + "//" + location.host;
+    if (source.indexOf("/") == 0) {
+        return h + source;
+    }
+
+    var p = location.pathname.replace(/\/[^\/]*$/, '');
+    return h + p + "/" + source;
+}
