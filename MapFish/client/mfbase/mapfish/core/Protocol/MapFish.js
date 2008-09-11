@@ -74,29 +74,17 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
     },
 
     /**
-     * Method: callbackCreate
+     * Method: handleCreate
+     * This method overrides that of the parent class, this is to be more
+     * restrictive on HTTP status code.
      *
      * Parameters:
-     * options - {Object} The user options passed to the read call.
-     * resp - {<OpenLayers.Protocol.Response>} The
-     *      <OpenLayers.Protocol.Response> object to pass to the user
-     *      callback.
-     * request - {Object} The request object returned by XHR.
+     * resp - {<OpenLayers.Protocol.Response>} The response object to pass to
+     *     any user callback.
+     * options - {Object} The user options passed to the create call.
      */
-    callbackCreate: function(options, resp, request) {
-        if (options.callback) {
-            var code = request.status;
-            if (code == 201) {
-                // success
-                resp.features = this.readResponse(request);
-                resp.code = OpenLayers.Protocol.Response.SUCCESS;
-            } else {
-                // failure
-                resp.features = null;
-                resp.code = OpenLayers.Protocol.Response.FAILURE;
-            }
-            options.callback.call(options.scope, resp);
-        }
+    handleCreate: function(resp, options) {
+        this.handleCreateUpdate(resp, options);
     },
 
     /**
@@ -123,21 +111,22 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
     },
 
     /**
-     * Method: callbackRead
+     * Method: handleRead
+     * This method overrides that of the parent class, this is to be more
+     * restrictive on HTTP status code.
      *
      * Parameters:
+     * resp - {<OpenLayers.Protocol.Response>} The response object to pass to
+     *     the user callback.
      * options - {Object} The user options passed to the read call.
-     * resp - {<OpenLayers.Protocol.Response>} The
-     *      <OpenLayers.Protocol.Response> object to pass to the user
-     *      callback.
-     * request - {Object} The request object returned by XHR.
      */
-    callbackRead: function(options, resp, request) {
+    handleRead: function(resp, options) {
+        var request = resp.priv;
         if (options.callback) {
             var code = request.status;
             if (code == 200) {
                 // success
-                resp.features = this.readResponse(request);
+                resp.features = this.parseFeatures(request);
                 resp.code = OpenLayers.Protocol.Response.SUCCESS;
             } else {
                 // failure
@@ -220,21 +209,34 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
     },
 
     /**
-     * Method: callbackUpdate
+     * Method: handleUpdate
+     * This method overrides that of the parent class, this is to be more
+     * restrictive on HTTP status code.
      *
      * Parameters:
-     * options - {Object} The user options passed to the read call.
-     * resp - {<OpenLayers.Protocol.Response>} The
-     *      <OpenLayers.Protocol.Response> object to pass to the user
-     *      callback.
-     * request - {Object} The request object returned by XHR.
+     * resp - {<OpenLayers.Protocol.Response>} The response object to pass to
+     *     any user callback.
+     * options - {Object} The user options passed to the update call.
      */
-    callbackUpdate: function(options, resp, request) {
+    handleUpdate: function(resp, options) {
+        this.handleCreateUpdate(resp, options);
+    },
+
+    /**
+     * Method: handleCreateUpdate
+     *
+     * Parameters:
+     * resp - {<OpenLayers.Protocol.Response>} The response object to pass to
+     *     any user callback.
+     * options - {Object} The user options passed to the update call.
+     */
+    handleCreateUpdate: function(resp, options) {
+        var request = resp.priv;
         if (options.callback) {
             var code = request.status;
             if (code == 201) {
                 // success
-                resp.features = this.readResponse(request);
+                resp.features = this.parseFeatures(request);
                 resp.code = OpenLayers.Protocol.Response.SUCCESS;
             } else {
                 // failure
@@ -271,16 +273,15 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
     },
 
     /**
-     * Method: callbackDelete
+     * Method: handleDelete
      *
      * Parameters:
-     * options - {Object} The user options passed to the read call.
-     * resp - {<OpenLayers.Protocol.Response>} The
-     *      <OpenLayers.Protocol.Response> object to pass to the user
-     *      callback.
-     * request - {Object} The request object returned by XHR.
+     * resp - {<OpenLayers.Protocol.Response>} The response object to pass to
+     *     any user callback.
+     * options - {Object} The user options passed to the delete call.
      */
-    callbackDelete: function(options, resp, request) {
+    handleDelete: function(resp, options) {
+        var request = resp.priv;
         if (options.callback) {
             var code = request.status;
             if (code == 204) {
