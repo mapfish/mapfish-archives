@@ -30,6 +30,11 @@ Ext.namespace('mapfish.widgets', 'mapfish.widgets.data');
  *      specifically add/remove features into it. It also registers listeners
  *      to layer events "featuresadded", "featuresremoved", and
  *      "featureremoved" to update the store.
+ *
+ * Design Note: This class does not extend Ext.Store but instanciates either
+ *      Ext.Store or Ext.GroupingStore which is saved in the "store" property.
+ *      Dealing with these two kinds of stores forces us to use composition
+ *      while inheritance would have been more natural in this case.
  */
 
 /**
