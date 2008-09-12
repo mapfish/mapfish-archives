@@ -60,7 +60,7 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
      *
      * Returns:
      * {<OpenLayers.Protocol.Response>} An <OpenLayers.Protocol.Response>
-     *      object, whose "priv" property references the HTTP request, this 
+     *      object, whose "priv" property references the HTTP request, this
      *      object is also passed to the callback function when the request
      *      completes, its "features" property is then populated with the
      *      the features received from the server.
@@ -97,7 +97,7 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
      *
      * Returns:
      * {<OpenLayers.Protocol.Response>} An <OpenLayers.Protocol.Response>
-     *      object, whose "priv" property references the HTTP request, this 
+     *      object, whose "priv" property references the HTTP request, this
      *      object is also passed to the callback function when the request
      *      completes, its "features" property is then populated with the
      *      the features received from the server.
@@ -138,6 +138,81 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
     },
 
     /**
+     * Method: _filterToParams
+     *      Private method to convert a <OpenLayers.Filter> object to key/values
+     *      in an object.
+     *
+     * Parameters:
+     * filter - {OpenLayers.Filter} filter to convert.
+     * params - {Object} Object where to store the result.
+     *
+     * Returns:
+     * {Boolean} True if the conversion suceeded, false otherwise.
+     */
+    _filterToParams: function(filter, params) {
+        var className = filter.CLASS_NAME;
+        var str = className.substring(
+            className.indexOf('.') + 1, className.lastIndexOf('.')
+        );
+        if (str != "Filter") {
+            // bail out
+            return false;
+        }
+        var filterType = className.substring(className.lastIndexOf('.') + 1);
+
+        switch (filterType) {
+            case "Spatial":
+                if (filter.type != OpenLayers.Filter.Spatial.BBOX) {
+                    OpenLayers.Console.error('Unsupported spatial filter type ' +
+                                             filter.type);
+                    return false;
+                }
+                if (params["box"]) {
+                    OpenLayers.Console.error('Filter contains multiple ' +
+                                             'Spatial BBOX entries');
+                    // We should merge with the old bbox, but OL does not
+                    // proving geometry merging.
+                    return false;
+                }
+                params["box"] = filter.value.toBBOX();
+                break;
+            case "Comparison":
+                // Note: the comparison type is not included in the request
+                // parameters. It is the server responsibility to deal with the
+                // appropriate comparison type from the parameter name.
+
+                if (params[filter.property]) {
+                    OpenLayers.Console.error('Filter contains multiple Comparison ' +
+                               'filters for the same property ' + filer.property);
+                        return false;
+                }
+                params[filter.property] = filter.value;
+                break;
+            case "Logical":
+                if (filter.type != OpenLayers.Filter.Logical.AND) {
+                    OpenLayers.Console.error('Unsupported logical filter type ' +
+                                             filter.type);
+                    return false;
+                }
+                if (filter.filters.length == 0) {
+                    OpenLayers.Console.error('Empty logical AND filter');
+                    return false;
+                }
+                for (var i = 0; i < filter.filters.length; i++) {
+                    var f = filter.filters[i];
+                    if (!this._filterToParams(f, params))
+                        return false;
+                }
+                break;
+            default:
+                OpenLayers.Console.warn("Unknown filter type " + filterType);
+                return false;
+                break;
+        }
+        return true;
+    },
+
+    /**
      * Method: filterAdapter
      *      If params has a filter property and if that filter property
      *      is an OpenLayers.Filter that the MapFish protocol can deal
@@ -153,30 +228,11 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
             // bail out
             return;
         }
-        var className = options.filter.CLASS_NAME;
-        var str = className.substring(
-            className.indexOf('.') + 1, className.lastIndexOf('.')
-        );
-        if (str != "Filter") {
-            // bail out
-            return;
-        }
-        // ok, we got a filter
-        var filter = options.filter;
-        var filterType = className.substring(className.lastIndexOf('.') + 1);
-        switch (filterType) {
-            case "Spatial":
-                if (filter.type == OpenLayers.Filter.Spatial.BBOX) {
-                    options.params = OpenLayers.Util.extend(
-                        options.params,
-                        {"box": filter.value.toBBOX()}
-                    );
-                    delete options.filter;
-                }
-                break;
-            default:
-                break;
-        }
+
+        var params = {};
+        if (this._filterToParams(options.filter, params))
+            options.params = OpenLayers.Util.extend(options.params, params);
+        delete options.filter;
     },
 
     /**
@@ -191,7 +247,7 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
      *
      * Returns:
      * {<OpenLayers.Protocol.Response>} An <OpenLayers.Protocol.Response>
-     *      object, whose "priv" property references the HTTP request, this 
+     *      object, whose "priv" property references the HTTP request, this
      *      object is also passed to the callback function when the request
      *      completes, its "features" property is then populated with the
      *      the features received from the server.
@@ -258,7 +314,7 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
      *
      * Returns:
      * {<OpenLayers.Protocol.Response>} An <OpenLayers.Protocol.Response>
-     *      object, whose "priv" property references the HTTP request, this 
+     *      object, whose "priv" property references the HTTP request, this
      *      object is also passed to the callback function when the request
      *      completes.
      */

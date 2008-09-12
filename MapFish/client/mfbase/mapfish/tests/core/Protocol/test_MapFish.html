@@ -27,7 +27,7 @@
 
         protocol = new mapfish.Protocol.MapFish();
         t.eq(protocol.format.CLASS_NAME, "OpenLayers.Format.GeoJSON",
-             "initializes sets a GeoJSON format in the format property"); 
+             "initializes sets a GeoJSON format in the format property");
     }
 
     function test_MapFish_create(t) {
@@ -56,7 +56,7 @@
     }
 
     function test_MapFish_filterAdapter(t) {
-        t.plan(4);
+        t.plan(17);
 
         // setup
 
@@ -102,6 +102,123 @@
              "filterAdapter sets correct box param if passed a BBOX filter");
         t.eq(options.filter, undefined,
              "filterAdapter deletes filter if passed a BBOX filter");
+
+        // Some bbox filters used in the next tests.
+
+        var bboxFilter1 = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.BBOX,
+            value:  new OpenLayers.Bounds(0, 0, 10, 10)
+        });
+
+        var bboxFilter2 = new OpenLayers.Filter.Spatial({
+            type: OpenLayers.Filter.Spatial.BBOX,
+            value:  new OpenLayers.Bounds(0, 0, 20, 20)
+        });
+
+        // 2 tests
+        options = {
+            filter: new OpenLayers.Filter.Logical({
+                type: OpenLayers.Filter.Logical.AND,
+                filters: []
+            })
+        };
+
+        protocol.filterAdapter(options);
+        t.eq(options.params, undefined,
+             "filterAdapter with empty AND Logical filter sets no params");
+        t.eq(options.filter, undefined,
+             "filterAdapter deletes filter");
+
+        // 2 tests
+        options = {
+            filter: new OpenLayers.Filter.Logical({
+                type: OpenLayers.Filter.Logical.OR,
+                filters: [
+                    bboxFilter1
+                ]
+            })
+        };
+
+        protocol.filterAdapter(options);
+        t.eq(options.params, undefined,
+             "filterAdapter does not support OR Logical filter");
+        t.eq(options.filter, undefined,
+             "filterAdapter deletes filter");
+
+        // 2 tests
+        options = {
+            filter: new OpenLayers.Filter.Logical({
+                type: OpenLayers.Filter.Logical.AND,
+                filters: [
+                    bboxFilter1
+                ]
+            })
+        };
+
+        protocol.filterAdapter(options);
+        t.eq(options.params.box, "0,0,10,10",
+             "filterAdapter sets correct box param if passed a Logical filter containing a BBOX");
+        t.eq(options.filter, undefined,
+             "filterAdapter deletes filter");
+
+        // 2 tests
+        options = {
+            filter: new OpenLayers.Filter.Logical({
+                type: OpenLayers.Filter.Logical.AND,
+                filters: [
+                    bboxFilter1, bboxFilter2
+                ]
+            })
+        };
+
+        protocol.filterAdapter(options);
+        t.eq(options.params, undefined,
+             "filterAdapter does not allow multiple BBOX spatial filters");
+        t.eq(options.filter, undefined,
+             "filterAdapter deletes filter");
+
+        // 2 tests
+        options = {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                property: "foo",
+                value: "bar"
+            })
+        };
+
+        protocol.filterAdapter(options);
+        t.eq(options.params.foo, "bar",
+             "filterAdapter sets correct foo param if passed a Comparison filter");
+        t.eq(options.filter, undefined,
+             "filterAdapter deletes filter");
+
+        // 3 tests
+        options = {
+            filter: new OpenLayers.Filter.Logical({
+                type: OpenLayers.Filter.Logical.AND,
+                filters: [
+                    new OpenLayers.Filter.Comparison({
+                        type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                        property: "foo",
+                        value: "bar"
+                    }),
+                    new OpenLayers.Filter.Comparison({
+                        type: OpenLayers.Filter.Comparison.LESS_THAN,
+                        property: "foo2",
+                        value: "baz"
+                    })
+                ]
+            })
+        };
+
+        protocol.filterAdapter(options);
+        t.eq(options.params.foo, "bar",
+             "filterAdapter sets correct foo param if passed a Comparison filter");
+        t.eq(options.params.foo2, "baz",
+        "filterAdapter sets correct foo2 param if passed a Comparison filter");
+        t.eq(options.filter, undefined,
+             "filterAdapter deletes filter");
+
     }
 
     function test_MapFish_update(t) {
