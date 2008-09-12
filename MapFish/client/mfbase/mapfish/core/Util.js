@@ -147,4 +147,4 @@ mapfish.Util.relativeToAbsoluteURL = function(source) {
 
     var p = location.pathname.replace(/\/[^\/]*$/, '');
     return h + p + "/" + source;
-}
+};
