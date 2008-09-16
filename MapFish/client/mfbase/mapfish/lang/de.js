@@ -1,7 +1,7 @@
 /**
  * @requires OpenLayers/Lang/en.js
  */
-OpenLayers.Util.extend(OpenLayers.Lang.en, {
+OpenLayers.Util.extend(OpenLayers.Lang.de, {
     'mf.print.mapTitle': 'Titel',
     'mf.print.comment': 'Bemerkung',
     'mf.print.loadingConfig': 'Laden der Konfiguration...',
