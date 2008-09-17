@@ -156,39 +156,40 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
      * APIProperty: model
      * {Array(Object)} Hierarchical structure to build the tree.
      * Here's an example:
-
-[
-    {
-        text: 'Background layers',
-        expanded: true,
-        children: [
-            {
-                text: 'OpenLayers WMS',
-                icon: 'http://www.openlayers.org/favicon.ico',
-                layerNames: ['OpenLayers WMS'],
-                checked: true
-            },
-            {
-                text: 'OpenAerialMap WMS',
-                layerNames: ['OpenAerialMap'],
-                checked: false
-            }
-        ]
-    },
-    {
-        text: 'Overlay layers',
-        checked: false,
-        children: [
-            {
-                text: 'OpenStreetMap WMS',
-                icon: 'http://www.openstreetmap.org/favicon.ico',
-                layerNames: ['OpenStreetMap'],
-                checked: false
-            }
-        ]
-    }
-];
-
+     * (start code)
+     *
+     *          [
+     *              {
+     *                  text: 'Background layers',
+     *                  expanded: true,
+     *                  children: [
+     *                      {
+     *                          text: 'OpenLayers WMS',
+     *                          icon: 'http://www.openlayers.org/favicon.ico',
+     *                          layerNames: ['OpenLayers WMS'],
+     *                          checked: true
+     *                      },
+     *                      {
+     *                          text: 'OpenAerialMap WMS',
+     *                          layerNames: ['OpenAerialMap'],
+     *                          checked: false
+     *                      }
+     *                  ]
+     *              },
+     *              {
+     *                  text: 'Overlay layers',
+     *                  checked: false,
+     *                  children: [
+     *                      {
+     *                          text: 'OpenStreetMap WMS',
+     *                          icon: 'http://www.openstreetmap.org/favicon.ico',
+     *                          layerNames: ['OpenStreetMap'],
+     *                          checked: false
+     *                      }
+     *                  ]
+     *              }
+     *          ];
+     * (end)
      * Each node can contain the following properties:
      * text: {String} The label to show in the tree
      * checked: {Boolean} checkbox status. If this property is not set (undefined),
@@ -220,32 +221,37 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
     /**
      * Property: rootVisible
-     * Overridden, see {<Ext.tree.TreePanel>}
+     * Overridden, see {Ext.tree.TreePanel}
      */
     rootVisible: false,
+
     /**
      * Property: animate
-     * Overridden, see {<Ext.tree.TreePanel>}
+     * Overridden, see {Ext.tree.TreePanel}
      */
     animate: true,
+
     /**
      * Property: autoScroll
-     * Overridden, see {<Ext.tree.TreePanel>}
+     * Overridden, see {Ext.tree.TreePanel}
      */
     autoScroll: true,
+
     /**
      * Property: loader
-     * Overridden, see {<Ext.tree.TreePanel>}
+     * Overridden, see {Ext.tree.TreePanel}
      */
     loader: new Ext.tree.TreeLoader({}),
+
     /**
      * Property: enableDD
-     * Overridden, see {<Ext.tree.TreePanel>}
+     * Overridden, see {Ext.tree.TreePanel}
      */
     enableDD: false,
+
     /**
      * Property: containerScroll
-     * Overridden, see {<Ext.tree.TreePanel>}
+     * Overridden, see {Ext.tree.TreePanel}
      */
     containerScroll: true,
 
@@ -297,9 +303,10 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
      * which have been generated in the DOM, and we can get called before
      * the DOM is generated. This variable is used to do the mapping ourself.
      *
-     * {Object} Map of {String} node identifiers to {<Ext.tree.TreeNode>} objects.
+     * {Object} Map of {String} node identifiers to {Ext.tree.TreeNode} objects.
      */
     nodeIdToNode: {},
+
     /**
      * Property: nodeIdToLayers
      * {Object} Map of {String} node identifiers to {<OpenLayers.Layer>} objects.
