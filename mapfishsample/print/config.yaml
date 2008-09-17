@@ -36,7 +36,7 @@ hosts:
     host: labs.metacarta.com
     port: 80
   - !dnsMatch
-    host: demo.camptocamp.com
+    host: demo.mapfish.org
     port: 80
 
 layouts:
