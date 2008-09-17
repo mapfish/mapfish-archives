@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0.2
+ * Ext JS Library 2.2
  * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -61,13 +61,13 @@ Ext.Panel = Ext.extend(Ext.Container, {
      */
     /**
      * @cfg {Object/Array} tbar
-     * The top toolbar of the panel.  This can be either an {@link Ext.Toolbar} object or an array of
+     * The top toolbar of the panel. This can be a {@link Ext.Toolbar} object, a toolbar config, or an array of
      * buttons/button configs to be added to the toolbar.  Note that this is not available as a property after render.
      * To access the top toolbar after render, use {@link #getTopToolbar}.
      */
     /**
      * @cfg {Object/Array} bbar
-     * The bottom toolbar of the panel.  This can be a {@link Ext.Toolbar} object, a toolbar config, or an array of
+     * The bottom toolbar of the panel. This can be a {@link Ext.Toolbar} object, a toolbar config, or an array of
      * buttons/button configs to be added to the toolbar.  Note that this is not available as a property after render.
      * To access the bottom toolbar after render, use {@link #getBottomToolbar}.
      */
@@ -92,7 +92,7 @@ Ext.Panel = Ext.extend(Ext.Container, {
      */
     /**
      * @cfg {Array} buttons
-     * An array of {@link Ext.Button} <b>configs</b> used to add buttons to the footer of this panel.
+     * An array of {@link Ext.Button}s or {@link Ext.Button} configs used to add buttons to the footer of this panel.
      */
     /**
      * @cfg {Object/String/Function} autoLoad
@@ -124,7 +124,8 @@ Ext.Panel = Ext.extend(Ext.Container, {
      */
     /**
      * @cfg {String} iconCls
-     * A CSS class that will provide a background image to be used as the panel header icon (defaults to '').
+     * A CSS class that will provide a background image to be used as the header icon (defaults to '').  An example
+     * custom icon class would be something like: .my-icon { background: url(../images/my-icon.gif) 0 6px no-repeat !important;}
      */
     /**
      * @cfg {Boolean} collapsible
@@ -133,10 +134,11 @@ Ext.Panel = Ext.extend(Ext.Container, {
      */
     /**
      * @cfg {Array} tools
-     * An array of tool button configs to be added to the header tool area.
-     * Each tool config may contain the following properties:
+     * An array of tool button configs to be added to the header tool area. When rendered, each tool is
+     * stored as an {@link Ext.Element Element} referenced by a public property called <tt><b></b>tools.<i>&lt;tool-type&gt;</i></tt>
+     * <p>Each tool config may contain the following properties:
      * <div class="mdetail-params"><ul>
-     * <li><b>id</b> : String<p class="sub-desc"><b>Required.</b> The type
+     * <li><b>id</b> : String<div class="sub-desc"><b>Required.</b> The type
      * of tool to create. Values may be<ul>
      * <li><tt>toggle</tt> (Created by default when {@link #collapsible} is <tt>true</tt>)</li>
      * <li><tt>close</tt></li>
@@ -157,24 +159,25 @@ Ext.Panel = Ext.extend(Ext.Container, {
      * <li><tt>search</tt></li>
      * <li><tt>save</tt></li>
      * <li><tt>print</tt></li>
-     * </ul></div></p></li>
-     * <li><b>handler</b> : Function<p class="sub-desc"><b>Required.</b> The function to
+     * </ul></div></li>
+     * <li><b>handler</b> : Function<div class="sub-desc"><b>Required.</b> The function to
      * call when clicked. Arguments passed are:<ul>
-     * <li><b>event</b> : Ext.EventObject<p class="sub-desc">The click event.</p></li>
-     * <li><b>toolEl</b> : Ext.Element<p class="sub-desc">The tool Element.</p></li>
-     * <li><b>Panel</b> : Ext.Panel<p class="sub-desc">The host Panel</p></li>
-     * </ul></p></li>
-     * <li><b>scope</b> : Object<p class="sub-desc">The scope in which to call the handler.</p></li>
-     * <li><b>qtip</b> : String/Object<p class="sub-desc">A tip string, or
-     * a config argument to {@link Ext.QuickTip#register}</p></li>
-     * <li><b>hidden</b> : Boolean<p class="sub-desc">True to initially render hidden.</p></li>
-     * <li><b>on</b> : Object<p class="sub-desc">A listener config object specifiying
-     * event listeners in the format of an argument to {@link #addListener}</p></li>
-     * </ul>
+     * <li><b>event</b> : Ext.EventObject<div class="sub-desc">The click event.</div></li>
+     * <li><b>toolEl</b> : Ext.Element<div class="sub-desc">The tool Element.</div></li>
+     * <li><b>Panel</b> : Ext.Panel<div class="sub-desc">The host Panel</div></li>
+     * </ul></div></li>
+     * <li><b>scope</b> : Object<div class="sub-desc">The scope in which to call the handler.</div></li>
+     * <li><b>qtip</b> : String/Object<div class="sub-desc">A tip string, or
+     * a config argument to {@link Ext.QuickTip#register}</div></li>
+     * <li><b>hidden</b> : Boolean<div class="sub-desc">True to initially render hidden.</div></li>
+     * <li><b>on</b> : Object<div class="sub-desc">A listener config object specifiying
+     * event listeners in the format of an argument to {@link #addListener}</div></li>
+     * </ul></div>
      * Example usage:
      * <pre><code>
 tools:[{
     id:'refresh',
+    qtip: 'Refresh form Data',
     // hidden:true,
     handler: function(event, toolEl, panel){
         // refresh logic
@@ -238,17 +241,79 @@ tools:[{
      * A KeyMap config object (in the format expected by {@link Ext.KeyMap#addBinding} used to assign custom key
      * handling to this panel (defaults to null).
      */
- 	/**
-  	 * @cfg {Boolean} draggable
-  	 * True to enable dragging of this Panel (defaults to false).  For custom drag/drop implementations, an Ext.Panel.DD
-  	 * config could also be passed in this config instead of true, although Ext.Panel.DD is an internal, undocumented class.
-     */
-	/**
-  	 * @cfg {String} tabTip
-  	 * Adds a tooltip when mousing over the tab of a Ext.Panel which is an item of a Ext.TabPanel. Ext.QuickTips.init()
-  	 * must be called in order for the tips to render.
-     */
+     /**
+       * @cfg {Boolean} draggable
+       * <p>True to enable dragging of this Panel (defaults to false).</p>
+       * <p>For custom drag/drop implementations, an Ext.Panel.DD
+       * config could also be passed in this config instead of true. Ext.Panel.DD is an internal,
+       * undocumented class which moves a proxy Element around in place of the Panel's element, but
+       * provides no other behaviour during dragging or on drop. It is a subclass of
+       * {@link Ext.dd.DragSource}, so behaviour may be added by implementing the interface methods
+       * of {@link Ext.dd.DragDrop} eg:
+       * <pre><code>
+new Ext.Panel({
+    title: 'Drag me',
+    x: 100,
+    y: 100,
+    renderTo: Ext.getBody(),
+    floating: true,
+    frame: true,
+    width: 400,
+    height: 200,
+    draggable: {
+//      Config option of Ext.Panel.DD class.
+//      It's a floating Panel, so do not show a placeholder proxy in the original position.
+        insertProxy: false,
 
+//      Called for each mousemove event while dragging the DD object.
+        onDrag : function(e){
+//          Record the x,y position of the drag proxy so that we can
+//          position the Panel at end of drag.
+            var pel = this.proxy.getEl();
+            this.x = pel.getLeft(true);
+            this.y = pel.getTop(true);
+
+//          Keep the Shadow aligned if there is one.
+            var s = this.panel.getEl().shadow;
+            if (s) {
+                s.realign(this.x, this.y, pel.getWidth(), pel.getHeight());
+            }
+        },
+
+//      Called on the mouseup event.
+        endDrag : function(e){
+            this.panel.setPosition(this.x, this.y);
+        }
+    }
+}).show();
+</code></pre>
+     */
+    /**
+       * @cfg {String} tabTip
+       * Adds a tooltip when mousing over the tab of a Ext.Panel which is an item of a Ext.TabPanel. Ext.QuickTips.init()
+       * must be called in order for the tips to render.
+     */
+    /**
+     * @cfg {Boolean} disabled
+     * Render this panel disabled (default is false). An important note when using the disabled config on panels is
+     * that IE will often fail to initialize the disabled mask element correectly if the panel's layout has not yet 
+     * completed by the time the Panel is disabled during the render process. If you experience this issue, you may 
+     * need to instead use the {@link afterlayout} event to initialize the disabled state:
+     * <pre><code>
+new Ext.Panel({
+    ...
+    listeners: {
+        'afterlayout': {
+            fn: function(p){
+                p.disable();
+            },
+            single: true // important, as many layouts can occur
+        }
+    }
+});
+</code></pre>
+     */
+    
 
     /**
     * @cfg {String} baseCls
@@ -308,7 +373,7 @@ tools:[{
      * list will allocate the required placeholders in the panel when it is rendered.  Valid values are<ul>
      * <li><b>header</b></li>
      * <li><b>tbar</b> (top bar)</li>
-     * <li><b>body</b></li>
+     * <li><b>body</b> (required)</li>
      * <li><b>bbar</b> (bottom bar)</li>
      * <li><b>footer</b><li>
      * </ul>
@@ -322,6 +387,7 @@ tools:[{
     toolTarget : 'header',
     collapseEl : 'bwrap',
     slideAnchor : 't',
+    disabledClass: '',
 
     // private, notify box this class will handle heights
     deferHeight: true,
@@ -454,6 +520,7 @@ tools:[{
             this.buttons = [];
             for(var i = 0, len = btns.length; i < len; i++) {
                 if(btns[i].render){ // button instance
+                    btns[i].ownerCt = this;
                     this.buttons.push(btns[i]);
                 }else{
                     this.addButton(btns[i]);
@@ -645,12 +712,14 @@ tools:[{
                 this.topToolbar = new Ext.Toolbar(this.topToolbar);
             }
             this.topToolbar.render(this.tbar);
+            this.topToolbar.ownerCt = this;
         }
         if(this.bbar && this.bottomToolbar){
             if(Ext.isArray(this.bottomToolbar)){
                 this.bottomToolbar = new Ext.Toolbar(this.bottomToolbar);
             }
             this.bottomToolbar.render(this.bbar);
+            this.bottomToolbar.ownerCt = this;
         }
     },
 
@@ -755,7 +824,7 @@ tools:[{
         }
         for(var i = 0, a = arguments, len = a.length; i < len; i++) {
             var tc = a[i], overCls = 'x-tool-'+tc.id+'-over';
-            var t = this.toolTemplate.insertFirst(this[this.toolTarget], tc, true);
+            var t = this.toolTemplate.insertFirst((tc.align !== 'left') ? this[this.toolTarget] : this[this.toolTarget].child('span'), tc, true);
             this.tools[tc.id] = t;
             t.enableDisplayMode('block');
             t.on('click', this.createToolHandler(t, tc, overCls, this));
@@ -816,7 +885,7 @@ tools:[{
         if(this.title){
             this.setTitle(this.title);
         }
-		this.setAutoScroll();
+        this.setAutoScroll();
         if(this.html){
             this.body.update(typeof this.html == 'object' ?
                              Ext.DomHelper.markup(this.html) :
@@ -835,11 +904,14 @@ tools:[{
         Ext.Panel.superclass.afterRender.call(this); // do sizing calcs last
         this.initEvents();
     },
-    
+
     // private
     setAutoScroll : function(){
         if(this.rendered && this.autoScroll){
-			this.body.setOverflow('auto');
+            var el = this.body || this.el;
+            if(el){
+                el.setOverflow('auto');
+            }
         }
     },
 
@@ -863,6 +935,14 @@ tools:[{
 
     // private
     initDraggable : function(){
+        /**
+         * <p>If this Panel is configured {@link #draggable}, this property will contain
+         * an instance of {@link Ext.dd.DragSource} which handles dragging the Panel.</p>
+         * The developer must provide implementations of the abstract methods of {@link Ext.dd.DragSource}
+         * in order to supply behaviour for each stage of the drag/drop process. See {@link #draggable}.
+         * @type Ext.dd.DragSource.
+         * @property dd
+         */
         this.dd = new Ext.Panel.DD(this, typeof this.draggable == 'boolean' ? null : this.draggable);
     },
 
@@ -1018,6 +1098,10 @@ tools:[{
                 }else if(h == 'auto'){
                     this.body.setHeight(h);
                 }
+                
+                if(this.disabled && this.el._mask){
+                    this.el._mask.setSize(this.el.dom.clientWidth, this.el.getHeight());
+                }
             }else{
                 this.queuedBodySize = {width: w, height: h};
                 if(!this.queuedExpand && this.allowQueuedExpand !== false){
@@ -1047,25 +1131,6 @@ tools:[{
     // private
     onPosition : function(){
         this.syncShadow();
-    },
-
-    // private
-    onDestroy : function(){
-        if(this.tools){
-            for(var k in this.tools){
-                Ext.destroy(this.tools[k]);
-            }
-        }
-        if(this.buttons){
-            for(var b in this.buttons){
-                Ext.destroy(this.buttons[b]);
-            }
-        }
-        Ext.destroy(
-            this.topToolbar,
-            this.bottomToolbar
-        );
-        Ext.Panel.superclass.onDestroy.call(this);
     },
 
     /**
@@ -1141,7 +1206,7 @@ tools:[{
     /**
      * Sets the title text for the panel and optionally the icon class.
      * @param {String} title The title text to set
-     * @param {String} (optional) iconCls A custon, user-defined CSS class that provides the icon image for this panel
+     * @param {String} iconCls (optional) iconCls A user-defined CSS class that provides the icon image for this panel
      */
     setTitle : function(title, iconCls){
         this.title = title;
@@ -1199,6 +1264,21 @@ panel.load({
             this.footer,
             this.body
         );
+        if(this.tools){
+            for(var k in this.tools){
+                Ext.destroy(this.tools[k]);
+            }
+        }
+        if(this.buttons){
+            for(var b in this.buttons){
+                Ext.destroy(this.buttons[b]);
+            }
+        }
+        Ext.destroy(
+            this.topToolbar,
+            this.bottomToolbar
+        );
+        Ext.Panel.superclass.beforeDestroy.call(this);
     },
 
     // private

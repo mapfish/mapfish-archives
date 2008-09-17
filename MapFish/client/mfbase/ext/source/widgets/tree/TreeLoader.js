@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0.2
+ * Ext JS Library 2.2
  * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -38,7 +38,7 @@
     myTreeLoader.on("beforeload", function(treeLoader, node) {
         this.baseParams.category = node.attributes.category;
     }, this);
-</code></pre><
+</code></pre>
  * This would pass an HTTP parameter called "category" to the server containing
  * the value of the Node's "category" attribute.
  * @constructor
@@ -47,7 +47,6 @@
  */
 Ext.tree.TreeLoader = function(config){
     this.baseParams = {};
-    this.requestMethod = "POST";
     Ext.apply(this, config);
 
     this.addEvents(
@@ -87,7 +86,7 @@ Ext.extend(Ext.tree.TreeLoader, Ext.util.Observable, {
     * to be loaded.
     */
     /**
-     * @cfg {String} requestMethod The HTTP request method for loading data (defaults to 'POST').
+     * @cfg {String} requestMethod The HTTP request method for loading data (defaults to the value of {@link Ext.Ajax#method}).
      */
     /**
      * @cfg {String} url Equivalent to {@link #dataUrl}.
@@ -108,7 +107,7 @@ Ext.extend(Ext.tree.TreeLoader, Ext.util.Observable, {
     * @cfg {Object} uiProviders (optional) An object containing properties which
     * specify custom {@link Ext.tree.TreeNodeUI} implementations. If the optional
     * <i>uiProvider</i> attribute of a returned child node is a string rather
-    * than a reference to a TreeNodeUI implementation, this that string value
+    * than a reference to a TreeNodeUI implementation, then that string value
     * is used as a property name in the uiProviders object.
     */
     uiProviders : {},
@@ -192,7 +191,7 @@ Ext.extend(Ext.tree.TreeLoader, Ext.util.Observable, {
     },
 
     isLoading : function(){
-        return this.transId ? true : false;
+        return !!this.transId;
     },
 
     abort : function(){
@@ -215,9 +214,13 @@ Ext.extend(Ext.tree.TreeLoader, Ext.util.Observable, {
         if(typeof attr.uiProvider == 'string'){
            attr.uiProvider = this.uiProviders[attr.uiProvider] || eval(attr.uiProvider);
         }
-        return(attr.leaf ?
+        if(attr.nodeType){
+            return new Ext.tree.TreePanel.nodeTypes[attr.nodeType](attr);
+        }else{
+            return attr.leaf ?
                         new Ext.tree.TreeNode(attr) :
-                        new Ext.tree.AsyncTreeNode(attr));
+                        new Ext.tree.AsyncTreeNode(attr);
+        }
     },
 
     processResponse : function(response, node, callback){

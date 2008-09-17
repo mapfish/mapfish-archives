@@ -1,20 +1,20 @@
 /*
  * Copyright (C) 2007-2008  Camptocamp
  *
- * This file is part of MapFish
+ * This file is part of MapFish Client
  *
- * MapFish is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
+ * MapFish Client is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * MapFish is distributed in the hope that it will be useful,
+ * MapFish Client is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with MapFish Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -92,10 +92,25 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
         //border layout doesn't allow to add components afterwards).
         var innerPanel = this.add({
             border: false,
-            layout: 'border'
+            layout: 'border',
+            id: this.getId() + 'InnerPanel'
         });
         this.createGlobalForm(innerPanel);
         this.createGrid(innerPanel);
+    },
+
+    onShowEvent: function() {
+        if (this.config) {
+            if(Ext.isGecko3) {
+                //ugly hack to fix a FF3 bug that makes the inner panels miss-aligned
+                var buggyDiv = this.formPanel.getEl().parent();
+                buggyDiv.setStyle("position", "absolute");
+                setTimeout(function() {
+                    buggyDiv.setStyle("position", "relative");
+                }, 20);
+            }
+            mapfish.widgets.print.Base.prototype.onShowEvent.call(this);
+        }
     },
 
     /**
@@ -110,7 +125,8 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
 
             //by default, we don't want borders for the inner form
             border: false,
-            bodyBorder: false
+            bodyBorder: false,
+            id: this.getId() + "formPanel"
         }, this.formConfig);
         var formPanel = this.formPanel = new Ext.form.FormPanel(formConfig);
 
@@ -156,7 +172,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
                 header: OpenLayers.Lang.translate('mf.print.rotation'),
                 dataIndex: 'rotation',
                 editor: rotation,
-                id: this.id + '_rotation',
+                id: this.getId() + '_rotation',
                 hidden: !this.config.layouts[0].rotation
             });
         }
@@ -178,7 +194,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
         var grid = this.grid = new Ext.grid.EditorGridPanel({
             region: 'center',
             border: false,
-            id: this.getId() + 'Grid',
+            id: this.getId() + 'PagesGrid',
             autoScroll: true,
             enableColumnHide: false,
             enableHdMenu: false,

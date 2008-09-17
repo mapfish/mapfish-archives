@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0.2
+ * Ext JS Library 2.2
  * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -45,7 +45,9 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
      */
     beforePageText : "Page",
     /**
-     * Customizable piece of the default paging text (defaults to "of %0")
+     * Customizable piece of the default paging text (defaults to "of {0}"). Note that this string is
+     * formatted using {0} as a token that is replaced by the number of total pages. This token should be 
+     * preserved when overriding this string if showing the total page count is desired.
      * @type String
      */
     afterPageText : "of {0}",
@@ -81,6 +83,7 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
     paramNames : {start: 'start', limit: 'limit'},
 
     initComponent : function(){
+        this.addEvents('change', 'beforechange');
         Ext.PagingToolbar.superclass.initComponent.call(this);
         this.cursor = 0;
         this.bind(this.store);
@@ -165,14 +168,15 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
        this.cursor = o.params ? o.params[this.paramNames.start] : 0;
        var d = this.getPageData(), ap = d.activePage, ps = d.pages;
 
-       this.afterTextEl.el.innerHTML = String.format(this.afterPageText, d.pages);
-       this.field.dom.value = ap;
-       this.first.setDisabled(ap == 1);
-       this.prev.setDisabled(ap == 1);
-       this.next.setDisabled(ap == ps);
-       this.last.setDisabled(ap == ps);
-       this.loading.enable();
-       this.updateInfo();
+        this.afterTextEl.el.innerHTML = String.format(this.afterPageText, d.pages);
+        this.field.dom.value = ap;
+        this.first.setDisabled(ap == 1);
+        this.prev.setDisabled(ap == 1);
+        this.next.setDisabled(ap == ps);
+        this.last.setDisabled(ap == ps);
+        this.loading.enable();
+        this.updateInfo();
+        this.fireEvent('change', this, d);
     },
 
     // private
@@ -207,7 +211,8 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
         var k = e.getKey(), d = this.getPageData(), pageNum;
         if (k == e.RETURN) {
             e.stopEvent();
-            if(pageNum = this.readPage(d)){
+            pageNum = this.readPage(d);
+            if(pageNum !== false){
                 pageNum = Math.min(Math.max(1, pageNum), d.pages) - 1;
                 this.doLoad(pageNum * this.pageSize);
             }
@@ -241,7 +246,17 @@ Ext.PagingToolbar = Ext.extend(Ext.Toolbar, {
         var o = {}, pn = this.paramNames;
         o[pn.start] = start;
         o[pn.limit] = this.pageSize;
-        this.store.load({params:o});
+        if(this.fireEvent('beforechange', this, o) !== false){
+            this.store.load({params:o});
+        }
+    },
+
+    /**
+     * Change the active page
+     * @param {Integer} page The page to display 
+     */
+    changePage: function(page){
+        this.doLoad(((page-1) * this.pageSize).constrain(0, this.store.getTotalCount()));  
     },
 
     // private

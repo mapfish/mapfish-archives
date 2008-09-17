@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0.2
+ * Ext JS Library 2.2
  * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -15,7 +15,10 @@
  * and should generally not need to be created directly via the new keyword.</p>
  * <p>BorderLayout does not have any direct config options (other than inherited ones).  All configs available
  * for customizing the BorderLayout are at the {@link Ext.layout.BorderLayout.Region} and
- * {@link Ext.layout.BorderLayout.SplitRegion} levels.  Example usage:</p>
+ * {@link Ext.layout.BorderLayout.SplitRegion} levels.</p>
+ * <p><b>The regions of a BorderLayout are fixed at render time and thereafter, no regions may be removed or
+ * added.</b></p>
+ * <p>Example usage:</p>
  * <pre><code>
 var border = new Ext.Panel({
     title: 'Border Layout',
@@ -155,6 +158,17 @@ Ext.layout.BorderLayout = Ext.extend(Ext.layout.ContainerLayout, {
         if(Ext.isIE && Ext.isStrict){ // workaround IE strict repainting issue
             target.repaint();
         }
+    },
+
+    destroy: function() {
+        var r = ['north', 'south', 'east', 'west'];
+        for (var i = 0; i < r.length; i++) {
+            var region = this[r[i]];
+            if (region && region.split) {
+                region.split.destroy(true);
+            }
+        }
+        Ext.layout.BorderLayout.superclass.destroy.call(this);
     }
     
     /**
@@ -211,6 +225,11 @@ Ext.layout.BorderLayout.Region.prototype = {
      * autoHide is true, the panel will automatically hide after the user mouses out of the panel.  If autoHide
      * is false, the panel will continue to display until the user clicks outside of the panel (defaults to true).
      */
+	/**
+	 * @cfg {Boolean} collapsed
+	 * By default, collapsible regions will be visible when rendered. Set the collapsed config to true to render
+	 * the region as collapsed.
+	 */
     /**
      * @cfg {String} collapseMode
      * By default, collapsible regions are collapsed by clicking the expand/collapse tool button that renders into
@@ -242,8 +261,9 @@ Ext.layout.BorderLayout.Region.prototype = {
     /**
      * @cfg {Boolean} split
      * True to display a {@link Ext.SplitBar} between this region and its neighbor, allowing the user to resize
-     * the regions dynamically (defaults to false).  When split = true, it is common to specify a {@link #minSize}
-     * and {@link #maxSize} for the region.
+     * the regions dynamically (defaults to false).  When split == true, it is common to specify a minSize
+     * and maxSize for the BoxComponent representing the region. These are not native configs of BoxComponent, and
+     * are used only by this class.
      */
     split:false,
     /**

@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0.2
+ * Ext JS Library 2.2
  * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -161,6 +161,11 @@ foo.on({
         }
     },
 
+    /**
+     * Relays selected events from the specified Observable as if the events were fired by <tt><b>this</b></tt>.
+     * @param {Object} o The Observable whose events this object is to relay.
+     * @param {Array} events Array of event names to relay.
+     */
     relayEvents : function(o, events){
         var createHandler = function(ename){
             return function(){
@@ -185,7 +190,7 @@ foo.on({
         if(typeof o == 'string'){
             for(var i = 0, a = arguments, v; v = a[i]; i++){
                 if(!this.events[a[i]]){
-                    o[a[i]] = true;
+                    this.events[a[i]] = true;
                 }
             }
         }else{

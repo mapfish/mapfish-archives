@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0.2
+ * Ext JS Library 2.2
  * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -9,11 +9,43 @@
 /**
  * @class Ext.form.HtmlEditor
  * @extends Ext.form.Field
- * Provides a lightweight HTML Editor component.
+ * Provides a lightweight HTML Editor component. Some toolbar features are not supported by Safari and will be 
+ * automatically hidden when needed.  These are noted in the config options where appropriate.
+ * <br><br>The editor's toolbar buttons have tooltips defined in the {@link #buttonTips} property, but they are not 
+ * enabled by default unless the global {@link Ext.QuickTips} singleton is {@link Ext.QuickTips#init initialized}.
  * <br><br><b>Note: The focus/blur and validation marking functionality inherited from Ext.form.Field is NOT
- * supported by this editor.</b><br/><br/>
- * An Editor is a sensitive component that can't be used in all spots standard fields can be used. Putting an Editor within
+ * supported by this editor.</b>
+ * <br><br>An Editor is a sensitive component that can't be used in all spots standard fields can be used. Putting an Editor within
  * any element that has display set to 'none' can cause problems in Safari and Firefox due to their default iframe reloading bugs.
+ * <br><br>Example usage:
+ * <pre><code>
+// Simple example rendered with default options:
+Ext.QuickTips.init();  // enable tooltips
+new Ext.form.HtmlEditor({
+    renderTo: Ext.getBody(),
+    width: 800,
+    height: 300
+});
+
+// Passed via xtype into a container and with custom options:
+Ext.QuickTips.init();  // enable tooltips
+new Ext.Panel({
+    title: 'HTML Editor',
+    renderTo: Ext.getBody(),
+    width: 600,
+    height: 300,
+    frame: true,
+    layout: 'fit',
+    items: {
+        xtype: 'htmleditor',
+        enableColors: false,
+        enableAlignments: false
+    }
+});
+</code></pre>
+ * @constructor
+ * Create a new HtmlEditor
+ * @param {Object} config
  */
 
 Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
@@ -140,6 +172,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
         )
     },
 
+    // private
     createFontOptions : function(){
         var buf = [], fs = this.fontFamilies, ff, lc;
         for(var i = 0, len = fs.length; i< len; i++){
@@ -154,6 +187,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
         }
         return buf.join('');
     },
+    
     /*
      * Protected method that will not generally be called directly. It
      * is called when the editor creates its toolbar. Override this method if you need to
@@ -161,7 +195,9 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
      * @param {HtmlEditor} editor
      */
     createToolbar : function(editor){
-
+        
+        var tipsEnabled = Ext.QuickTips && Ext.QuickTips.isEnabled();
+        
         function btn(id, toggle, handler){
             return {
                 itemId : id,
@@ -170,7 +206,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                 scope: editor,
                 handler:handler||editor.relayBtnCmd,
                 clickEvent:'mousedown',
-                tooltip: editor.buttonTips[id] || undefined,
+                tooltip: tipsEnabled ? editor.buttonTips[id] || undefined : undefined,
                 tabIndex:-1
             };
         }
@@ -185,7 +221,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
             e.preventDefault();
         });
 
-        if(this.enableFont && !Ext.isSafari){
+        if(this.enableFont && !Ext.isSafari2){
             this.fontSelect = tb.el.createChild({
                 tag:'select',
                 cls:'x-font-select',
@@ -224,7 +260,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                     itemId:'forecolor',
                     cls:'x-btn-icon x-edit-forecolor',
                     clickEvent:'mousedown',
-                    tooltip: editor.buttonTips['forecolor'] || undefined,
+                    tooltip: tipsEnabled ? editor.buttonTips['forecolor'] || undefined : undefined,
                     tabIndex:-1,
                     menu : new Ext.menu.ColorMenu({
                         allowReselect: true,
@@ -242,7 +278,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
                     itemId:'backcolor',
                     cls:'x-btn-icon x-edit-backcolor',
                     clickEvent:'mousedown',
-                    tooltip: editor.buttonTips['backcolor'] || undefined,
+                    tooltip: tipsEnabled ? editor.buttonTips['backcolor'] || undefined : undefined,
                     tabIndex:-1,
                     menu : new Ext.menu.ColorMenu({
                         focus: Ext.emptyFn,
@@ -276,7 +312,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
             );
         };
 
-        if(!Ext.isSafari){
+        if(!Ext.isSafari2){
             if(this.enableLinks){
                 tb.add(
                     '-',
@@ -313,8 +349,19 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
         return '<html><head><style type="text/css">body{border:0;margin:0;padding:3px;height:98%;cursor:text;}</style></head><body></body></html>';
     },
 
+    // private
     getEditorBody : function(){
         return this.doc.body || this.doc.documentElement;
+    },
+
+    // private
+    getDoc : function(){
+        return Ext.isIE ? this.getWin().document : (this.iframe.contentDocument || this.getWin().document);
+    },
+
+    // private
+    getWin : function(){
+        return Ext.isIE ? this.iframe.contentWindow : window.frames[this.iframe.name];
     },
 
     // private
@@ -340,25 +387,36 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
 
         var iframe = document.createElement('iframe');
         iframe.name = Ext.id();
-        iframe.frameBorder = 'no';
+        iframe.frameBorder = '0';
 
-        iframe.src=(Ext.SSL_SECURE_URL || "javascript:false");
+        iframe.src = Ext.isIE ? Ext.SSL_SECURE_URL : "javascript:;";
 
         this.wrap.dom.appendChild(iframe);
 
         this.iframe = iframe;
 
-        if(Ext.isIE){
-            iframe.contentWindow.document.designMode = 'on';
-            this.doc = iframe.contentWindow.document;
-            this.win = iframe.contentWindow;
-        } else {
-            this.doc = (iframe.contentDocument || window.frames[iframe.name].document);
-            this.win = window.frames[iframe.name];
-            this.doc.designMode = 'on';
+        this.initFrame();
+
+        if(this.autoMonitorDesignMode !== false){
+            this.monitorTask = Ext.TaskMgr.start({
+                run: this.checkDesignMode,
+                scope: this,
+                interval:100
+            });
         }
+
+        if(!this.width){
+            var sz = this.el.getSize();
+            this.setSize(sz.width, this.height || sz.height);
+        }
+    },
+
+    initFrame : function(){
+        this.doc = this.getDoc();
+        this.win = this.getWin();
+
         this.doc.open();
-        this.doc.write(this.getDocMarkup())
+        this.doc.write(this.getDocMarkup());
         this.doc.close();
 
         var task = { // must defer to wait for browser to be ready
@@ -374,9 +432,18 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
             scope: this
         };
         Ext.TaskMgr.start(task);
+    },
 
-        if(!this.width){
-            this.setSize(this.el.getSize());
+
+    checkDesignMode : function(){
+        if(this.wrap && this.wrap.dom.offsetWidth){
+            var doc = this.getDoc();
+            if(!doc){
+                return;
+            }
+            if(!doc.editorInitialized || String(doc.designMode).toLowerCase() != 'on'){
+                this.initFrame();
+            }
         }
     },
 
@@ -476,12 +543,14 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
      * @method
      */
     markInvalid : Ext.emptyFn,
+    
     /**
      * Overridden and disabled. The editor element does not support standard valid/invalid marking. @hide
      * @method
      */
     clearInvalid : Ext.emptyFn,
 
+    // docs inherit from Field
     setValue : function(v){
         Ext.form.HtmlEditor.superclass.setValue.call(this, v);
         this.pushValue();
@@ -551,7 +620,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
         this.focus.defer(10, this);
     },
 
-    // doc'ed in Field
+    // docs inherit from Field
     focus : function(){
         if(this.win && !this.sourceEditMode){
             this.win.focus();
@@ -566,7 +635,17 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
         var ss = this.el.getStyles('font-size', 'font-family', 'background-image', 'background-repeat');
         ss['background-attachment'] = 'fixed'; // w3c
         dbody.bgProperties = 'fixed'; // ie
+
         Ext.DomHelper.applyStyles(dbody, ss);
+
+        if(this.doc){
+            try{
+                Ext.EventManager.removeAll(this.doc);
+            }catch(e){}
+        }
+
+        this.doc = this.getDoc();
+
         Ext.EventManager.on(this.doc, {
             'mousedown': this.onEditorEvent,
             'dblclick': this.onEditorEvent,
@@ -575,6 +654,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
             buffer:100,
             scope: this
         });
+
         if(Ext.isGecko){
             Ext.EventManager.on(this.doc, 'keypress', this.applyCommand, this);
         }
@@ -584,11 +664,17 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
         this.initialized = true;
 
         this.fireEvent('initialize', this);
+
+        this.doc.editorInitialized = true;
+
         this.pushValue();
     },
 
     // private
     onDestroy : function(){
+        if(this.monitorTask){
+            Ext.TaskMgr.stop(this.monitorTask);
+        }
         if(this.rendered){
             this.tb.items.each(function(item){
                 if(item.menu){
@@ -658,6 +744,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
         this.execCmd('FontSize', v);
     },
 
+    // private
     onEditorEvent : function(e){
         this.updateToolbar();
     },
@@ -676,7 +763,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
 
         var btns = this.tb.items.map, doc = this.doc;
 
-        if(this.enableFont && !Ext.isSafari){
+        if(this.enableFont && !Ext.isSafari2){
             var name = (this.doc.queryCommandValue('FontName')||this.defaultFont).toLowerCase();
             if(name != this.fontSelect.dom.value){
                 this.fontSelect.dom.value = name;
@@ -692,7 +779,7 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
             btns.justifycenter.toggle(doc.queryCommandState('justifycenter'));
             btns.justifyright.toggle(doc.queryCommandState('justifyright'));
         }
-        if(!Ext.isSafari && this.enableLists){
+        if(!Ext.isSafari2 && this.enableLists){
             btns.insertorderedlist.toggle(doc.queryCommandState('insertorderedlist'));
             btns.insertunorderedlist.toggle(doc.queryCommandState('insertunorderedlist'));
         }
@@ -714,10 +801,11 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
      * @param {String/Boolean} value (optional) The value to pass to the command (defaults to null)
      */
     relayCmd : function(cmd, value){
-        this.win.focus();
-        this.execCmd(cmd, value);
-        this.updateToolbar();
-        this.deferFocus();
+        (function(){
+            this.focus();
+            this.execCmd(cmd, value);
+            this.updateToolbar();
+        }).defer(10, this);
     },
 
     /**
@@ -1042,6 +1130,10 @@ Ext.form.HtmlEditor = Ext.extend(Ext.form.Field, {
      */
     /**
      * @method setDisabled
+     * @hide
+     */
+    /**
+     * @cfg keys
      * @hide
      */
 });

@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0.2
+ * Ext JS Library 2.2
  * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -11,16 +11,12 @@
  * Represents an Element in the DOM.<br><br>
  * Usage:<br>
 <pre><code>
+// by id
 var el = Ext.get("my-div");
 
-// or with getEl
-var el = getEl("my-div");
-
-// or with a DOM element
+// by DOM element reference
 var el = Ext.get(myDivElement);
 </code></pre>
- * Using Ext.get() or getEl() instead of calling the constructor directly ensures you get the same object
- * each call instead of constructing a new one.<br><br>
  * <b>Animations</b><br />
  * Many of the functions for manipulating an element have an optional "animate" parameter. The animate parameter
  * should either be a boolean (true) or an object literal with animation options. Note that the supported Element animation
@@ -269,7 +265,8 @@ El.prototype = {
 
     /**
      * Scrolls this element into view within the passed container.
-     * @param {Mixed} container (optional) The container element to scroll (defaults to document.body)
+     * @param {Mixed} container (optional) The container element to scroll (defaults to document.body).  Should be a 
+     * string (id), dom node, or Ext.Element.
      * @param {Boolean} hscroll (optional) False to disable horizontal scroll (defaults to true)
      * @return {Ext.Element} this
      */
@@ -389,7 +386,7 @@ El.prototype = {
      * @param {String} selector The CSS selector
      * @return {Array} An array of the matched nodes
      */
-    query : function(selector, unique){
+    query : function(selector){
         return Ext.DomQuery.select(selector, this.dom);
     },
 
@@ -1115,7 +1112,7 @@ El.prototype = {
     },
 
     /**
-     * Sets the element's position and size the the specified region. If animation is true then width, height, x and y will be animated concurrently.
+     * Sets the element's position and size the specified region. If animation is true then width, height, x and y will be animated concurrently.
      * @param {Ext.lib.Region} region The region to fill
      * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
      * @return {Ext.Element} this
@@ -1128,8 +1125,15 @@ El.prototype = {
     /**
      * Appends an event handler to this element.  The shorthand version {@link #on} is equivalent.
      * @param {String} eventName The type of event to handle
-     * @param {Function} fn The handler function the event invokes
-     * @param {Object} scope (optional) The scope (this element) of the handler function
+     * @param {Function} fn The handler function the event invokes. This function is passed
+     * the following parameters:<ul>
+     * <li>evt : EventObject<div class="sub-desc">The {@link Ext.EventObject EventObject} describing the event.</div></li>
+     * <li>t : Element<div class="sub-desc">The {@link Ext.Element Element} which was the target of the event.
+     * Note that this may be filtered by using the <tt>delegate</tt> option.</div></li>
+     * <li>o : Object<div class="sub-desc">The options object from the addListener call.</div></li>
+     * </ul>
+     * @param {Object} scope (optional) The scope (The <tt>this</tt> reference) of the handler function. Defaults
+     * to this Element.
      * @param {Object} options (optional) An object containing handler configuration properties.
      * This may contain any of the following properties:<ul>
      * <li>scope {Object} : The scope in which to execute the handler function. The handler function's "this" context.</li>
@@ -1150,20 +1154,21 @@ El.prototype = {
      * addListener.  The two are equivalent.  Using the options argument, it is possible to combine different
      * types of listeners:<br>
      * <br>
-     * A normalized, delayed, one-time listener that auto stops the event and passes a custom argument (forumId)<div style="margin: 5px 20px 20px;">
+     * A normalized, delayed, one-time listener that auto stops the event and adds a custom argument (forumId) to the
+     * options object. The options object is available as the third parameter in the handler function.<div style="margin: 5px 20px 20px;">
      * Code:<pre><code>
 el.on('click', this.onClick, this, {
     single: true,
     delay: 100,
     stopEvent : true,
     forumId: 4
-});</code></pre>
+});</code></pre></p>
      * <p>
      * <b>Attaching multiple handlers in 1 call</b><br>
       * The method also allows for a single argument to be passed which is a config object containing properties
-     * which specify multiple handlers.
+     * which specify multiple handlers.</p>
      * <p>
-     * Code:<pre><code>
+     * Code:<pre><code></p>
 el.on({
     'click' : {
         fn: this.onClick,
@@ -1181,7 +1186,7 @@ el.on({
 });</code></pre>
      * <p>
      * Or a shorthand syntax:<br>
-     * Code:<pre><code>
+     * Code:<pre><code></p>
 el.on({
     'click' : this.onClick,
     'mouseover' : this.onMouseOver,
@@ -1202,10 +1207,12 @@ el.un('click', this.handlerFn);
 </code></pre>
      * @param {String} eventName the type of event to remove
      * @param {Function} fn the method the event invokes
+     * @param {Object} scope (optional) The scope (The <tt>this</tt> reference) of the handler function. Defaults
+     * to this Element.
      * @return {Ext.Element} this
      */
-    removeListener : function(eventName, fn){
-        Ext.EventManager.removeListener(this.dom,  eventName, fn);
+    removeListener : function(eventName, fn, scope){
+        Ext.EventManager.removeListener(this.dom,  eventName, fn, scope || this);
         return this;
     },
 
@@ -1214,7 +1221,7 @@ el.un('click', this.handlerFn);
      * @return {Ext.Element} this
      */
     removeAllListeners : function(){
-        E.purgeElement(this.dom);
+        Ext.EventManager.removeAll(this.dom);
         return this;
     },
 
@@ -1418,14 +1425,14 @@ el.un('click', this.handlerFn);
 
     // private
 	setOverflow : function(v){
-    	if(v=='auto' && Ext.isMac && Ext.isGecko){ // work around stupid FF 2.0/Mac scroll bar bug
+    	if(v=='auto' && Ext.isMac && Ext.isGecko2){ // work around stupid FF 2.0/Mac scroll bar bug
     		this.dom.style.overflow = 'hidden';
         	(function(){this.dom.style.overflow = 'auto';}).defer(1, this);
     	}else{
     		this.dom.style.overflow = v;
     	}
 	},
-	
+
     /**
      * Quick set left and top adding default units
      * @param {String} left The left CSS property value
@@ -1440,7 +1447,7 @@ el.un('click', this.handlerFn);
 
     /**
      * Move this element relative to its current position.
-     * @param {String} direction Possible values are: "l","left" - "r","right" - "t","top","up" - "b","bottom","down".
+     * @param {String} direction Possible values are: "l" (or "left"), "r" (or "right"), "t" (or "top", or "up"), "b" (or "bottom", or "down").
      * @param {Number} distance How far to move the element in pixels
      * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
      * @return {Ext.Element} this
@@ -1910,11 +1917,8 @@ el.alignTo("other-el", "c-bl", [-6, 0]);
     },
 
     /**
-     * Direct access to the Updater {@link Ext.Updater#update} method (takes the same parameters).
-     * @param {String/Function} url The url for this request or a function to call to get the url
-     * @param {String/Object} params (optional) The parameters to pass as either a url encoded string "param1=1&amp;param2=2" or an object {param1: 1, param2: 2}
-     * @param {Function} callback (optional) Callback when transaction is complete - called with signature (oElement, bSuccess)
-     * @param {Boolean} discardUrl (optional) By default when you execute an update the defaultUrl is changed to the last used url. If true, it will not store the url.
+     * Direct access to the Updater {@link Ext.Updater#update} method. The method takes the same object
+     * parameter as {@link Ext.Updater#update}
      * @return {Ext.Element} this
      */
     load : function(){
@@ -2163,7 +2167,7 @@ el.alignTo("other-el", "c-bl", [-6, 0]);
      */
     createShim : function(){
         var el = document.createElement('iframe');
-        el.frameBorder = 'no';
+        el.frameBorder = '0';
         el.className = 'ext-shim';
         if(Ext.isIE && Ext.isSecure){
             el.src = Ext.SSL_SECURE_URL;
@@ -2208,11 +2212,9 @@ el.alignTo("other-el", "c-bl", [-6, 0]);
     /**
      * Sets up event handlers to add and remove a css class when the mouse is over this element
      * @param {String} className
-     * @param {Boolean} preventFlicker (optional) If set to true, it prevents flickering by filtering
-     * mouseout events for children elements
      * @return {Ext.Element} this
      */
-    addClassOnOver : function(className, preventFlicker){
+    addClassOnOver : function(className){
         this.hover(
             function(){
                 Ext.fly(this, '_internal').addClass(className);
@@ -2604,7 +2606,7 @@ el.alignTo("other-el", "c-bl", [-6, 0]);
     /**
      * Scrolls this element the specified direction. Does bounds checking to make sure the scroll is
      * within this element's scrollable range.
-     * @param {String} direction Possible values are: "l","left" - "r","right" - "t","top","up" - "b","bottom","down".
+     * @param {String} direction Possible values are: "l" (or "left"), "r" (or "right"), "t" (or "top", or "up"), "b" (or "bottom", or "down").
      * @param {Number} distance How far to scroll the element in pixels
      * @param {Boolean/Object} animate (optional) true for the default animation or a standard Element animation config object
      * @return {Boolean} Returns true if a scroll was triggered or false if the element
@@ -2663,7 +2665,7 @@ el.alignTo("other-el", "c-bl", [-6, 0]);
     /**
      * Translates the passed page coordinates into left/top css values for this element
      * @param {Number/Array} x The page x or an array containing [x, y]
-     * @param {Number} y The page y
+     * @param {Number} y (optional) The page y, required if x is not an array
      * @return {Object} An object with left and top properties. e.g. {left: (value), top: (value)}
      */
     translatePoints : function(x, y){
@@ -2788,6 +2790,13 @@ Ext.get("foo").boxWrap().addClass("x-box-blue");
         return d.getAttributeNS(ns, name) || d.getAttribute(ns+":"+name) || d.getAttribute(name) || d[name];
     },
 
+    /**
+     * Returns the width in pixels of the passed text, or the width of the text in this Element.
+     * @param {String} text The text to measure. Defaults to the innerHTML of the element.
+     * @param {Number} min (Optional) The minumum value to return.
+     * @param {Number} max (Optional) The maximum value to return.
+     * @return {Number} The text width in pixels.
+     */
     getTextWidth : function(text, min, max){
         return (Ext.util.TextMetrics.measure(this.dom, Ext.value(text, this.dom.innerHTML, true)).width).constrain(min || 0, max || 1000000);
     }
@@ -2871,10 +2880,14 @@ El.cache = {};
 var docEl;
 
 /**
- * Static method to retrieve Element objects. Uses simple caching to consistently return the same object.
- * Automatically fixes if an object was recreated with the same id via AJAX or DOM.
+ * Static method to retrieve Ext.Element objects.
+ * <p><b>This method does not retrieve {@link Ext.Component Component}s.</b> This method
+ * retrieves Ext.Element objects which encapsulate DOM elements. To retrieve a Component by
+ * its ID, use {@link Ext.ComponentMgr#get}.</p>
+ * <p>Uses simple caching to consistently return the same object.
+ * Automatically fixes if an object was recreated with the same id via AJAX or DOM.</p>
  * @param {Mixed} el The id of the node, a DOM Node or an existing Element.
- * @return {Element} The Element object (or null if no matching element was found)
+ * @return {Element} The {@link Ext.Element Element} object (or null if no matching element was found)
  * @static
  */
 El.get = function(el){
@@ -2963,7 +2976,7 @@ El.garbageCollect = function(){
         if(!d || !d.parentNode || (!d.offsetParent && !document.getElementById(eid))){
             delete El.cache[eid];
             if(d && Ext.enableListenerCollection){
-                E.purgeElement(d);
+                Ext.EventManager.removeAll(d);
             }
         }
     }

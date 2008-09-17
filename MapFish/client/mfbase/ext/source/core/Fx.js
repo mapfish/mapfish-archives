@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0.2
+ * Ext JS Library 2.2
  * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -44,7 +44,7 @@ br     The bottom right corner
  * @cfg {Function} callback A function called when the effect is finished.  Note that effects are queued internally by the
  * Fx class, so do not need to use the callback parameter to specify another effect -- effects can simply be chained together
  * and called in sequence (e.g., el.slideIn().highlight();).  The callback is intended for any additional code that should
- * run once a particular effect has completed.
+ * run once a particular effect has completed. The Element being operated upon is passed as the first parameter.
  * @cfg {Object} scope The scope of the effect function
  * @cfg {String} easing A valid Easing value for the effect
  * @cfg {String} afterCls A css class to apply after the effect
@@ -701,6 +701,18 @@ el.shift({
             if(h !== undefined){
                 a.height = {to: this.adjustHeight(h)};
             }
+            if(o.left !== undefined){
+                a.left = {to: o.left};
+            }
+            if(o.top !== undefined){
+                a.top = {to: o.top};
+            }
+            if(o.right !== undefined){
+                a.right = {to: o.right};
+            }
+            if(o.bottom !== undefined){
+                a.bottom = {to: o.bottom};
+            }
             if(x !== undefined || y !== undefined){
                 a.points = {to: [
                     x !== undefined ? x : this.getX(),
@@ -735,7 +747,7 @@ el.ghost('r', { duration: 2 });
 // common config options shown with default values
 el.ghost('b', {
     easing: 'easeOut',
-    duration: .5
+    duration: .5,
     remove: false,
     useDisplay: false
 });

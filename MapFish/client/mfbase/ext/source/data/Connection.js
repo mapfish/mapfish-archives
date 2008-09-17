@@ -1,5 +1,5 @@
 /*
- * Ext JS Library 2.0.2
+ * Ext JS Library 2.2
  * Copyright(c) 2006-2008, Ext JS, LLC.
  * licensing@extjs.com
  * 
@@ -9,21 +9,28 @@
 /**
  * @class Ext.data.Connection
  * @extends Ext.util.Observable
- * The class encapsulates a connection to the page's originating domain, allowing requests to be made
- * either to a configured URL, or to a URL specified at request time.<br><br>
- * <p>
- * Requests made by this class are asynchronous, and will return immediately. No data from
+ * <p>The class encapsulates a connection to the page's originating domain, allowing requests to be made
+ * either to a configured URL, or to a URL specified at request time.</p>
+ * <p>Requests made by this class are asynchronous, and will return immediately. No data from
  * the server will be available to the statement immediately following the {@link #request} call.
- * To process returned data, use a callback in the request options object, or an event listener.</p><br>
- * <p>
- * Note: If you are doing a file upload, you will not get a normal response object sent back to
- * your callback or event handler.  Since the upload is handled via in IFRAME, there is no XMLHttpRequest.
- * The response object is created using the innerHTML of the IFRAME's document as the responseText
- * property and, if present, the IFRAME's XML document as the responseXML property.</p><br>
- * This means that a valid XML or HTML document must be returned. If JSON data is required, it is suggested
- * that it be placed either inside a &lt;textarea> in an HTML document and retrieved from the responseText
- * using a regex, or inside a CDATA section in an XML document and retrieved from the responseXML using
- * standard DOM methods.
+ * To process returned data, use a {@link #request-option-success callback} in the request options object,
+ * or an {@link #requestcomplete event listener}.</p>
+ * <p>{@link #request-option-isUpload File uploads} are not performed using normal "Ajax" techniques, that
+ * is they are <b>not</b> performed using XMLHttpRequests. Instead the form is submitted in the standard
+ * manner with the DOM <tt>&lt;form></tt> element temporarily modified to have its
+ * <a href="http://www.w3.org/TR/REC-html40/present/frames.html#adef-target">target</a> set to refer
+ * to a dynamically generated, hidden <tt>&lt;iframe></tt> which is inserted into the document
+ * but removed after the return data has been gathered.</p>
+ * <p>The server response is parsed by the browser to create the document for the IFRAME. If the
+ * server is using JSON to send the return object, then the
+ * <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17">Content-Type</a> header
+ * must be set to "text/html" in order to tell the browser to insert the text unchanged into the document body.</p>
+ * <p>The response text is retrieved from the document, and a fake XMLHttpRequest object
+ * is created containing a <tt>responseText</tt> property in order to conform to the
+ * requirements of event handlers and callbacks.</p>
+ * <p>Be aware that file upload packets are sent with the content type <a href="http://www.faqs.org/rfcs/rfc2388.html">multipart/form</a>
+ * and some server technologies (notably JEE) may require some custom processing in order to
+ * retrieve parameter names and parameter values from the packet content.</p>
  * @constructor
  * @param {Object} config a configuration object.
  */
@@ -76,7 +83,9 @@ Ext.extend(Ext.data.Connection, Ext.util.Observable, {
      *  to each request made by this object. (defaults to undefined)
      */
     /**
-     * @cfg {String} method (Optional) The default HTTP method to be used for requests. (defaults to undefined; if not set but parms are present will use POST, otherwise GET)
+     * @cfg {String} method (Optional) The default HTTP method to be used for requests.
+     * (defaults to undefined; if not set, but {@link #request} params are present, POST will be used;
+     * otherwise, GET will be used.)
      */
     /**
      * @cfg {Number} timeout (Optional) The timeout in milliseconds to be used for requests. (defaults to 30000)
@@ -93,59 +102,90 @@ Ext.extend(Ext.data.Connection, Ext.util.Observable, {
      * @type Boolean
      */
     disableCaching: true,
+    
+    /**
+     * @cfg {String} disableCachingParam (Optional) Change the parameter which is sent went disabling caching
+     * through a cache buster. Defaults to '_dc'
+     * @type String
+     */
+    disableCachingParam: '_dc',
+    
 
     /**
      * <p>Sends an HTTP request to a remote server.</p>
      * <p><b>Important:</b> Ajax server requests are asynchronous, and this call will
-     * return before the response has been recieved. Process any returned data
-     * in a callback function.
+     * return before the response has been received. Process any returned data
+     * in a callback function.</p>
+     * <p>To execute a callback function in the correct scope, use the <tt>scope</tt> option.</p>
      * @param {Object} options An object which may contain the following properties:<ul>
-     * <li><b>url</b> : String (Optional)<p style="margin-left:1em">The URL to
-     * which to send the request. Defaults to configured URL</p></li>
-     * <li><b>params</b> : Object/String/Function (Optional)<p style="margin-left:1em">
+     * <li><b>url</b> : String/Function (Optional)<div class="sub-desc">The URL to
+     * which to send the request, or a function to call which returns a URL string. The scope of the
+     * function is specified by the <tt>scope</tt> option. Defaults to configured URL.</div></li>
+     * <li><b>params</b> : Object/String/Function (Optional)<div class="sub-desc">
      * An object containing properties which are used as parameters to the
-     * request, a url encoded string or a function to call to get either.</p></li>
-     * <li><b>method</b> : String (Optional)<p style="margin-left:1em">The HTTP method to use
+     * request, a url encoded string or a function to call to get either. The scope of the function
+     * is specified by the <tt>scope</tt> option.</div></li>
+     * <li><b>method</b> : String (Optional)<div class="sub-desc">The HTTP method to use
      * for the request. Defaults to the configured method, or if no method was configured,
      * "GET" if no parameters are being sent, and "POST" if parameters are being sent.  Note that
-     * the method name is case-sensitive and should be all caps.</p></li>
-     * <li><b>callback</b> : Function (Optional)<p style="margin-left:1em">The
+     * the method name is case-sensitive and should be all caps.</div></li>
+     * <li><b>callback</b> : Function (Optional)<div class="sub-desc">The
      * function to be called upon receipt of the HTTP response. The callback is
      * called regardless of success or failure and is passed the following
      * parameters:<ul>
-     * <li><b>options</b> : Object<p style="margin-left:1em">The parameter to the request call.</p></li>
-     * <li><b>success</b> : Boolean<p style="margin-left:1em">True if the request succeeded.</p></li>
-     * <li><b>response</b> : Object<p style="margin-left:1em">The XMLHttpRequest object containing the response data. See http://www.w3.org/TR/XMLHttpRequest/ for details about accessing elements of the response.</p></li>
-     * </ul></p></li>
-     * <li><b>success</b> : Function (Optional)<p style="margin-left:1em">The function
+     * <li><b>options</b> : Object<div class="sub-desc">The parameter to the request call.</div></li>
+     * <li><b>success</b> : Boolean<div class="sub-desc">True if the request succeeded.</div></li>
+     * <li><b>response</b> : Object<div class="sub-desc">The XMLHttpRequest object containing the response data. 
+     * See <a href="http://www.w3.org/TR/XMLHttpRequest/">http://www.w3.org/TR/XMLHttpRequest/</a> for details about 
+     * accessing elements of the response.</div></li>
+     * </ul></div></li>
+     * <a id="request-option-success"></a><li><b>success</b> : Function (Optional)<div class="sub-desc">The function
      * to be called upon success of the request. The callback is passed the following
      * parameters:<ul>
-     * <li><b>response</b> : Object<p style="margin-left:1em">The XMLHttpRequest object containing the response data.</p></li>
-     * <li><b>options</b> : Object<p style="margin-left:1em">The parameter to the request call.</p></li>
-     * </ul></p></li>
-     * <li><b>failure</b> : Function (Optional)<p style="margin-left:1em">The function
+     * <li><b>response</b> : Object<div class="sub-desc">The XMLHttpRequest object containing the response data.</div></li>
+     * <li><b>options</b> : Object<div class="sub-desc">The parameter to the request call.</div></li>
+     * </ul></div></li>
+     * <li><b>failure</b> : Function (Optional)<div class="sub-desc">The function
      * to be called upon failure of the request. The callback is passed the
      * following parameters:<ul>
-     * <li><b>response</b> : Object<p style="margin-left:1em">The XMLHttpRequest object containing the response data.</p></li>
-     * <li><b>options</b> : Object<p style="margin-left:1em">The parameter to the request call.</p></li>
-     * </ul></p></li>
-     * <li><b>scope</b> : Object (Optional)<p style="margin-left:1em">The scope in
-     * which to execute the callbacks: The "this" object for the callback function.
-     * Defaults to the browser window.</p></li>
-     * <li><b>form</b> : Object/String (Optional)<p style="margin-left:1em">A form
-     * object or id to pull parameters from.</p></li>
-     * <li><b>isUpload</b> : Boolean (Optional)<p style="margin-left:1em">True if
-     * the form object is a file upload (will usually be automatically detected).</p></li>
-     * <li><b>headers</b> : Object (Optional)<p style="margin-left:1em">Request
-     * headers to set for the request.</p></li>
-     * <li><b>xmlData</b> : Object (Optional)<p style="margin-left:1em">XML document
+     * <li><b>response</b> : Object<div class="sub-desc">The XMLHttpRequest object containing the response data.</div></li>
+     * <li><b>options</b> : Object<div class="sub-desc">The parameter to the request call.</div></li>
+     * </ul></div></li>
+     * <li><b>scope</b> : Object (Optional)<div class="sub-desc">The scope in
+     * which to execute the callbacks: The "this" object for the callback function. If the <tt>url</tt>, or <tt>params</tt> options were
+     * specified as functions from which to draw values, then this also serves as the scope for those function calls.
+     * Defaults to the browser window.</div></li>
+     * <li><b>form</b> : Element/HTMLElement/String (Optional)<div class="sub-desc">The <tt>&lt;form&gt;</tt>
+     * Element or the id of the <tt>&lt;form&gt;</tt> to pull parameters from.</div></li>
+     * <a id="request-option-isUpload"></a><li><b>isUpload</b> : Boolean (Optional)<div class="sub-desc">True if the form object is a
+     * file upload (will usually be automatically detected).
+     * <p>File uploads are not performed using normal "Ajax" techniques, that is they are <b>not</b>
+     * performed using XMLHttpRequests. Instead the form is submitted in the standard manner with the
+     * DOM <tt>&lt;form></tt> element temporarily modified to have its
+     * <a href="http://www.w3.org/TR/REC-html40/present/frames.html#adef-target">target</a> set to refer
+     * to a dynamically generated, hidden <tt>&lt;iframe></tt> which is inserted into the document
+     * but removed after the return data has been gathered.</p>
+     * <p>The server response is parsed by the browser to create the document for the IFRAME. If the
+     * server is using JSON to send the return object, then the
+     * <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17">Content-Type</a> header
+     * must be set to "text/html" in order to tell the browser to insert the text unchanged into the document body.</p>
+     * <p>The response text is retrieved from the document, and a fake XMLHttpRequest object
+     * is created containing a <tt>responseText</tt> property in order to conform to the
+     * requirements of event handlers and callbacks.</p>
+     * <p>Be aware that file upload packets are sent with the content type <a href="http://www.faqs.org/rfcs/rfc2388.html">multipart/form</a>
+     * and some server technologies (notably JEE) may require some custom processing in order to
+     * retrieve parameter names and parameter values from the packet content.</p>
+     * </div></li>
+     * <li><b>headers</b> : Object (Optional)<div class="sub-desc">Request
+     * headers to set for the request.</div></li>
+     * <li><b>xmlData</b> : Object (Optional)<div class="sub-desc">XML document
      * to use for the post. Note: This will be used instead of params for the post
-     * data. Any params will be appended to the URL.</p></li>
-     * <li><b>jsonData</b> : Object/String (Optional)<p style="margin-left:1em">JSON
+     * data. Any params will be appended to the URL.</div></li>
+     * <li><b>jsonData</b> : Object/String (Optional)<div class="sub-desc">JSON
      * data to use as the post. Note: This will be used instead of params for the post
-     * data. Any params will be appended to the URL.</p></li>
-     * <li><b>disableCaching</b> : Boolean (Optional)<p style="margin-left:1em">True
-     * to add a unique cache-buster param to GET requests.</p></li>
+     * data. Any params will be appended to the URL.</div></li>
+     * <li><b>disableCaching</b> : Boolean (Optional)<div class="sub-desc">True
+     * to add a unique cache-buster param to GET requests.</div></li>
      * </ul></p>
      * <p>The options object may also contain any other property which might be needed to perform
      * postprocessing in a callback because it is passed to callback functions.</p>
@@ -200,10 +240,11 @@ Ext.extend(Ext.data.Connection, Ext.util.Observable, {
                 timeout : o.timeout || this.timeout
             };
 
-            var method = o.method||this.method||(p ? "POST" : "GET");
+            var method = o.method||this.method||((p || o.xmlData || o.jsonData) ? "POST" : "GET");
 
             if(method == 'GET' && (this.disableCaching && o.disableCaching !== false) || o.disableCaching === true){
-                url += (url.indexOf('?') != -1 ? '&' : '?') + '_dc=' + (new Date().getTime());
+                var dcp = o.disableCachingParam || this.disableCachingParam;
+                url += (url.indexOf('?') != -1 ? '&' : '?') + dcp + '=' + (new Date().getTime());
             }
 
             if(typeof o.autoAbort == 'boolean'){ // options gets top priority
@@ -213,7 +254,7 @@ Ext.extend(Ext.data.Connection, Ext.util.Observable, {
             }else if(this.autoAbort !== false){
                 this.abort();
             }
-            if((method == 'GET' && p) || o.xmlData || o.jsonData){
+            if((method == 'GET' || o.xmlData || o.jsonData) && p){
                 url += (url.indexOf('?') != -1 ? '&' : '?') + p;
                 p = '';
             }
@@ -436,7 +477,7 @@ Ext.Ajax = new Ext.data.Connection({
      */
     /**
      * @property  method
-     * The default HTTP method to be used for requests. Note that this is case-sensitive and should be all caps (defaults 
+     * The default HTTP method to be used for requests. Note that this is case-sensitive and should be all caps (defaults
      * to undefined; if not set but parms are present will use "POST," otherwise "GET.")
      * @type String
      */
