@@ -29,7 +29,7 @@
  * - <mapfish.GeoStat>
  */
 mapfish.GeoStat.Choropleth = OpenLayers.Class(mapfish.GeoStat, {
-    
+
     /**
      * APIProperty: colors
      * {Array(<mapfish.Color>}} Array of 2 colors to be applied to features
@@ -39,7 +39,7 @@ mapfish.GeoStat.Choropleth = OpenLayers.Class(mapfish.GeoStat, {
         new mapfish.ColorRgb(120, 120, 0),
         new mapfish.ColorRgb(255, 0, 0)
     ],
-    
+
     /**
      * APIProperty: method
      * {Integer} Specifies the distribution method to use. Possible
@@ -60,9 +60,9 @@ mapfish.GeoStat.Choropleth = OpenLayers.Class(mapfish.GeoStat, {
      * {Object} Overrides defaultSymbolizer in the parent class
      */
     defaultSymbolizer: {'fillOpacity': 1},
-    
-    /** 
-     * Property: classification 
+
+    /**
+     * Property: classification
      * {<mapfish.GeoStat.Classification>} Defines the different classification to use
      */
     classification: null,
@@ -73,7 +73,7 @@ mapfish.GeoStat.Choropleth = OpenLayers.Class(mapfish.GeoStat, {
      *      RGB color interpolation
      */
     colorInterpolation: null,
-    
+
     /**
      * Constructor: mapfish.GeoStat.Choropleth
      *
@@ -125,14 +125,18 @@ mapfish.GeoStat.Choropleth = OpenLayers.Class(mapfish.GeoStat, {
     /**
      * Method: setClassification
      *      Creates a classification with the features.
-     */   
+     */
     setClassification: function() {
         var values = [];
         var features = this.layer.features;
         for (var i = 0; i < features.length; i++) {
             values.push(features[i].attributes[this.indicator]);
         }
-        var dist = new mapfish.GeoStat.Distribution(values);
+
+        var distOptions = {
+            'labelGenerator' : this.options.labelGenerator
+        };
+        var dist = new mapfish.GeoStat.Distribution(values, distOptions);
         this.classification = dist.classify(
             this.method,
             this.numClasses,
@@ -140,7 +144,7 @@ mapfish.GeoStat.Choropleth = OpenLayers.Class(mapfish.GeoStat, {
         );
         this.createColorInterpolation();
     },
-    
+
     /**
      * APIMethod: applyClassification
      *      Style the features based on the classification
@@ -167,7 +171,7 @@ mapfish.GeoStat.Choropleth = OpenLayers.Class(mapfish.GeoStat, {
         this.extendStyle(rules);
         mapfish.GeoStat.prototype.applyClassification.apply(this, arguments);
     },
-    
+
     /**
      * Method: updateLegend
      *    Update the legendDiv content with new bins label
@@ -176,27 +180,27 @@ mapfish.GeoStat.Choropleth = OpenLayers.Class(mapfish.GeoStat, {
         if (!this.legendDiv) {
             return;
         }
-        this.legendDiv.innerHTML = "";
+
         // TODO use css classes instead
+        this.legendDiv.update("");
         for (var i = 0; i < this.classification.bins.length; i++) {
             var element = document.createElement("div");
-            element.style.backgroundColor = this.colors[i].toHexString();
+            element.style.backgroundColor = this.colorInterpolation[i].toHexString();
             element.style.width = "30px";
             element.style.height = "15px";
             element.style.cssFloat = "left";
             element.style.marginRight = "10px";
             this.legendDiv.appendChild(element);
-            
+
             var element = document.createElement("div");
             element.innerHTML = this.classification.bins[i].label;
-            element.innerHTML +=  " (" + this.classification.bins[i].nbVal + ")";
             this.legendDiv.appendChild(element);
-            
+
             var element = document.createElement("div");
             element.style.clear = "left";
             this.legendDiv.appendChild(element);
         }
     },
-    
+
     CLASS_NAME: "mapfish.GeoStat.Choropleth"
 });

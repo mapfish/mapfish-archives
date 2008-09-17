@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /**
  * In this file people will find :
  *   - GeoStat
@@ -89,7 +89,7 @@ mapfish.GeoStat = OpenLayers.Class({
      *      Only applies if featureSelection is true.
      */
     nameAttribute: null,
-    
+
     /**
      * APIProperty: indicator
      * {String} Defines the attribute to apply classification on
@@ -115,7 +115,14 @@ mapfish.GeoStat = OpenLayers.Class({
      *      overridden in subclasses.
      */
     selectSymbolizer: {'strokeColor': '#000000'}, // neutral stroke color
-   
+
+    /**
+     * Property: legendDiv
+     * {Object} Reference to the DOM container for the legend to be
+     *     generated.
+     */
+    legendDiv: null,
+
     /**
      * Constructor: mapfish.GeoStat
      *
@@ -165,6 +172,7 @@ mapfish.GeoStat = OpenLayers.Class({
             OpenLayers.loadURL(
                 this.url, '', this, this.onSuccess, this.onFailure);
         }
+        this.legendDiv = Ext.get(options.legendDiv);
     },
 
     /**
@@ -192,10 +200,10 @@ mapfish.GeoStat = OpenLayers.Class({
     onFailure: function(request) {
         this.requestFailure(request);
     },
-    
+
     /**
      * Method: addOptions
-     * 
+     *
      * Parameters:
      * newOptions - {Object}
      */
@@ -278,13 +286,13 @@ mapfish.GeoStat = OpenLayers.Class({
         var lonlat = new OpenLayers.LonLat(bounds.right, bounds.bottom);
         var size = new OpenLayers.Size(200, 100);
         var popup = new OpenLayers.Popup.AnchoredBubble(
-            feature.attributes[this.nameAttribute], 
+            feature.attributes[this.nameAttribute],
             lonlat, size, html, 0.5, false);
         var symbolizer = feature.layer.styleMap.createSymbolizer(feature, 'default');
         popup.setBackgroundColor(symbolizer.fillColor);
         this.layer.map.addPopup(popup);
     },
-    
+
     /**
      * Method: hideDetails
      *
@@ -298,30 +306,53 @@ mapfish.GeoStat = OpenLayers.Class({
             map.removePopup(map.popups[i]);
         }
     },
-    
+
     CLASS_NAME: "mapfish.GeoStat"
-    
+
 });
 
 /**
  * Distribution Class
  */
 mapfish.GeoStat.Distribution = OpenLayers.Class({
+
+    /**
+     * Property: labelGenerator
+     *     Generator for bin labels
+     */
+    labelGenerator: function(bin, binIndex, nbBins) {
+        return this.defaultLabelGenerator(bin, binIndex, nbBins)
+    },
+
     values: null,
 
     nbVal: null,
-    
+
     minVal: null,
-    
+
     maxVal: null,
-    
-    initialize: function(values) {
+
+    initialize: function(values, options) {
+        OpenLayers.Util.extend(this, options);
         this.values = values;
         this.nbVal = values.length;
         this.minVal = this.nbVal ? mapfish.Util.min(this.values) : 0;
         this.maxVal = this.nbVal ? mapfish.Util.max(this.values) : 0;
     },
-    
+
+    /**
+     * Method: labelGenerator
+     *    Generator for bin labels
+     *
+     * Parameters:
+     *   bin - {<mapfish.GeoStat.Bin>} Lower bound limit value
+     *   binIndex - {Integer} Current bin index
+     *   nBins - {Integer} Total number of bins
+     */
+    defaultLabelGenerator: function(bin, binIndex, nbBins) {
+        return bin.lowerBound.toFixed(3) + ' - ' + bin.upperBound.toFixed(3) + ' (' + bin.nbVal + ')'
+    },
+
     classifyWithBounds: function(bounds) {
         var bins = [];
         var binCount = [];
@@ -335,7 +366,7 @@ mapfish.GeoStat.Distribution = OpenLayers.Class({
         for (var i = 0; i < nbBins; i++) {
             binCount[i] = 0;
         }
-        
+
         for (var i = 0; i < nbBins - 1; i) {
             if (sortedValues[0] < bounds[i + 1]) {
                 binCount[i] = binCount[i] + 1;
@@ -344,36 +375,37 @@ mapfish.GeoStat.Distribution = OpenLayers.Class({
                 i++;
             }
         }
-        
+
         binCount[nbBins - 1] = this.nbVal - mapfish.Util.sum(binCount);
-        
+
         for (var i = 0; i < nbBins; i++) {
-            var label = bounds[i].toFixed(3) + ' - ' + bounds[i + 1].toFixed(3);
-            bins[i] = new mapfish.GeoStat.Bin(binCount[i], label, bounds[i], bounds[i + 1],
+            bins[i] = new mapfish.GeoStat.Bin(binCount[i], bounds[i], bounds[i + 1],
                 i == (nbBins - 1));
+            var labelGenerator = this.labelGenerator || this.defaultLabelGenerator;
+            bins[i].label = labelGenerator(bins[i], i, nbBins);
         }
         return new mapfish.GeoStat.Classification(bins);
     },
-    
+
     classifyByEqIntervals: function(nbBins) {
         var bounds = [];
-        
+
         for(var i = 0; i <= nbBins; i++) {
-            bounds[i] = this.minVal + 
+            bounds[i] = this.minVal +
                 i*(this.maxVal - this.minVal) / nbBins;
         }
-        
-        return this.classifyWithBounds(bounds);           
+
+        return this.classifyWithBounds(bounds);
     },
-    
+
     classifyByQuantils: function(nbBins) {
         var values = this.values;
         values.sort(function(a,b) {return a-b;});
         var binSize = Math.round(this.values.length / nbBins);
-        
+
         var bounds = [];
         var binLastValPos = (binSize == 0) ? 0 : binSize;
-        
+
         if (values.length > 0) {
             bounds[0] = values[0];
             for (i = 1; i < nbBins; i++) {
@@ -384,14 +416,15 @@ mapfish.GeoStat.Distribution = OpenLayers.Class({
         }
         return this.classifyWithBounds(bounds);
     },
-    
+
     /**
-     * @return integer Maximal number of classes according to the Sturge's rule
+     * Returns:
+     * {Number} Maximal number of classes according to the Sturge's rule
      */
     sturgesRule: function() {
         return Math.floor(1 + 3.3 * Math.log(this.nbVal, 10));
     },
-    
+
     /**
      * Method: classify
      *    This function calls the appropriate classifyBy... function.
@@ -425,7 +458,7 @@ mapfish.GeoStat.Distribution = OpenLayers.Class({
         }
         return classification;
     },
-    
+
     CLASS_NAME: "mapfish.GeoStat.Distribution"
 });
 
@@ -455,15 +488,14 @@ mapfish.GeoStat.Bin = OpenLayers.Class({
     lowerBound: null,
     upperBound: null,
     isLast: false,
-    
-    initialize: function(nbVal, label, lowerBound, upperBound, isLast) {
+
+    initialize: function(nbVal, lowerBound, upperBound, isLast) {
         this.nbVal = nbVal;
-        this.label = label;
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
         this.isLast = isLast;
     },
-    
+
     CLASS_NAME: "mapfish.GeoStat.Bin"
 });
 
@@ -472,11 +504,11 @@ mapfish.GeoStat.Bin = OpenLayers.Class({
  */
 mapfish.GeoStat.Classification = OpenLayers.Class({
     bins: [],
-    
+
     initialize: function(bins) {
         this.bins = bins;
     },
-    
+
     getBoundsArray: function() {
         var bounds = [];
         for (var i = 0; i < this.bins.length; i++) {
@@ -487,6 +519,6 @@ mapfish.GeoStat.Classification = OpenLayers.Class({
         }
         return bounds;
     },
-    
+
     CLASS_NAME: "mapfish.GeoStat.Classification"
 });

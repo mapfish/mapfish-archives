@@ -32,6 +32,7 @@ Ext.namespace('mapfish.widgets', 'mapfish.widgets.geostat');
  * Inherits from:
  * - {Ext.FormPanel}
  */
+
 mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
 
     /**
@@ -70,7 +71,7 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
      *      Only applies if featureSelection is true.
      */
     nameAttribute: null,
-    
+
     /**
      * APIProperty: indicator
      * {String} (read-only) The feature attribute currently chosen
@@ -78,7 +79,7 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
      *     and 'featureunselected' events
      */
     indicator: null,
-    
+
     /**
      * APIProperty: indicatorText
      * {String} (read-only) The raw value of the currently chosen indicator
@@ -111,12 +112,18 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
      *     Styling border
      */
     border: false,
-    
+
     /**
      * APIProperty: loadMask
      *     An Ext.LoadMask config or true to mask the widget while loading (defaults to false).
      */
     loadMask : false,
+
+    /**
+     * APIProperty: labelGenerator
+     *     Generator for bin labels
+     */
+    labelGenerator: null,
 
     /**
      * Constructor: mapfish.widgets.geostat.Choropleth
@@ -219,7 +226,7 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
                 }
             }
         }];
-        
+
         mapfish.widgets.geostat.Choropleth.superclass.initComponent.apply(this);
     },
 
@@ -230,7 +237,7 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
      */
     requestSuccess: function(request) {
         this.ready = true;
-        
+
         // if widget is rendered, hide the optional mask
         if (this.loadMask && this.rendered) {
             this.loadMask.hide();
@@ -263,7 +270,7 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
 
     /**
      * Method: classify
-     *    
+     *
      * Parameters:
      * exception - {Boolean} If true show a message box to user if either
      *      the widget isn't ready, or no indicator is specified, or no
@@ -286,7 +293,7 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
             }
             return;
         }
-        options.method = this.form.findField('method').getValue(); 
+        options.method = this.form.findField('method').getValue();
         if (!options.method) {
             if (exception) {
                 Ext.MessageBox.alert('Error', 'You must choose a method');
@@ -312,16 +319,20 @@ mapfish.widgets.geostat.Choropleth = Ext.extend(Ext.FormPanel, {
                     this.loadMask);
             this.loadMask.show();
         }
-        
-        this.coreComp = new mapfish.GeoStat.Choropleth(this.map, {
+
+        var coreOptions = {
             'layer': this.layer,
             'format': this.format,
             'url': this.url,
             'requestSuccess': this.requestSuccess.createDelegate(this),
             'requestFailure': this.requestFailure.createDelegate(this),
             'featureSelection': this.featureSelection,
-            'nameAttribute': this.nameAttribute
-        });
+            'nameAttribute': this.nameAttribute,
+            'legendDiv': this.legendDiv,
+            'labelGenerator': this.labelGenerator
+        };
+
+        this.coreComp = new mapfish.GeoStat.Choropleth(this.map, coreOptions);
     }
 });
 Ext.reg('choropleth', mapfish.widgets.geostat.Choropleth);
