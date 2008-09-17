@@ -100,12 +100,13 @@ mapfish.PrintProtocol = OpenLayers.Class({
      *                    method.
      */
     createPDF: function(success, failure, context) {
+        var specTxt = new OpenLayers.Format.JSON().write(this.spec);
+        OpenLayers.Console.info(specTxt);
+
         try {
             //The charset seems always to be UTF-8, regardless of the page's
             var charset = "UTF-8";
             /*+document.characterSet*/
-            var specTxt = new OpenLayers.Format.JSON().write(this.spec);
-            OpenLayers.Console.info(specTxt);
             OpenLayers.Request.POST({
                 url: this.config.createURL,
                 data: specTxt,
@@ -382,6 +383,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
      * @param cur
      */
     encodeForURL: function(cur) {
+        if (cur == null) return null;
         var type = typeof cur;
         Ext.type(cur);
         if (type == 'string') {
@@ -389,13 +391,18 @@ mapfish.PrintProtocol = OpenLayers.Class({
         } else if (type == 'object' && cur.constructor == Array) {
             var array = [];
             for (var i = 0; i < cur.length; ++i) {
-                array.push(this.encodeForURL(cur[i]));
+                var val = this.encodeForURL(cur[i]);
+                if (val != null) array.push(val);
             }
             return array;
+        } else if (type == 'object' && cur.CLASS_NAME &&
+                   cur.CLASS_NAME == 'OpenLayers.Feature.Vector') {
+            return new OpenLayers.Format.WKT().write(cur);
         } else if (type == 'object') {
             var hash = {};
             for (var j in cur) {
-                hash[j] = this.encodeForURL(cur[j]);
+                var val2 = this.encodeForURL(cur[j]);
+                if (val2 != null) hash[j] = val2;
             }
             return hash;
         } else {

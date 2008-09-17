@@ -81,6 +81,15 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
     layerTree: null,
 
     /**
+     * APIProperty: grids
+     * {Object} - An optional dictionary of {Ext.grid.GridPanel}. Needed only
+     *            if you want to display search results. Can be function
+     *            (returning the dictionary) that will be called each time the
+     *            information is needed.
+     */
+    grids: null,
+
+    /**
      * Property: pageDrag
      * {<OpenLayers.Control.DragFeature>} - The control to move the extent.
      */
@@ -477,6 +486,9 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
         if (this.layerTree) {
             this.addLegends(printCommand.spec);
         }
+        if (this.grids) {
+            this.addGrids(printCommand.spec);
+        }
         this.fillSpec(printCommand);
 
         this.mask.msg = OpenLayers.Lang.translate('mf.print.generatingPDF');
@@ -501,12 +513,55 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
     },
 
     /**
-     * Method: addLegends
+     * Method: addGrids
      *
-     * Add the layerTree's legends to the given printCommand.
+     * Add the grids' data to the given spec.
      *
      * Parameters:
-     * printCommand - {<mapfish.PrintProtocol>} The print definition to fill.
+     * spec - {Object} The print spec to fill.
+     */
+    addGrids: function(spec) {
+        var grids = this.grids;
+        if (grids && typeof grids == "function") {
+            grids = grids();
+        }
+        if (grids) {
+            for (var name in grids) {
+                var grid = grids[name];
+                spec[name] = {};
+                var specData = spec[name].data = [];
+                var specCols = spec[name].columns = [];
+                var columns = grid.getColumnModel();
+                var store = grid.getStore();
+                for (var j = 0; j < columns.getColumnCount(); ++j) {
+                    if (!columns.isHidden(j)) {
+                        specCols.push(columns.getDataIndex(j));
+                    }
+                }
+                store.each(function(record) {
+                    var hash = {};
+                    for (var key in record.data) {
+                        var val = record.data[key];
+                        if (val != null) {
+                            if (val.CLASS_NAME && val.CLASS_NAME == 'OpenLayers.Feature.Vector') {
+                                val = new OpenLayers.Format.WKT().write(val);
+                            }
+                            hash[key] = val;
+                        }
+                    }
+                    specData.push(hash);
+                }, this);
+            }
+        }
+    },
+
+    /**
+     * Method: addLegends
+     *
+     * Add the layerTree's legends to the given spec.
+     *
+     * Parameters:
+     * spec - {Object} The print spec to fill.
      */
     addLegends: function(spec) {
         var legends = spec.legends = [];
