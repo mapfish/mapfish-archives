@@ -512,10 +512,8 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
     /**
      * Method: _handleModelChange
      *
-     * This method synchronizes the state of checkboxes/radios in the tree and
-     * the matching OpenLayer layers visibility. It can be called after a
-     * checkbox/radio button or layer visibility has changed when both need to
-     * be synchronized.
+     * This method updates the OpenLayer layers visibility from the state of the
+     * checkboxes/radios in the tree.
      *
      * Parameters:
      * clickedNode - {Ext.data.Node} Optional node that was clicked. It can be null
