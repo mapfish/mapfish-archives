@@ -41,6 +41,7 @@ HAS_MAPFISH=1
 BASE=$(cd $(dirname $0); pwd)
 SVN="svn -q"
 PYTHON_ENV=$BASE/env
+SETUPTOOLS_SVN="http://svn.python.org/projects/sandbox/branches/setuptools-0.6"
 
 #
 # Global and Initialization functions
@@ -62,8 +63,21 @@ create_python_env() {
 
     rm -rf $PYTHON_ENV
     mkdir $PYTHON_ENV
-    (cd $PYTHON_ENV && wget http://svn.colorstudy.com/virtualenv/trunk/virtualenv.py)
-    (cd $PYTHON_ENV && python virtualenv.py .)
+    (cd $PYTHON_ENV && \
+     wget http://svn.colorstudy.com/virtualenv/trunk/virtualenv.py && \
+     python virtualenv.py .)
+
+    # because of a bug in setuptools we need to check it out
+    # from svn and setup.py-install it
+    # see https://trac.mapfish.org/trac/mapfish/ticket/226
+    # for an explanation
+    echo "Installing setuptools in $PYTHON_ENV"
+
+    rm -rf $PYTHON_ENV/setuptools
+    (cd $PYTHON_ENV && \
+     $SVN co $SETUPTOOLS_SVN setuptools && \
+     cd setuptools && \
+     $PYTHON_ENV/bin/python setup.py install)
 }
 
 init_light() {
