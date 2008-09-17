@@ -152,18 +152,117 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
      */
     separator: ":",
 
+    /**
+     * APIProperty: model
+     * {Array(Object)} Hierarchical structure to build the tree.
+     * Here's an example:
+
+[
+    {
+        text: 'Background layers',
+        expanded: true,
+        children: [
+            {
+                text: 'OpenLayers WMS',
+                icon: 'http://www.openlayers.org/favicon.ico',
+                layerNames: ['OpenLayers WMS'],
+                checked: true
+            },
+            {
+                text: 'OpenAerialMap WMS',
+                layerNames: ['OpenAerialMap'],
+                checked: false
+            }
+        ]
+    },
+    {
+        text: 'Overlay layers',
+        checked: false,
+        children: [
+            {
+                text: 'OpenStreetMap WMS',
+                icon: 'http://www.openstreetmap.org/favicon.ico',
+                layerNames: ['OpenStreetMap'],
+                checked: false
+            }
+        ]
+    }
+];
+
+     * Each node can contain the following properties:
+     * text: {String} The label to show in the tree
+     * checked: {Boolean} checkbox status. If this property is not set (undefined),
+     *          no checkbox is drawn. It is important to note that the checkbox
+     *          status takes precedence over the state defined in the OL layer.
+     * icon: {String} Optional image URL to show as an icon.
+     * expanded: {Boolean} True of this node should be expanded at startup. Default
+     *           is to have node collapsed.
+     * layerNames: {Array(String)} Array of OpenLayer layer names to associate
+     *             with this node. If you are using a layer which can use
+     *             sublayers (WMS or Mapserver), it is possible to use a specific
+     *             syntax: <OL layer name> + separator + <sublayer identifier>.
+     *             The default separator is ":", which can be changed in the
+     *             LayerTree.separator property if it conflicts. For instance:
+     *             MyWMS:roads
+     *
+     * Other properties are passed to Ext. For instance the "cls" property can
+     * be used to set a specific class on the node.
+     */
+    model: null,
+
+    /**
+     * APIProperty: showWmsLegend
+     * {Boolean} This is only used when no model is specified (when the model
+     * is automatically extracted from the map layers). If true, the model
+     * will show legend icons for WMS layers.
+     */
+    showWmsLegend: false,
+
+    /**
+     * Property: rootVisible
+     * Overridden, see {<Ext.tree.TreePanel>}
+     */
     rootVisible: false,
+    /**
+     * Property: animate
+     * Overridden, see {<Ext.tree.TreePanel>}
+     */
     animate: true,
+    /**
+     * Property: autoScroll
+     * Overridden, see {<Ext.tree.TreePanel>}
+     */
     autoScroll: true,
+    /**
+     * Property: loader
+     * Overridden, see {<Ext.tree.TreePanel>}
+     */
     loader: new Ext.tree.TreeLoader({}),
+    /**
+     * Property: enableDD
+     * Overridden, see {<Ext.tree.TreePanel>}
+     */
     enableDD: false,
+    /**
+     * Property: containerScroll
+     * Overridden, see {<Ext.tree.TreePanel>}
+     */
     containerScroll: true,
+
+    /**
+     * APIProperty: ascending
+     * If true and using automatic model, the layers in the tree will show the
+     * bottom OpenLayer layer on top and the top OpenLayer layer on the
+     * bottom. If false, this is inverted.
+     */
     ascending: true,
 
-    // set to false automatically if a model is given. Should not be manually
-    // overridden
+    /**
+     * Property: _automaticModel
+     * Set to false automatically if a model is given. Should not be manually
+     * overridden
+     */
     _automaticModel: true,
-
 
     // The instance variables below are cache objects used for faster access
     // to objects and properties. If the model or one of the map layer changes,
@@ -328,6 +427,13 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         }, this);
     },
 
+    /**
+     * Method: _updateCheckboxAncestors
+     * This method walks the tree, and checks or unchecks nodes to match the
+     * constraints:
+     * If all child checkboxes are checked, the parent should be checked.
+     * If one child checkbox is not checked, parent should not be checked.
+     */
     _updateCheckboxAncestors: function() {
 
         // Map of all the node ids not yet visited by updateNodeCheckbox
@@ -396,6 +502,20 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         }
     },
 
+    /**
+     * Method: _handleModelChange
+     *
+     * This method synchronizes the state of checkboxes/radios in the tree and
+     * the matching OpenLayer layers visibility. It can be called after a
+     * checkbox/radio button or layer visibility has changed when both need to
+     * be synchronized.
+     *
+     * Parameters:
+     * clickedNode - {Ext.data.Node} Optional node that was clicked. It can be null
+     * checked - {Boolean} checked state of the clicked node, only used if the
+     *           clickedNode parameter is not null.
+     *
+     */
     _handleModelChange: function LT__handleModelChange(clickedNode, checked) {
 
         // Tree can be modified in two situations:
@@ -709,7 +829,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                         layer.params[layerParamName] = sublayers;
                         layer.redraw();
                     }
-                        
+
                     layer.setVisibility(true, true);
                 }
             }
@@ -735,6 +855,20 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         updateMapFromVisibility.call(this, layerVisibility);
     },
 
+    /**
+     * Method: _extractOLModel
+     *
+     * Builds a model object from the list of available layers in the map. For
+     * layers that can contain sublayers (WMS, Mapserver), children are created
+     * for each sublayer.
+     * The <displayInLayerSwitcher> property of the layer can be used not to
+     * show that layer in the tree if it is false.
+     * The LayerTree <ascending> property controls the ordering of the layer in
+     * the tree.
+     *
+     * Returns:
+     * {Array(Object)} A model object extracted from the list of layers.
+     */
     _extractOLModel: function LT__extractOLModel() {
         var getLegendParams = {
             service: "WMS",
@@ -804,6 +938,12 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         return layers;
     },
 
+    /**
+     * Method: _updateOrder
+     *
+     * Updates the stacking order of the OpenLayer layers from the order set
+     * in the layer tree.
+     */
     _updateOrder: function() {
 
         this._updateCachedObjects();
@@ -909,6 +1049,16 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         }, this);
     },
 
+    /**
+     * Method: initComponent
+     *
+     * Overrides super-class initComponent method. If no model is available, it
+     * builds a default flat model from the map layers. Then it builds the Ext
+     * tree structure from that model. After this method is called, the <model>
+     * property shouldn't be used anymore, because it is not kept in sync with
+     * the node changes. Instead, use the {Ext.data.Tree} or {Ext.data.Node}
+     * methods on the tree <root> property.
+     */
     initComponent: function() {
 
         this.eventModel = new mapfish.widgets.LayerTreeEventModel(this);
@@ -979,7 +1129,10 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         }
     },
 
-    // private
+    /**
+     * Method: onRender
+     * Called by Ext when the component is rendered.
+     */
     onRender: function(container, position) {
         if (!this.el) {
             this.el = document.createElement('div');
