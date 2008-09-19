@@ -66,10 +66,8 @@ Group: MapFish  {
       Group: Searcher  {
 
          File: Searcher  (no auto-title, core/Searcher.js)
-         File: Box  (no auto-title, core/Searcher/Box.js)
-         File: Extent  (no auto-title, core/Searcher/Extent.js)
+         File: Map (no auto-title, core/Searcher/Map.js)
          File: Form  (no auto-title, core/Searcher/Form.js)
-         File: XY  (no auto-title, core/Searcher/XY.js)
          }  # Group: Searcher
 
       File: SearchMediator  (no auto-title, core/SearchMediator.js)
@@ -83,12 +81,14 @@ Group: MapFish  {
       Group: Data  {
 
          File: FeatureReader  (no auto-title, widgets/data/FeatureReader.js)
-         File: FeatureStore  (no auto-title, widgets/data/FeatureStore.js)
+         File: FeatureStoreMediator  (no auto-title, widgets/data/FeatureStoreMediator.js)
+         File: SearchStoreMediator (no auto-title, widgets/data/SearchStoreMediator.js)
+         File: LayerStoreMediator (no auto-title, widgets/data/LayerStoreMediator.js)
          }  # Group: Data
 
       Group: Edition  {
 
-         File: FeatureList  (no auto-title, widgets/edition/FeatureList.js)
+         File: FeatureList  (no auto-title, widgets/editing/FeatureList.js)
          }  # Group: Edition
 
       Group: Geostat  {
@@ -108,11 +108,6 @@ Group: MapFish  {
 
          File: LayerTree  (no auto-title, widgets/tree/LayerTree.js)
          }  # Group: LayerTree
-
-      Group: Search  {
-
-         File: Point  (no auto-title, widgets/search/Point.js)
-         }  # Group: Search
 
       Group: Toolbar  {
 
