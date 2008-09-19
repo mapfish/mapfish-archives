@@ -25,10 +25,10 @@
 
 Ext.namespace('mapfish.widgets');
 
-Ext.namespace('mapfish.widgets.edition');
+Ext.namespace('mapfish.widgets.editing');
 
 /**
- * Class: mapfish.widgets.edition.FeatureList
+ * Class: mapfish.widgets.editing.FeatureList
  * Use this class to create an editable grid of features.
  *
  * Inherits from:
@@ -36,21 +36,21 @@ Ext.namespace('mapfish.widgets.edition');
  */
 
 /**
- * Constructor: mapfish.widgets.edition.FeatureList
+ * Constructor: mapfish.widgets.editing.FeatureList
  *
  * Parameters:
  * config - {Object} The Grid config.
  */
-mapfish.widgets.edition.FeatureList = function(config) {
+mapfish.widgets.editing.FeatureList = function(config) {
     Ext.apply(this, config, {
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
         clicksToEdit: 1,
         enableDragDrop: true
     });
-    mapfish.widgets.edition.FeatureList.superclass.constructor.call(this);
+    mapfish.widgets.editing.FeatureList.superclass.constructor.call(this);
 };
 
-Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
+Ext.extend(mapfish.widgets.editing.FeatureList, Ext.grid.EditorGridPanel, {
 
     /**
      * APIProperty: featureType
@@ -148,7 +148,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
 
         // keep a reference on the definition of columns
         this.colDefs = this.columns;
-        mapfish.widgets.edition.FeatureList.superclass.initComponent.call(this);
+        mapfish.widgets.editing.FeatureList.superclass.initComponent.call(this);
 
         this.setGeoColRenderer();
 
@@ -156,7 +156,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
         if (!this.map) {
             this.map = this.layer.map;
         } else if (!this.layer) {
-            this.layer = new OpenLayers.Layer.Vector("Geometry edition");
+            this.layer = new OpenLayers.Layer.Vector("Geometry editing");
             this.map.addLayer(this.layer);
         }
 
@@ -246,7 +246,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
      * Called by EXT when the component is rendered.
      */
     onRender: function() {
-        mapfish.widgets.edition.FeatureList.superclass.onRender.apply(
+        mapfish.widgets.editing.FeatureList.superclass.onRender.apply(
             this, arguments);
 
         // add the possibility to drag and drop rows for re-ordering them
@@ -310,7 +310,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
                         var edited = (this.grid.modifyFeature.feature != null) &&
                                      (this.grid.getFeatureByGeometry(value) ==
                                       this.grid.modifyFeature.feature);
-                        return '<div onclick="mapfish.widgets.edition.FeatureList.geometryClickHandler(\''
+                        return '<div onclick="mapfish.widgets.editing.FeatureList.geometryClickHandler(\''
                             + this.grid.id + '\', ' + record.id + ', \'' + this.colName + '\');">'
                             + this.grid.editGeometryVisual(value, record, edited) + '</div>';
                     } else {
@@ -571,7 +571,7 @@ Ext.extend(mapfish.widgets.edition.FeatureList, Ext.grid.EditorGridPanel, {
         layer.removeFeatures(toRemove);
     }
 });
-Ext.reg('featurelist', mapfish.widgets.edition.FeatureList);
+Ext.reg('featurelist', mapfish.widgets.editing.FeatureList);
 
 /**
  * Method: geometryClickHandler
@@ -582,7 +582,7 @@ Ext.reg('featurelist', mapfish.widgets.edition.FeatureList);
  * recordId - {String} ID of the record
  * colName - {String} Name of the geometry column
  */
-mapfish.widgets.edition.FeatureList.geometryClickHandler = function(
+mapfish.widgets.editing.FeatureList.geometryClickHandler = function(
     gridId, recordId, colName) {
 
     var grid = Ext.getCmp(gridId);
@@ -613,7 +613,7 @@ mapfish.widgets.edition.FeatureList.geometryClickHandler = function(
  * Returns
  * {Function} - Record constructor
  */
-mapfish.widgets.edition.FeatureList.createRecord = function(cols) {
+mapfish.widgets.editing.FeatureList.createRecord = function(cols) {
     for (var i = 0; i < cols.length; ++i) {
         var col = cols[i];
         if (col.type == 'geo') {

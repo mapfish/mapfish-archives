@@ -118,7 +118,7 @@
             "widgets/toolbar/Toolbar.js",
             "widgets/toolbar/CheckItem.js",
             "widgets/toolbar/MenuItem.js",
-            "widgets/edition/FeatureList.js",
+            "widgets/editing/FeatureList.js",
             "widgets/print/Base.js",
             "widgets/print/SimpleForm.js",
             "widgets/print/MultiPage.js"

@@ -123,7 +123,7 @@ Ext.onReady(function() {
     /*
      * Define record type.
      */
-    var FeatureType = mapfish.widgets.edition.FeatureList.createRecord([
+    var FeatureType = mapfish.widgets.editing.FeatureList.createRecord([
         {name: 'name', type: 'string'},
         {name: 'enabled', type: 'bool'},
         {name: 'positive', type: 'bool'},
@@ -224,7 +224,7 @@ Ext.onReady(function() {
     /*
      * Feature list.
      */
-    var featureList = new mapfish.widgets.edition.FeatureList({
+    var featureList = new mapfish.widgets.editing.FeatureList({
         title:'Feature List',
         region: 'center',
         featureType: FeatureType,
@@ -304,7 +304,7 @@ Ext.onReady(function() {
                 contentEl: 'title'
             }, {
                 region: 'east',
-                title: 'Feature edition',
+                title: 'Feature editing',
                 split: true,
                 collapsible: true,
                 frame: true,
