@@ -17,203 +17,188 @@
  * along with MapFish Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 /*
  * @requires OpenLayers/Util.js
- * @requires OpenLayers/Format/GeoJSON.js
  * @requires OpenLayers/Ajax.js
+ * @requires OpenLayers/Filter/Logical.js
  */
 
 /**
  * Class: mapfish.SearchMediator
  * A SearchMediator object is to be used when multiple searchers must be coupled
- * (e.g. coupling a search form with a BBOX searcher). This object is also
- * responsible for sending the search (Ajax) requests, so it is used with or
- * by searchers even in cases where there's no coupling.
+ * (e.g. coupling a search form with a BBOX searcher).
  */
 mapfish.SearchMediator = OpenLayers.Class({
- 
-    /**
-     * Property: url
-     * {String | Function} - The search service URL.
-     */
-    url: null,
-
-    /**
-     * Property: callback
-     * {Function} - The callback called when features are received
-     *      from the search service.
-     */
-    callback: null,
-
-    /**
-     * Property: params
-     * {Object} - The search request params.
-     */
-    params: null,
 
     /**
      * Property: searchers
-     * Array({<mapfish.Searcher>} - Array of searchers controlled by this
+     * Array({<mapfish.Searcher>} Array of searchers controlled by this
      *      mediator.
      */
     searchers: null,
 
     /**
-     * Property: parser.
-     * {<OpenLayers.Format>} - The OpenLayers format used to deserialize
-     *      the response sent by the service.
+     * Property: protocol
+     * {<OpenLayers.Protocol>} The protocol to use for sending search
+     *     requests.
      */
-    parser: null,
+    protocol: null,
 
     /**
-     * Property: request.
-     * {Object} - The Ajax request object.
+     * Property: response
+     * {<OpenLayers.Protocol.Response>} The response got from the protocol.
      */
-    request: null,
+    response: null,
+
+    /**
+     * Property: events
+     * {<OpenLayers.Events>}
+     */
+    events: null,
+
+    /**
+     * Constant: EVENT_TYPES
+     * {Array(String)}
+     */
+    EVENT_TYPES: ["searchtriggered", "searchfinished", "searchcanceled", "clear"],
 
     /**
      * Constructor: mapfish.SearchMediator
      *
      * Parameters:
-     * url - {String}
-     * callback - {Function}
-     * params - {Object}
-     */
-    initialize: function(url, callback, params) {
-        this.url = url;
-        this.callback = callback;
-        this.params = OpenLayers.Util.extend({}, params);
-        this.searchers = [];
-        this.parser = new OpenLayers.Format.GeoJSON();
-    },
-
-    /**
-     * APIMethod: setOptions
-     *      Set the mediator's options.
-     *
-     * Parameters:
      * options - {Object}
      */
-    setOptions: function(options) {
-        if (options) {
-            if (options.url) {
-                this.url = options.url;
-            }
-            if (options.callback) {
-                this.callback = options.callback;
-            }
-            if (options.params) {
-                OpenLayers.Util.extend(this.params, options.params);
-            }
+    initialize: function(options) {
+        OpenLayers.Util.extend(this, options);
+        this.searchers = [];
+        this.events = new OpenLayers.Events(this, null, this.EVENT_TYPES);
+        if(this.eventListeners instanceof Object) {
+            this.events.on(this.eventListeners);
         }
     },
 
     /**
-     * APIMethod: register
-     *      Register a searcher in the mediator.
-     *
-     * Parameters:
-     * searcher - {<mapfish.Searcher>}
+     * Method: destroy
      */
-    register: function(searcher) {
-        this.searchers.push(searcher);
-    },
+    destroy: function () {
+        if (this.protocol.autoDestroy) {
+            this.protocol.destroy();
+        }
+        this.protocol = null;
 
-    /**
-     * Method: onSuccess
-     *      Callback called on ajax search request success.
-     *
-     * Parameters:
-     * request - {Object}
-     */
-    onSuccess: function(request) {
-        this.request = null;
-        if (this.callback) {
-            var features = null;
-            if (request &&
-                request.responseText &&
-                request.responseText != "") {
-                // extract features from response
-                features = this.parser.read(request.responseText);
-            }
-            // pass features to user callback
-            this.callback(features);
+        this.searchers = null;
+
+        if (this.events) {
+            this.events.destroy();
+            this.events = null;
         }
     },
 
     /**
-     * APIMethod: doSearch
+     * Method: triggerSearch
      *      Trigger search request to the search service.
-     *
-     * Parameters:
-     * searcher - {<mapfish.Searcher>}
-     * params - {Object}
      */
-    doSearch: function(searcher, params) {
-        var url = this.getUrl(this.getSearchParams(searcher, params));
+    triggerSearch: function() {
+        var filter = null, f = null, params = null;
+        for (var i = 0, len = this.searchers.length; i < len; i++) {
+            if (f = this.searchers[i].getFilter())
+                filter = this.toFilter(f, filter);
+        }
 
-        // send request
-        this.request = new OpenLayers.Ajax.Request(url, {
-            method: "GET",
-            onSuccess: OpenLayers.Function.bind(this.onSuccess, this),
-            onFailure: function() { alert('Ajax request failed'); }
+        this.events.triggerEvent("searchtriggered", {filter: filter});
+
+        // workaround a bug in OpenLayers
+        params = OpenLayers.Util.extend(
+            {}, this.protocol.options.params);
+
+        this.response = this.protocol.read({
+            filter: filter,
+            callback: this.finishSearch,
+            params: params,
+            scope: this
         });
     },
 
     /**
-     * Method: getUrl
+     * Method: finishSearch
+     *      Called with we get a response from the search service.
      *
      * Parameters:
-     * params - {Object} The search params.
-     *
-     * Returns:
-     * {String} The complete URL string.
+     * {<OpenLayers.Protocol.Response>} The protocol response.
      */
-    getUrl: function(params) {
-        var url = typeof this.url == "function" ? this.url() : this.url;
-        var idx = url.indexOf("?");
-        if (idx < 0) {
-            url += "?";
-        } else {
-            params = OpenLayers.Util.extend(params,
-                OpenLayers.Util.getParameters(url));
-            url = url.substring(0, idx + 1);
-        }
-        url += OpenLayers.Util.getParameterString(params);
-        return url;
+    finishSearch: function(response) {
+        this.response = null;
+        this.events.triggerEvent("searchfinished", response);
     },
 
     /**
-     * APIMethod: cancelSearch
-     *      Cancel ongoing search request sent to the search service.
+     * Method: cancelSearch
+     *     Cancel ongoing search.
      */
     cancelSearch: function() {
-        if (this.request) {
-            this.request.transport.abort();
+        if (this.response) {
+            var response = this.response;
+            if (response.priv &&
+                typeof response.priv.abort == "function") {
+                response.priv.abort();
+                this.response = null;
+                this.events.triggerEvent("searchcanceled", response);
+            }
         }
     },
 
     /**
-     * APIMethod: getSearchParams
-     *      Get search params from searchers.
+     * Method: toFilter
      *
      * Parameters:
-     * searcher - {<mapfish.Searcher>}
-     * params - {Object}
+     * obj - {Object}
+     * filter - {<OpenLayers.Filter>}
+     *
+     * Returns:
+     * {<OpenLayers.Filter.Logical>}
      */
-    getSearchParams: function(searcher, params) {
-        var allParams = OpenLayers.Util.extend(this.params, params);
-        for (var i = 0; i < this.searchers.length; i++) {
-            var s = this.searchers[i];
-            if (s == searcher) {
-                // we already have our caller's params
-                continue;
+    toFilter: function(obj, filter) {
+        filter = filter || new OpenLayers.Filter.Logical(
+            {type: OpenLayers.Filter.Logical.AND});
+
+        var filters = filter.filters;
+
+        if (this.isFilter(obj)) {
+            filters.push(obj);
+        } else {
+            for (var key in obj) {
+                filters.push(
+                    new OpenLayers.Filter.Comparison({
+                        type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                        property: key,
+                        value: obj[key]
+                    })
+                );
             }
-            OpenLayers.Util.extend(allParams, s.getSearchParams());
         }
-        return allParams;
+        return filter;
+    },
+
+    /**
+     * Method: isFilter
+     * Check if the object passed is a <OpenLayers.Filter> object.
+     *
+     * Parameters:
+     * obj - {Object}
+     */
+    isFilter: function(obj) {
+        return !!obj.CLASS_NAME &&
+               !!obj.CLASS_NAME.match(/^OpenLayers\.Filter/);
+    },
+
+    /**
+     * Method: clear
+     *      Clear all the previous results.
+     */
+    clear: function() {
+        this.events.triggerEvent("clear");
     },
 
     CLASS_NAME: "mapfish.SearchMediator"
 });
+

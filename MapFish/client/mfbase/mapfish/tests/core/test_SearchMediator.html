@@ -17,223 +17,139 @@
     <script type="text/javascript" src="../../../mapfish/MapFish.js"></script>
 
     <script type="text/javascript"><!--
+
     function test_SearchMediator_initialize(t) {
-        t.plan(5);
-
-        var url = 'url';
-        var callback = function() {};
-        var params = {'fake': 'params'};
-
-        var mediator = new mapfish.SearchMediator(url, callback, params);
-
-        t.eq(mediator.url, url,
-             "ctor correctly sets url");
-        t.ok(mediator.callback == callback,
-             "ctor correctly sets callback");
-        t.eq(mediator.params.fake, params.fake,
-             "ctor correctly sets params");
-        t.eq(mediator.searchers.length, 0,
-             "ctor correctly initializes array of searchers");
-        t.eq(mediator.parser.CLASS_NAME, "OpenLayers.Format.GeoJSON",
-             "ctor correctly creates GeoJSON format object");
-    }
-
-    function test_SearchMediator_setOptions(t) {
-        t.plan(3);
-
-        var options = {
-            "url": "url",
-            "callback": function() {},
-            "params": {"fake": "params"}
-        };
-
-        var mediator = new mapfish.SearchMediator();
-        mediator.setOptions(options);
-
-        t.eq(mediator.url, options.url,
-             "setOptions correctly sets url");
-        t.ok(mediator.callback == options.callback,
-             "setOptions correctly sets callback");
-        t.eq(mediator.params.fake, options.params.fake,
-             "setOptions correctly sets params");
-    }
-
-    function test_SearchMediator_register(t) {
-        t.plan(3);
-
-        var mediator = new mapfish.SearchMediator();
-
-        var searcher1 = 'fake searcher 1';
-        var searcher2 = 'fake searcher 2';
-
-        mediator.register(searcher1);
-        mediator.register(searcher2);
-
-        t.eq(mediator.searchers.length, 2,
-             "register correctly registers two searchers");
-        t.eq(mediator.searchers[0], searcher1,
-             "register correctly registers searcher 1");
-        t.eq(mediator.searchers[1], searcher2,
-             "register correctly registers searcher 2");
-    }
-
-    function test_SearchMediator_onSuccess(t) {
-        t.plan(4);
-
-        var mediator = new mapfish.SearchMediator();
-
-        // monkey patch
-        mediator.parser.read = function(responseText) {
-            return responseText;
-        };
-
-        var expected;
-
-        mediator.callback = function(f) {
-            t.ok(f == expected,
-                 "callback called with expected arg");
-        };
-
-        // test with no request - 1 test
-        expected = null;
-        mediator.onSuccess();
-
-        // test with no responseText - 1 test
-        expected = null;
-        mediator.onSuccess({"fake": "request"});
-
-        // test with empty responseText - 1 test
-        expected = null;
-        mediator.onSuccess({"responseText": ""});
-
-        // test with non-empty responseText - 1 test
-        expected = "fake";
-        mediator.onSuccess({"responseText": expected});
-    }
-
-    function test_SearchMediator_doSearch(t) {
         t.plan(1);
 
-        var mediator = new mapfish.SearchMediator();
+        // setup
+       
+        var mediator;
 
-        // monkey patch
-        mediator.getSearchParams = function() {};
+        mediator = new mapfish.SearchMediator();
 
-        // monkey patch
-        mediator.getUrl = function() {return "url"};
-
-        // monkey patch
-        var oar = OpenLayers.Ajax.Request;
-        OpenLayers.Ajax.Request = function(url) {
-            t.eq(url, "url",
-                 "OpenLayers.Ajax.Request called with correct URL");
-        };
-
-        // 1 test
-        mediator.doSearch();
-
-        // cleanup
-        OpenLayers.Ajax.Request = oar;
-    }
-
-    function test_SearchMediator_getUrl(t) {
-        t.plan(3);
-
-        var mediator = new mapfish.SearchMediator();
-
-        var url;
-        var params;
-        var expectedUrl;
-
-        // 1 test
-        params = {"foo": "foo", "bar": "bar"};
-        mediator.url = "url";
-        expectedUrl = "url?foo=foo&bar=bar";
-        url = mediator.getUrl(params);
-        t.eq(url, expectedUrl,
-             "getUrl returns expected URL");
-
-        // 1 test
-        params = {"foo": "foo", "bar": "bar"};
-        mediator.url = "url?";
-        expectedUrl = "url?foo=foo&bar=bar";
-        url = mediator.getUrl(params);
-        t.eq(url, expectedUrl,
-             "getUrl returns expected URL");
-
-        // 1 test
-        params = {"foo": "foo", "bar": "bar"};
-        mediator.url = "url?p=p";
-        expectedUrl = "url?foo=foo&bar=bar&p=p";
-        url = mediator.getUrl(params);
-        t.eq(url, expectedUrl,
-             "getUrl returns expected URL");
+        // 2 test
+        t.ok(mediator.events instanceof OpenLayers.Events,
+             "initialize sets events property");
     }
 
     function test_SearchMediator_cancelSearch(t) {
-        t.plan(1);
+        t.plan(3);
 
-        var mediator = new mapfish.SearchMediator();
-        
-        mediator.request = {
-            "transport": {
-                "abort": function() {
-                    t.ok(true, "abort method called");
+        // setup
+       
+        var mediator;
+        var response = new OpenLayers.Protocol.Response({
+            priv: {
+                abort: function() {
+                    t.ok(true, "request.abort called");
                 }
             }
-        };
+       });
 
+        mediator = new mapfish.SearchMediator({
+            eventListeners: {
+                searchcanceled: function(resp) {
+                    t.ok(resp == response,
+                         "searchcanceled listener called with " +
+                         "expected response object");
+                }
+            }
+        });
+
+        // 0 test
+        mediator.response = null;
+        mediator.cancelSearch();
+
+        // 3 tests
+        mediator.response = response;
+        mediator.cancelSearch();
+        t.eq(mediator.response, null,
+             "cancelSearch sets this.response to null");
+
+        // 0 test
+        mediator.response = response;
+        mediator.finishSearch();
         mediator.cancelSearch();
     }
 
-    function test_SearchMediator_getSearchParams(t) {
-        t.plan(1);
+    function test_SearchMediator_toFilter(t) {
+        t.plan(10);
 
-        var mediator = new mapfish.SearchMediator();
+        // setup
 
-        var paramsArray = [
-            {"1_p1": "1_p1", "1_p2": "1_p2"},
-            {"2_p1": "2_p1", "2_p2": "2_p2"},
-            {"3_p1": "3_p1", "3_p2": "3_p2"}
-        ];
+        var mediator, filter0, filter1, obj;
 
-        var searcher1 = {
-            "getSearchParams": function() {
-                return paramsArray[0];
-            }
-        };
-        var searcher2 = {
-            "getSearchParams": function() {
-                return paramsArray[1];
-            }
-        };
-        var searcher3 = {
-            "getSearchParams": function() {
-                return paramsArray[2];
-            }
-        };
+        mediator = new mapfish.SearchMediator();
 
-        mediator.register(searcher1);
-        mediator.register(searcher2);
-        mediator.register(searcher3);
+        // 4 tests
+        obj = {a: "a", b: "b"};
+        filter0 = mediator.toFilter(obj);
+        t.eq(filter0.CLASS_NAME, "OpenLayers.Filter.Logical",
+             "toFilter returns a logical filter");
+        t.eq(filter0.filters.length, 2,
+             "toFilter returns a logical filter with expected " +
+             "number of filters");
+        t.eq(filter0.filters[0].CLASS_NAME, "OpenLayers.Filter.Comparison",
+             "toFilter returns a logical filter whose first filter " +
+             "is a comparison filter");
+        t.eq(filter0.filters[1].CLASS_NAME, "OpenLayers.Filter.Comparison",
+             "toFilter returns a logical filter whose second filter " +
+             "is a comparison filter");
 
-        var allParams = mediator.getSearchParams(searcher2, paramsArray[1]);
+        // 3 tests
+        obj = new OpenLayers.Filter();
+        filter0 = mediator.toFilter(obj);
+        t.eq(filter0.CLASS_NAME, "OpenLayers.Filter.Logical",
+             "toFilter returns a logical filter");
+        t.eq(filter0.filters.length, 1,
+             "toFilter returns a logical filter with expected " +
+             "number of filters");
+        t.ok(filter0.filters[0] == obj,
+             "toFilter returns a logical filter whose first filter " +
+             "is the expected one");
 
-        var ok = true;
-        for (var i = 0; i < paramsArray.length; i++) {
-            var params = paramsArray[i];
-            for (var k in params) {
-                if (allParams[k] != params[k]) {
-                    ok = false;
-                }
-            }
-        }
+        // 3 tests
+        filter0 = new OpenLayers.Filter.Logical(
+            {type: OpenLayers.Filter.Logical.AND});
+        obj = new OpenLayers.Filter();
+        filter1 = mediator.toFilter(obj, filter0);
+        t.ok(filter1 == filter0,
+             "toFilter returns expected filter");
+        t.eq(filter1.filters.length, 1,
+             "toFilter returns a logical filter with expected " +
+             "number of filters");
+        t.ok(filter1.filters[0] == obj,
+             "toFilter returns a logical filter whose first filter " +
+             "is the expected one");
+    }
+
+    function test_SearchMediator_isFilter(t) {
+        t.plan(3);
+
+        // setup
+
+        var mediator, obj, bool;
+
+        mediator = new mapfish.SearchMediator();
 
         // 1 test
-        t.ok(ok,
-             "getSearchParams correctly gathers search params");
+        obj = {fake: "object"};
+        bool = mediator.isFilter(obj);
+        t.eq(bool, false,
+             "isFilter returns expected value");
+
+        // 1 test
+        obj = new OpenLayers.Filter();
+        bool = mediator.isFilter(obj);
+        t.eq(bool, true,
+             "isFilter returns expected value");
+
+        // 1 test
+        obj = new OpenLayers.Filter.Spatial();
+        bool = mediator.isFilter(obj);
+        t.eq(bool, true,
+             "isFilter returns expected value");
     }
-            
 --></script>
 
   </head>

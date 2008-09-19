@@ -36,7 +36,7 @@ mapfish.Searcher.Form = OpenLayers.Class(mapfish.Searcher, {
 
     /**
      * Property: map
-     * {DOMElement} - The form node.
+     * {DOMElement} The form node.
      */
     form: null,
 
@@ -44,17 +44,19 @@ mapfish.Searcher.Form = OpenLayers.Class(mapfish.Searcher, {
      * Constructor: mapfish.Searcher.Extent
      *
      * Parameters:
-     * form - {DOMElement}
-     * mediator - {<mapfish.SearchMediator>}
-     * options - {Object}
-     * mediatorOptions - {Object}
+     * options {Object} Optional object whose properties will be set on the
+     *     instance.
+     *
+     * Returns:
+     * {<mapfish.Searcher.Form>}
      */
-    initialize: function(form, mediator, options, mediatorOptions) {
-        mapfish.Searcher.prototype.initialize.apply(
-            this,
-            [mediator, options, mediatorOptions]
-        );
-        this.form = form;
+    initialize: function(options) {
+        OpenLayers.Util.extend(this, options);
+        mapfish.Searcher.prototype.initialize.call(this, options);
+        if (!this.form) {
+            OpenLayers.Console.error("no form set");
+            return;
+        }
     },
 
     /**
@@ -62,29 +64,31 @@ mapfish.Searcher.Form = OpenLayers.Class(mapfish.Searcher, {
      *      Trigger search.
      */
     triggerSearch: function() {
-        this.doSearch(this.getSearchParams());
+        this.mediator.cancelSearch();
+        this.mediator.triggerSearch();
     },
 
     /**
-     * Method: getSearchParams
-     *      Search the form to get the search params.
+     * Method: getFilter
+     *      Get the search filter.
      *
      * Returns:
-     * {Object} The params object
+     * {Object} The filter.
      */
-    getSearchParams: function() {
+    getFilter: function() {
+        var i;
         var params = {};
         var form = this.form;
         /* process <input> elements */
         var inputElements = form.getElementsByTagName('input');
-        for (var i = 0; i < inputElements.length; i++) {
+        for (i = 0; i < inputElements.length; i++) {
             // Collect the current input only if it's is not 'submit', 'image'
             // or 'button'
             currentElement = inputElements.item(i);
             if (currentElement.disabled == true) {
                 continue;
             }
-            inputType = currentElement.getAttribute('type');
+            var inputType = currentElement.getAttribute('type');
             if (inputType == 'radio' || inputType == 'checkbox') {
                 if (currentElement.checked) {
                     params = OpenLayers.Util.extend(
@@ -103,7 +107,7 @@ mapfish.Searcher.Form = OpenLayers.Class(mapfish.Searcher, {
         }
         /* process <select> elements */
         var selectElements = form.getElementsByTagName('select');
-        for (var i = 0; i < selectElements.length; i++) {
+        for (i = 0; i < selectElements.length; i++) {
             // Get the param name (i.e. fetch the name attr)
             var currentElement = selectElements.item(i);
             var paramName = currentElement.getAttribute('name');
@@ -113,7 +117,7 @@ mapfish.Searcher.Form = OpenLayers.Class(mapfish.Searcher, {
             for (var j = 0; j < optionElements.length; j++) {
                 currentElement = optionElements.item(j);
                 if (currentElement.selected) {
-                    paramValue = currentElement.getAttribute('value');
+                    var paramValue = currentElement.getAttribute('value');
                     if (paramValue == null) {
                         paramValue = '';
                     }
@@ -137,6 +141,7 @@ mapfish.Searcher.Form = OpenLayers.Class(mapfish.Searcher, {
      * {String} Request string (elementName=elementValue)
      */
     getParamsFromInput: function(htmlElement) {
+        var paramValue;
         var inputType = htmlElement.getAttribute('type');
         var paramName = htmlElement.getAttribute('name');
         if (inputType == 'text') {

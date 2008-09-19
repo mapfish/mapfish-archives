@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html debug="true">
+  <head>
+    <link rel="stylesheet" type="text/css" href="../../../../ext/resources/css/ext-all.css" />
+
+    <script type="text/javascript" src="../../../../openlayers/lib/Firebug/firebug.js"></script>
+    <script type="text/javascript" src="../../../../openlayers/lib/OpenLayers.js"></script>
+
+    <script type="text/javascript" src="../../../../ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../../../ext/ext-all-debug.js"></script>
+
+    <script type="text/javascript">
+      // Because of a bug in Firefox 2 we need to specify the MapFish base path.
+      // See https://bugzilla.mozilla.org/show_bug.cgi?id=351282
+      var gMfLocation = "../../../../mapfish/";
+    </script>
+    <script type="text/javascript" src="../../../../mapfish/MapFish.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="style.css" />
+
+    <script type="text/javascript"><!--
+        function test_constructor(t) {
+            t.plan(1);
+            // setup
+            var mediator, store;
+            store = new Ext.data.Store({
+                reader: new mapfish.widgets.data.FeatureReader(
+                    {}, [{name: "name", type: "string"}]
+                )
+            });
+            // 1 test
+            mediator = new mapfish.widgets.data.FeatureStoreMediator({
+                store: store
+            });
+            t.ok(mediator.store == store,
+                 "ctor correctly sets store");
+        }
+
+        function test_addFeatures(t) {
+            t.plan(3);
+            // setup
+            var mediator, store, features;
+            store = new Ext.data.Store({
+                reader: new mapfish.widgets.data.FeatureReader(
+                    {}, [{name: "name", type: "string"}]
+                )
+            });
+            mediator = new mapfish.widgets.data.FeatureStoreMediator({
+                store: store
+            });
+            function createFeatures() {
+                return [
+                    new OpenLayers.Feature.Vector(null, {
+                        name: "foo"
+                    }),
+                    new OpenLayers.Feature.Vector()
+                ];
+            }
+            // 2 tests
+            features = createFeatures();
+            mediator.addFeatures(features);
+            t.eq(store.getCount(), 2,
+                 "addFeatures adds correct number of features");
+            var record = store.getById(features[0].id);
+            t.ok(record.get('feature') == features[0],
+                 'addFeatures correctly adds features');
+            // 1 test
+            features = createFeatures();
+            mediator.addFeatures(features, {append: false});
+            t.eq(store.getCount(), 2,
+                 "addFeatures adds correct number of features");
+        }
+        function test_removeFeatures(t) {
+            t.plan(1);
+            // setup
+            var mediator, store, features;
+            store = new Ext.data.Store({
+                reader: new mapfish.widgets.data.FeatureReader(
+                    {}, [{name: "name", type: "string"}]
+                )
+            });
+            mediator = new mapfish.widgets.data.FeatureStoreMediator({
+                store: store
+            });
+            function createFeatures() {
+                return [
+                    new OpenLayers.Feature.Vector(null, {
+                        name: "foo"
+                    }),
+                    new OpenLayers.Feature.Vector()
+                ];
+            }
+            // 1 test
+            features = createFeatures();
+            mediator.addFeatures(features);
+            mediator.removeFeatures(features);
+            t.eq(store.getCount(), 0,
+                 'removesFeatures correctly removes features');
+        }
+    --></script>
+
+  <body>
+    <div id="map"></div>
+  </body>
+</html>

@@ -55,7 +55,7 @@
 
             var layer;
             
-            var layer = new OpenLayers.Layer.WMS("OpenLayers WMS", 
+            layer = new OpenLayers.Layer.WMS("OpenLayers WMS", 
                 "http://labs.metacarta.com/wms/vmap0",
                 {layers: 'basic'}, 
                 {isBaseLayer: true}
@@ -92,15 +92,22 @@
             map.setCenter(new OpenLayers.LonLat(5,45), 6);
             map.addControl(new OpenLayers.Control.PanZoomBar());
 
-            searcher = new mapfish.Searcher.XY(map, null, {
-                    searchTolerance: 10
-                }, {
+            var mediator = new mapfish.SearchMediator({
+                protocol: new mapfish.Protocol.MapFish({
                     url: mapfish.SERVER_BASE_URL + 'summits',
                     params: {
                         maxfeatures: 10
                     }
+                })
             });
-            searcher.enable();
+
+            searcher = new mapfish.Searcher.Map({
+                mode: mapfish.Searcher.Map.BOX,
+                mediator: mediator,
+                displayDefaultPopup: true
+            });
+
+            map.addControl(searcher);
 
             var tree = new mapfish.widgets.LayerTree({map: map, 
                                                       useArrows: true,
@@ -109,18 +116,15 @@
 
         });
 
-        function changeSearchMode() {
-            var checked = document.getElementById("hover").checked;
-            if (checked) {
-                searcher.hover = true;
-            } else {
-                searcher.hover = false;
-            }
-            // currently the xy searcher needs to be reenabled after
-            // a search mode change
-            searcher.disable();
-            searcher.enable();
-        }
+       function activate() {
+           var checked = document.getElementById("active").checked;
+           if (checked) {
+               searcher.activate();
+           } else {
+               searcher.deactivate();
+           }
+       }
+
      </script>
      <style type="text/css">
         html, body {
@@ -161,11 +165,11 @@
       <div class="float-left">
         <div id="tree"></div>
         <div id="text">
-          <p>Click on the map to query the summits layer. Check the checkbox to switch to "hover mode".</p>
+          <p>Click on the map or draw a box to query the summits layer, check the checkbox to activate the searcher.</p>
           <ul id="searcher">
             <li>
-              <input id="hover" type="checkbox" name="hover" onchange="javascript:changeSearchMode()" />
-              <label for="hover">hover mode</label>
+              <input id="active" type="checkbox" name="hover" onchange="javascript:activate()" />
+              <label for="active">Activate searcher</label>
             </li>
           </ul>
         </div>

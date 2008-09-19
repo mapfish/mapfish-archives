@@ -19,7 +19,6 @@
 
 /*
  * @requires core/SearchMediator.js
- * @requires OpenLayers/Util.js
  */
 
 /**
@@ -36,103 +35,32 @@ mapfish.Searcher = OpenLayers.Class({
     mediator: null,
 
     /**
-     * Property: enabled
-     * {Boolean} - Specifies if search is enabled.
-     */
-    enabled: false,
-
-    /**
-     * Property: params
-     * {Object} - Request parameters.
-     */
-    params: null,
-
-    /**
      * Constructor: mapfish.Searcher
      *
      * Parameters:
-     * mediator - {<mapfish.SearchMediator>}
-     * options - {Object}
-     * mediatorOptions - {Object}
-     */
-    initialize: function(mediator, options, mediatorOptions) {
-        this.params = {};
-        // create mediator if none is provided
-        if (!mediator) {
-            mediator = new mapfish.SearchMediator();
-        }
-        // set mediator options if provided
-        if (mediatorOptions) {
-            mediator.setOptions(mediatorOptions);
-        }
-        // set a default callback in mediator if none was provided
-        if (!mediator.callback) {
-            mediator.callback = OpenLayers.Function.bind(
-                this.onGotFeatures, this
-            );
-        }
-        this.mediator = mediator;
-        // register ourself in the mediator
-        mediator.register(this);
-        // set options
-        OpenLayers.Util.extend(this, options);
-    },
-
-    /**
-     * APIMethod: enable
-     *      Enable search.
-     */
-    enable: function() {
-        if (this.enabled) {
-            return false;
-        }
-        this.enabled = true;
-        return true;
-    },
- 
-    /**
-     * APIMethod: disable
-     *      Disable search.
-     */
-    disable: function() {
-        if (!this.enabled) {
-            return false;
-        }
-        this.enabled = false;
-        return true;
-    },
- 
-    /**
-     * Method: doSearch
-     *      Trigger search.
-     */
-    doSearch: function(params) {
-        this.mediator.doSearch(this, params);
-    },
-
-    /**
-     * Method: cancelSearch
-     *      Cancel search request.
-     */
-    cancelSearch: function() {
-        this.mediator.cancelSearch();
-    },
-
-    /**
-     * Method: getSearchParams
-     *      Get the search params.
+     * options {Object} Optional object whose properties will be set on the
+     *     instance.
      *
-     * to be overriden by subclasses
+     * Returns:
+     * {<mapfish.Searcher>}
      */
-    getSearchParams: function() {},
+    initialize: function() {
+        if (!this.mediator) {
+            OpenLayers.Console.error("no mediator set");
+            return;
+        }
+        this.mediator.searchers.push(this);
+    },
 
     /**
-     * Method: onGotFeatures
-     *      Default callback called when features are received.
+     * Method: getFilter
+     * Get the search filter.
+     * This should be overridden by specific subclasses
      *
-     * to be overriden by subclasses
+     * Returns:
+     * {<OpenLayers.Filter>}
      */
-    onGotFeatures: function() {},
+    getFilter: function() {},
 
     CLASS_NAME: "mapfish.Searcher"
 });
