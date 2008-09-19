@@ -61,11 +61,6 @@
         height: 20px !important;
         width: 20px !important;
     }
-    .info {
-        background-image: url(information.png) !important;
-        height: 20px !important;
-        width: 20px !important;
-    }
     .infobox {
         background-image: url(information-box.png) !important;
         height: 20px !important;
@@ -122,77 +117,7 @@
   // reference local blank image
   Ext.BLANK_IMAGE_URL = '../../mfbase/ext/resources/images/default/s.gif';
 
-  /**
-   * FeatureStore implementation
-   * TODO: this should be part of MapFish widgets
-   */
-  mapfish.widgets.FeatureStore = function(config) {
-      Ext.apply(config);
-      this.FeatureRecord = Ext.data.Record.create(
-          config.fields.concat(this.type)
-      );
-      this.store = new Ext.data.Store();
-  }
-  mapfish.widgets.FeatureStore.prototype = {
-      type: [{
-              name: 'id',
-              type: 'string'
-          },{
-              name: 'feature',
-              type: 'feature'
-          }
-      ],
-
-      FeatureRecord: null,
-
-      store: null, // Ext.data.Store object
-
-      fields: null,
-
-      addFeatures: function(features) {
-          if (!Ext.isArray(features)) {
-              features = [features];
-          }
-          for (var i = 0; i < features.length; i++) {
-              var feature = features[i];
-              var f = {};
-              f.id = feature.fid;
-              f.feature = feature;
-              for (var k in feature.attributes) {
-                  f[k] = feature.attributes[k];
-              }
-              this.store.add([new this.FeatureRecord(f, f.id)]);
-          }
-      },
-
-      removeFeatures: function(features) {
-          if (!Ext.isArray(features)) {
-              features = [features];
-          }
-          for (var i = 0; i < features.length; i++) {
-              var feature = features[i];
-              var r = this.store.getById(feature.fid);
-              if (r !== undefined) {
-                  this.store.remove(r);
-              }
-          }
-      },
-
-      removeAll: function() {
-          this.store.removeAll();
-      },
-
-      load: function() {
-          this.store.load();
-      }
-  };
-
-  Ext.onReady(function() {
-      Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
-
-      /*
-       * Create OpenLayers map
-       */
+  function createMap() {
       var scales = [
           442943842.5, 221471921.25, 110735960.625, 55367980.3125, 27683990.15625,
           13841995.078125, 6920997.5390625, 3460498.76953125, 1730249.384765625,
@@ -202,16 +127,18 @@
   
       var options = {
           projection: "EPSG:4326",
-          controls: [],
+          controls: [new OpenLayers.Control.PanZoomBar()],
           maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
           scales: scales
       };
   
-      var map = new OpenLayers.Map('olmap', options);
+      return new OpenLayers.Map('olmap', options);
+  }
 
+  function addWMSLayers(map) {
       var layer;
       
-      var layer = new OpenLayers.Layer.WMS("OpenLayers WMS", 
+      layer = new OpenLayers.Layer.WMS("OpenLayers WMS", 
           "http://labs.metacarta.com/wms/vmap0",
           {layers: 'basic'}, 
           {isBaseLayer: true}
@@ -238,7 +165,9 @@
       );
       layer.setVisibility(true);
       map.addLayer(layer);  
+  }
 
+  function addVectorLayer(map) {
       var vectorLayer = new OpenLayers.Layer.Vector("vector", {
           styleMap: new OpenLayers.StyleMap({
               'default': new OpenLayers.Style({
@@ -252,12 +181,25 @@
           displayInLayerSwitcher: false
       });
       map.addLayer(vectorLayer);
-    
-      map.setCenter(new OpenLayers.LonLat(5,45), 6);
-      map.addControl(new OpenLayers.Control.PanZoomBar());
+      return vectorLayer;
+  }
+
+  function setMapCenter() {
+      this.setCenter(new OpenLayers.LonLat(5,45), 6);
+  }
+
+  Ext.onReady(function() {
+      Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
 
       /*
-       * Create MapFish widgets
+       * Set up OpenLayers map
+       */
+      var map = createMap();
+      addWMSLayers(map);
+      var vectorLayer = addVectorLayer(map);
+
+      /*
+       * Create MapFish toolbar
        */
       var toolbar = new mapfish.widgets.toolbar.Toolbar({
           map: map,
@@ -265,15 +207,8 @@
           id: 'toolbarid'
       });
 
-      var featureStore = new mapfish.widgets.FeatureStore({
-          fields: [
-              {name: 'name', type: 'string'},
-              {name: 'elevation', type: 'float'}
-          ]
-      });
-
       /*
-       * Create Ext widgets.
+       * Create search form panel
        */
       var formPanel = new Ext.FormPanel({
           title: 'Search criteria',
@@ -296,8 +231,41 @@
               }]
           },{
             html: ['<p>', 'Help note: search criteria specified above ',
-                   'are used in conjunction with "Search by box".', '</p>'].join('')
+                   'are used in conjunction with map queries.', '</p>'].join('')
           }]
+      });
+
+      /*
+       * Create MapFish search mediator
+       */
+      var mediator = new mapfish.SearchMediator({
+          protocol: new mapfish.Protocol.MapFish({
+              url: "../../summits",
+              params: {
+                  maxfeatures: 10
+              }
+          })
+      });
+
+      /*
+       * Create a store with a feature reader for use in the grid displaying
+       * the search results.
+       */
+      var store = new Ext.data.Store({
+          reader: new mapfish.widgets.data.FeatureReader({}, [
+              {name: 'name', type: 'string'},
+              {name: 'elevation', type: 'float'}
+          ])
+      });
+
+      /*
+       * Create a search store mediator for adding to the store the features
+       * resulting from the search.
+       */
+      var searchStoreMediator = new mapfish.widgets.data.SearchStoreMediator({
+          searchMediator: mediator,
+          store: store,
+          append: false
       });
 
       /*
@@ -305,6 +273,13 @@
        */
       var viewport = new Ext.Viewport({
           layout: 'border',
+          listeners: {
+              afterlayout: {
+                  fn: setMapCenter,
+                  scope: map,
+                  single: true
+              }
+          },
           items:[
               new Ext.BoxComponent({
                   region: 'north',
@@ -333,7 +308,7 @@
                   new Ext.grid.GridPanel({
                       title: 'Search results',
                       region: 'south',
-                      ds: featureStore.store,
+                      ds: store,
                       height: 300,
                       columns: [{
                               header: 'name',
@@ -385,61 +360,17 @@
       viewport.doLayout();
 
       /*
-       * Create MapFish components
+       * Create MapFish searcher
        */
 
-      var SearchControl = OpenLayers.Class(OpenLayers.Control, {
-          searcher: null,
-
-          initialize: function(options) {
-              OpenLayers.Control.prototype.initialize.apply(this, arguments);
-          },
-          activate: function() {
-              if (OpenLayers.Control.prototype.activate.call(this)) {
-                  this.searcher.enable();
-              }
-          },
-          deactivate: function() {
-              if (OpenLayers.Control.prototype.deactivate.call(this)) {
-                  this.searcher.disable();
-              }
-          },
-          CLASS_NAME: 'SearchControl'
+      var mapSearcher = new mapfish.Searcher.Map({
+          mode: mapfish.Searcher.Map.BOX,
+          mediator: mediator
       });
 
-      var searchXYControl = new SearchControl({
-          searcher: new mapfish.Searcher.XY(map, null, {
-                  'hover': true,
-                  'searchTolerance': 4
-              }, {
-                  'url': '../../summits',
-                  'params': {
-                      'maxfeatures': 10
-                  }
-              }
-          ),
-          title: 'See summits info by moving mouse over map'
-      });
-
-      var mediator = new mapfish.SearchMediator(
-          '../../summits',
-          function(features) {
-              featureStore.removeAll();
-              if (features) {
-                  featureStore.addFeatures(features);
-              }
-          },
-          {'maxfeatures': 10}
-      );
-
-      var formSearcher = new mapfish.Searcher.Form(
-          formPanel.getForm().getEl().dom,
-          mediator
-      );
-
-      var searchBoxControl = new SearchControl({
-          searcher: new mapfish.Searcher.Box(map, mediator),
-          tooltip: 'See summits info by drawing box'
+      var formSearcher = new mapfish.Searcher.Form({
+          form: formPanel.getForm().getEl().dom,
+          mediator: mediator
       });
 
       /*
@@ -463,15 +394,8 @@
           }
       );
       space();
-      toolbar.addText('Search on hover');
-      toolbar.addControl(searchXYControl, {
-              iconCls: 'info', 
-              toggleGroup: 'map'
-          }
-      );
-      space();
-      toolbar.addText('Search by box');
-      toolbar.addControl(searchBoxControl, {
+      toolbar.addText('Search on click and by box');
+      toolbar.addControl(mapSearcher, {
               iconCls: 'infobox',
               toggleGroup: 'map'
           }
