@@ -343,7 +343,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
      * {Object} The config for this layer
      */
     convertTileCacheLayer: function(olLayer) {
-        return OpenLayers.Util.extend(this.convertLayer(), {
+        return OpenLayers.Util.extend(this.convertLayer(olLayer), {
             type: 'TileCache',
             layer: olLayer.layername,
             maxExtent: olLayer.maxExtent.toArray(),
