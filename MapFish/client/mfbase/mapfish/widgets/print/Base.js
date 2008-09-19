@@ -528,6 +528,9 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
         if (grids) {
             for (var name in grids) {
                 var grid = grids[name];
+                if (!grid) {
+                    continue;
+                }
                 spec[name] = {};
                 var specData = spec[name].data = [];
                 var specCols = spec[name].columns = [];
