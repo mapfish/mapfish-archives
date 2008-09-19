@@ -88,7 +88,7 @@ Group: MapFish  {
 
       Group: Edition  {
 
-         File: FeatureList  (no auto-title, widgets/editing/FeatureList.js)
+         File: FeatureList  (no auto-title, widgets/edition/FeatureList.js)
          }  # Group: Edition
 
       Group: Geostat  {
