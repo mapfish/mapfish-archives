@@ -82,7 +82,9 @@
                     new OpenLayers.Feature.Vector(null, {name: "bar"})
                 ];
             }
-            response = new OpenLayers.Protocol.Response();
+            response = new OpenLayers.Protocol.Response({
+                code: OpenLayers.Protocol.Response.SUCCESS
+            });
             store = new Ext.data.Store({
                 reader: new mapfish.widgets.data.FeatureReader(
                     {}, [{name: "name", type: "string"}]
