@@ -35,13 +35,13 @@
 mapfish.Searcher.Form = OpenLayers.Class(mapfish.Searcher, {
 
     /**
-     * Property: map
+     * APIProperty: map
      * {DOMElement} The form node.
      */
     form: null,
 
     /**
-     * Constructor: mapfish.Searcher.Extent
+     * Constructor: mapfish.Searcher.Form
      *
      * Parameters:
      * options {Object} Optional object whose properties will be set on the
@@ -61,7 +61,8 @@ mapfish.Searcher.Form = OpenLayers.Class(mapfish.Searcher, {
 
     /**
      * APIMethod: triggerSearch
-     *      Trigger search.
+     *      To be called to instruct the search mediator to trigger
+     *      search.
      */
     triggerSearch: function() {
         this.mediator.cancelSearch();
