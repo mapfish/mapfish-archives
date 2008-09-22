@@ -25,6 +25,16 @@ Ext.namespace('mapfish.widgets', 'mapfish.widgets.data');
  *      added to the store using this reader, spectific fields like
  *      feature, state and fid are available.
  *
+ * Typical usage in a store:
+ * (start code)
+ *         var store = new Ext.data.Store({
+ *             reader: new mapfish.widgets.data.FeatureReader({}, [
+ *                 {name: 'name', type: 'string'},
+ *                 {name: 'elevation', type: 'float'}
+ *             ])
+ *         });
+ * (end)
+ *
  * Inherits from:
  *  - {Ext.data.DataReader}
  */

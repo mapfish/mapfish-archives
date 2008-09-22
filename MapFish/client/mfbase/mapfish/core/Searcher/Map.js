@@ -70,7 +70,7 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
     /**
      * APIProperty: pixelTolerance
      * {Integer} This property has no effect if mode is set to
-     *     <mapfish.Searcher.Map.BOX> or to <mapfish.Searcher.Map.Extent>, 
+     *     <mapfish.Searcher.Map.BOX> or to <mapfish.Searcher.Map.EXTENT>, 
      *     and it's meaning depends whether
      *     mode is set to <mapfish.Searcher.Map.CLICK> or
      *     <mapfish.Searcher.Map.HOVER>. If mode is <mapfish.Searcher.Map.CLICK>
@@ -85,7 +85,7 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
     /**
      * APIProperty: delay
      * {Integer} This property has no effect if mode is set to
-     *     <mapfish.Searcher.Map.BOX> or to  <mapfish.Searcher.Map.Extent>,
+     *     <mapfish.Searcher.Map.BOX> or to  <mapfish.Searcher.Map.EXTENT>,
      *     and it's meaning depends whether
      *     mode is set to <mapfish.Searcher.Map.CLICK> or
      *     <mapfish.Searcher.Map.HOVER>. If mode is <mapfish.Searcher.Map.CLICK>
