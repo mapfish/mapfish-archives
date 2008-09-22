@@ -29,8 +29,8 @@
     OpenLayers.ProxyHost = "/cgi-bin/proxy.cgi?url=";
 
     // Define a constant with the base url to the MapFish web service. If you
-    // want to rely on the MapFish services provided on demo.mapfish.org/trunk,
+    // want to rely on the MapFish services provided on demo.mapfish.org/1.0rc1,
     // leave this variable untouched; otherwise modify it appropriately. You
     // may want to use ''.
-    mapfish.SERVER_BASE_URL = 'http://demo.mapfish.org/mapfishsample/trunk/';
+    mapfish.SERVER_BASE_URL = 'http://demo.mapfish.org/mapfishsample/1.0rc1/';
 })();

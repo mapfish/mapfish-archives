@@ -45,14 +45,14 @@
     map.addLayers([wms]);
 
     var summits = new OpenLayers.Layer.WMS("Summits",
-            "http://demo.mapfish.org/mapfishsample/trunk/wms?",
+            "http://demo.mapfish.org/mapfishsample/1.0rc1/wms?",
             {layers: ['summits'], format: 'image/png', transparent: true},
             {visibility: false, singleTile: true}
     );
     map.addLayer(summits);
 
     var countries = new OpenLayers.Layer.WMS("Countries",
-            "http://demo.mapfish.org/mapfishsample/trunk/wms?",
+            "http://demo.mapfish.org/mapfishsample/1.0rc1/wms?",
             {layers: ['countries'], format: 'image/png', transparent: true},
             {visibility: true, singleTile: true}
     );
