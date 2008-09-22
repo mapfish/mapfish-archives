@@ -26,17 +26,17 @@
 
         t.wait_result(5);
 
-        var lastTransTaskLabel;
-        var activeTransTasks = 0;
-        function transTaskEventHandler(transTaskEvent) {
-            if (transTaskEvent.type == "transTaskAdded") {
-                activeTransTasks++;
-            } else if (transTaskEvent.type == "transTaskDone") {
-                activeTransTasks--;
+        var lastSyncTaskLabel;
+        var activeSyncTasks = 0;
+        function syncTaskEventHandler(syncTaskEvent) {
+            if (syncTaskEvent.type == "syncTaskAdded") {
+                activeSyncTasks++;
+            } else if (syncTaskEvent.type == "syncTaskDone") {
+                activeSyncTasks--;
             } else {
-                throw new Error("Unknown transTask type " + transTaskEvent.type);
+                throw new Error("Unknown syncTask type " + syncTaskEvent.type);
             }
-            lastTransTaskLabel = transTaskEvent.transTask.label;
+            lastSyncTaskLabel = syncTaskEvent.syncTask.label;
         }
 
         var seenDownloadDone = false;
@@ -87,31 +87,31 @@
         function next_2() {
             t.eq(MO.isOnline, true, "went online");
 
-            var transTaskId1, transTaskId2, transTaskId3;
-            MO.events.register("transtask", null, transTaskEventHandler);
+            var syncTaskId1, syncTaskId2, syncTaskId3;
+            MO.events.register("synctask", null, syncTaskEventHandler);
 
             MO.events.register("sync", null, function(type) {
                 if (type == "download") {
                     MO.events.unregister("sync", null, arguments.callee);
-                    t.eq(activeTransTasks, 0, "no transTask yet")
+                    t.eq(activeSyncTasks, 0, "no syncTask yet")
 
-                    transTaskId1 = MO.addTransitionTask("Sample transTask 1");
-                    t.eq(activeTransTasks, 1, "1 active transTask")
-                    t.eq(lastTransTaskLabel, "Sample transTask 1", "correct last task label");
+                    syncTaskId1 = MO.addSyncTask("Sample syncTask 1");
+                    t.eq(activeSyncTasks, 1, "1 active syncTask")
+                    t.eq(lastSyncTaskLabel, "Sample syncTask 1", "correct last task label");
 
-                    // for transTask 2, addTransitionTask and transitionTaskDone are called
+                    // for syncTask 2, addSyncTask and syncTaskDone are called
                     // in the same execution flow, in that case check that downloadDone is
-                    // not fired after transitionTaskDone
-                    transTaskId2 = MO.addTransitionTask("Sample transTask 2");
-                    t.eq(activeTransTasks, 2, "2 active transTasks")
-                    t.eq(lastTransTaskLabel, "Sample transTask 2", "correct last task label");
-                    MO.transitionTaskDone(transTaskId2);
+                    // not fired after syncTaskDone
+                    syncTaskId2 = MO.addSyncTask("Sample syncTask 2");
+                    t.eq(activeSyncTasks, 2, "2 active syncTasks")
+                    t.eq(lastSyncTaskLabel, "Sample syncTask 2", "correct last task label");
+                    MO.syncTaskDone(syncTaskId2);
                     t.eq(seenDownloadDone, false, "downloadDone not yet fired");
-                    t.eq(activeTransTasks, 1, "1 active transTasks");
+                    t.eq(activeSyncTasks, 1, "1 active syncTasks");
 
-                    transTaskId3 = MO.addTransitionTask("Sample transTask 3");
-                    t.eq(activeTransTasks, 2, "2 active transTasks")
-                    t.eq(lastTransTaskLabel, "Sample transTask 3", "correct last task label");
+                    syncTaskId3 = MO.addSyncTask("Sample syncTask 3");
+                    t.eq(activeSyncTasks, 2, "2 active syncTasks")
+                    t.eq(lastSyncTaskLabel, "Sample syncTask 3", "correct last task label");
                 }
             });
 
@@ -121,22 +121,22 @@
             MO.goOffline();
 
             setTimeout(function() {
-                t.eq(MO.isOnline, true, "Not yet offline, transTasks are pending");
+                t.eq(MO.isOnline, true, "Not yet offline, syncTasks are pending");
                 t.eq(MO.syncState, "download", "sync download");
 
-                t.eq(activeTransTasks, 2, "2 active tasks")
-                MO.transitionTaskDone(transTaskId1);
-                t.eq(activeTransTasks, 1, "1 active tasks")
-                t.eq(lastTransTaskLabel, "Sample transTask 1", "correct last task label");
+                t.eq(activeSyncTasks, 2, "2 active tasks")
+                MO.syncTaskDone(syncTaskId1);
+                t.eq(activeSyncTasks, 1, "1 active tasks")
+                t.eq(lastSyncTaskLabel, "Sample syncTask 1", "correct last task label");
                 t.eq(seenDownloadDone, false, "downloadDone not yet fired");
 
                 t.eq(MO.isOnline, true, "Not yet offline, syncTasks are pending");
-                MO.transitionTaskDone(transTaskId3);
-                t.eq(activeTransTasks, 0, "0 active tasks")
-                t.eq(lastTransTaskLabel, "Sample transTask 3", "correct last task label");
+                MO.syncTaskDone(syncTaskId3);
+                t.eq(activeSyncTasks, 0, "0 active tasks")
+                t.eq(lastSyncTaskLabel, "Sample syncTask 3", "correct last task label");
                 t.eq(seenDownloadDone, false, "downloadDone not yet fired");
 
-                MO.events.unregister("transtask", null, transTaskEventHandler);
+                MO.events.unregister("synctask", null, syncTaskEventHandler);
                 setTimeout(function() {
                     MO.events.unregister("sync", null, syncEventHandler);
                     next_3();
@@ -147,34 +147,34 @@
         function next_3() {
             t.eq(seenDownloadDone, true, "downloadDone fired");
             seenDownloadDone = false;
-            t.eq(MO.isOnline, false, "went offline, transTasks are done");
+            t.eq(MO.isOnline, false, "went offline, syncTasks are done");
             t.eq(MO.syncState, null, "finished sync");
 
-            var transTaskId1, transTaskId2, transTaskId3;
-            MO.events.register("transtask", null, transTaskEventHandler);
+            var syncTaskId1, syncTaskId2, syncTaskId3;
+            MO.events.register("synctask", null, syncTaskEventHandler);
 
             MO.events.register("sync", null, function(type) {
                 if (type == "upload") {
                     MO.events.unregister("sync", null, arguments.callee);
-                    t.eq(activeTransTasks, 0, "no transTask yet")
+                    t.eq(activeSyncTasks, 0, "no syncTask yet")
 
-                    transTaskId1 = MO.addTransitionTask("Sample transTask 1");
-                    t.eq(activeTransTasks, 1, "1 active transTask")
-                    t.eq(lastTransTaskLabel, "Sample transTask 1", "correct last task label");
+                    syncTaskId1 = MO.addSyncTask("Sample syncTask 1");
+                    t.eq(activeSyncTasks, 1, "1 active syncTask")
+                    t.eq(lastSyncTaskLabel, "Sample syncTask 1", "correct last task label");
 
-                    // for transTask 2, addTransitionTask and transitionTaskDone are called
+                    // for syncTask 2, addSyncTask and syncTaskDone are called
                     // in the same execution flow, in that case check that downloadDone is
-                    // not fired after transitionTaskDone
-                    transTaskId2 = MO.addTransitionTask("Sample transTask 2");
-                    t.eq(activeTransTasks, 2, "2 active transTasks")
-                    t.eq(lastTransTaskLabel, "Sample transTask 2", "correct last task label");
-                    MO.transitionTaskDone(transTaskId2);
+                    // not fired after syncTaskDone
+                    syncTaskId2 = MO.addSyncTask("Sample syncTask 2");
+                    t.eq(activeSyncTasks, 2, "2 active syncTasks")
+                    t.eq(lastSyncTaskLabel, "Sample syncTask 2", "correct last task label");
+                    MO.syncTaskDone(syncTaskId2);
                     t.eq(seenUploadDone, false, "uploadDone not yet fired");
-                    t.eq(activeTransTasks, 1, "1 active transTasks");
+                    t.eq(activeSyncTasks, 1, "1 active syncTasks");
 
-                    transTaskId3 = MO.addTransitionTask("Sample transTask 3");
-                    t.eq(activeTransTasks, 2, "2 active transTasks")
-                    t.eq(lastTransTaskLabel, "Sample transTask 3", "correct last task label");
+                    syncTaskId3 = MO.addSyncTask("Sample syncTask 3");
+                    t.eq(activeSyncTasks, 2, "2 active syncTasks")
+                    t.eq(lastSyncTaskLabel, "Sample syncTask 3", "correct last task label");
                 }
             });
 
@@ -187,16 +187,16 @@
                 t.eq(MO.isOnline, true, "went online, synchronizing upload");
                 t.eq(MO.syncState, "upload", "sync upload");
 
-                t.eq(activeTransTasks, 2, "2 active tasks")
-                MO.transitionTaskDone(transTaskId1);
-                t.eq(activeTransTasks, 1, "1 active tasks")
-                t.eq(lastTransTaskLabel, "Sample transTask 1", "correct last task label");
+                t.eq(activeSyncTasks, 2, "2 active tasks")
+                MO.syncTaskDone(syncTaskId1);
+                t.eq(activeSyncTasks, 1, "1 active tasks")
+                t.eq(lastSyncTaskLabel, "Sample syncTask 1", "correct last task label");
                 t.eq(seenUploadDone, false, "uploadDone not yet fired");
 
-                t.eq(MO.isOnline, true, "Not yet offline, transTasks are pending");
-                MO.transitionTaskDone(transTaskId3);
-                t.eq(activeTransTasks, 0, "0 active tasks")
-                t.eq(lastTransTaskLabel, "Sample transTask 3", "correct last task label");
+                t.eq(MO.isOnline, true, "Not yet offline, syncTasks are pending");
+                MO.syncTaskDone(syncTaskId3);
+                t.eq(activeSyncTasks, 0, "0 active tasks")
+                t.eq(lastSyncTaskLabel, "Sample syncTask 3", "correct last task label");
                 t.eq(seenUploadDone, false, "uploadDone not yet fired");
 
                 setTimeout(function() {
@@ -209,7 +209,7 @@
         function next_4() {
             t.eq(seenUploadDone, true, "uploadDone fired");
             seenUploadDone = false;
-            t.eq(MO.isOnline, true, "went online, transTasks are done");
+            t.eq(MO.isOnline, true, "went online, syncTasks are done");
             t.eq(MO.syncState, null, "finished sync");
         }
 

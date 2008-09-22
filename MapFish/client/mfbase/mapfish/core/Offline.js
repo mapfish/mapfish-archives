@@ -46,24 +46,24 @@ mapfish.Offline = function() {
      *      When the syncing operations are finished, listeners are called
      *      with a string parameter "downloadDone" or "uploadDone" for end of
      *      download or upload respectively.
-     *  - *transtask* triggered when a transition task is added or is
+     *  - *synctask* triggered when a sync task is added or is
      *      finished.  The listener is called with an object contains the
      *      properties:
-     *       - type: can be "transTaskAdded" or "transTaskDone" if the task
+     *       - type: can be "syncTaskAdded" or "syncTaskDone" if the task
      *               was added or is done
-     *       - transTask: a TransTask object, containing the "label" and "id"
+     *       - syncTask: a SyncTask object, containing the "label" and "id"
      *               properties for the task label or task identifier
      *               respectively
      */
-    var EVENT_TYPES = ["network", "sync", "transtask"];
+    var EVENT_TYPES = ["network", "sync", "synctask"];
 
     // private variables and functions
 
-    var transTaskCounter = 0;
-    var numActiveTransTasks = 0;
-    var activeTransTaskIds = {};
+    var syncTaskCounter = 0;
+    var numActiveSyncTasks = 0;
+    var activeSyncTaskIds = {};
 
-    function TransTask(label, id) {
+    function SyncTask(label, id) {
         this.label = label;
         this.id = id;
     }
@@ -79,7 +79,7 @@ mapfish.Offline = function() {
     }
 
     function maybeNotifySyncDone() {
-        if (numActiveTransTasks > 0 || this.syncState == null)
+        if (numActiveSyncTasks > 0 || this.syncState == null)
             return;
 
         this.isSynchronizing = false;
@@ -163,52 +163,52 @@ mapfish.Offline = function() {
     },
 
     /**
-     * APIMethod: addTransitionTask
-     * Informs the component that a transition operation is pending. This
-     * method will return a task identifier. You need to call the transitionTaskDone()
-     * method when the transition operation is finished.
+     * APIMethod: addSyncTask
+     * Informs the component that a sync operation is pending. This
+     * method will return a task identifier. You need to call the syncTaskDone()
+     * method when the sync operation is finished.
      *
      * Parameters:
-     * label - {String} The transition task label. This could be used in a
-     *         widget to display the transition status.
+     * label - {String} The sync task label. This could be used in a
+     *         widget to display the sync status.
      *
      * Returns:
-     * {Integer} Transition task identifier. This should be given back to
-     *           the transitionTaskDone() method. Clients shouldn't try to interpret
+     * {Integer} Sync task identifier. This should be given back to
+     *           the syncTaskDone() method. Clients shouldn't try to interpret
      *           this returned value.
      */
-    addTransitionTask: function(label) {
-        numActiveTransTasks++;
-        var transTaskId = ++transTaskCounter;
-        var transTask = new TransTask(label, transTaskId);
-        activeTransTaskIds[transTaskId] = transTask;
+    addSyncTask: function(label) {
+        numActiveSyncTasks++;
+        var syncTaskId = ++syncTaskCounter;
+        var syncTask = new SyncTask(label, syncTaskId);
+        activeSyncTaskIds[syncTaskId] = syncTask;
 
-        this.events.triggerEvent("transtask", {type: "transTaskAdded",
-                                              transTask: transTask});
+        this.events.triggerEvent("synctask", {type: "syncTaskAdded",
+                                              syncTask: syncTask});
 
-        return transTaskId;
+        return syncTaskId;
     },
 
     /**
-     * APIMethod: transitionTaskDone
-     * When a synchronizing task created by addTransitionTask() is finished, this
+     * APIMethod: syncTaskDone
+     * When a synchronizing task created by addSyncTask() is finished, this
      * method must be called with the given identifier.
      *
      * Parameters:
-     * transTaskId - {Integer} synchronization task identifier, as returned by
-     *              the addTransitionTask() method.
+     * syncTaskId - {Integer} synchronization task identifier, as returned by
+     *              the addSyncTask() method.
      */
-    transitionTaskDone: function(transTaskId) {
-        if (!activeTransTaskIds[transTaskId]) {
+    syncTaskDone: function(syncTaskId) {
+        if (!activeSyncTaskIds[syncTaskId]) {
             OpenLayers.Console.error(arguments.callee.name +
-                                     ": Unknown transTaskId " + transTaskId);
+                                     ": Unknown syncTaskId " + syncTaskId);
             return;
         }
-        this.events.triggerEvent("transtask",
-                                 {type: "transTaskDone",
-                                  transTask: activeTransTaskIds[transTaskId]});
-        numActiveTransTasks--;
-        delete activeTransTaskIds[transTaskId];
+        this.events.triggerEvent("synctask",
+                                 {type: "syncTaskDone",
+                                  syncTask: activeSyncTaskIds[syncTaskId]});
+        numActiveSyncTasks--;
+        delete activeSyncTaskIds[syncTaskId];
         
         // Wait a bit before checking if sync tasks have been added
         var self = this;
