@@ -38,7 +38,7 @@ mapfish.SearchMediator = OpenLayers.Class({
     searchers: null,
 
     /**
-     * Property: protocol
+     * APIProperty: protocol
      * {<OpenLayers.Protocol>} The protocol to use for sending search
      *     requests.
      */
@@ -58,7 +58,23 @@ mapfish.SearchMediator = OpenLayers.Class({
 
     /**
      * Constant: EVENT_TYPES
-     * {Array(String)}
+     * {Array(String)} Supported event types. Register a listener
+     *     for a particular event with the following syntax:
+     * (start code)
+     * mediator.events.register(type, obj, listener);
+     * (end)
+     *
+     * Listeners will be called with a reference to an event object.
+     *
+     * Supported events:
+     * - *searchtriggered* Triggered when a search request was triggered,
+     *     listeners will receive an object with a *filter property
+     *     referencing the <OpenLayers.Filter> object associated to the
+     *     search request.
+     * - *searchfinished* Triggered when the search request completes,
+     *     listeners will receive an {<OpenLayers.Protocol.Response>}
+     *     object.
+     * - *clear* Triggered when the clear API method is called.
      */
     EVENT_TYPES: ["searchtriggered", "searchfinished", "searchcanceled", "clear"],
 
@@ -192,7 +208,7 @@ mapfish.SearchMediator = OpenLayers.Class({
     },
 
     /**
-     * Method: clear
+     * APIMethod: clear
      *      Clear all the previous results.
      */
     clear: function() {

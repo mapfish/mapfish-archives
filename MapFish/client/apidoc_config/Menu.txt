@@ -58,11 +58,6 @@ Group: MapFish  {
          File: ProportionalSymbol  (no auto-title, core/GeoStat/ProportionalSymbol.js)
          }  # Group: GeoStat
 
-      File: Color  (no auto-title, core/Color.js)
-      File: Util  (no auto-title, core/Util.js)
-      File: PrintProtocol  (no auto-title, core/PrintProtocol.js)
-      File: Offline  (no auto-title, core/Offline.js)
-
       Group: Searcher  {
 
          File: Searcher  (no auto-title, core/Searcher.js)
@@ -70,7 +65,16 @@ Group: MapFish  {
          File: Form  (no auto-title, core/Searcher/Form.js)
          }  # Group: Searcher
 
+      Group: Protocol {
+         File: Protocol  (no auto-title, core/Protocol.js)
+         File: MapFish  (no auto-title, core/Protocol/MapFish.js)
+         } # Group: Protocol
+
       File: SearchMediator  (no auto-title, core/SearchMediator.js)
+      File: PrintProtocol  (no auto-title, core/PrintProtocol.js)
+      File: Offline  (no auto-title, core/Offline.js)
+      File: Color  (no auto-title, core/Color.js)
+      File: Util  (no auto-title, core/Util.js)
       }  # Group: Core
 
    Group: Widgets  {
