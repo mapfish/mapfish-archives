@@ -27,7 +27,7 @@
 
 set -e
 
-DEPLOY_SVN=http://www.mapfish.org/svn/mapfish/trunk/MapFish/deploy
+DEPLOY_SVN=http://www.mapfish.org/svn/mapfish/tags/1.0rc1/MapFish/deploy
 COMPAT_VERSION=1
 
 checkout_deploy() {
