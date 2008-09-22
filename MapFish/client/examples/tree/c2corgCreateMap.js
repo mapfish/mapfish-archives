@@ -50,7 +50,7 @@ function c2corgCreateMap(mapDiv) {
 
     c2cwmsLayers = ['parkings', 'summits', 'refuges', 'sites'];
     c2cwms = new OpenLayers.Layer.WMS("C2C Objects",
-        "http://demo.mapfish.org/mapfishsample/trunk/wms?",
+        "http://demo.mapfish.org/mapfishsample/1.0/wms?",
         {
             singleTile: true,
             layers: c2cwmsLayers,
