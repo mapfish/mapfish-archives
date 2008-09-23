@@ -58,7 +58,7 @@ FETCH_PYTHON_ENV=1
 PROJECT=mapfishsample
 
 # Project subversion URL
-PROJECT_SVN_BASE=http://www.mapfish.org/svn/mapfish/tags/1.0rc1/$PROJECT
+PROJECT_SVN_BASE=http://www.mapfish.org/svn/mapfish/tags/1.0rc1/$PROJECT/
 
 # Project MapFish directory
 PROJECT_MAPFISH_DIR=$PROJECT/MapFish
