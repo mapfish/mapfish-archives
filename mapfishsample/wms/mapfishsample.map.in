@@ -40,7 +40,7 @@ LAYER
   TYPE POINT
   STATUS ON
   CONNECTIONTYPE postgis
-  CONNECTION "user=%DB_USER% password=%DB_PASSWORD% host=%DB_HOST% dbname=%DB_VERSION%_c2corg"
+  CONNECTION "user=%DB_USER% password=%DB_PASSWORD% host=%DB_HOST% dbname=%DB_VERSION%_mapfishsample
   DATA "geom from parkings_out"
   PROJECTION
     "init=epsg:4326"   ##recommended
@@ -73,7 +73,7 @@ LAYER
   TYPE POINT
   STATUS ON
   CONNECTIONTYPE postgis
-  CONNECTION "user=%DB_USER% password=%DB_PASSWORD% host=%DB_HOST% dbname=%DB_VERSION%_c2corg"
+  CONNECTION "user=%DB_USER% password=%DB_PASSWORD% host=%DB_HOST% dbname=%DB_VERSION%_mapfishsample
   DATA "geom from sommets_out"
   PROJECTION
     "init=epsg:4326"   ##recommended
@@ -106,7 +106,7 @@ LAYER
   TYPE POINT
   STATUS ON
   CONNECTIONTYPE postgis
-  CONNECTION "user=%DB_USER% password=%DB_PASSWORD% host=%DB_HOST% dbname=%DB_VERSION%_c2corg"
+  CONNECTION "user=%DB_USER% password=%DB_PASSWORD% host=%DB_HOST% dbname=%DB_VERSION%_mapfishsample
   DATA "geom from refuges_out"
   PROJECTION
     "init=epsg:4326"   ##recommended
@@ -139,7 +139,7 @@ LAYER
   TYPE POINT
   STATUS ON
   CONNECTIONTYPE postgis
-  CONNECTION "user=%DB_USER% password=%DB_PASSWORD% host=%DB_HOST% dbname=%DB_VERSION%_c2corg"
+  CONNECTION "user=%DB_USER% password=%DB_PASSWORD% host=%DB_HOST% dbname=%DB_VERSION%_mapfishsample
   DATA "geom from sites_out"
   PROJECTION
     "init=epsg:4326"   ##recommended
