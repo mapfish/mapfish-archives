@@ -21,4 +21,11 @@
  * @requires OpenLayers/Protocol.js
  */
 
+/**
+ * Class: mapfish.Protocol
+ * Abstract protocol class.  Not to be instantiated directly.  Use
+ *     one of the protocol subclasses instead.
+ * 
+ * mapfish.Protocol actually references <OpenLayers.Protocol>
+ */
 mapfish.Protocol = OpenLayers.Protocol;
