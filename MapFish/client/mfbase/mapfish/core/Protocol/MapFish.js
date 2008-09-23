@@ -88,7 +88,7 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
     },
 
     /**
-     * Method: read
+     * APIMethod: read
      * Construct a request for reading new features.
      *
      * Parameters:
@@ -236,7 +236,7 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
     },
 
     /**
-     * Method: update
+     * APIMethod: update
      * Construct a request updating modified features.
      *
      * Parameters:
@@ -304,7 +304,7 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
     },
 
     /**
-     * Method: delete
+     * APIMethod: delete
      * Construct a request deleting a removed feature.
      *
      * Parameters:
