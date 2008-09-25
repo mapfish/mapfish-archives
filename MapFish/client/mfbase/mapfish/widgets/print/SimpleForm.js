@@ -68,6 +68,12 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
     rotation: null,
 
     /**
+     * APIProperty: infoPanel
+     * {Ext.Panel} - An optional panel displayed after form fields.
+     */
+    infoPanel: null,
+
+    /**
      * Method: fillComponent
      * Called by initComponent to create the component's sub-elements.
      */
@@ -100,6 +106,10 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
                 }
                 this.updateRectangle();
             }, this);
+        }
+
+        if (this.infoPanel != null) {
+            formPanel.add(this.infoPanel);
         }
 
         formPanel.addButton({
