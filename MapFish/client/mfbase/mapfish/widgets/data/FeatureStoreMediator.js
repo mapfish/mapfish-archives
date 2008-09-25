@@ -86,7 +86,7 @@ mapfish.widgets.data.FeatureStoreMediator.prototype = {
         config = OpenLayers.Util.applyDefaults(config,
             {append: this.append, filter: this.filter});
         var toAdd = features;
-        if (this.filter) {
+        if (config.filter) {
             toAdd = [];
             var feature;
             for (var i = 0, len = features.length; i < len; i++) {
@@ -96,7 +96,16 @@ mapfish.widgets.data.FeatureStoreMediator.prototype = {
                 }
             }
         }
-        this.store.loadData(toAdd, config.append);
+        // because of a bug in Ext if config.append is false we clean
+        // the store ourself and always pass true to loadData, there
+        // are cases where passing false to loadData results in Ext
+        // trying to dereference an undefined value, see the unit
+        // tests test_ExtBug and text_addFeatures_ExtBug for 
+        // concrete examples
+        if (!config.append) {
+            this.store.removeAll();
+        }
+        this.store.loadData(toAdd, true);
     },
 
     /**
