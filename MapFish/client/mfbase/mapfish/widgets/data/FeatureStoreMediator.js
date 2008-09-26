@@ -26,11 +26,35 @@ Ext.namespace('mapfish.widgets', 'mapfish.widgets.data');
 /**
  * Class: mapfish.widgets.data.FeatureStoreMediator
  * This class is to be used when one wants to insert features in a store.
+ *
+ * Usage example:
+ * (start code)
+ * var store = new Ext.data.Store({
+ *     reader: new mapfish.widgets.data.FeatureReader(
+ *         {}, [{name: "name", type: "string"}]
+ *     )
+ * });
+ * var mediator = new mapfish.widgets.data.FeatureStoreMediator({
+ *     store: store,
+ *     append: false,
+ *     filter: function(feature) {
+ *         return feature.state != OpenLayers.State.UNKNOWN;
+ *     }
+ * });
+ * (end)
  */
 
 /**
  * Constructor: mapfish.widgets.data.FeatureStoreMediator
  * Create an instance of mapfish.widgets.data.FeatureStoreMediator
+ *
+ * Parameters:
+ * config - {Object} A config object used to set the feature
+ *     store mediator's properties, see below for the list
+ *     of supported properties.
+ *
+ * Returns:
+ * {<mapfish.widgets.data.FeatureStoreMediator>}
  */
 mapfish.widgets.data.FeatureStoreMediator = function(config){
     Ext.apply(this, config);

@@ -29,11 +29,41 @@ Ext.namespace('mapfish.widgets', 'mapfish.widgets.data');
  * This class is to be used when one wants to insert search results (features)
  * in a store; it works by listening to a search mediator's "searchfinished"
  * and "clear" events.
+ *
+ * Usage example:
+ * (start code)
+ * var searchMediator = new mapfish.SearcherMediator({
+ *     protocol: new mapfish.Protocol.MapFish({
+ *         url: "web_service_url"
+ *     })
+ * });
+ * var store = new Ext.data.Store({
+ *     reader: new mapfish.widgets.data.FeatureReader(
+ *         {}, [{name: "name", type: "string"}]
+ *     )
+ * });
+ * var mediator = new mapfish.widgets.data.SearchStoreMediator({
+ *     store: store,
+ *     searchMediator: searchMediator,
+ *     filter: function(feature) {
+ *         return feature.state != OpenLayers.State.UNKNOWN;
+ *     }
+ * });
+ * (end)
  */
 
 /**
  * Constructor: mapfish.widgets.data.SearchStoreMediator
  * Create an instance of mapfish.widgets.data.SearchStoreMediator.
+ *
+ * Parameters:
+ * config - {Object} A config object used to set the search
+ *     store mediator's properties (see below for the list
+ *     of supported properties), and configure it with the
+ *     Ext store; see the usage example above.
+ *
+ * Returns:
+ * {<mapfish.widgets.data.SearchStoreMediator>}
  */
 mapfish.widgets.data.SearchStoreMediator = function(config){
     var store = config.store;
