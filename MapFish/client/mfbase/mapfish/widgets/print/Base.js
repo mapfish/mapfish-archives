@@ -499,13 +499,13 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
             },
             function(request) { //failure
                 if(request.getURL) {
-                    Ext.Msg.alert('Warning',
+                    Ext.Msg.alert(OpenLayers.Lang.translate('mf.information'),
                         OpenLayers.Lang.translate('mf.print.popupBlocked') +
                         '<br />' +
                         '<a href="' + request.getURL + '" target="_blanc">' +
                         request.getURL+'</a>');
                 } else {
-                    Ext.Msg.alert("Error",
+                    Ext.Msg.alert(OpenLayers.Lang.translate('mf.error'),
                         OpenLayers.Lang.translate('mf.print.unableToPrint'));
                 }
                 this.mask.hide();
