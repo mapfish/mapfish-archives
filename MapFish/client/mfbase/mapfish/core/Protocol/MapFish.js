@@ -44,7 +44,9 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
      */
     initialize: function(options) {
         options = options || {};
-        options.format = new OpenLayers.Format.GeoJSON();
+        if (!options.format) {
+            options.format = new OpenLayers.Format.GeoJSON();
+        }
         OpenLayers.Protocol.HTTP.prototype.initialize.call(this, options);
     },
 

@@ -19,15 +19,23 @@
     <script type="text/javascript"><!--
 
     function test_MapFish_initialize(t) {
-        t.plan(1);
+        t.plan(2);
 
         // setup
 
-        var protocol;
+        var protocol, format;
 
+        // 1 test
         protocol = new mapfish.Protocol.MapFish();
         t.eq(protocol.format.CLASS_NAME, "OpenLayers.Format.GeoJSON",
-             "initializes sets a GeoJSON format in the format property");
+             "initialize sets a GeoJSON format in the format property " +
+             "if none is provided");
+        
+        // 1 test
+        format = new OpenLayers.Format.JSON();
+        protocol = new mapfish.Protocol.MapFish({format: format});
+        t.ok(protocol.format == format,
+             "initialize sets the format to the expected value");
     }
 
     function test_MapFish_create(t) {
