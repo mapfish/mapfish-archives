@@ -171,7 +171,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
                         failure.call(context, answer);
                     }
                 }
-                window.setTimeout(checkWindowStillOpen, 100);
+                window.setTimeout(checkWindowStillOpen, 300);
             } else {
                 // we can assume the user received his PDF
                 success.call(context);
