@@ -190,7 +190,7 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
 
     getCurScale: function() {
         var values = this.formPanel.getForm().getValues();
-        return this.getScaleForName(values['scale']);
+        return values['scale'];
     },
 
     setCurScale: function(value) {
@@ -203,7 +203,7 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
      */
     getCurDpi: function() {
         var values = this.formPanel.getForm().getValues();
-        return this.getDpiForName(values["dpi"]);
+        return values["dpi"];
     },
 
     /**

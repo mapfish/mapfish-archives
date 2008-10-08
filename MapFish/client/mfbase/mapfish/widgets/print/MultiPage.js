@@ -470,7 +470,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
      */
     getCurDpi: function() {
         var values = this.formPanel.getForm().getValues();
-        return this.getDpiForName(values["dpi"]);
+        return values["dpi"];
     },
 
     /**
@@ -538,7 +538,28 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
             }
             params.pages.push(page);
         }, this);
-    }
+    },
+
+    /**
+     * Method: getScaleName
+     *
+     * Finds the scale name in function of its value.
+     *
+     * Parameters:
+     * scaleValue - {Float}
+     *
+     * Returns:
+     * {String}
+     */
+    getScaleName: function(scaleValue) {
+        var scales = this.config.scales;
+        for (var i = 0; i < scales.length; ++i) {
+            var cur = scales[i];
+            if (cur.value == scaleValue) {
+                return cur.name;
+            }
+        }
+    }    
 });
 
 Ext.reg('print-multi', mapfish.widgets.print.MultiPage);
