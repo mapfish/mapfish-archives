@@ -33,12 +33,14 @@
                  'field values are correct');
         }
         function test_readRecords(t) {
-            t.plan(8);
-            var reader = new mapfish.widgets.data.FeatureReader({}, [
+            t.plan(9);
+            // setup
+            var reader, features, info, records;
+            reader = new mapfish.widgets.data.FeatureReader({}, [
                 {'name': 'foo'},
                 {'name': 'bar'}
             ]);
-            var features = [
+            features = [
                 new OpenLayers.Feature.Vector(null, {
                     'foo': 'foo_0',
                     'bar': 'bar_0'
@@ -49,9 +51,9 @@
             features[0].state = OpenLayers.State.INSERT;
             features[1].fid = 2;
             features[1].state = OpenLayers.State.DELETE;
-            var info = reader.readRecords(features);
-            var records = info.records;
             // 8 tests
+            info = reader.readRecords(features);
+            records = info.records;
             t.eq(info.totalRecords, 2, 'readRecords returns correct number of records');
             t.eq(records[0].get('foo'), 'foo_0', 'readRecords correctly set feature properties in record');
             t.eq(records[0].get('fid'), 1, 'readRecords correctly set feature fid in record');
@@ -60,6 +62,11 @@
             t.eq(records[1].get('fid'), 2, 'readRecords correctly set feature fid in record (no properties case)');
             t.eq(records[1].get('state'), OpenLayers.State.DELETE, 'readRecords correctly set feature state in record (no properties case)');
             t.ok(records[1].get('feature') == features[1], 'readRecords correctly set feature in record (no properties case)');
+            // 1 test
+            reader.totalRecords = 20;
+            info = reader.readRecords(features);
+            t.eq(info.totalRecords, 20,
+                 "readRecords returns correct number of records");
         }
     --></script>
 

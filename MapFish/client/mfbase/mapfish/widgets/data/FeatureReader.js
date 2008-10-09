@@ -54,6 +54,12 @@ mapfish.widgets.data.FeatureReader = function(meta, recordType){
 Ext.extend(mapfish.widgets.data.FeatureReader, Ext.data.DataReader, {
 
     /**
+     * APIProperty: totalRecords
+     * {Integer}
+     */
+    totalRecords: null,
+
+    /**
      * APIMethod: read
      * This method is only used by a DataProxy which has retrieved data.
      *
@@ -110,7 +116,7 @@ Ext.extend(mapfish.widgets.data.FeatureReader, Ext.data.DataReader, {
 
         return {
             records: records,
-            totalRecords: records.length
+            totalRecords: this.totalRecords != null ? this.totalRecords : records.length
         };
     }
 });
