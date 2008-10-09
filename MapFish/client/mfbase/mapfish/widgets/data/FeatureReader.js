@@ -22,7 +22,7 @@ Ext.namespace('mapfish.widgets', 'mapfish.widgets.data');
 /**
  * Class: mapfish.widgets.data.FeatureReader
  *      FeatureReader is a specific Ext.data.DataReader. When records are
- *      added to the store using this reader, spectific fields like
+ *      added to the store using this reader, specific fields like
  *      feature, state and fid are available.
  *
  * Typical usage in a store:
