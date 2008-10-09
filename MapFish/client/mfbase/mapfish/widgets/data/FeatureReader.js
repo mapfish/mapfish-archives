@@ -80,7 +80,7 @@ Ext.extend(mapfish.widgets.data.FeatureReader, Ext.data.DataReader, {
      * Returns:
      * {Object} An object with two properties. The value of the property "records"
      *      is the array of records corresponding to the features. The value of the
-     *      property "totalRecord" is the number of records in the array.
+     *      property "totalRecords" is the number of records in the array.
      */
     readRecords : function(features) {
         var records = [];
