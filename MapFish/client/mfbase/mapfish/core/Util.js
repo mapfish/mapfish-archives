@@ -72,7 +72,17 @@ mapfish.Util.getIconUrl = function(wmsUrl, options) {
     if (!options.rule) {
         options.rule = options.layer;
     }
-    var url = wmsUrl + ((wmsUrl.indexOf('?') != (wmsUrl.length - 1)) ? '?' : '');
+    if (wmsUrl.indexOf("?") < 0) {
+        //add a ? to the end of the url if it doesn't
+        //already contain one
+        wmsUrl += "?";
+    } else if (wmsUrl.lastIndexOf('&') != (wmsUrl.length - 1)) {
+        //if there was already a ? , assure that the parameters
+        //are ended with an &, except if the ? was at the last char
+        if (wmsUrl.indexOf("?") != (wmsUrl.length - 1)) {
+            wmsUrl += "&";
+        }
+    }
     var options = OpenLayers.Util.extend({
         layer: "",
         rule: "",
@@ -84,7 +94,7 @@ mapfish.Util.getIconUrl = function(wmsUrl, options) {
         height: 16
     }, options);
     options = OpenLayers.Util.upperCaseObject(options);
-    return url + OpenLayers.Util.getParameterString(options);
+    return wmsUrl + OpenLayers.Util.getParameterString(options);
 };
 
 
