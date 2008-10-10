@@ -45,7 +45,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
      * {Object} - The configuration options passed to the form that edits the
      *            options common to every pages.
      *
-     * Can contain additionnal items for custom fields. Their values will be
+     * Can contain additional items for custom fields. Their values will be
      * passed to the print service
      */
     formConfig: null,
@@ -58,7 +58,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
 
     /**
      * APIProperty: zoomToExtentEnabled
-     * {boolean} - If true, the map will try to always show the selected page's
+     * {Boolean} - If true, the map will try to always show the selected page's
      *             extent by zooming out if necessary.
      */
     zoomToExtentEnabled: true,
@@ -383,7 +383,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
      * Re-create the rectangle for the given record.
      *
      * Parameters:
-     * record - {<Ext.data.Record>} The page's record.
+     * record - {Ext.data.Record} The page's record.
      */
     updateRectangle: function(record) {
         this.grid.stopEditing();
@@ -498,7 +498,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
      * Called when the rotation of the current page has been changed.
      *
      * Parameters:
-     * rotation - {float}
+     * rotation - {Float}
      */
     setCurRotation: function(rotation) {
         var selected = this.grid.getSelectionModel().getSelected();
@@ -549,7 +549,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
      * scaleValue - {Float}
      *
      * Returns:
-     * {String}
+     * {String} The scale name.
      */
     getScaleName: function(scaleValue) {
         var scales = this.config.scales;

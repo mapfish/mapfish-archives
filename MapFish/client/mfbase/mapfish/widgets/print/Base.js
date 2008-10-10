@@ -61,22 +61,22 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
 
     /**
      * APIProperty: configUrl
-     * {<String>} - The URL to access .../config.json. Either this property or
-     *              config must be set.
+     * {String} - The URL to access .../config.json. Either this property or
+     *            config must be set.
      */
     configUrl: null,
 
     /**
      * APIProperty: config
-     * {<Object>} - The response from .../config.json. Either this property or
-     *              configUrl must be set.
+     * {Object} - The response from .../config.json. Either this property or
+     *            configUrl must be set.
      */
     config: null,
 
     /**
      * APIProperty: layerTree
-     * {mapfish.widgets.LayerTree} - An optional layer tree. Needed only if you
-      *                              want to display legends.
+     * {<mapfish.widgets.LayerTree>} - An optional layer tree. Needed only if you
+      *                                want to display legends.
      */
     layerTree: null,
 
@@ -109,8 +109,8 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
 
     /**
      * Property: mask
-     * {<Ext.LoadingMask>} - The mask used when loading the configuration or
-     *                       when generating the PDF
+     * {Ext.LoadingMask} - The mask used when loading the configuration or
+     *                     when generating the PDF
      */
     mask: null,
 
@@ -395,7 +395,7 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
      * Method: getCenterRectangle
      *
      * Parameters:
-     * rectangle - {OpenLayers.Feature.Vector}
+     * rectangle - {<OpenLayers.Feature.Vector>}
      *
      * Returns:
      * {<OpenLayers.LonLat>} The center of the rectangle.
