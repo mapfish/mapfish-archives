@@ -236,15 +236,21 @@
       });
 
       /*
-       * Create MapFish search mediator
+       * Create protocol
        */
-      var mediator = new mapfish.SearchMediator({
+
+      // decorate protocol with a TriggerEventDecorator and
+      // a MergeFilterDecorator, the returned protocol is
+      // of type MergeFilterDecorator
+      protocol = mapfish.Protocol.decorateProtocol({
           protocol: new mapfish.Protocol.MapFish({
               url: "../../summits",
               params: {
                   maxfeatures: 10
               }
-          })
+          }),
+          TriggerEventDecorator: null,
+          MergeFilterDecorator: null
       });
 
       /*
@@ -263,7 +269,7 @@
        * resulting from the search.
        */
       var searchStoreMediator = new mapfish.widgets.data.SearchStoreMediator({
-          searchMediator: mediator,
+          protocol: protocol.protocol,
           store: store,
           append: false
       });
@@ -365,13 +371,15 @@
 
       var mapSearcher = new mapfish.Searcher.Map({
           mode: mapfish.Searcher.Map.BOX,
-          mediator: mediator
+          protocol: protocol
       });
+      protocol.register(mapSearcher);
 
       var formSearcher = new mapfish.Searcher.Form({
           form: formPanel.getForm().getEl().dom,
-          mediator: mediator
+          protocol: protocol
       });
+      protocol.register(formSearcher);
 
       /*
        * Set up toolbar
