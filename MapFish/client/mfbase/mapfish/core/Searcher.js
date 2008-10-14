@@ -17,10 +17,6 @@
  * along with MapFish Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * @requires core/SearchMediator.js
- */
-
 /**
  * Class: mapfish.Searcher
  * Base searcher class. This class is not meant to be used directly, it serves
@@ -29,28 +25,12 @@
 mapfish.Searcher = OpenLayers.Class({
         
     /**
-     * Property: mediator
-     * {<mapfish.SearchMediator>} - The search mediator.
-     */
-    mediator: null,
-
-    /**
      * Constructor: mapfish.Searcher
-     *
-     * Parameters:
-     * options {Object} Optional object whose properties will be set on the
-     *     instance.
      *
      * Returns:
      * {<mapfish.Searcher>}
      */
-    initialize: function() {
-        if (!this.mediator) {
-            OpenLayers.Console.error("no mediator set");
-            return;
-        }
-        this.mediator.searchers.push(this);
-    },
+    initialize: function() {},
 
     /**
      * Method: getFilter

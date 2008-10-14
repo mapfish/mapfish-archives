@@ -18,65 +18,59 @@
 
     <script type="text/javascript"><!--
     function test_Map_initialize(t) {
-        t.plan(9);
+        t.plan(6);
 
-        var mediator, searcher;
+        var searcher, protocol;
 
-        mediator = new mapfish.SearchMediator();
+        protocol = new OpenLayers.Protocol();
 
         // 3 tests
         searcher = new mapfish.Searcher.Map({
-            mediator: mediator
+            protocol: protocol
         });
         t.eq(searcher.mode, mapfish.Searcher.Map.CLICK,
              "ctor sets mode to CLICK by default");
         t.eq(searcher.handler.CLASS_NAME, "OpenLayers.Handler.Click",
              "ctor creates a click handler");
-        t.eq(mediator.searchers.length, 1,
-             "ctor add searcher to mediator");
+        t.eq(searcher.protocol.CLASS_NAME, "OpenLayers.Protocol",
+             "ctor sets protocol");
 
-        // 2 tests
+        // 1 test
         searcher = new mapfish.Searcher.Map({
             mode: mapfish.Searcher.Map.HOVER,
-            mediator: mediator
+            protocol: protocol
         });
         t.eq(searcher.handler.CLASS_NAME, "OpenLayers.Handler.Hover",
              "ctor creates a hover handler");
-        t.eq(mediator.searchers.length, 2,
-             "ctor add searcher to mediator");
 
-        // 2 tests
+        // 1 test
         searcher = new mapfish.Searcher.Map({
             mode: mapfish.Searcher.Map.BOX,
-            mediator: mediator
+            protocol: protocol
         });
         t.eq(searcher.handler.CLASS_NAME, "OpenLayers.Handler.Box",
              "ctor creates a box handler");
-        t.eq(mediator.searchers.length, 3,
-             "ctor add searcher to mediator");
 
-        // 2 tests
+        // 1 tests
         searcher = new mapfish.Searcher.Map({
             mode: mapfish.Searcher.Map.EXTENT,
-            mediator: mediator
+            protocol: protocol
         });
         t.eq(searcher.handler, null,
              "ctor creates no handler");
-        t.eq(mediator.searchers.length, 4,
-             "ctor add searcher to mediator");
     }
 
     function test_Map_getFilter(t) {
-        t.plan(4);
+        t.plan(5);
 
-        var mediator, lonlat, res, searcher, filter;
+        var protocol, lonlat, res, searcher, filter;
 
-        mediator = new mapfish.SearchMediator();
+        protocol = new OpenLayers.Protocol();
         lonlat = new OpenLayers.LonLat(4.0, 5.0);
         res = 5.0;
 
         searcher = new mapfish.Searcher.Map({
-            mediator: mediator,
+            protocol: protocol,
             map: {
                 getLonLatFromViewPortPx: function() {
                     return lonlat;
@@ -102,6 +96,12 @@
              "getFilter returns a object with expected lat property");
         t.eq(filter.tolerance, searcher.searchTolerance * res,
              "getFilter returns a object with expected tolerance property");
+
+        // 1 test
+        searcher.passFilter = false;
+        filter = searcher.getFilter();
+        t.eq(filter, null,
+             "getFilter returns null if passFilter is false");
     }
 --></script>
 

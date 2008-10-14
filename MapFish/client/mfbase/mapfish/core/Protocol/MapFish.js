@@ -105,6 +105,9 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
      *      the features received from the server.
      */
     "read": function(options) {
+        // workaround a bug in OpenLayers
+        options.params = OpenLayers.Util.applyDefaults(
+            options.params, this.options.params);
         if (options) {
             this.filterAdapter(options);
         }

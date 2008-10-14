@@ -92,18 +92,22 @@
             map.setCenter(new OpenLayers.LonLat(5,45), 6);
             map.addControl(new OpenLayers.Control.PanZoomBar());
 
-            var mediator = new mapfish.SearchMediator({
+            // we need to wrap the MapFish protocol in a trigger event
+            // decorator protocol so that the default popup can be 
+            // displayed by the searcher
+            var protocol = mapfish.Protocol.decorateProtocol({
                 protocol: new mapfish.Protocol.MapFish({
                     url: mapfish.SERVER_BASE_URL + 'summits',
                     params: {
                         maxfeatures: 10
                     }
-                })
+                }),
+                TriggerEventDecorator: null
             });
 
             searcher = new mapfish.Searcher.Map({
                 mode: mapfish.Searcher.Map.BOX,
-                mediator: mediator,
+                protocol: protocol,
                 displayDefaultPopup: true
             });
 
