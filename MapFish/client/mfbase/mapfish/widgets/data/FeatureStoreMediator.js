@@ -26,11 +26,35 @@ Ext.namespace('mapfish.widgets', 'mapfish.widgets.data');
 /**
  * Class: mapfish.widgets.data.FeatureStoreMediator
  * This class is to be used when one wants to insert features in a store.
+ *
+ * Usage example:
+ * (start code)
+ * var store = new Ext.data.Store({
+ *     reader: new mapfish.widgets.data.FeatureReader(
+ *         {}, [{name: "name", type: "string"}]
+ *     )
+ * });
+ * var mediator = new mapfish.widgets.data.FeatureStoreMediator({
+ *     store: store,
+ *     append: false,
+ *     filter: function(feature) {
+ *         return feature.state != OpenLayers.State.UNKNOWN;
+ *     }
+ * });
+ * (end)
  */
 
 /**
  * Constructor: mapfish.widgets.data.FeatureStoreMediator
  * Create an instance of mapfish.widgets.data.FeatureStoreMediator
+ *
+ * Parameters:
+ * config - {Object} A config object used to set the feature
+ *     store mediator's properties, see below for the list
+ *     of supported properties.
+ *
+ * Returns:
+ * {<mapfish.widgets.data.FeatureStoreMediator>}
  */
 mapfish.widgets.data.FeatureStoreMediator = function(config){
     Ext.apply(this, config);
@@ -86,7 +110,7 @@ mapfish.widgets.data.FeatureStoreMediator.prototype = {
         config = OpenLayers.Util.applyDefaults(config,
             {append: this.append, filter: this.filter});
         var toAdd = features;
-        if (this.filter) {
+        if (config.filter) {
             toAdd = [];
             var feature;
             for (var i = 0, len = features.length; i < len; i++) {
@@ -96,7 +120,16 @@ mapfish.widgets.data.FeatureStoreMediator.prototype = {
                 }
             }
         }
-        this.store.loadData(toAdd, config.append);
+        // because of a bug in Ext if config.append is false we clean
+        // the store ourself and always pass true to loadData, there
+        // are cases where passing false to loadData results in Ext
+        // trying to dereference an undefined value, see the unit
+        // tests test_ExtBug and text_addFeatures_ExtBug for 
+        // concrete examples
+        if (!config.append) {
+            this.store.removeAll();
+        }
+        this.store.loadData(toAdd, true);
     },
 
     /**

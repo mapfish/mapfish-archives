@@ -19,5 +19,8 @@ OpenLayers.Util.extend(OpenLayers.Lang.en, {
     'mf.print.clearAll': 'Clear all',
     'mf.print.popupBlocked': 'Popup windows are blocked by your browser.<br />' +
                              '<br />Use this url to download your document:',
-    'mf.print.noPage': 'No page selected, click on the "Add page" button to add one.'
+    'mf.print.noPage': 'No page selected, click on the "Add page" button to add one.',
+    'mf.error': 'Error',
+    'mf.warning': 'Warning',
+    'mf.information': 'Information'
 });

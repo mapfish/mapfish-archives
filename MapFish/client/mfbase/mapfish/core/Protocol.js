@@ -17,15 +17,53 @@
  * along with MapFish Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * @requires OpenLayers/Protocol.js
- */
-
 /**
- * Class: mapfish.Protocol
- * Abstract protocol class.  Not to be instantiated directly.  Use
- *     one of the protocol subclasses instead.
- * 
- * mapfish.Protocol actually references <OpenLayers.Protocol>
+ * Namespace: mapfish.Protocol
+ * Contains convenience methods for protocol manipulation.
  */
-mapfish.Protocol = OpenLayers.Protocol;
+mapfish.Protocol = {
+
+    /**
+     * APIFunction: decorateProtocol
+     * Decorate a protocol.
+     *
+     * Example of use:
+     * (start code)
+     * var protocol = mapfish.Protocol.decorateProtocol({
+     *     protocol: protocol,
+     *     TriggerEventDecorator: {
+     *         eventListeners: {
+     *             crudfinished: function() {
+     *                 alert("CRUD operation completed");
+     *             }
+     *         }
+     *     },
+     *     MergeFilterDecorator: null
+     * });
+     * (end)
+     *
+     * Parameters:
+     * config - {Object} Config object specifying how protocol must be
+     *     decorated, see the above the example.
+     *
+     * Returns:
+     * {<OpenLayers.Protocol>} The resulting protocol.
+     * */
+    decorateProtocol: function(config) {
+        var protocol = config.protocol;
+        for (var key in config) {
+            if (key != "protocol") {
+                if (!mapfish.Protocol[key]) {
+                    OpenLayers.Console.error(
+                        "mapfish.Protocol." + key + " does not exist");
+                } else {
+                    protocol = new mapfish.Protocol[key](
+                        OpenLayers.Util.extend(
+                            {protocol: protocol}, config[key])
+                    );
+                }
+            }
+       }
+       return protocol;
+    }
+};

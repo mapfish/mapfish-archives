@@ -22,6 +22,7 @@ package org.mapfish.print.map.renderers;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
 import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfGState;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
@@ -29,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mapfish.print.RenderingContext;
 import org.mapfish.print.Transformer;
+import org.mapfish.print.PDFUtils;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
@@ -45,14 +47,6 @@ public class BitmapMapRenderer extends MapRenderer {
             final AffineTransform bitmapTransformer = transformer.getBitmapTransform();
             dc.transform(bitmapTransformer);
             final double rotation = transformer.getRotation();
-
-            Image smask = null;
-            if (opacity < 1.0) {
-                final byte byteOpacity = (byte) (Math.round(opacity * 256.0F));
-                byte maskBytes[] = new byte[]{byteOpacity};
-                smask = Image.getInstance(1, 1, 1, 8, maskBytes);
-                smask.makeMask();
-            }
 
             for (int i = 0; i < uris.size(); i++) {
                 URI uri = uris.get(i);
@@ -73,12 +67,15 @@ public class BitmapMapRenderer extends MapRenderer {
                 }
 
                 LOGGER.debug(uri);
-                final Image map = Image.getInstance(uri.toURL());
+                final Image map = PDFUtils.getImage(uri);
                 map.scaleAbsolute(bitmapTileW, bitmapTileH);
                 map.setAbsolutePosition(posX, posY);
 
-                if (smask != null) {
-                    map.setImageMask(smask);
+                if (opacity < 1.0) {
+                    PdfGState gs = new PdfGState();
+                    gs.setFillOpacity(opacity);
+                    gs.setStrokeOpacity(opacity);
+                    dc.setGState(gs);
                 }
                 dc.addImage(map);
             }

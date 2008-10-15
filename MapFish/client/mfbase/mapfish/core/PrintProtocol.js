@@ -171,7 +171,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
                         failure.call(context, answer);
                     }
                 }
-                window.setTimeout(checkWindowStillOpen, 100);
+                window.setTimeout(checkWindowStillOpen, 300);
             } else {
                 // we can assume the user received his PDF
                 success.call(context);
@@ -252,7 +252,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
      * Handles the common parameters of all supported layer types.
      *
      * Parameters:
-     * olLayer - {OpenLayers.Layer} The OL layer.
+     * olLayer - {<OpenLayers.Layer>} The OL layer.
      *
      * Returns:
      * {Object} The config for this layer
@@ -273,7 +273,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
     /**
      * Method: convertWMSLayer
      *
-     * Builds the layer configuration from an {OpenLayers.Layer.WMS} layer.
+     * Builds the layer configuration from an {<OpenLayers.Layer.WMS>} layer.
      * The structure expected from the print module is:
      * (start code)
      * {
@@ -291,7 +291,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
      * (end)
      *
      * Parameters:
-     * olLayer - {OpenLayers.Layer.WMS} The OL layer.
+     * olLayer - {<OpenLayers.Layer.WMS>} The OL layer.
      *
      * Returns:
      * {Object} The config for this layer
@@ -321,7 +321,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
     /**
      * Method: convertTileCacheLayer
      *
-     * Builds the layer configuration from an {OpenLayers.Layer.TileCache} layer.
+     * Builds the layer configuration from an {<OpenLayers.Layer.TileCache>} layer.
      * The structure expected from the print module is:
      * (start code)
      * {
@@ -337,7 +337,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
      * (end)
      *
      * Parameters:
-     * olLayer - {OpenLayers.Layer.TileCache} The OL layer.
+     * olLayer - {<OpenLayers.Layer.TileCache>} The OL layer.
      *
      * Returns:
      * {Object} The config for this layer

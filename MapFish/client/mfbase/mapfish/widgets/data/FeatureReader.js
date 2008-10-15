@@ -22,7 +22,7 @@ Ext.namespace('mapfish.widgets', 'mapfish.widgets.data');
 /**
  * Class: mapfish.widgets.data.FeatureReader
  *      FeatureReader is a specific Ext.data.DataReader. When records are
- *      added to the store using this reader, spectific fields like
+ *      added to the store using this reader, specific fields like
  *      feature, state and fid are available.
  *
  * Typical usage in a store:
@@ -52,9 +52,32 @@ mapfish.widgets.data.FeatureReader = function(meta, recordType){
 };
 
 Ext.extend(mapfish.widgets.data.FeatureReader, Ext.data.DataReader, {
+
+    /**
+     * APIProperty: totalRecords
+     * {Integer}
+     */
+    totalRecords: null,
+
+    /**
+     * APIMethod: read
+     * This method is only used by a DataProxy which has retrieved data.
+     *
+     * Parameters:
+     * response - {<OpenLayers.Protocol.Response>}
+     *
+     * Returns:
+     * {Object} An object with two properties. The value of the property "records"
+     *      is the array of records corresponding to the features. The value of the
+     *      property "totalRecords" is the number of records in the array.
+     */
+    read: function(response) {
+        return this.readRecords(response.features);
+    },
+
     /**
      * APIMethod: readRecords
-     *      Create a data block containing Ext.data.Records from 
+     *      Create a data block containing Ext.data.Records from
      *      an array of features.
      *
      * Parameters:
@@ -63,33 +86,37 @@ Ext.extend(mapfish.widgets.data.FeatureReader, Ext.data.DataReader, {
      * Returns:
      * {Object} An object with two properties. The value of the property "records"
      *      is the array of records corresponding to the features. The value of the
-     *      property "totalRecord" is the number of records in the array.
+     *      property "totalRecords" is the number of records in the array.
      */
-    readRecords : function(features){
+    readRecords : function(features) {
         var records = [];
-        var recordType = this.recordType, fields = recordType.prototype.fields;
-        for (var i = 0; i < features.length; i++) {
-            var feature = features[i];
-            var values = {};
-            if (feature.attributes) {
-                for (var j = 0; j < fields.length; j++){
-                    var field = fields.items[j];
-                    var v = feature.attributes[field.mapping || field.name] ||
+
+        if (features) {
+            var recordType = this.recordType, fields = recordType.prototype.fields;
+            var i, lenI, j, lenJ, feature, values, field, v;
+            for (i = 0, lenI = features.length; i < lenI; i++) {
+                feature = features[i];
+                values = {};
+                if (feature.attributes) {
+                    for (j = 0, lenJ = fields.length; j < lenJ; j++){
+                        field = fields.items[j];
+                        v = feature.attributes[field.mapping || field.name] ||
                             field.defaultValue;
-                    v = field.convert(v);
-                    values[field.name] = v;
+                        v = field.convert(v);
+                        values[field.name] = v;
+                    }
                 }
+                values.feature = feature;
+                values.state = feature.state;
+                values.fid = feature.fid;
+
+                records[records.length] = new recordType(values, feature.id);
             }
-            values.feature = feature;
-            values.state = feature.state;
-            values.fid = feature.fid;
-            
-            records[records.length] = new recordType(values, feature.id);
         }
 
         return {
             records: records,
-            totalRecords: records.length
+            totalRecords: this.totalRecords != null ? this.totalRecords : records.length
         };
     }
 });

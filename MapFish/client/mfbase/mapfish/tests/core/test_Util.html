@@ -19,7 +19,7 @@
     <script type="text/javascript"><!--
        
     function test_Util_getIconUrl(t) {
-        t.plan(3);
+        t.plan(4);
 
         t.eq(
             mapfish.Util.getIconUrl("mapserv", {
@@ -45,6 +45,15 @@
             "mapserv?LAYER=world&RULE=world_class&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&WIDTH=16&HEIGHT=16",
             "getIconUrl correctly uses the rule parameter if present"
         );
+        t.eq(
+            mapfish.Util.getIconUrl("mapserv?map=toto", {
+                'layer': 'world',
+                'rule': 'world_class'
+            }),
+            "mapserv?map=toto&LAYER=world&RULE=world_class&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&WIDTH=16&HEIGHT=16",
+            "getIconUrl creates a correct url if a ? was embedded"
+        );
+
     }
 
 

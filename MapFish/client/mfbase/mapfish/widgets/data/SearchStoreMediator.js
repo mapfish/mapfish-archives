@@ -19,7 +19,7 @@
 
 /**
  * @requires widgets/data/FeatureStoreMediator.js
- * @requires core/SearchMediator.js
+ * @requires core/Protocol/TriggerEventDecorator.js
  */
 
 Ext.namespace('mapfish.widgets', 'mapfish.widgets.data');
@@ -27,22 +27,57 @@ Ext.namespace('mapfish.widgets', 'mapfish.widgets.data');
 /**
  * Class: mapfish.widgets.data.SearchStoreMediator
  * This class is to be used when one wants to insert search results (features)
- * in a store; it works by listening to a search mediator's "searchfinished"
- * and "clear" events.
+ * in a store; it works by listening to "crudfinished" and "clear" events 
+ * triggered by a <mapfish.Protocol.TriggerEvent> protocol.
+ *
+ * Usage example:
+ * (start code)
+ * var protocol = new mapfish.Protocol.TriggerEventDecorator({
+ *     protocol: new mapfish.Protocol.MapFish({
+ *         url: "web_service_url"
+ *     })
+ * });
+ * var store = new Ext.data.Store({
+ *     reader: new mapfish.widgets.data.FeatureReader(
+ *         {}, [{name: "name", type: "string"}]
+ *     )
+ * });
+ * var mediator = new mapfish.widgets.data.SearchStoreMediator({
+ *     store: store,
+ *     protocol: protocol,
+ *     filter: function(feature) {
+ *         return feature.state != OpenLayers.State.UNKNOWN;
+ *     }
+ * });
+ * (end)
  */
 
 /**
  * Constructor: mapfish.widgets.data.SearchStoreMediator
  * Create an instance of mapfish.widgets.data.SearchStoreMediator.
+ *
+ * Parameters:
+ * config - {Object} A config object used to set the search
+ *     store mediator's properties (see below for the list
+ *     of supported properties), and configure it with the
+ *     Ext store; see the usage example above.
+ *
+ * Returns:
+ * {<mapfish.widgets.data.SearchStoreMediator>}
  */
 mapfish.widgets.data.SearchStoreMediator = function(config){
     var store = config.store;
     // no need to place the store in the instance
     delete config.store;
     Ext.apply(this, config);
-    if (!this.searchMediator) {
+    if (!this.protocol) {
         OpenLayers.Console.error(
-            "config does not include a searchMediator property");
+            "config does not include a protocol property");
+    }
+    if (this.protocol.CLASS_NAME != "mapfish.Protocol.TriggerEventDecorator") {
+        OpenLayers.Console.error(
+            "the protocol config property does not reference a " +
+            "TriggerEventDecorator protocol");
     }
     this.featureStoreMediator = new mapfish.widgets.data.FeatureStoreMediator({
         store: store
@@ -54,10 +89,11 @@ mapfish.widgets.data.SearchStoreMediator = function(config){
 
 mapfish.widgets.data.SearchStoreMediator.prototype = {
     /**
-     * APIProperty: searchMediator
-     * {<mapfish.SearchMediator>} The search mediator object (required).
+     * APIProperty: protocol
+     * {<mapfish.Protocol.TriggerEventDecorator>} The trigger event decorator
+     * protocol.
      */
-    searchMediator: null,
+    protocol: null,
 
     /**
     /**
@@ -109,8 +145,8 @@ mapfish.widgets.data.SearchStoreMediator.prototype = {
      */
     activate: function() {
         if (!this.active) {
-            this.searchMediator.events.on({
-                searchfinished: this.onSearchfinished,
+            this.protocol.events.on({
+                crudfinished: this.onSearchfinished,
                 clear: this.onClear,
                 scope: this
             });
@@ -130,8 +166,8 @@ mapfish.widgets.data.SearchStoreMediator.prototype = {
      */
     deactivate: function() {
         if (this.active) {
-            this.searchMediator.events.un({
-                searchfinished: this.onSearchfinished,
+            this.protocol.events.un({
+                crudfinished: this.onSearchfinished,
                 clear: this.onClear,
                 scope: this
             });
@@ -149,7 +185,7 @@ mapfish.widgets.data.SearchStoreMediator.prototype = {
      * result - {OpenLayers.Protocol.Response} The protocol response.
      */
     onSearchfinished: function(response) {
-        if (response.success()) {
+        if (response.requestType == "read" && response.success()) {
             var features = response.features;
             if (features && features.length > 0) {
                 this.featureStoreMediator.addFeatures(features, {

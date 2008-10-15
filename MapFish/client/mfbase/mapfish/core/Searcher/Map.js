@@ -20,7 +20,7 @@
 
 /*
  * @requires core/Searcher.js
- * @requires core/SearchMediator.js
+ * @requires core/Protocol.js
  * @requires OpenLayers/Map.js
  * @requires OpenLayers/Util.js
  * @requires OpenLayers/Events.js
@@ -41,6 +41,12 @@
  * - OpenLayers.Control
  */
 mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
+
+    /**
+     * APIProperty: protocol
+     * {<OpenLayers.Protocol>} - The protocol.
+     */
+    protocol: null,
 
     /**
      * APIProperty: mode
@@ -109,7 +115,8 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
      * APIProperty: displayDefaultPopup
      * {Boolean} Display a default popup with the search results,
      *      does not apply if mode is set to <mapfish.Searcher.Map.HOVER>,
-     *      defaults to false.
+     *      defaults to false, or if the protocol used isn't of type
+     *      <mapfish.Protocol.TriggerEventDecorator>.
      */
     displayDefaultPopup: false,
 
@@ -131,6 +138,20 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
     position: null,
 
     /**
+     * Property: popupLonLat
+     * {<OpenLayers.LonLat>} The <OpenLayers.LonLat> object representing
+     *      where the popup must be displayed.
+     */
+    popupLonLat: null,
+
+    /**
+     * Property: response
+     * {<OpenLayers.Protocol.Response>} The response returned by the
+     *     read call to <OpenLayers.Protocol> object.
+     */
+    response: null,
+
+    /**
      * Constructor: mapfish.Searcher.Map
      *
      * Parameters:
@@ -143,8 +164,13 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
     initialize: function(options) {
         this.mode = mapfish.Searcher.Map.CLICK;
 
-        OpenLayers.Control.prototype.initialize.call(this, options);
         mapfish.Searcher.prototype.initialize.call(this, options);
+        OpenLayers.Control.prototype.initialize.call(this, options);
+
+        if (!this.protocol) {
+            OpenLayers.Console.error("no protocol set");
+            return;
+        }
 
         switch(this.mode) {
             case mapfish.Searcher.Map.CLICK:
@@ -190,9 +216,11 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
             if (this.mode == mapfish.Searcher.Map.EXTENT) {
                 this.map.events.register(
                     "moveend", this, this.handleMoveend);
-            } else if (this.displayDefaultPopup) {
-                this.mediator.events.on({
-                    searchfinished: this.displayPopup,
+            } else if (this.displayDefaultPopup &&
+                       this.protocol.CLASS_NAME ==
+                           "mapfish.Protocol.TriggerEventDecorator") {
+                this.protocol.events.on({
+                    crudfinished: this.displayPopup,
                     scope: this
                 });
             }
@@ -214,9 +242,11 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
             if (this.mode == mapfish.Searcher.Map.EXTENT) {
                 this.map.events.unregister(
                     "moveend", this, this.handleMoveend);
-            } else if (this.displayDefaultPopup) {
-                this.mediator.events.un({
-                    searchfinished: this.displayPopup,
+            } else if (this.displayDefaultPopup &&
+                       this.protocol.CLASS_NAME ==
+                           "mapfish.Protocol.TriggerEventDecorator") {
+                this.protocol.events.un({
+                    crudfinished: this.displayPopup,
                     scope: this
                 });
             }
@@ -233,6 +263,7 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
      */
     handlePoint: function(evt) {
         this.position = evt.xy;
+        this.popupLonLat = this.map.getLonLatFromViewPortPx(this.position);
         this.triggerSearch();
     },
 
@@ -251,8 +282,10 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
             this.position = new OpenLayers.Bounds(
                 minXY.lon, minXY.lat,
                 maxXY.lon, maxXY.lat);
+            this.popupLonLat = this.position.getCenterLonLat();
         } else {
             this.position = position;
+            this.popupLonLat = this.map.getLonLatFromViewPortPx(this.position);
         }
         this.triggerSearch();
     },
@@ -263,6 +296,7 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
      */
     handleMoveend: function() {
         this.position = this.map.getExtent();
+        this.popupLonLat = this.position.getCenterLonLat();
         this.triggerSearch();
     },
 
@@ -271,7 +305,12 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
      */
     triggerSearch: function() {
         this.cancelSearch();
-        this.mediator.triggerSearch();
+
+        var filter = this.getFilter();
+        filter = this.isFilter(filter) ? {filter: filter} : {params: filter};
+        var options = OpenLayers.Util.extend({searcher: this}, filter);
+            
+        this.response = this.protocol.read(options);
     },
 
     /**
@@ -283,7 +322,17 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
      * evt - {<OpenLayers.Event>}
      */
     cancelSearch: function(evt) {
-        this.mediator.cancelSearch();
+        // FIXME really we should rely on the protocol itself to
+        // cancel the request, the Protocol class in OpenLayers
+        // 2.7 does not expose a cancel() method
+        if (this.response) {
+            var response = this.response;
+            if (response.priv &&
+                typeof response.priv.abort == "function") {
+                response.priv.abort();
+                this.response = null;
+            }
+        }
         if (this.mode == mapfish.Searcher.Map.HOVER) {
             this.onMouseMove();
         }
@@ -299,13 +348,6 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
         var features = response.features;
 
         if (features && features.length > 0) {
-            var lonlat;
-            if (this.position instanceof OpenLayers.Bounds) {
-                lonlat = this.position.getCenterLonLat();
-            } else {
-                lonlat = this.map.getLonLatFromViewPortPx(this.position);
-            }
-
             var k;
 
             // build HTML table
@@ -326,7 +368,7 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
 
             var popup = new OpenLayers.Popup.FramedCloud(
                 "mapfish_popup",    // popup id
-                lonlat,             // OpenLayers.LonLat object
+                this.popupLonLat,   // OpenLayers.LonLat object
                 null,               // popup is autosized
                 html,               // html string
                 null,               // no anchor
@@ -337,6 +379,21 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
     },
 
     /**
+     * Method: isFilter
+     * Check if the object passed is a <OpenLayers.Filter> object.
+     *
+     * Parameters:
+     * obj - {Object}
+     *
+     * Returns:
+     * {Boolean}
+     */
+    isFilter: function(obj) {
+        return !!obj.CLASS_NAME &&
+               !!obj.CLASS_NAME.match(/^OpenLayers\.Filter/);
+    },
+
+    /**
      * Method: getFilter
      *      Get the search filter.
      *
@@ -344,23 +401,25 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
      * {<OpenLayers.Filter>}|{Object} The filter.
      */
     getFilter: function() {
-        var filter;
-        mapfish.Searcher.prototype.getFilter.call(this);
-        if (this.position instanceof OpenLayers.Bounds) {
-            filter = new OpenLayers.Filter.Spatial({
-                type: OpenLayers.Filter.Spatial.BBOX,
-                value: this.position
-            });
-        } else {
-            var tolerance = this.searchTolerance;
-            if (tolerance && this.searchToleranceUnits == "pixels") {
-                tolerance *= this.map.getResolution();
+        var filter = null;
+        if (this.position) {
+            if (this.position instanceof OpenLayers.Bounds) {
+                filter = new OpenLayers.Filter.Spatial({
+                    type: OpenLayers.Filter.Spatial.BBOX,
+                    value: this.position
+                });
+            } else {
+                var tolerance = this.searchTolerance;
+                if (tolerance && this.searchToleranceUnits == "pixels") {
+                    tolerance *= this.map.getResolution();
+                }
+                var lonlat = this.map.getLonLatFromViewPortPx(this.position);
+                filter = {lon: lonlat.lon, lat: lonlat.lat};
+                if (tolerance) {
+                    filter.tolerance = tolerance;
+                }
             }
-            var lonlat = this.map.getLonLatFromViewPortPx(this.position);
-            filter = {lon: lonlat.lon, lat: lonlat.lat};
-            if (tolerance) {
-                filter.tolerance = tolerance;
-            }
+            this.position = null;
         }
         return filter;
     },

@@ -35,10 +35,23 @@
 mapfish.Searcher.Form = OpenLayers.Class(mapfish.Searcher, {
 
     /**
+     * APIProperty: protocol
+     * {<OpenLayers.Protocol>} - The protocol.
+     */
+    protocol: null,
+
+    /**
      * APIProperty: map
      * {DOMElement} The form node.
      */
     form: null,
+
+    /**
+     * Property: response
+     * {<OpenLayers.Protocol.Response>} The response returned by the
+     *     read call to <OpenLayers.Protocol> object.
+     */
+    response: null,
 
     /**
      * Constructor: mapfish.Searcher.Form
@@ -51,22 +64,36 @@ mapfish.Searcher.Form = OpenLayers.Class(mapfish.Searcher, {
      * {<mapfish.Searcher.Form>}
      */
     initialize: function(options) {
-        OpenLayers.Util.extend(this, options);
         mapfish.Searcher.prototype.initialize.call(this, options);
+        OpenLayers.Util.extend(this, options);
         if (!this.form) {
             OpenLayers.Console.error("no form set");
+            return;
+        }
+        if (!this.protocol) {
+            OpenLayers.Console.error("no protocol set");
             return;
         }
     },
 
     /**
      * APIMethod: triggerSearch
-     *      To be called to instruct the search mediator to trigger
-     *      search.
+     *      To be called to trigger search.
      */
     triggerSearch: function() {
-        this.mediator.cancelSearch();
-        this.mediator.triggerSearch();
+        // FIXME really we should rely on the protocol itself to
+        // cancel the request, the Protocol class in OpenLayers
+        // 2.7 does not expose a cancel() method
+        if (this.response) {
+            var response = this.response;
+            if (response.priv &&
+                typeof response.priv.abort == "function") {
+                response.priv.abort();
+                this.response = null;
+            }
+        }
+        this.response = this.protocol.read(
+            {filter: this.getFilter(), searcher: this});
     },
 
     /**

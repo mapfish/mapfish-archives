@@ -61,22 +61,22 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
 
     /**
      * APIProperty: configUrl
-     * {<String>} - The URL to access .../config.json. Either this property or
-     *              config must be set.
+     * {String} - The URL to access .../config.json. Either this property or
+     *            config must be set.
      */
     configUrl: null,
 
     /**
      * APIProperty: config
-     * {<Object>} - The response from .../config.json. Either this property or
-     *              configUrl must be set.
+     * {Object} - The response from .../config.json. Either this property or
+     *            configUrl must be set.
      */
     config: null,
 
     /**
      * APIProperty: layerTree
-     * {mapfish.widgets.LayerTree} - An optional layer tree. Needed only if you
-      *                              want to display legends.
+     * {<mapfish.widgets.LayerTree>} - An optional layer tree. Needed only if you
+      *                                want to display legends.
      */
     layerTree: null,
 
@@ -109,8 +109,8 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
 
     /**
      * Property: mask
-     * {<Ext.LoadingMask>} - The mask used when loading the configuration or
-     *                       when generating the PDF
+     * {Ext.LoadingMask} - The mask used when loading the configuration or
+     *                     when generating the PDF
      */
     mask: null,
 
@@ -395,7 +395,7 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
      * Method: getCenterRectangle
      *
      * Parameters:
-     * rectangle - {OpenLayers.Feature.Vector}
+     * rectangle - {<OpenLayers.Feature.Vector>}
      *
      * Returns:
      * {<OpenLayers.LonLat>} The center of the rectangle.
@@ -499,13 +499,13 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
             },
             function(request) { //failure
                 if(request.getURL) {
-                    Ext.Msg.alert('Warning',
+                    Ext.Msg.alert(OpenLayers.Lang.translate('mf.information'),
                         OpenLayers.Lang.translate('mf.print.popupBlocked') +
                         '<br />' +
                         '<a href="' + request.getURL + '" target="_blanc">' +
                         request.getURL+'</a>');
                 } else {
-                    Ext.Msg.alert("Error",
+                    Ext.Msg.alert(OpenLayers.Lang.translate('mf.error'),
                         OpenLayers.Lang.translate('mf.print.unableToPrint'));
                 }
                 this.mask.hide();
@@ -621,69 +621,6 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
     },
 
     /**
-     * Method: getScaleForName
-     *
-     * Finds the scale value in function of its name.
-     *
-     * Parameters:
-     * scaleName - {String}
-     *
-     * Returns:
-     * {Float}  
-     */
-    getScaleForName: function(scaleName) {
-        var scales = this.config.scales;
-        for (var i = 0; i < scales.length; ++i) {
-            var cur = scales[i];
-            if (cur.name == scaleName) {
-                return parseFloat(cur.value);
-            }
-        }
-    },
-
-    /**
-     * Method: getScaleForName
-     *
-     * Finds the scale value in function of its name.
-     *
-     * Parameters:
-     * scaleValue - {Float}
-     *
-     * Returns:
-     * {String}  
-     */
-    getScaleName: function(scaleValue) {
-        var scales = this.config.scales;
-        for (var i = 0; i < scales.length; ++i) {
-            var cur = scales[i];
-            if (cur.value == scaleValue) {
-                return cur.name;
-            }
-        }
-    },
-
-    /**
-     * Method: getDpiForName
-     *
-     * Finds the dpi value in function of its name.
-     *
-     * Parameters:
-     * dpiName - {String}
-     *
-     * Returns:
-     * {Float}
-     */
-    getDpiForName: function(dpiName) {
-        var dpis = this.config.scales;
-        for (var i = 0; i < dpis.length; ++i) {
-            var cur = dpis[i];
-            if (cur.name == dpiName) {
-                return parseInt(cur.value);
-            }
-        }
-    },
-
-    /**
      * Method: createScaleCombo
      */
     createScaleCombo: function() {
@@ -701,6 +638,8 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
             typeAhead: false,
             mode: 'local',
             id: 'scale_' + this.getId(),
+            hiddenId: 'scaleId_' + this.getId(),
+            hiddenName: "scale",
             name: "scale",
             editable: false,
             triggerAction: 'all',
@@ -728,6 +667,8 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
                 typeAhead: false,
                 mode: 'local',
                 id: 'dpi_' + this.getId(),
+                hiddenId: 'dpiId_' + this.getId(),
+                hiddenName: name,
                 name: name,
                 editable: false,
                 triggerAction: 'all',
@@ -761,6 +702,8 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
                 typeAhead: false,
                 mode: 'local',
                 id: 'layout_' + this.getId(),
+                hiddenId: 'layoutId_' + this.getId(),
+                hiddenName: name,
                 name: name,
                 editable: false,
                 triggerAction: 'all',

@@ -30,11 +30,36 @@ Ext.namespace('mapfish.widgets', 'mapfish.widgets.data');
  * This class is to be used when one wants to insert, remove, and
  * update features in a grid as a result of features being inserted,
  * removed, modified in a vector layer.
+ *
+ * Usage example:
+ * (start code)
+ * var layer = new OpenLayers.Layer.Vector("vector");
+ * var store = new Ext.data.Store({
+ *     reader: new mapfish.widgets.data.FeatureReader(
+ *         {}, [{name: "name", type: "string"}]
+ *     )
+ * });
+ * var mediator = new mapfish.widgets.data.LayerStoreMediator({
+ *     store: store,
+ *     filter: function(feature) {
+ *         return feature.state != OpenLayers.State.UNKNOWN;
+ *     }
+ * });
+ * (end)
  */
 
 /**
  * Constructor: mapfish.widgets.data.LayerStoreMediator
  * Create an instance of mapfish.widgets.data.LayerStoreMediator.
+ *
+ * Parameters:
+ * config - {Object} A config object used to set the layer
+ *     store mediator's properties (see below for the list
+ *     of supported properties), and configure it with the
+ *     Ext store; see the usage example above.
+ *
+ * Returns:
+ * {<mapfish.widgets.data.LayerStoreMediator>}
  */
 mapfish.widgets.data.LayerStoreMediator = function(config){
     var store = config.store;

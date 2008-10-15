@@ -57,7 +57,7 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
 
     /**
      * Property: rectangle
-     * {OpenLayers.Feature.Vector} - The rectangle representing the extent.
+     * {<OpenLayers.Feature.Vector>} - The rectangle representing the extent.
      */
     rectangle: null,
 
@@ -66,6 +66,12 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
      * {Ext.form.TextField} - The text field for editing the rotation.
      */
     rotation: null,
+
+    /**
+     * APIProperty: infoPanel
+     * {Ext.Panel} - An optional panel displayed after form fields.
+     */
+    infoPanel: null,
 
     /**
      * Method: fillComponent
@@ -100,6 +106,10 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
                 }
                 this.updateRectangle();
             }, this);
+        }
+
+        if (this.infoPanel != null) {
+            formPanel.add(this.infoPanel);
         }
 
         formPanel.addButton({
@@ -146,6 +156,11 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
         }
     },
 
+    /**
+     * Method: createTheRectangle
+     *
+     * Create the extent rectangle directly using the form's values
+     */
     createTheRectangle: function() {
         if (this.rectangle) this.layer.removeFeatures(this.rectangle);
         var layout = this.getCurLayout();
@@ -178,22 +193,36 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
         return this.getLayoutForName(layoutName);
     },
 
+    /**
+     * Method: getCurScale
+     *
+     * Returns:
+     * {Integer} - The scale currently selected
+     */
     getCurScale: function() {
         var values = this.formPanel.getForm().getValues();
-        return this.getScaleForName(values['scale']);
+        return values['scale'];
     },
 
+    /**
+     * Method: setCurScale
+     *
+     * Parameters:
+     * value - {Integer} the target scale
+     */
     setCurScale: function(value) {
         this.scale.setValue(value);
     },
 
     /**
      * Method: getCurDpi
-     * Returns the user selected DPI.
+     *
+     * Returns:
+     * {Integer} - the user selected DPI.
      */
     getCurDpi: function() {
         var values = this.formPanel.getForm().getValues();
-        return this.getDpiForName(values["dpi"]);
+        return values["dpi"];
     },
 
     /**
@@ -202,7 +231,7 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
      * Called when the rotation of the current page has been changed.
      *
      * Parameters:
-     * rotation - {float}
+     * rotation - {Float}
      */
     setCurRotation: function(rotation) {
         this.rotation.setValue(rotation);
