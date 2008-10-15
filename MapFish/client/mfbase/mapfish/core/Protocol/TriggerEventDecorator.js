@@ -91,7 +91,7 @@ mapfish.Protocol.TriggerEventDecorator = OpenLayers.Class(OpenLayers.Protocol, {
     },
 
     /**
-     * Method: read
+     * APIMethod: read
      * Construct a request for reading new features.
      *
      * Parameters:
@@ -113,7 +113,7 @@ mapfish.Protocol.TriggerEventDecorator = OpenLayers.Class(OpenLayers.Protocol, {
     
     
     /**
-     * Method: create
+     * APIMethod: create
      * Construct a request for writing newly created features.
      *
      * Parameters:
@@ -136,7 +136,7 @@ mapfish.Protocol.TriggerEventDecorator = OpenLayers.Class(OpenLayers.Protocol, {
     },
     
     /**
-     * Method: update
+     * APIMethod: update
      * Construct a request updating modified features.
      *
      * Parameters:
@@ -159,7 +159,7 @@ mapfish.Protocol.TriggerEventDecorator = OpenLayers.Class(OpenLayers.Protocol, {
     },
     
     /**
-     * Method: delete
+     * APIMethod: delete
      * Construct a request deleting a removed feature.
      *
      * Parameters:
@@ -181,7 +181,7 @@ mapfish.Protocol.TriggerEventDecorator = OpenLayers.Class(OpenLayers.Protocol, {
     },
 
     /**
-     * Method: commit
+     * APIMethod: commit
      * Go over the features and for each take action
      * based on the feature state. Possible actions are create,
      * update and delete.
