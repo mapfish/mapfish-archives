@@ -5,7 +5,7 @@
   <groupId>org.mapfish.geo</groupId>
   <artifactId>mapfish-geo-lib</artifactId>
   <packaging>jar</packaging>
-  <version>1.0rc1</version>
+  <version>1.0</version>
 
   <name>mapfish-geo-lib</name>
   <description>A java library for generating GeoJSON structures</description>
