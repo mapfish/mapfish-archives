@@ -51,6 +51,13 @@ mapfish.PrintProtocol = OpenLayers.Class({
     spec: null,
 
     /**
+     * APIProperty: params
+     * {Object} Additional params to send in the print service Ajax calls. Can
+     *          be used to set the "locale" parameter.
+     */
+    params: null,
+
+    /**
      * Constructor: OpenLayers.Layer
      *
      * Parameters:
@@ -58,12 +65,14 @@ mapfish.PrintProtocol = OpenLayers.Class({
      * config - {Object} the configuration as returned by the MapPrinterServlet.
      * overrides - {Object} the map that specify the print module overrides for
      *                      each layers.
-     * dpi - {Integer} the DPI resolution  
+     * dpi - {Integer} the DPI resolution
+     * params - {Object} additional params to send in the Ajax calls
      */
-    initialize: function(map, config, overrides, dpi) {
+    initialize: function(map, config, overrides, dpi, params) {
         this.config = config;
         this.spec = {pages: []};
         this.addMapParams(overrides, map, dpi);
+        this.params = params;
     },
 
     //TODO: we'll need some cleaner way to add pages and others to the spec.
@@ -79,8 +88,12 @@ mapfish.PrintProtocol = OpenLayers.Class({
      */
     getAllInOneUrl: function() {
         var json = new OpenLayers.Format.JSON();
-        return this.config.printURL + "?spec=" +
+        var result = this.config.printURL + "?spec=" +
                json.write(this.encodeForURL(this.spec));
+        if (this.params) {
+            result += "&" + OpenLayers.Util.getParameterString(this.params);
+        }
+        return result;
     },
 
     /**
@@ -105,14 +118,16 @@ mapfish.PrintProtocol = OpenLayers.Class({
 
         try {
             //The charset seems always to be UTF-8, regardless of the page's
-            var charset = "UTF-8";
-            /*+document.characterSet*/
+            var charset = "UTF-8";  /*+document.characterSet*/
+
+            var params = OpenLayers.Util.extend({
+                url: this.config.createURL
+            }, this.params);
+            
             OpenLayers.Request.POST({
                 url: this.config.createURL,
                 data: specTxt,
-                params: {
-                    url: this.config.createURL
-                },
+                params: params,
                 headers: {
                     'CONTENT-TYPE': "application/json; charset=" + charset
                 },
@@ -414,6 +429,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
 });
 
 
+//TODO 2.0: pass a config object instead of those 5 params
 /**
  * APIFunction: getConfiguration
  *
@@ -425,15 +441,16 @@ mapfish.PrintProtocol = OpenLayers.Class({
  *           configuration object when/if its received.
  * failure - {Function} the function that is called in case of error.
  * context - {Object} The context to use when calling the callbacks.
+ * params -  {Object} additional params to send in the Ajax calls
  */
 mapfish.PrintProtocol.getConfiguration = function(url, success,
-                                                  failure, context) {
+                                                  failure, context, params) {
     try {
+        params = OpenLayers.Util.extend(params, { url: url });
+
         OpenLayers.Request.GET({
             url: url,
-            params: {
-                url: url
-            },
+            params: params,
             callback: function(request) {
                 if (request.status >= 200 && request.status < 300) {
                     var json = new OpenLayers.Format.JSON();

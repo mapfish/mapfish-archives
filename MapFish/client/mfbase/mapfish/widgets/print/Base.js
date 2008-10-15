@@ -90,6 +90,13 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
     grids: null,
 
     /**
+     * APIProperty: serviceParams
+     * {Object} Additional params to send in the print service Ajax calls. Can
+     *          be used to set the "locale" parameter.
+     */
+    serviceParams: null,
+
+    /**
      * Property: pageDrag
      * {<OpenLayers.Control.DragFeature>} - The control to move the extent.
      */
@@ -148,7 +155,7 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
 
         if (this.config == null) {
             mapfish.PrintProtocol.getConfiguration(this.configUrl,
-                    this.configReceived, this.configFailed, this);
+                    this.configReceived, this.configFailed, this, this.serviceParams);
         } else {
             this.fillComponent();
         }
@@ -482,7 +489,7 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
         this.overrides[this.layer.name] = {visibility: false};
 
         var printCommand = new mapfish.PrintProtocol(this.map, this.config,
-                this.overrides, this.getCurDpi());
+                this.overrides, this.getCurDpi(), this.serviceParams);
         if (this.layerTree) {
             this.addLegends(printCommand.spec);
         }
