@@ -234,7 +234,7 @@ mapfish.Protocol.TriggerEventDecorator = OpenLayers.Class(OpenLayers.Protocol, {
      *     from the underlying protocol.
      */
     handleCRUD: function(options, response) {
-        if (options.callback) {
+        if (options && options.callback) {
             options.callback.call(options.scope, response);
         }
         this.events.triggerEvent("crudfinished", response);
