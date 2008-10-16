@@ -588,9 +588,7 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
                     icon:  mapfish.Util.relativeToAbsoluteURL(classNode.attributes.icon)
                 });
             }, this);
-            if(classesInfo.length>0) {
-                legends.push(layerInfo);
-            }
+            legends.push(layerInfo);
         }
 
         function goDeep(root) {
