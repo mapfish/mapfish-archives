@@ -107,6 +107,8 @@
             "core/Protocol/MapFish.js",
             "core/Protocol/MergeFilterDecorator.js",
             "core/Protocol/TriggerEventDecorator.js",
+            "core/Strategy.js",
+            "core/Strategy/ProtocolListener.js",
             "widgets/MapComponent.js",
             "widgets/Shortcuts.js",
             "widgets/data/FeatureReader.js",
