@@ -19,6 +19,7 @@
 
 /*
  * @requires core/PrintProtocol.js
+ * @requires core/Util.js
  * @requires OpenLayers/Control/DragFeature.js
  * @requires OpenLayers/Layer/Vector.js
  * @requires OpenLayers/Feature/Vector.js
