@@ -579,13 +579,13 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
 
         function addLayer(layerNode) {
             var layerInfo = {
-                name: layerNode.attributes.text,
+                name: layerNode.attributes.printText || layerNode.attributes.text,
                 icon:  mapfish.Util.relativeToAbsoluteURL(layerNode.attributes.icon)
             };
             var classesInfo = layerInfo.classes = [];
             layerNode.eachChild(function(classNode) {
                 classesInfo.push({
-                    name: classNode.attributes.text,
+                    name: classNode.attributes.printText || classNode.attributes.text,
                     icon:  mapfish.Util.relativeToAbsoluteURL(classNode.attributes.icon)
                 });
             }, this);
