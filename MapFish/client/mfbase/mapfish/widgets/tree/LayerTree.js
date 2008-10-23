@@ -39,13 +39,14 @@ mapfish.widgets.RadioTreeNodeUI = Ext.extend(Ext.tree.TreeNodeUI, {
         this.indentMarkup = n.parentNode ? n.parentNode.ui.getChildIndent() : '';
 
         var cb = typeof a.checked == 'boolean';
+        var radioGrp = n.attributes.radioGrp || "radioGrp";
 
         var href = a.href ? a.href : Ext.isGecko ? "" : "#";
         var buf = ['<li class="x-tree-node"><div ext:tree-node-id="',n.id,'" class="x-tree-node-el x-tree-node-leaf x-unselectable ', a.cls,'" unselectable="on">',
             '<span class="x-tree-node-indent">',this.indentMarkup,"</span>",
             '<img src="', this.emptyIcon, '" class="x-tree-ec-icon x-tree-elbow" />',
             '<img src="', a.icon || this.emptyIcon, '" class="x-tree-node-icon',(a.icon ? " x-tree-node-inline-icon" : ""),(a.iconCls ? " "+a.iconCls : ""),'" unselectable="on" />',
-            cb ? ('<input class="x-tree-node-cb" type="radio" name="radio_' + n.id + '" ' + (a.checked ? 'checked="checked" />' : '/>')) : '',
+            cb ? ('<input class="x-tree-node-cb" type="radio" id="'+ n.id + '" name="' + radioGrp + '" ' + (a.checked ? 'checked="checked" />' : '/>')) : '',
             '<a hidefocus="on" class="x-tree-node-anchor" href="',href,'" tabIndex="1" ',
              a.hrefTarget ? ' target="'+a.hrefTarget+'"' : "", '><span unselectable="on">',n.text,"</span></a></div>",
             '<ul class="x-tree-node-ct" style="display:none;"></ul>',
@@ -78,8 +79,10 @@ mapfish.widgets.RadioTreeNodeUI = Ext.extend(Ext.tree.TreeNodeUI, {
         mapfish.widgets.RadioTreeNodeUI.superclass.renderElements
                                                   .apply(this, arguments);
         var cbNode = Ext.DomQuery.selectNode(".x-tree-node-cb", this.elNode);
+        var radioGrp =  n.attributes.radioGrp || "radioGrp";
         cbNode.setAttribute("type", "radio");
-        cbNode.setAttribute("name", "radio_" + n.id);
+        cbNode.setAttribute("id",  n.id);
+        cbNode.setAttribute("name", radioGrp);
     },
 
     // private
@@ -601,7 +604,6 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                     }
                 }
             }, this);
-
             return layerVisibility;
         }
 
@@ -623,8 +625,9 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
             this.getRootNode().cascade(function(node) {
                 var checked = node.attributes.checked;
-
                 var layerNames = node.attributes.layerNames;
+                var radioGrp = null;
+
                 if (!layerNames)
                     return;
 
@@ -636,11 +639,24 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                     if (layerVisibility[layerName] == undefined)
                         OpenLayers.Console.error("Invalid layer: ", layerName);
 
+                    if (node.attributes.radio) {
+                        radioGrp = node.attributes.radioGrp || "radioGrp";
+
+                        if (!radioButton[radioGrp])
+                            radioButton[radioGrp] = {};
+
+                        radioButton[radioGrp][layerName] = checked;
+                    }
+
                     if (forcedVisibility[layerName])
                         continue;
                     if (node == clickedNode) {
                         if (this.baseLayerNames.indexOf(layerName) != -1) {
                             clickedBaseLayer = layerName;
+                        }
+                        if (radioGrp) {
+                            clickedRadioButton[0]  = radioGrp;
+                            clickedRadioButton[1]  = layerName;
                         }
                         forcedVisibility[layerName] = true;
                     }
@@ -702,6 +718,31 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         }
 
         /**
+         * Ensure only one radio button is checked by group.
+         *
+         * Parameters:
+         * layerVisibility - {Object} Map of layer name to {Boolean}
+         * clickedRadiButton - {Array} group name & layer name of the radio button that was clicked.
+         * radioButton - {Object} name of all radio button with checked state.
+         *               Contain the group name and the layer name.
+         * Returns:
+         * {Object} updated layerVisibility map
+         */
+        function applyRadioButtonRestriction(layerVisibility, clickedRadioButton,
+                                             radioButton) {
+            for (var radioGrp in radioButton) {
+                for (var layerName in radioButton[radioGrp]) {
+                    if (clickedRadioButton[0] == radioGrp) {
+                        layerVisibility[layerName] = layerName == clickedRadioButton[1];
+                    } else {
+                        layerVisibility[layerName] = radioButton[radioGrp][layerName];
+                    }
+                }
+            }
+            return layerVisibility;
+        }
+
+        /**
          * Updates the tree from the given layerVisibility object.
          *
          * Parameters:
@@ -753,7 +794,6 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
             var wmsLayers = {};
 
             for (var layerName in layerVisibility) {
-
                 var visible = layerVisibility[layerName];
 
                 var splitName = layerName.split(this.separator);
@@ -841,9 +881,12 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         }
 
         var currentBaseLayerName;
+
         if (this.map.baseLayer)
             currentBaseLayerName = this.map.baseLayer.name;
         var clickedBaseLayer;
+        var radioButton = {};
+        var clickedRadioButton = [];
 
         // Definition:
         // A sublayer is a selectable layer inside a layer.
@@ -854,6 +897,9 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
         applyBaseLayerRestriction.call(this, layerVisibility, clickedBaseLayer,
                                        currentBaseLayerName);
+
+        applyRadioButtonRestriction.call(this, layerVisibility, clickedRadioButton,
+                                         radioButton);
 
         updateTreeFromVisibility.call(this, layerVisibility);
 
@@ -1033,18 +1079,22 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
         this.getRootNode().cascade(function(node) {
             var layers;
-            if (!this.map || !(layers = this.nodeIdToLayers[node.id]))
+            if (!node.attributes.radio && (!this.map || !(layers = this.nodeIdToLayers[node.id])))
                 return;
 
-            var isBaseLayer = true;
-            Ext.each(layers, function(layer) {
-                if (!layer.isBaseLayer) {
-                    isBaseLayer = false;
-                    return false;
-                }
-            }, this);
 
-            if (isBaseLayer) {
+            var isBaseLayer = false;
+            if (layers) {
+                isBaseLayer = true;
+                Ext.each(layers, function(layer) {
+                    if (!layer.isBaseLayer) {
+                        isBaseLayer = false;
+                        return false;
+                    }
+                }, this);
+            }
+
+            if (isBaseLayer || node.attributes.radio) {
                 node.attributes.uiProvider = mapfish.widgets.RadioTreeNodeUI;
                 // The ui may already habe been instanciated here, so we
                 // replace it in this case.
