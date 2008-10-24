@@ -330,6 +330,52 @@ mapfish.PrintProtocol = OpenLayers.Class({
         }
         return layer;
     },
+    /**
+     * Method: convertMapServerLayer
+     *
+     * Builds the layer configuration from an {<OpenLayers.Layer.MapServer>} layer.
+     * The structure expected from the print module is:
+     * (start code)
+     * {
+     *   type: 'Mapserver'
+     *   baseURL: {String}
+     *   layers: [{String}]
+     *   styles: [{String}]
+     *   format: {String}
+     *   opacity: {Float}
+     *   singleTile: {boolean}
+     *   customParams: {
+     *     {String}: {String}
+     *   }
+     * }
+     * (end)
+     *
+     * Parameters:
+     * olLayer - {<OpenLayers.Layer.MapServer>} The OL layer.
+     *
+     * Returns:
+     * {Object} The config for this layer
+     */
+    convertMapServerLayer: function(olLayer) {
+        var layer = OpenLayers.Util.extend(this.convertLayer(olLayer),
+        {
+            type: 'MapServer',
+            layers: this.fixArray(olLayer.params.LAYERS || olLayer.params.layers),
+            format: olLayer.params.FORMAT || olLayer.params.format || olLayer.DEFAULT_PARAMS.format
+        });
+        for (var paramName in olLayer.params) {
+            var paramNameLow = paramName.toLowerCase();
+            if (olLayer.DEFAULT_PARAMS[paramNameLow] == null &&
+                paramNameLow != 'layers' &&
+                paramNameLow != 'format' &&
+                paramNameLow != 'width' &&
+                paramNameLow != 'height' &&
+                paramNameLow != 'srs') {
+                layer.customParams[paramName] = olLayer.params[paramName];
+            }
+        }
+        return layer;
+    },
 
     /**
      * Method: convertTileCacheLayer
@@ -544,6 +590,7 @@ mapfish.PrintProtocol.SUPPORTED_TYPES = {
     'OpenLayers.Layer.WMS': mapfish.PrintProtocol.prototype.convertWMSLayer,
     'OpenLayers.Layer.WMS.Untiled': mapfish.PrintProtocol.prototype.convertWMSLayer,
     'OpenLayers.Layer.TileCache': mapfish.PrintProtocol.prototype.convertTileCacheLayer,
-    'OpenLayers.Layer.Vector': mapfish.PrintProtocol.prototype.convertVectorLayer
+    'OpenLayers.Layer.Vector': mapfish.PrintProtocol.prototype.convertVectorLayer,
+    'OpenLayers.Layer.MapServer': mapfish.PrintProtocol.prototype.convertMapServerLayer
 };
 
