@@ -28,6 +28,11 @@ Ext.namespace('mapfish.widgets.print');
  * Class: mapfish.widgets.print.MultiPage
  * Automatically takes the layers from the given {<OpenLayers.Map>} instance.
  *
+ * If you put this panel directly inside an {Ext.TabPanel} or an accordion, it
+ * will activate/desactivate automaticaly. But if you have more complex
+ * layouts like windows or print panel in a panel in an {Ext.TabPanel}, it's
+ * your responsability to call enable() and disable().
+ *
  * Inherits from:
  * - {<mapfish.widgets.print.Base>}
  */
@@ -99,7 +104,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
         this.createGrid(innerPanel);
     },
 
-    onShowEvent: function() {
+    setUp: function() {
         if (this.config) {
             if(Ext.isGecko3) {
                 //ugly hack to fix a FF3 bug that makes the inner panels miss-aligned
@@ -109,7 +114,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
                     buggyDiv.setStyle("position", "relative");
                 }, 20);
             }
-            mapfish.widgets.print.Base.prototype.onShowEvent.call(this);
+            mapfish.widgets.print.Base.prototype.setUp.call(this);
         }
     },
 

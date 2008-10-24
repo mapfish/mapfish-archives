@@ -34,6 +34,11 @@ Ext.namespace('mapfish.widgets.print');
  * Base class for the Ext panels used to communicate with the print module,
  * automatically take the layers from the given {<OpenLayers.Map>} instance.
  *
+ * If you put this panel directly inside an {Ext.TabPanel} or an accordion, it
+ * will activate/desactivate automaticaly. But if you have more complex
+ * layouts like windows or print panel in a panel in an {Ext.TabPanel}, it's
+ * your responsability to call enable() and disable().
+ *
  * Inherits from:
  * - {Ext.Panel}
  */
@@ -134,12 +139,16 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
         mapfish.widgets.print.Base.superclass.initComponent.call(this);
 
         //for accordion
-        this.on('expand', this.onShowEvent, this);
-        this.on('collapse', this.onHideEvent, this);
+        this.on('expand', this.setUp, this);
+        this.on('collapse', this.tearDown, this);
 
         //for tabs
-        this.on('activate', this.onShowEvent, this);
-        this.on('deactivate', this.onHideEvent, this);
+        this.on('activate', this.setUp, this);
+        this.on('deactivate', this.tearDown, this);
+
+        //for manual enable/disable
+        this.on('enable', this.setUp, this);
+        this.on('disable', this.tearDown, this);
 
         if (this.overrides == null) {
             this.overrides = {};
@@ -189,7 +198,7 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
      *
      * Called when the panel is activated.
      */
-    onShowEvent: function() {
+    setUp: function() {
         if (this.config) {
             this.map.addLayer(this.getOrCreateLayer());
             this.pageDrag.activate();
@@ -201,7 +210,7 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
      *
      * Called when the panel is de-activated.
      */
-    onHideEvent: function() {
+    tearDown: function() {
         if (this.config && this.pageDrag && this.layer) {
             this.pageDrag.destroy();
             this.pageDrag = null;

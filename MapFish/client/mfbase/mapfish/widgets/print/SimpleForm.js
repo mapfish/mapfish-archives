@@ -28,6 +28,11 @@ Ext.namespace('mapfish.widgets.print');
  * Class: mapfish.widgets.print.SimpleForm
  * Automatically takes the layers from the given {<OpenLayers.Map>} instance.
  *
+ * If you put this panel directly inside an {Ext.TabPanel} or an accordion, it
+ * will activate/desactivate automaticaly. But if you have more complex
+ * layouts like windows or print panel in a panel in an {Ext.TabPanel}, it's
+ * your responsability to call enable() and disable().
+ *
  * Inherits from:
  * - {<mapfish.widgets.print.Base>}
  */
