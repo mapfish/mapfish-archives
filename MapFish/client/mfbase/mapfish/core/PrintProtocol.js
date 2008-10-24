@@ -75,8 +75,6 @@ mapfish.PrintProtocol = OpenLayers.Class({
         this.params = params;
     },
 
-    //TODO: we'll need some cleaner way to add pages and others to the spec.
-
     /**
      * APIMethod: getAllInOneUrl
      *
@@ -120,7 +118,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
             //The charset seems always to be UTF-8, regardless of the page's
             var charset = "UTF-8";  /*+document.characterSet*/
 
-            var params = OpenLayers.Util.extend({
+            var params = OpenLayers.Util.applyDefaults({
                 url: this.config.createURL
             }, this.params);
             
@@ -369,6 +367,72 @@ mapfish.PrintProtocol = OpenLayers.Class({
     },
 
     /**
+     * Method: convertVectorLayer
+     *
+     * Builds the layer configuration from an {OpenLayers.Layer.Vector} layer.
+     * The structure expected from the print module is:
+     * (start code)
+     * {
+     *   type: 'Vector'
+     *   styles: {Object}
+     *   styleProperty: {String}
+     *   geoJson: {Object}
+     *   opacity: {Float}
+     * }
+     * (end)
+     *
+     * Parameters:
+     * olLayer - {OpenLayers.Layer.Vector} The OL layer.
+     *
+     * Returns:
+     * {Object} The config for this layer
+     */
+    convertVectorLayer: function(olLayer) {
+        var olFeatures = olLayer.features;
+        var features = [];
+        var styles = {
+        };
+        var formatter = new OpenLayers.Format.GeoJSON();
+        var nextId = 1;
+        for (var i = 0; i < olFeatures.length; ++i) {
+            var feature = olFeatures[i];
+            var style = feature.style || olLayer.style || olLayer.styleMap.createSymbolizer(feature, feature.renderIntent);
+            var styleName;
+            if (style._printId) {
+                //this style is already known
+                styleName = style._printId;
+            } else {
+                //new style
+                style._printId = styleName = nextId++;
+                styles[styleName] = style;
+
+                //Make the URLs absolute
+                if(style.externalGraphic) {
+                    style.externalGraphic = mapfish.Util.relativeToAbsoluteURL(style.externalGraphic);
+                }
+            }
+            var featureGeoJson = formatter.extract.feature.call(formatter, feature);
+            featureGeoJson.properties._style = styleName;
+            features.push(featureGeoJson);
+        }
+        for (var key in styles) {
+            delete styles[key]._printId;
+        }
+
+        var geoJson = {
+            "type": "FeatureCollection",
+            "features": features
+        };
+        return OpenLayers.Util.extend(this.convertLayer(olLayer), {
+            type: 'Vector',
+            styles: styles,
+            styleProperty: '_style',
+            geoJson: geoJson,
+            opacity:  (olLayer.opacity != null) ? olLayer.opacity : 1.0
+        });
+    },
+
+    /**
      * Method: fixArray
      *
      * In some fields, OpenLayers allows to use a coma separated string instead
@@ -479,6 +543,7 @@ mapfish.PrintProtocol.SUPPORTED_TYPES = {
     'OpenLayers.Layer': mapfish.PrintProtocol.IGNORED,
     'OpenLayers.Layer.WMS': mapfish.PrintProtocol.prototype.convertWMSLayer,
     'OpenLayers.Layer.WMS.Untiled': mapfish.PrintProtocol.prototype.convertWMSLayer,
-    'OpenLayers.Layer.TileCache': mapfish.PrintProtocol.prototype.convertTileCacheLayer
+    'OpenLayers.Layer.TileCache': mapfish.PrintProtocol.prototype.convertTileCacheLayer,
+    'OpenLayers.Layer.Vector': mapfish.PrintProtocol.prototype.convertVectorLayer
 };
 

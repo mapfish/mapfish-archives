@@ -118,7 +118,67 @@
         });
         t.eq(json.write(print.spec), json.write(expected), "Results with two layers (two visible)");
     }
---></script>
+
+
+    function test_PrintProtocol_vectorStyles(t) {
+        t.plan(1);
+
+        var map = new OpenLayers.Map('map');
+        var vector = new OpenLayers.Layer.Vector("Vector", {
+            isBaseLayer: true
+        });
+        map.addLayers([vector]);
+        var style1={toto:1};
+        var feature1 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0), {}, style1);
+        var feature2 = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(1,0), {}, style1);
+        feature1.id="toto";
+        feature2.id="titi";
+        vector.addFeatures([
+            feature1,
+            feature2
+        ]);
+
+        var json = new OpenLayers.Format.JSON();
+
+        var print = new mapfish.PrintProtocol(map, "/print.pdf", {}, 100);
+        var expected = {
+            "pages": [],
+            dpi: 100,
+            "units":"degrees",
+            "srs":"EPSG:4326",
+            "layers":[{
+                "opacity":1,
+                "customParams":{},
+                "type":"Vector",
+                "styles":{
+                    "1":{"toto":1}
+                },
+                "styleProperty":"_style",
+                "geoJson":{
+                    "type":"FeatureCollection",
+                    "features":[{
+                        "type":"Feature",
+                        "id":"toto",
+                        "properties":{"_style":1},
+                        "geometry":{
+                            "type":"Point",
+                            "coordinates":[0,0]
+                        }
+                    },{
+                        "type":"Feature",
+                        "id":"titi",
+                        "properties":{"_style":1},
+                        "geometry":{
+                            "type":"Point",
+                            "coordinates":[1,0]
+                        }
+                    }]
+                }
+            }]
+        };
+        t.eq(json.write(print.spec), json.write(expected), "same style");
+    }
+    --></script>
 
   </head>
   <body>
