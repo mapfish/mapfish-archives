@@ -2,6 +2,8 @@
  * @requires OpenLayers/Lang/en.js
  */
 OpenLayers.Util.extend(OpenLayers.Lang.en, {
+    'mf.layertree.opacity': 'Opacity',
+    'mf.layertree.remove': 'Remove',
     'mf.print.mapTitle': 'Title',
     'mf.print.comment': 'Comments',
     'mf.print.loadingConfig': 'Loading the configuration...',

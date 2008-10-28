@@ -26,8 +26,16 @@
       Ext.onReady(function() {
         var map = c2corgCreateMap("map");
 
-        var tree = new mapfish.widgets.LayerTree({map: map, el: 'tree', 
-                                                  showWmsLegend: true});
+        var tree = new mapfish.widgets.LayerTree({
+          map: map, el: 'tree', 
+          showWmsLegend: true,
+          plugins: [
+            mapfish.widgets.LayerTree.createContextualMenuPlugin([
+              'opacitySlide',
+              'remove'
+            ])
+          ]
+        });
         tree.render();
 
       }, this);

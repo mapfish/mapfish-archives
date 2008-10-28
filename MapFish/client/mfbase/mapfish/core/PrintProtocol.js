@@ -248,7 +248,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
             if (isNaN(parseInt(key))) {
                 var value = overrides[key];
                 if (key == 'layers' || key == 'styles') {
-                    value = this.fixArray(value);
+                    value = mapfish.Util.fixArray(value);
                 }
                 if (layer[key] != null) {
                     layer[key] = value;
@@ -313,10 +313,10 @@ mapfish.PrintProtocol = OpenLayers.Class({
         var layer = OpenLayers.Util.extend(this.convertLayer(olLayer),
         {
             type: 'WMS',
-            layers: this.fixArray(olLayer.params.LAYERS),
+            layers: mapfish.Util.fixArray(olLayer.params.LAYERS),
             format: olLayer.params.FORMAT || olLayer.DEFAULT_PARAMS.format,
-            styles: this.fixArray(olLayer.params.STYLES ||
-                                  olLayer.DEFAULT_PARAMS.styles)
+            styles: mapfish.Util.fixArray(olLayer.params.STYLES ||
+                                          olLayer.DEFAULT_PARAMS.styles)
         });
         for (var paramName in olLayer.params) {
             var paramNameLow = paramName.toLowerCase();
@@ -476,28 +476,6 @@ mapfish.PrintProtocol = OpenLayers.Class({
             geoJson: geoJson,
             opacity:  (olLayer.opacity != null) ? olLayer.opacity : 1.0
         });
-    },
-
-    /**
-     * Method: fixArray
-     *
-     * In some fields, OpenLayers allows to use a coma separated string instead
-     * of an array. This method make sure we end up with an array.
-     *
-     * Parameters:
-     * subs - {String/Array}
-     *
-     * Returns:
-     * {Array}
-     */
-    fixArray: function(subs) {
-        if (subs == '' || subs == null) {
-            return [];
-        } else if (subs instanceof Array) {
-            return subs;
-        } else {
-            return subs.split(',');
-        }
     },
 
     /**

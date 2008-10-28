@@ -959,13 +959,18 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                             iconUrl = l.url + paramsString;
                         }
 
-                        wmsChildren.push({text: w, // TODO: i18n
-                                          checked: l.getVisibility(),
-                                          icon: iconUrl,
-                                          layerName: l.name + this.separator + w,
-                                          children: [],
-                                          cls: "cf-wms-node"
-                                          });
+                        var wmsChild = {text: w, // TODO: i18n
+                            checked: l.getVisibility(),
+                            icon: iconUrl,
+                            layerName: l.name + this.separator + w,
+                            children: [],
+                            cls: "cf-wms-node"
+                        };
+                        if(this.ascending) {
+                            wmsChildren.push(wmsChild);
+                        } else {
+                            wmsChildren.unshift(wmsChild);
+                        }
                     }
                 }
             }
