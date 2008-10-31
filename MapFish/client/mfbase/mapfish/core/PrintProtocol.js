@@ -360,7 +360,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
         var layer = OpenLayers.Util.extend(this.convertLayer(olLayer),
         {
             type: 'MapServer',
-            layers: this.fixArray(olLayer.params.LAYERS || olLayer.params.layers),
+            layers: mapfish.Util.fixArray(olLayer.params.LAYERS || olLayer.params.layers),
             format: olLayer.params.FORMAT || olLayer.params.format || olLayer.DEFAULT_PARAMS.format
         });
         for (var paramName in olLayer.params) {
