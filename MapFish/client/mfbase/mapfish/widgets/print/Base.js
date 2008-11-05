@@ -138,6 +138,8 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
     initComponent: function() {
         mapfish.widgets.print.Base.superclass.initComponent.call(this);
 
+        this.addEvents("configloaded");
+
         //for accordion
         this.on('expand', this.setUp, this);
         this.on('collapse', this.tearDown, this);
@@ -178,6 +180,7 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
         this.config = config;
         this.fillComponent();
         this.doLayout();
+        this.fireEvent("configloaded");
     },
 
     configFailed: function() {
