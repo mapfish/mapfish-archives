@@ -569,6 +569,7 @@ mapfish.PrintProtocol.SUPPORTED_TYPES = {
     'OpenLayers.Layer.WMS.Untiled': mapfish.PrintProtocol.prototype.convertWMSLayer,
     'OpenLayers.Layer.TileCache': mapfish.PrintProtocol.prototype.convertTileCacheLayer,
     'OpenLayers.Layer.Vector': mapfish.PrintProtocol.prototype.convertVectorLayer,
-    'OpenLayers.Layer.MapServer': mapfish.PrintProtocol.prototype.convertMapServerLayer
+    'OpenLayers.Layer.MapServer': mapfish.PrintProtocol.prototype.convertMapServerLayer,
+    'OpenLayers.Layer.MapServer.Untiled': mapfish.PrintProtocol.prototype.convertMapServerLayer
 };
 
