@@ -188,7 +188,7 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
 
                 if (params[filter.property]) {
                     OpenLayers.Console.error('Filter contains multiple Comparison ' +
-                               'filters for the same property ' + filer.property);
+                               'filters for the same property ' + filter.property);
                         return false;
                 }
                 params[filter.property] = filter.value;
