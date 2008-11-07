@@ -180,6 +180,8 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
         this.config = config;
         this.fillComponent();
         this.doLayout();
+        // for the case the widget was opened before the config was received
+        this.setUp();
         this.fireEvent("configloaded");
     },
 
@@ -202,7 +204,7 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
      * Called when the panel is activated.
      */
     setUp: function() {
-        if (this.config) {
+        if (!this.disabled && this.isVisible() && this.config && !this.layer) {
             this.map.addLayer(this.getOrCreateLayer());
             this.pageDrag.activate();
         }
