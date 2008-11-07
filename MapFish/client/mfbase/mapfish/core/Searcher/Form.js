@@ -41,7 +41,7 @@ mapfish.Searcher.Form = OpenLayers.Class(mapfish.Searcher, {
     protocol: null,
 
     /**
-     * APIProperty: map
+     * APIProperty: form
      * {DOMElement} The form node.
      */
     form: null,
