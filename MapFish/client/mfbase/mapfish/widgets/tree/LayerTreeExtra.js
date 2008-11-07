@@ -79,7 +79,7 @@ mapfish.widgets.LayerTree.removeNode = function(layerTree, node) {
     });
     node.remove();
     layerTree._updateCachedObjects();
-}
+};
 
 /**
  * APIConstant: mapfish.widgets.LayerTree.MenuFeatures
@@ -135,7 +135,7 @@ mapfish.widgets.LayerTree.MenuFeatures = {
             handler: function() {
                 mapfish.widgets.LayerTree.removeNode(layerTree, node);
             }
-        }
+        };
     }
 };
 

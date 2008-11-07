@@ -53,7 +53,7 @@ Ext.namespace('mapfish.widgets');
 mapfish.widgets.Shortcuts = function(config) {
     Ext.apply(this, config);
     mapfish.widgets.Shortcuts.superclass.constructor.call(this);
-}
+};
 
 Ext.extend(mapfish.widgets.Shortcuts, Ext.Container, {
 

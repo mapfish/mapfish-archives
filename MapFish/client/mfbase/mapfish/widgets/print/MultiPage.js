@@ -315,7 +315,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
             scale: scale,
             rotation: 0,
             rectangle: feature
-        }
+        };
         for (var i = 0; i < this.columns.length; ++i) {
             var cur = this.columns[i].dataIndex;
             if (newPage[cur] == null) {

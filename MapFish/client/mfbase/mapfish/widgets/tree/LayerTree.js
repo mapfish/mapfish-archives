@@ -145,7 +145,7 @@ mapfish.widgets.LayerTreeEventModel = Ext.extend(Ext.tree.TreeEventModel, {
 mapfish.widgets.LayerTree = function(config) {
     Ext.apply(this, config);
     mapfish.widgets.LayerTree.superclass.constructor.call(this);
-}
+};
 
 Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
@@ -472,7 +472,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
             var checkboxChildren = [];
             node.eachChild(function(child) {
                 if (tree.hasCheckbox(child))
-                    checkboxChildren.push(child)
+                    checkboxChildren.push(child);
             }, this);
 
             // If this node has no children with checkbox, its checked state
@@ -803,7 +803,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                 delete layerVisibility[layerName];
 
                 layerName = splitName[0];
-                sublayerName = splitName[1];
+                var sublayerName = splitName[1];
 
                 if (!wmsLayers[layerName]) {
                     wmsLayers[layerName] = [];

@@ -255,14 +255,14 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
                 } else {
                     self.pageDragStart(feature);
                 }
-            }
+            };
             this.pageDrag.onDrag = function(feature) {
                 OpenLayers.Control.DragFeature.prototype.onDrag.apply(this, arguments);
                 if (!feature) feature = curFeature;
                 if (feature.attributes.rotate) {
                     self.pageRotated(feature);
                 }
-            }
+            };
             this.pageDrag.onComplete = function(feature) {
                 OpenLayers.Control.DragFeature.prototype.onComplete.apply(this, arguments);
                 if (!feature) feature = curFeature;
@@ -272,7 +272,7 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
                     self.pageDragComplete(feature);
                 }
                 curFeature = null;
-            }
+            };
 
             this.afterLayerCreated();
         }
@@ -470,7 +470,7 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
             avails.push(parseFloat(availsTxt[i].value));
         }
         avails.sort(function(a, b) {
-            return a - b
+            return a - b;
         });
 
         var bounds = this.map.getExtent();

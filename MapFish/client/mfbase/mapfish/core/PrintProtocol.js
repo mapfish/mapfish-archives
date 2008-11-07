@@ -556,7 +556,7 @@ mapfish.PrintProtocol.getConfiguration = function(url, success,
     } catch(err) {
         failure.call(context, err);
     }
-}
+};
 
 
 mapfish.PrintProtocol.IGNORED = function() {
