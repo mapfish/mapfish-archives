@@ -199,12 +199,32 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
     },
 
     /**
+     * Method: isReallyVisible
+     *
+     * One cannot trust Ext's isVisible method. If a panel is within another
+     * panel that is not visible it returns true which is utterly wrong.
+     *
+     * Returns:
+     * {Boolean} True of the panel is really visible
+     */
+    isReallyVisible: function() {
+        if (!this.isVisible() || !this.body.isVisible(true)) return false;
+        var result = true;
+        this.bubble(function(component) {
+            return result = result &&
+                component.isVisible() &&
+                (!component.body || component.body.isVisible());
+        }, this);
+        return result;
+    },
+
+    /**
      * Method: onShowEvent
      *
      * Called when the panel is activated.
      */
     setUp: function() {
-        if (!this.disabled && this.isVisible() && this.config && !this.layer) {
+        if (!this.disabled && this.isReallyVisible() && this.config && !this.layer) {
             this.map.addLayer(this.getOrCreateLayer());
             this.pageDrag.activate();
         }
