@@ -112,6 +112,7 @@ Group: MapFish  {
       Group: LayerTree  {
 
          File: LayerTree  (no auto-title, widgets/tree/LayerTree.js)
+         File: LayerTreeExtra (no auto-title, widgets/tree/LayerTreeExtra.js)
          }  # Group: LayerTree
 
       Group: Toolbar  {
