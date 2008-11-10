@@ -219,6 +219,22 @@
         t.eq(bool, true,
              "isFilter returns expected value");
     }
+
+    function test_MergeFilterDecorator_mergeFilters(t) {
+        t.plan(1);
+
+        var decorator, filter;
+
+        decorator = new mapfish.Protocol.MergeFilterDecorator({
+            protocol: new OpenLayers.Protocol()
+        });
+        filter = decorator.mergeFilters({foo: 'bar'});
+
+        t.eq(filter.CLASS_NAME, "OpenLayers.Filter.Logical",
+             "mergeFilter returns an appropriate filter even if the one " +
+             "passed as argument is a simple object");
+
+    }
 --></script>
 
   </head>

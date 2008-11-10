@@ -127,6 +127,10 @@ mapfish.Protocol.MergeFilterDecorator = OpenLayers.Class(OpenLayers.Protocol, {
      */
     mergeFilters: function(filter, searcher) {
         var i, len, s;
+        // ensure that filter is an OpenLayers.Filter instance
+        if (filter && !this.isFilter(filter)) {
+            filter = this.fromObjToFilter(filter);
+        }
         for (i = 0, len = this.searchers.length; i < len; i++) {
             s = this.searchers[i];
             if (s != searcher) {
@@ -154,8 +158,6 @@ mapfish.Protocol.MergeFilterDecorator = OpenLayers.Class(OpenLayers.Protocol, {
             filter = new OpenLayers.Filter.Logical({
                 type: OpenLayers.Filter.Logical.AND
             });
-        } else if (!this.isFilter(filter)) {
-            filter = this.fromObjToFilter(filter);
         } else if (!this.isLogicalFilter(filter)) {
             filter = new OpenLayers.Filter.Logical({
                 type: OpenLayers.Filter.Logical.AND,
