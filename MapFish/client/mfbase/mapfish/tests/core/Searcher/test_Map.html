@@ -63,9 +63,10 @@
     function test_Map_getFilter(t) {
         t.plan(5);
 
-        var protocol, lonlat, res, searcher, filter;
+        var protocol, extent, lonlat, res, searcher, filter;
 
         protocol = new OpenLayers.Protocol();
+        extent = new OpenLayers.Bounds(1.0,2.0,3.0,4.0);
         lonlat = new OpenLayers.LonLat(4.0, 5.0);
         res = 5.0;
 
@@ -77,6 +78,9 @@
                 },
                 getResolution: function() {
                     return res;
+                },
+                getExtent: function() {
+                    return extent;
                 }
             }
         });
@@ -98,10 +102,11 @@
              "getFilter returns a object with expected tolerance property");
 
         // 1 test
-        searcher.passFilter = false;
-        filter = searcher.getFilter();
-        t.eq(filter, null,
-             "getFilter returns null if passFilter is false");
+        searcher.mode =  mapfish.Searcher.Map.EXTENT;
+        searcher.position = null;
+        filter = searcher.getFilter();        
+        t.eq(filter.value.toBBOX(), extent.toBBOX(),
+             "getFilter computes position value if null and mode is EXTENT");
     }
 --></script>
 

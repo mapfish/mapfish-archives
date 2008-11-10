@@ -296,7 +296,6 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
      */
     handleMoveend: function() {
         this.position = this.map.getExtent();
-        this.popupLonLat = this.position.getCenterLonLat();
         this.triggerSearch();
     },
 
@@ -402,6 +401,13 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
      */
     getFilter: function() {
         var filter = null;
+
+        // Because Extent mode doesn't really require a user action
+        // and getFilter can be called when merging filters,
+        // we need to ensure that position has a value
+        if (this.mode == mapfish.Searcher.Map.EXTENT && !this.position) {
+            this.position = this.map.getExtent();
+        }
         if (this.position) {
             if (this.position instanceof OpenLayers.Bounds) {
                 filter = new OpenLayers.Filter.Spatial({
