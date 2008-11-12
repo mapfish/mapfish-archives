@@ -157,7 +157,7 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
         }
 
         this.on('render', function() {
-            var mask = this.mask = new Ext.LoadMask(this.getEl(), {
+            var mask = this.mask = new Ext.LoadMask(this.body, {
                 msg: OpenLayers.Lang.translate('mf.print.loadingConfig')
             });
             if (this.config == null) {
