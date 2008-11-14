@@ -11,7 +11,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.de, {
     'mf.print.unableToPrint': "Unable to print",
     'mf.print.generatingPDF': "Generierung des PDFs...",
     'mf.print.dpi': 'DPI',
-    'mf.print.scale': 'Maßstab',
+    'mf.print.scale': 'Massstab',
     'mf.print.rotation': 'Rotation',
     'mf.print.print': 'Drücken',
     'mf.print.resetPos': 'Reset Pos.',
