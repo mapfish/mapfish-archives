@@ -25,5 +25,15 @@ OpenLayers.Util.extend(OpenLayers.Lang.de, {
                        'Button klicken um eine Seite zu hinzufügen.',
     'mf.error': 'Fehler',
     'mf.warning': 'Warnung',
-    'mf.information': 'Information'
+    'mf.information': 'Information',
+    'mf.recenter.x': 'X',
+    'mf.recenter.y': 'Y',
+    'mf.recenter.submit': 'Recenter',
+    'mf.recenter.missingCoords': 'Some coordinates are missing.',
+    'mf.recenter.outOfRangeCoords': 'Submitted coordinates (${myX}, ${myY}) are not in the map area<br />' +
+                                    'and must be within following ranges:<br/>' +
+                                    '${coordX} between ${minCoordX} and ${maxCoordX},<br />' +
+                                    '${coordY} between ${minCoordY} and ${maxCoordY}',
+    'mf.recenter.ws.error': 'Ein Fehler ist bei Zugang zum Webdienst vorgekommen:',
+    'mf.recenter.ws.service': 'Ausgewählter Webdienst'
 });
