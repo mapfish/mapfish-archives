@@ -35,6 +35,20 @@
  * configuration, this can be used as well if a layer's URL points to a
  * TileCache service to allow the print module to access the WMS service
  * directly.
+ *
+ * An override structure may look like this:
+ * (start code)
+ * {
+ *   'layerName1': { visibility: false },
+ *   'layerName2': {
+ *     visibility: false,
+ *     300: { visibility: true }
+ *   }
+ * }
+ * (end)
+ *
+ * In this example, the OL layer named "layerName1" is never printed. The OL
+ * layer "layerName2" is visible only when printed at 300DPI.
  */
 mapfish.PrintProtocol = OpenLayers.Class({
     /**
