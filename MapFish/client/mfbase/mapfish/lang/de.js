@@ -4,6 +4,7 @@
 OpenLayers.Util.extend(OpenLayers.Lang.de, {
     'mf.layertree.opacity': 'Opazität',
     'mf.layertree.remove': 'Ausblenden',
+    'mf.layertree.zoomToExtent': 'Zoom object zoomen', //TODO: find a better translation
     'mf.print.mapTitle': 'Titel',
     'mf.print.comment': 'Bemerkung',
     'mf.print.loadingConfig': 'Laden der Konfiguration...',

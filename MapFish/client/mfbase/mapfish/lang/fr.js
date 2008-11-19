@@ -5,6 +5,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     'scale': "Echelle = 1 : ${scaleDenom}",
     'mf.layertree.opacity': 'Opacité',
     'mf.layertree.remove': 'Supprimer',
+    'mf.layertree.zoomToExtent': 'Zoom sur l\'emprise',    
     'mf.print.mapTitle': 'Titre',
     'mf.print.comment': 'Commentaires',
     'mf.print.unableToPrint': "Impossible d'imprimer",

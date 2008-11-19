@@ -46,7 +46,7 @@ mapfish.widgets.LayerTree.getNodeLayers = function(layerTree, node) {
 /**
  * APIFunction: mapfish.widgets.LayerTree.removeNode
  *
- * Remove all the OL layers from the map corresponding to a node. 
+ * Remove all the OL layers from the map corresponding to a node.
  *
  * Parameters:
  * layerTree - {<mapfish.widget.LayerTree>}
@@ -61,10 +61,10 @@ mapfish.widgets.LayerTree.removeNode = function(layerTree, node) {
                 var olLayer = layerTree.layerNameToLayer[layerName[0]];
                 var wmsLayer = layerName[1];
                 var layerList;
-                if(olLayer.params.LAYERS) {
+                if (olLayer.params.LAYERS) {
                     layerList = olLayer.params.LAYERS = mapfish.Util.fixArray(olLayer.params.LAYERS);
                 } else {
-                    layerList = olLayer.params.layers = mapfish.Util.fixArray(olLayer.params.layers);                    
+                    layerList = olLayer.params.layers = mapfish.Util.fixArray(olLayer.params.layers);
                 }
                 if (wmsLayer && layerList) {
                     layerList.remove(wmsLayer);
@@ -123,9 +123,9 @@ mapfish.widgets.LayerTree.MenuFeatures = {
 
     remove: function(layerTree, node, olLayers) {
         if (olLayers.length == 0) return null;
-        for(var i=0; i<olLayers.length; ++i) {
-            var layer=olLayers[i];
-            if(layer.isBaseLayer && layer.getVisibility()) {
+        for (var i = 0; i < olLayers.length; ++i) {
+            var layer = olLayers[i];
+            if (layer.isBaseLayer && layer.getVisibility()) {
                 //do not allow to remove base layers 
                 return null;
             }
@@ -136,6 +136,25 @@ mapfish.widgets.LayerTree.MenuFeatures = {
                 mapfish.widgets.LayerTree.removeNode(layerTree, node);
             }
         };
+    },
+
+    zoomToExtent: function(layerTree, node, olLayers) {
+        if (olLayers.length == 0) return null;
+        var bbox = null;
+        for (var i = 0; i < olLayers.length; ++i) {
+            var layer = olLayers[i];
+            if (bbox) {
+                bbox.extend(layer.maxExtent);
+            } else {
+                bbox = layer.maxExtent.clone();
+            }
+        }
+        return {
+            text: OpenLayers.Lang.translate('mf.layertree.zoomToExtent'),
+            handler: function() {
+                layerTree.map.zoomToExtent(bbox);
+            }
+        };
     }
 };
 
@@ -143,11 +162,14 @@ mapfish.widgets.LayerTree.MenuFeatures = {
  * APIFunction: mapfish.widgets.createContextualMenuPlugin
  *
  * Creates an EXT plugin that adds a contextual menu to the layer tree.
+ * On most browsers, this menu is shown when you right click a node. On Opera
+ * it's displayed when you left click a node while holding SHIFT or CTRL.
  *
  * The standard options are:
  *  - remove: allows to remove the layer
  *  - opacitySlide: a sub menu entry that contains a slider to change the opacity
  *  - opacitySlideDirect: like opacitySlide but without sub-menu
+ *  - zoomToExtent: will zoom in or out for having the whole layer displayer in the map
  *
  * Options can be added by adding them to mapfish.widgets.LayerTree.MenuFeatures
  *
@@ -169,9 +191,7 @@ mapfish.widgets.LayerTree.MenuFeatures = {
 mapfish.widgets.LayerTree.createContextualMenuPlugin = function(options) {
     return {
         init: function(layerTree) {
-            layerTree.on('contextMenu', function(node, e) {
-                e.stopEvent();  //we don't want to display the browser's menu
-
+            function openMenu(node, e) {
                 var olLayers = mapfish.widgets.LayerTree.getNodeLayers(layerTree, node);
 
                 var items = [];
@@ -199,8 +219,22 @@ mapfish.widgets.LayerTree.createContextualMenuPlugin = function(options) {
                     menu.on('hide', function() {
                         menu.destroy();
                     });
-                }
-            });
+                }                
+            }
+
+            if(Ext.isOpera) {
+                layerTree.on('click', function(node, e) {
+                    if(e.hasModifier()) {
+                        e.stopEvent();  //we don't want to display the browser's menu
+                        openMenu(node, e);
+                    }
+                });
+            } else {
+                layerTree.on('contextMenu', function(node, e) {
+                    e.stopEvent();  //we don't want to display the browser's menu
+                    openMenu(node, e);
+                });
+            }
         }
     };
 };
