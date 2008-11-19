@@ -975,20 +975,23 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                 }
             }
 
-            // We hide the layers using css instead of removing them from the
-            // model, so that their position is remembered when drag and
-            // drop is used.
-
-            var className = '';
+            var info = {
+                text: l.name, // TODO: i18n
+                checked: l.getVisibility(),
+                layerName: (wmsChildren.length > 0 ? null : l.name),
+                children: wmsChildren
+            };
             if (!l.displayInLayerSwitcher) {
-                className = 'x-hidden';
+                // We hide the layers using a fake uiProvider instead of
+                // removing them from the model, so that their position
+                // is remembered when drag and drop is used.
+                info.uiProvider = function() {};
+                info.uiProvider.prototype = {
+                    render: function() {},
+                    renderIndent: function() {}
+                };
             }
-            layers.push({text: l.name, // TODO: i18n
-                         checked: l.getVisibility(),
-                         cls: className,
-                         layerName: (wmsChildren.length > 0 ? null : l.name),
-                         children: wmsChildren
-                         });
+            layers.push(info);
         }
 
         return layers;
