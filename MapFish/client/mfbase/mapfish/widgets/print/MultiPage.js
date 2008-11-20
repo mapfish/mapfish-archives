@@ -47,8 +47,8 @@ Ext.namespace('mapfish.widgets.print');
 mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
     /**
      * APIProperty: formConfig
-     * {Object} - The configuration options passed to the form that edits the
-     *            options common to every pages.
+     * {Object} The configuration options passed to the form that edits the
+     *          options common to every pages.
      *
      * Can contain additional items for custom fields. Their values will be
      * passed to the print service
@@ -57,26 +57,26 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
 
     /**
      * APIProperty: columns
-     * {Array} - The Additionnal columns for "per page" custom fields.
+     * {Array} The Additionnal columns for "per page" custom fields.
      */
     columns: null,
 
     /**
      * APIProperty: zoomToExtentEnabled
-     * {Boolean} - If true, the map will try to always show the selected page's
-     *             extent by zooming out if necessary.
+     * {Boolean} If true, the map will try to always show the selected page's
+     *           extent by zooming out if necessary.
      */
     zoomToExtentEnabled: true,
 
     /**
      * Property: grid
-     * {Ext.grid.EditorGridPanel} - The pages.
+     * {Ext.grid.EditorGridPanel} The pages.
      */
     grid: null,
 
     /**
      * Property: printButton
-     * {Ext.Button} - The "print" button.
+     * {Ext.Button} The "print" button.
      */
     printButton: null,
 

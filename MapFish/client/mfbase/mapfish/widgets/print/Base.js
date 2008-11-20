@@ -53,7 +53,7 @@ Ext.namespace('mapfish.widgets.print');
 mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
     /**
      * APIProperty: map
-     * {<OpenLayers.Map>} - The OpenLayers Map object.
+     * {<OpenLayers.Map>} The OpenLayers Map object.
      */
     map: null,
 
@@ -67,31 +67,31 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
 
     /**
      * APIProperty: configUrl
-     * {String} - The URL to access .../config.json. Either this property or
-     *            config must be set.
+     * {String} The URL to access .../config.json. Either this property or
+     *          config must be set.
      */
     configUrl: null,
 
     /**
      * APIProperty: config
-     * {Object} - The response from .../config.json. Either this property or
-     *            configUrl must be set.
+     * {Object} The response from .../config.json. Either this property or
+     *          configUrl must be set.
      */
     config: null,
 
     /**
      * APIProperty: layerTree
-     * {<mapfish.widgets.LayerTree>} - An optional layer tree. Needed only if you
-      *                                want to display legends.
+     * {<mapfish.widgets.LayerTree>} An optional layer tree. Needed only if you
+      *                              want to display legends.
      */
     layerTree: null,
 
     /**
      * APIProperty: grids
-     * {Object} - An optional dictionary of {Ext.grid.GridPanel}. Needed only
-     *            if you want to display search results. Can be function
-     *            (returning the dictionary) that will be called each time the
-     *            information is needed.
+     * {Object} An optional dictionary of {Ext.grid.GridPanel}. Needed only
+     *          if you want to display search results. Can be function
+     *          (returning the dictionary) that will be called each time the
+     *          information is needed.
      */
     grids: null,
 
@@ -104,26 +104,26 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
 
     /**
      * Property: pageDrag
-     * {<OpenLayers.Control.DragFeature>} - The control to move the extent.
+     * {<OpenLayers.Control.DragFeature>} The control to move the extent.
      */
     pageDrag: null,
 
     /**
      * Property: rotateHandle
-     * {<OpenLayers.Feature.Vector>} - The handle used to rotate the page.
+     * {<OpenLayers.Feature.Vector>} The handle used to rotate the page.
      */
     rotateHandle: null,
 
     /**
      * Property: layer
-     * {<OpenLayers.Layer.Vector>} - The layer to draw the extent
+     * {<OpenLayers.Layer.Vector>} The layer to draw the extent
      */
     layer: null,
 
     /**
      * Property: mask
-     * {Ext.LoadingMask} - The mask used when loading the configuration or
-     *                     when generating the PDF
+     * {Ext.LoadingMask} The mask used when loading the configuration or
+     *                   when generating the PDF
      */
     mask: null,
 

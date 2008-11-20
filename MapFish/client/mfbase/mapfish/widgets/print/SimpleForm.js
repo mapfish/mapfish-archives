@@ -47,7 +47,7 @@ Ext.namespace('mapfish.widgets.print');
 mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
     /**
      * APIProperty: formConfig
-     * {Object} - The configuration options passed to the form.
+     * {Object} The configuration options passed to the form.
      *
      * Can contain additionnal items for custom fields. Their values will be
      * passed to the print service
@@ -56,25 +56,25 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
 
     /**
      * Property: scale
-     * {Ext.form.ComboBox} - The scale combobox.
+     * {Ext.form.ComboBox} The scale combobox.
      */
     scale: null,
 
     /**
      * Property: rectangle
-     * {<OpenLayers.Feature.Vector>} - The rectangle representing the extent.
+     * {<OpenLayers.Feature.Vector>} The rectangle representing the extent.
      */
     rectangle: null,
 
     /**
      * Property: rotation
-     * {Ext.form.TextField} - The text field for editing the rotation.
+     * {Ext.form.TextField} The text field for editing the rotation.
      */
     rotation: null,
 
     /**
      * APIProperty: infoPanel
-     * {Ext.Panel} - An optional panel displayed after form fields.
+     * {Ext.Panel} An optional panel displayed after form fields.
      */
     infoPanel: null,
 
