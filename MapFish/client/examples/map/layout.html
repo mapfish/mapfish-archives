@@ -18,8 +18,8 @@
     <script type="text/javascript" src="../../mfbase/mapfish/MapFish.js"></script>
     <script type="text/javascript" src="../examples.js"></script>
     
-	<style type="text/css">
-	html, body {
+    <style type="text/css">
+    html, body {
         font: normal 12px verdana;
         margin: 0;
         padding: 0;
@@ -28,7 +28,7 @@
         height: 100%;
     }
     </style>
-	<script type="text/javascript">
+    <script type="text/javascript">
   
     // reference local blank image
     Ext.BLANK_IMAGE_URL = '../../mfbase/ext/resources/images/default/s.gif';
@@ -85,6 +85,19 @@
                         title: 'Settings',
                         html: '<p>Some settings in here.</p>',
                         border: false
+                    },{
+                        id: 'recenter-widget',
+                        title: 'Recenter',
+                        xtype: 'coordsrecenter',
+                        map: map,
+                        labelAlign: 'top',
+                        hideMode: 'offsets',
+                        showCenter: true,      // boolean, indicates if a symbol must be shown at the new center
+                        scales: [1000000, 2500000, 5000000, 10000000, 25000000],
+                        bodyStyle: 'padding: 5px',
+                        defaults: {
+                           width: 170
+                        }
                     }]
                 },{
                     region: 'center',
@@ -96,7 +109,7 @@
              ]
         });
     });
-	</script>
+    </script>
 </head>
 <body>
   <div id="west"></div>
