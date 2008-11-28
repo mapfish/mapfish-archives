@@ -105,8 +105,8 @@ Ext.extend(mapfish.widgets.recenter.Base, Ext.FormPanel, {
     render: function() {
         // if container layout is accordion we defer items adding
         // to avoid rendering issues (on comboboxes in particular)
-        if (!(this.ownerCt.initialConfig.layout && 
-              this.ownerCt.initialConfig.layout.toLowerCase != 'accordion')) {
+        if (!this.ownerCt.initialConfig.layout ||
+            this.ownerCt.initialConfig.layout.toLowerCase != 'accordion') {
             this.addItems();
         }
         
