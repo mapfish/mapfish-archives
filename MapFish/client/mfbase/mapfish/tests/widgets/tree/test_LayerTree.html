@@ -303,7 +303,7 @@
         // Tests automatic generation of model from an OL configuration
         function test_AutomaticModel(t) {
             function __test_AutomaticModel(layerClass) {
-                var map, layer, model, tree, node;
+                var map, layer, model, tree, node, expectedStatus;
 
                 //////////////////////////////////////////////////////////////
                 // Test environment 1
@@ -444,11 +444,11 @@
 
                 expectedStatus = [
                     {text: "Root"},
-                    {text: "vmap0", attr_checked: true, attr_cls: 'x-hidden', radio: true},
-                    {text: "World Map", attr_checked: false, attr_cls: 'x-hidden'},
+                    {text: "vmap0", attr_checked: true, radio: true},
+                    {text: "World Map", attr_checked: false},
                     {text: "Satellite", attr_checked: true}
                 ];
-                checkStatus(t, tree, expectedStatus); // 13 tests
+                checkStatus(t, tree, expectedStatus); // 11 tests
 
                 expectedOlStatus = [
                     {name: "vmap0", visibility: true},
@@ -463,7 +463,7 @@
                 //  reordering (drag/drop)
             }
 
-            t.plan(2*(5 + 20 + 20 + 13 + 7));
+            t.plan(2*(5 + 20 + 20 + 11 + 7));
 
             __test_AutomaticModel(OpenLayers.Layer.WMS);
             __test_AutomaticModel(OpenLayers.Layer.MapServer);
