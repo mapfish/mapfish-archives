@@ -291,5 +291,16 @@ mapfish.Protocol.MergeFilterDecorator = OpenLayers.Class(OpenLayers.Protocol, {
         return this.protocol.commit(features, options);
     },
 
+    /**
+     * Method: abort
+     * Abort an ongoing request.
+     *
+     * Parameters:
+     * response - {<OpenLayers.Protocol.Response>}
+     */
+    abort: function(response) {
+        this.protocol.abort(response);
+    },
+
     CLASS_NAME: "mapfish.Protocol.MergeFilterDecorator"
 });

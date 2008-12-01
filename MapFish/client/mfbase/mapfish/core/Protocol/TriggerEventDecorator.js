@@ -209,6 +209,17 @@ mapfish.Protocol.TriggerEventDecorator = OpenLayers.Class(OpenLayers.Protocol, {
     },
 
     /**
+     * Method: abort
+     * Abort an ongoing request.
+     *
+     * Parameters:
+     * response - {<OpenLayers.Protocol.Response>}
+     */
+    abort: function(response) {
+        this.protocol.abort(response);
+    },
+
+    /**
      * Method: createCallback
      * Returns a function that applies the given public method with the
      * options argument.
