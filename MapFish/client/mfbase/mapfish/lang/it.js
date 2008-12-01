@@ -18,6 +18,9 @@ OpenLayers.Util.extend(OpenLayers.Lang.it, {
     'mf.print.remove': '',
     'mf.print.clearAll': '',
     'mf.print.popupBlocked': 'La finestra pop-up è stata bloccata dal vostro browser.',
-    'mf.print.noPage': ''
+    'mf.print.noPage': '',
+    'mf.error': 'Errore',
+    'mf.warning': 'Attenzione',
+    'mf.information': 'Informazioni'
 
 });
