@@ -146,7 +146,7 @@ Ext.extend(mapfish.widgets.recenter.Base, Ext.FormPanel, {
         this.items.each(this.remove, this);
 
         // remove basic form items
-        //this.form.items.clear();
+        this.form.items.clear();
     },
 
     /**
