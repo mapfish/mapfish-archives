@@ -544,7 +544,7 @@ mapfish.widgets.print.Base = Ext.extend(Ext.Panel, {
                     Ext.Msg.alert(OpenLayers.Lang.translate('mf.information'),
                         OpenLayers.Lang.translate('mf.print.popupBlocked') +
                         '<br />' +
-                        '<a href="' + request.getURL + '" target="_blanc">' +
+                        '<a href="' + request.getURL + '" target="_blank">' +
                         request.getURL+'</a>');
                 } else {
                     Ext.Msg.alert(OpenLayers.Lang.translate('mf.error'),
