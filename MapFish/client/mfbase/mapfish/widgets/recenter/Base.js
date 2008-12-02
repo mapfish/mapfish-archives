@@ -89,8 +89,6 @@ Ext.extend(mapfish.widgets.recenter.Base, Ext.FormPanel, {
      */
     initComponent: function() {
 
-        this.items = {};
-        
         mapfish.widgets.recenter.Base.superclass.initComponent.apply(this, arguments);
 
         this.on("destroy", this.destroyResources, this);
@@ -142,11 +140,12 @@ Ext.extend(mapfish.widgets.recenter.Base, Ext.FormPanel, {
      * Removes all items from both formpanel and basic form
      */
     removeAll:function() {
-        // remove form panel items
-        this.items.each(this.remove, this);
-
-        // remove basic form items
-        this.form.items.clear();
+        if (this.items) {
+            // remove form panel items
+            this.items.each(this.remove, this);
+            // remove basic form items
+            this.form.items.clear();
+        }
     },
 
     /**
