@@ -1,4 +1,4 @@
-#!bin/sh
+#!/bin/sh
 # 
 # Copyright (C) 2007-2008  Camptocamp
 #  
@@ -35,6 +35,8 @@ rm="/bin/rm"
 sh="/bin/sh"
 cp="/bin/cp"
 
+${rm} -rf "${releasepath}"
+
 #
 # MapFish.js build
 #
@@ -50,17 +52,28 @@ fi
 
 mapfishreleasepath="${releasepath}/mapfish"
 ${mkdir} -p ${mapfishreleasepath}
-(cd ${buildpath} && ${python} build.py -c ${cfgfile} -o ${mapfishreleasepath}/MapFish.js)
+(cd ${buildpath} && ${python} build.py -c ${cfgfile} -o "${mapfishreleasepath}"/MapFish.js)
 
 # MapFish resources
-${cp} -r "${mapfishpath}/img" ${mapfishreleasepath}
+${cp} -r "${mapfishpath}/img" "${mapfishreleasepath}"
 
 # OpenLayers resources
 openlayerspath="${buildpath}/../mfbase/openlayers"
 openlayersreleasepath="${releasepath}/openlayers"
 
-mkdir ${openlayersreleasepath}
-${cp} -r "${openlayerspath}/img" ${openlayersreleasepath}
-${cp} -r "${openlayerspath}/theme" ${openlayersreleasepath}
+${mkdir} ${openlayersreleasepath}
+${cp} -r "${openlayerspath}/img" "${openlayersreleasepath}"
+${cp} -r "${openlayerspath}/theme" "${openlayersreleasepath}"
+
+# Ext resources
+extpath="${buildpath}/../mfbase/ext"
+extreleasepath="${releasepath}/ext"
+
+#${mkdir} ${extreleasepath}
+#${cp} -r "${extpath}"/ext-all.js "${extpath}"/adapter "${extpath}"/air "${extpath}"/resources "${extreleasepath}"
+#${cp} -r "${extpath}-community-extensions" "${extreleasepath}-community-extensions"
+
+# Cleanup SVN stuff
+${rm} -rf `find "${releasepath}" -name .svn -type d`
 
 exit 0
