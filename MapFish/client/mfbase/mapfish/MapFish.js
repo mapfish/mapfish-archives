@@ -128,8 +128,10 @@
             "widgets/toolbar/MenuItem.js",
             "widgets/editing/FeatureList.js",
             "widgets/print/Base.js",
+            "widgets/print/BaseWidget.js",
             "widgets/print/SimpleForm.js",
-            "widgets/print/MultiPage.js"
+            "widgets/print/MultiPage.js",
+            "widgets/print/PrintAction.js"
         ); // etc.
 
         var allScriptTags = "";

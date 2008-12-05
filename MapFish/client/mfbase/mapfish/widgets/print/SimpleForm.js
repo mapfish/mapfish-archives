@@ -18,7 +18,7 @@
  */
 
 /*
- * @requires widgets/print/Base.js
+ * @requires widgets/print/BaseWidget.js
  */
 
 Ext.namespace('mapfish.widgets');
@@ -34,7 +34,7 @@ Ext.namespace('mapfish.widgets.print');
  * your responsability to call enable() and disable().
  *
  * Inherits from:
- * - {<mapfish.widgets.print.Base>}
+ * - {<mapfish.widgets.print.BaseWidget>}
  */
 
 /**
@@ -44,7 +44,7 @@ Ext.namespace('mapfish.widgets.print');
  * config - {Object} Config object
  */
 
-mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
+mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.BaseWidget, {
     /**
      * APIProperty: formConfig
      * {Object} The configuration options passed to the form.
@@ -53,6 +53,12 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
      * passed to the print service
      */
     formConfig: null,
+
+    /**
+     * APIProperty: formConfig
+     * {Boolean} If true (default), display a reset position button 
+     */
+    wantResetButton: true,
 
     /**
      * Property: scale
@@ -117,14 +123,16 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
             formPanel.add(this.infoPanel);
         }
 
-        formPanel.addButton({
-            text: OpenLayers.Lang.translate('mf.print.resetPos'),
-            scope: this,
-            handler: function() {
-                this.setCurScale(this.fitScale(this.getCurLayout()));
-                this.createTheRectangle();
-            }
-        });
+        if(this.wantResetButton) {
+            formPanel.addButton({
+                text: OpenLayers.Lang.translate('mf.print.resetPos'),
+                scope: this,
+                handler: function() {
+                    this.setCurScale(this.fitScale(this.getCurLayout()));
+                    this.createTheRectangle();
+                }
+            });
+        }
 
         formPanel.addButton({
             text: OpenLayers.Lang.translate('mf.print.print'),
@@ -243,7 +251,7 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.Base, {
     },
 
     /**
-     * Method: fillSpec
+     * APIMethod: fillSpec
      * Add the page definitions and set the other parameters.
      *
      * Parameters:

@@ -101,7 +101,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
     getAllInOneUrl: function() {
         var json = new OpenLayers.Format.JSON();
         var result = this.config.printURL + "?spec=" +
-               json.write(this.encodeForURL(this.spec));
+                     json.write(this.encodeForURL(this.spec));
         if (this.params) {
             result += "&" + OpenLayers.Util.getParameterString(this.params);
         }
@@ -113,7 +113,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
      *
      * Uses AJAX to create the PDF on the server and then gets it from the
      * server. If it doesn't work (different URL and OpenLayers.ProxyHost not
-     * set), try the GET direct method.   
+     * set), try the GET direct method.
      *
      * Parameters:
      * success - {Function} The function to call in case of success.
@@ -130,12 +130,13 @@ mapfish.PrintProtocol = OpenLayers.Class({
 
         try {
             //The charset seems always to be UTF-8, regardless of the page's
-            var charset = "UTF-8";  /*+document.characterSet*/
+            var charset = "UTF-8";
+            /*+document.characterSet*/
 
             var params = OpenLayers.Util.applyDefaults({
                 url: this.config.createURL
             }, this.params);
-            
+
             OpenLayers.Request.POST({
                 url: this.config.createURL,
                 data: specTxt,
@@ -456,7 +457,8 @@ mapfish.PrintProtocol = OpenLayers.Class({
         var nextId = 1;
         for (var i = 0; i < olFeatures.length; ++i) {
             var feature = olFeatures[i];
-            var style = feature.style || olLayer.style || olLayer.styleMap.createSymbolizer(feature, feature.renderIntent);
+            var style = feature.style || olLayer.style ||
+                        olLayer.styleMap.createSymbolizer(feature, feature.renderIntent);
             var styleName;
             if (style._printId) {
                 //this style is already known
@@ -467,12 +469,26 @@ mapfish.PrintProtocol = OpenLayers.Class({
                 styles[styleName] = style;
 
                 //Make the URLs absolute
-                if(style.externalGraphic) {
+                if (style.externalGraphic) {
                     style.externalGraphic = mapfish.Util.relativeToAbsoluteURL(style.externalGraphic);
                 }
             }
             var featureGeoJson = formatter.extract.feature.call(formatter, feature);
-            featureGeoJson.properties._style = styleName;
+
+            //OL just copy the reference to the properties. Since we don't want
+            //to modify the original dictionary, we make a copy.
+            featureGeoJson.properties = OpenLayers.Util.extend({
+                _style: styleName
+            }, featureGeoJson.properties);
+            for (var cur in featureGeoJson.properties) {
+                var curVal = featureGeoJson.properties[cur];
+                if (curVal instanceof Object && !(curVal instanceof String)) {
+                    //OL.Format.Json goes into an infinite recursion if we have too
+                    //complex objects. So we remove them.
+                    delete featureGeoJson.properties[cur];
+                }
+            }
+
             features.push(featureGeoJson);
         }
         for (var key in styles) {

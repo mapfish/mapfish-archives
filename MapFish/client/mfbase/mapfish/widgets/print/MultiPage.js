@@ -18,7 +18,7 @@
  */
 
 /*
- * @requires widgets/print/Base.js
+ * @requires widgets/print/BaseWidget.js
  */
 
 Ext.namespace('mapfish.widgets');
@@ -34,7 +34,7 @@ Ext.namespace('mapfish.widgets.print');
  * your responsability to call enable() and disable().
  *
  * Inherits from:
- * - {<mapfish.widgets.print.Base>}
+ * - {<mapfish.widgets.print.BaseWidget>}
  */
 
 /**
@@ -44,7 +44,7 @@ Ext.namespace('mapfish.widgets.print');
  * config - {Object} Config object
  */
 
-mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
+mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.BaseWidget, {
     /**
      * APIProperty: formConfig
      * {Object} The configuration options passed to the form that edits the
@@ -114,7 +114,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
                     buggyDiv.setStyle("position", "relative");
                 }, 20);
             }
-            mapfish.widgets.print.Base.prototype.setUp.call(this);
+            mapfish.widgets.print.BaseWidget.prototype.setUp.call(this);
         }
     },
 
@@ -442,7 +442,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
      * feature - {<OpenLayers.Feature.Vector>} The rotate handle.
      */
     pageRotateStart: function(feature) {
-        mapfish.widgets.print.Base.prototype.pageRotateStart.call(this, feature);
+        mapfish.widgets.print.BaseWidget.prototype.pageRotateStart.call(this, feature);
         this.grid.stopEditing();
     },
 
@@ -455,7 +455,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
      * feature - {<OpenLayers.Feature.Vector>} The selected page.
      */
     pageDragStart: function(feature) {
-        mapfish.widgets.print.Base.prototype.pageDragStart.call(this, feature);
+        mapfish.widgets.print.BaseWidget.prototype.pageDragStart.call(this, feature);
 
         //make sure the dragged page is selected in the grid (no zooming)
         var prev = this.zoomToExtentEnabled;
@@ -513,7 +513,7 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.Base, {
     },
 
     /**
-     * Method: fillSpec
+     * APIMethod: fillSpec
      * 
      * Add the page definitions and set the other parameters.
      *
