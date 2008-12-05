@@ -921,14 +921,6 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
      * {Array(Object)} A model object extracted from the list of layers.
      */
     _extractOLModel: function LT__extractOLModel() {
-        var getLegendParams = {
-            service: "WMS",
-            version: "1.1.1",
-            request: "GetLegendGraphic",
-            exceptions: "application/vnd.ogc.se_inimage",
-            format: "image/png"
-        };
-
         // TODO: how to deal with baseLayers?
         var layers = [];
 
@@ -953,10 +945,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
                         var iconUrl;
                         if (this.showWmsLegend) {
-                            var params = OpenLayers.Util.extend({LAYER: w},
-                                                                getLegendParams);
-                            var paramsString = OpenLayers.Util.getParameterString(params);
-                            iconUrl = l.url + paramsString;
+                            iconUrl = mapfish.Util.getIconUrl(l.url, {layer: w});
                         }
 
                         var wmsChild = {text: w, // TODO: i18n
