@@ -18,6 +18,7 @@
  */
 
 /*
+ * @requires widgets/print/Base.js
  * @requires core/PrintProtocol.js
  * @requires core/Util.js
  * @requires OpenLayers/Control/DragFeature.js
