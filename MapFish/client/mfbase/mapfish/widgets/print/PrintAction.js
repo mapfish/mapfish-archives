@@ -18,7 +18,7 @@
  */
 
 /*
- * @requires widgets/print/Base
+ * @requires widgets/print/Base.js
  */
 
 Ext.namespace('mapfish.widgets');
