@@ -1,0 +1,88 @@
+Index: build/mapfish-widgets.cfg
+===================================================================
+--- build/mapfish-widgets.cfg	(revision 1355)
++++ build/mapfish-widgets.cfg	(working copy)
+@@ -60,6 +60,10 @@
+ core/Searcher/Map.js
+ core/Searcher/Form.js
+ core/Routing.js
++core/Protocol.js
++core/Protocol/MapFish.js
++core/Protocol/TriggerEventDecorator.js
++core/Protocol/MergeFilterDecorator.js
+ widgets/MapComponent.js
+ widgets/Shortcuts.js
+ widgets/tree/LayerTree.js
+@@ -74,5 +78,6 @@
+ widgets/print/MultiPage.js
+ widgets/print/PrintAction.js
+ widgets/recenter/Coords.js
++widgets/recenter/Ws.js
+ 
+ [exclude]
+Index: mfbase/mapfish/widgets/recenter/Base.js
+===================================================================
+--- mfbase/mapfish/widgets/recenter/Base.js	(revision 1355)
++++ mfbase/mapfish/widgets/recenter/Base.js	(working copy)
+@@ -89,6 +89,8 @@
+      */
+     initComponent: function() {
+ 
++        this.items = {};
++        
+         mapfish.widgets.recenter.Base.superclass.initComponent.apply(this, arguments);
+ 
+         this.on("destroy", this.destroyResources, this);
+@@ -103,8 +105,8 @@
+     render: function() {
+         // if container layout is accordion we defer items adding
+         // to avoid rendering issues (on comboboxes in particular)
+-        if (!this.ownerCt.initialConfig.layout ||
+-            this.ownerCt.initialConfig.layout.toLowerCase != 'accordion') {
++        if (!(this.ownerCt.initialConfig.layout && 
++              this.ownerCt.initialConfig.layout.toLowerCase == 'accordion')) {
+             this.addItems();
+         }
+         
+@@ -140,12 +142,11 @@
+      * Removes all items from both formpanel and basic form
+      */
+     removeAll:function() {
+-        if (this.items) {
+-            // remove form panel items
+-            this.items.each(this.remove, this);
+-            // remove basic form items
+-            this.form.items.clear();
+-        }
++        // remove form panel items
++        this.items.each(this.remove, this);
++
++        // remove basic form items
++        //this.form.items.clear();
+     },
+ 
+     /**
+@@ -219,6 +220,23 @@
+     },
+     
+     /**
++     * Method: recenterOnBbox
++     * Recenters on given bounds
++     *
++     * Parameters:
++     * bbox - {<OpenLayers.Bounds>}
++     */
++    recenterOnBbox: function(bbox) {
++        if (this.showCenter) {
++            // display a symbol on the center point of the bbox
++            var lonlat = bbox.getCenterLonLat();
++            this.showCenterMark(lonlat.lon, lonlat.lat);
++        }
++
++        this.map.zoomToExtent(bbox);
++    },
++    
++    /**
+      * Method: showCenterMark
+      * Materializes new center with a cross
+      *
