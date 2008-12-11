@@ -23,6 +23,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.en, {
     'mf.print.popupBlocked': 'Popup windows are blocked by your browser.<br />' +
                              '<br />Use this url to download your document:',
     'mf.print.noPage': 'No page selected, click on the "Add page" button to add one.',
+    'mf.print.print-tooltip': 'Generate a PDF with at least the extent shown on the map',
     'mf.error': 'Error',
     'mf.warning': 'Warning',
     'mf.information': 'Information',

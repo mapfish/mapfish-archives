@@ -22,6 +22,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     'mf.print.popupBlocked': 'Fenêtres bloquées par votre navigateur.<br />' +
                              '<br />Utilisez cette adresse pour charger votre document:',
     'mf.print.noPage': 'Pas de page sélectionnée, appuyez sur le bouton "Ajouter page" pour en créer une.',
+    'mf.print.print-tooltip': 'Générer un PDF contenant au moins l\'étendue de la présente carte',
     'mf.error': 'Erreur',
     'mf.warning': 'Attention',
     'mf.information': 'Information',

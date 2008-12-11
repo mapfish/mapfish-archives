@@ -44,6 +44,7 @@ mapfish.widgets.print.PrintAction = function(config) {
     var actionParams = OpenLayers.Util.extend({
         iconCls: 'mf-print-action',
         text: OpenLayers.Lang.translate('mf.print.print'),
+        tooltip: OpenLayers.Lang.translate('mf.print.print-tooltip'),
         handler: this.handler,
         scope: this
     }, config);

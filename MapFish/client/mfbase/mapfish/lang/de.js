@@ -24,17 +24,18 @@ OpenLayers.Util.extend(OpenLayers.Lang.de, {
                              '<br />Verwenden Sie diese URL zum Download Ihr Dokument:',
     'mf.print.noPage': 'Keine Seite ausgewählt, bitte auf "' + this['mf.print.addPage'] + '"-' +
                        'Button klicken um eine Seite zu hinzufügen.',
+    'mf.print.print-tooltip': 'Generate a PDF with at least the extent shown on the map', // TODO
     'mf.error': 'Fehler',
     'mf.warning': 'Warnung',
     'mf.information': 'Information',
     'mf.recenter.x': 'X',
     'mf.recenter.y': 'Y',
-    'mf.recenter.submit': 'Recenter',
-    'mf.recenter.missingCoords': 'Some coordinates are missing.',
+    'mf.recenter.submit': 'Recenter', // TODO
+    'mf.recenter.missingCoords': 'Some coordinates are missing.', // TODO
     'mf.recenter.outOfRangeCoords': 'Submitted coordinates (${myX}, ${myY}) are not in the map area<br />' +
                                     'and must be within following ranges:<br/>' +
                                     '${coordX} between ${minCoordX} and ${maxCoordX},<br />' +
-                                    '${coordY} between ${minCoordY} and ${maxCoordY}',
+                                    '${coordY} between ${minCoordY} and ${maxCoordY}', // TODO
     'mf.recenter.ws.error': 'Ein Fehler ist bei Zugang zum Webdienst vorgekommen:',
     'mf.recenter.ws.service': 'Ausgewählter Webdienst'
 });
