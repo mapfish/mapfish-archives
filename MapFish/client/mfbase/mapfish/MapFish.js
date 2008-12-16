@@ -115,6 +115,7 @@
             "widgets/recenter/Base.js",
             "widgets/recenter/Coords.js",
             "widgets/data/FeatureReader.js",
+            "widgets/data/FeatureStore.js",
             "widgets/data/FeatureStoreMediator.js",
             "widgets/data/SearchStoreMediator.js",
             "widgets/data/LayerStoreMediator.js",
