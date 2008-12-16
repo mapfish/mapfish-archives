@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>Map printing with a simple form</title>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css"
       href="../../mfbase/ext/resources/css/ext-all.css"/>
 <link rel="stylesheet" type="text/css"
@@ -55,7 +56,7 @@
 
     var countries = new OpenLayers.Layer.WMS("Countries",
             "http://demo.mapfish.org/mapfishsample/trunk/wms?",
-            {layers: ['countries'], format: 'image/png', transparent: true},
+            {layers: ['countries'], format:  OpenLayers.Util.alphaHack()?'image/gif':'image/png', transparent: true},
             {visibility: true, singleTile: true}
     );
     map.addLayer(countries);
@@ -76,7 +77,6 @@
             map: map,
             configUrl: printConfigUrl,
             overrides: layerOverrides,
-            title: "Generate a PDF with at least the extent shown on the map",
             fillSpec: function(printCommand) {
                 mapfish.widgets.print.PrintAction.prototype.fillSpec.call(this, printCommand);
 
@@ -135,13 +135,13 @@
                 items: [
                   {
                     xtype: 'textfield',
-                    fieldLabel: 'Map title',
+                    fieldLabel: OpenLayers.Lang.translate('mf.print.mapTitle'),
                     name: 'mapTitle',
                     value: 'Map title'
                   },
                   {
                     xtype: 'textarea',
-                    fieldLabel: 'Comments',
+                    fieldLabel: OpenLayers.Lang.translate('mf.print.comment'),
                     name: 'comment',
                     height: 100,
                     value: 'Some comments'
@@ -174,12 +174,12 @@
               },
               columns: [
                   {
-                      header: 'Title',
+                      header: OpenLayers.Lang.translate('mf.print.mapTitle'),
                       dataIndex: 'mapTitle',
                       editor: new Ext.form.TextField()
                   },
                   {
-                      header: 'Comment',
+                      header: OpenLayers.Lang.translate('mf.print.comment'),
                       dataIndex: 'comment',
                       editor: new Ext.form.TextField()
                   }
@@ -201,7 +201,6 @@
     });
 
     map.setCenter(new OpenLayers.LonLat(8.5, 0), 3);
-
   });
 </script>
 </head>

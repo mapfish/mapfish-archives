@@ -19,8 +19,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     'mf.print.addPage': 'Ajouter page',
     'mf.print.remove': 'Enlever page',
     'mf.print.clearAll': 'Supprimer toutes',
-    'mf.print.popupBlocked': 'Fenêtres bloquées par votre navigateur.<br />' +
-                             '<br />Utilisez cette adresse pour charger votre document:',
+    'mf.print.pdfReady': 'Votre document PDF est prêt.',
     'mf.print.noPage': 'Pas de page sélectionnée, appuyez sur le bouton "Ajouter page" pour en créer une.',
     'mf.print.print-tooltip': 'Générer un PDF contenant au moins l\'étendue de la présente carte',
     'mf.error': 'Erreur',

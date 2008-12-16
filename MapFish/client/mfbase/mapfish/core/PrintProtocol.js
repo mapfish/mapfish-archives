@@ -117,6 +117,8 @@ mapfish.PrintProtocol = OpenLayers.Class({
      *
      * Parameters:
      * success - {Function} The function to call in case of success.
+     * popup - {Function} The function to call in case of success, but when
+     *                    unable to load automatically the document.
      * failure - {Function} The function to call in case of failure. Gets the
      *                      request object in parameter. If getURL is defined,
      *                      the popup where blocked and the PDF can still be
@@ -124,7 +126,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
      * context - {Object} The context to use to call the success of failure
      *                    method.
      */
-    createPDF: function(success, failure, context) {
+    createPDF: function(success, popup, failure, context) {
         var specTxt = new OpenLayers.Format.JSON().write(this.spec);
         OpenLayers.Console.info(specTxt);
 
@@ -149,7 +151,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
                         var json = new OpenLayers.Format.JSON();
                         var answer = json.read(request.responseText);
                         if (answer && answer.getURL) {
-                            this.openPdf(answer, success, failure, context);
+                            this.openPdf(answer, success, popup, context);
                         } else {
                             failure.call(context, request);
                         }
@@ -177,36 +179,30 @@ mapfish.PrintProtocol = OpenLayers.Class({
      *
      * answer - {Object} The answer for the AJAX call to the print service.
      * success - {Function} The function to call in case of success.
-     * failure - {Function} The function to call in case of failure. Gets the
-     *                      request object in parameter. If getURL is defined,
-     *                      the popup where blocked and the PDF can still be
-     *                      recovered using this URL.
+     * popup - {Function} The function to call in case of success, but when
+     *                    unable to load automatically the document.
      * context - {Object} The context to use to call the success of failure
      *                    method
      */
-    openPdf: function(answer, success, failure, context) {
+    openPdf: function(answer, success, popup, context) {
         OpenLayers.Console.info(answer.getURL);
-        var popup = window.open(answer.getURL, '_blank');
-        if (popup) {
-            // OK, we can at least open the popup
-            if (mapfish.Util.isIE7()) {
-                // IE7's anti-popup system tends to close the popup window
-                // afterwards. We have to check if it has not done that.
-                function checkWindowStillOpen() {
-                    if (!popup.closed) {
-                        success.call(context);
-                    } else {
-                        failure.call(context, answer);
-                    }
-                }
-                window.setTimeout(checkWindowStillOpen, 300);
-            } else {
-                // we can assume the user received his PDF
-                success.call(context);
-            }
+        if (Ext.isIE || Ext.isOpera) {
+            // OK, my friend IE on XP SP2 (or higher) tends to have this:
+            // http://support.microsoft.com/kb/883255
+
+            // For Opera, it tends to not respect the Content-disposition
+            // header and overwrite the current tab with the PDF
+
+            // I found no way to detect it, so we put a nice popup.
+            popup.call(context, answer);
+
         } else {
-            // we can say for sure that popups are blocked
-            failure.call(context, answer);
+            // FF2, FF3 or Safari: easier to deal with.
+            // This won't erase the current window since the URL returns with
+            // a "Content-disposition: attachment" header and thus will propose
+            // to save or open using the PDF reader.
+            window.location = answer.getURL;
+            success.call(context);
         }
     },
 
@@ -599,6 +595,8 @@ mapfish.PrintProtocol.SUPPORTED_TYPES = {
     'OpenLayers.Layer.WMS.Untiled': mapfish.PrintProtocol.prototype.convertWMSLayer,
     'OpenLayers.Layer.TileCache': mapfish.PrintProtocol.prototype.convertTileCacheLayer,
     'OpenLayers.Layer.Vector': mapfish.PrintProtocol.prototype.convertVectorLayer,
+    'OpenLayers.Layer.GML': mapfish.PrintProtocol.prototype.convertVectorLayer,
+    'OpenLayers.Layer.PointTrack': mapfish.PrintProtocol.prototype.convertVectorLayer,
     'OpenLayers.Layer.MapServer': mapfish.PrintProtocol.prototype.convertMapServerLayer,
     'OpenLayers.Layer.MapServer.Untiled': mapfish.PrintProtocol.prototype.convertMapServerLayer
 };

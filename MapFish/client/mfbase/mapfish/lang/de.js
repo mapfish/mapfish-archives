@@ -20,8 +20,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.de, {
     'mf.print.addPage': 'Seite hinzufügen',
     'mf.print.remove': 'Seite entfernen',
     'mf.print.clearAll': 'Alles löschen',
-    'mf.print.popupBlocked': 'Popup-Fenster blockiert werden von Ihrem Browser.<br />' +
-                             '<br />Verwenden Sie diese URL zum Download Ihr Dokument:',
+    'mf.print.pdfReady': 'Das PDF-Dokument kann heruntergeladen werden.',
     'mf.print.noPage': 'Keine Seite ausgewählt, bitte auf "' + this['mf.print.addPage'] + '"-' +
                        'Button klicken um eine Seite zu hinzufügen.',
     'mf.print.print-tooltip': 'Generate a PDF with at least the extent shown on the map', // TODO

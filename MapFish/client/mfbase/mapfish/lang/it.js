@@ -2,6 +2,9 @@
  * @requires OpenLayers/Lang/it.js
  */
 OpenLayers.Util.extend(OpenLayers.Lang.it, {
+    'mf.layertree.opacity': 'Opacity', // TODO
+    'mf.layertree.remove': 'Remove', // TODO
+    'mf.layertree.zoomToExtent': 'Zoom to extent', // TODO
     'mf.print.mapTitle': 'Titolo',
     'mf.print.comment': 'Commento',
     'mf.print.loadingConfig': 'Caricamento in corso',
@@ -14,14 +17,25 @@ OpenLayers.Util.extend(OpenLayers.Lang.it, {
     'mf.print.print': 'Stampa',
     'mf.print.resetPos': 'Reinizializzare',
     'mf.print.layout': 'Layout di pagina',
-    'mf.print.addPage': '',
-    'mf.print.remove': '',
-    'mf.print.clearAll': '',
-    'mf.print.popupBlocked': 'La finestra pop-up è stata bloccata dal vostro browser.',
-    'mf.print.noPage': '',
+    'mf.print.addPage': 'Add page', // TODO
+    'mf.print.remove': 'Remove page', // TODO
+    'mf.print.clearAll': 'Clear all', // TODO
+    'mf.print.pdfReady': 'Your PDF document is ready.',
+    'mf.print.noPage': 'No page selected, click on the "Add page" button to add one.', // TODO
     'mf.print.print-tooltip': 'Generate a PDF with at least the extent shown on the map', // TODO
     'mf.error': 'Errore',
     'mf.warning': 'Attenzione',
-    'mf.information': 'Informazioni'
+    'mf.information': 'Informazioni',
 
+     // TODO ..........
+    'mf.recenter.x': 'X',
+    'mf.recenter.y': 'Y',
+    'mf.recenter.submit': 'Recenter',
+    'mf.recenter.missingCoords': 'Some coordinates are missing.',
+    'mf.recenter.outOfRangeCoords': 'Submitted coordinates (${myX}, ${myY}) are not in the map area<br />' +
+                                    'and must be within following ranges:<br/>' +
+                                    '${coordX} between ${minCoordX} and ${maxCoordX},<br />' +
+                                    '${coordY} between ${minCoordY} and ${maxCoordY}',
+    'mf.recenter.ws.error': 'An error occured when accessing the distant webservice:',
+    'mf.recenter.ws.service': 'Selected service'
 });

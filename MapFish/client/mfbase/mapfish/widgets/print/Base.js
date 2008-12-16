@@ -169,20 +169,50 @@ mapfish.widgets.print.Base = {
                     if (this.mask) this.mask.hide();
                     this.printing = false;
                 },
-                function(request) { //failure
-                    if (request.getURL) {
-                        Ext.Msg.alert(OpenLayers.Lang.translate('mf.information'),
-                                OpenLayers.Lang.translate('mf.print.popupBlocked') +
-                                '<br />' +
-                                '<a href="' + request.getURL + '" target="_blank">' +
-                                request.getURL + '</a>');
+                function(request) { //popup
+                    // don't use an Ext button... for some reason the IE "automatic
+                    // download" stuff kick in with those.
+
+                    var onClick = 'Ext.getCmp(\'printPopup\').destroy();';
+                    if (Ext.isOpera) {
+                        // Opera doesn't respect the "Content-disposition:
+                        // attachment", so we have to open a new tab 
+                        onClick += 'window.open(\'' + request.getURL + '\', \'_blank\');';
                     } else {
-                        Ext.Msg.alert(OpenLayers.Lang.translate('mf.error'),
-                                OpenLayers.Lang.translate('mf.print.unableToPrint'));
+                        onClick += 'window.location=\'' + request.getURL + '\';';
                     }
+                    var content = OpenLayers.Lang.translate('mf.print.pdfReady') + '<br /><br />' +
+                                  '<table onclick="' + onClick + '" border="0" cellpadding="0" cellspacing="0" class="x-btn-wrap" align="center">' +
+                                  '<tbody><tr><td class="x-btn-left"><i>&#160;</i></td>' +
+                                  '<td class="x-btn-center"><em unselectable="on" class="x-btn x-btn-text">' + Ext.MessageBox.buttonText.ok + '</em></td>' +
+                                  '<td class="x-btn-right"><i>&#160;</i></td></tr>' +
+                                  '</tbody></table>';
+                    var popup = new Ext.Window({
+                        bodyStyle: 'padding: 7px;',
+                        width: 200,
+                        id: "printPopup",
+                        autoHeight: true,
+                        constrain: true,
+                        closable: false,
+                        title: OpenLayers.Lang.translate('mf.information'),
+                        html: content,
+                        listeners: {
+                            destroy: function() {
+                                if (this.mask) this.mask.hide();
+                                this.printing = false;
+                            },
+                            scope: this
+                        }
+                    });
+                    popup.show();
+                },
+                function(request) { //failure
+                    Ext.Msg.alert(OpenLayers.Lang.translate('mf.error'),
+                            OpenLayers.Lang.translate('mf.print.unableToPrint'));
                     if (this.mask) this.mask.hide();
                     this.printing = false;
-                }, this);
+                },
+                this);
     },
 
     /**
