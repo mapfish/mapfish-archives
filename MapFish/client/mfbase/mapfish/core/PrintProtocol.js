@@ -97,6 +97,9 @@ mapfish.PrintProtocol = OpenLayers.Class({
      *
      * WARNING: this method has problems with accents and requests with lots of
      *          pages. But it has the advantage to work without proxy.
+     *
+     * Returns:
+     * {String} The URL
      */
     getAllInOneUrl: function() {
         var json = new OpenLayers.Format.JSON();
@@ -177,6 +180,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
      * Work around the browsers security "features" and open the given PDF
      * document.
      *
+     * Parameters:
      * answer - {Object} The answer for the AJAX call to the print service.
      * success - {Function} The function to call in case of success.
      * popup - {Function} The function to call in case of success, but when
@@ -207,10 +211,55 @@ mapfish.PrintProtocol = OpenLayers.Class({
     },
 
     /**
+     * Method: fixOverrides
+     *
+     * In the overrides, if one of the layers has the overview attribute set,
+     * set this attribute to false on all the layers where it's not set.
+     *
+     * Parameters:
+     * overrides - {Object} the map that specify the print module overrides for
+     *                      each layers.
+     * map - {<OpenLayers.Map>} The OL MAP.
+     *
+     * Returns:
+     * {object} The fixed overrides structure.
+     */
+    fixOverrides: function(overrides, map) {
+        overrides = OpenLayers.Util.extend({}, overrides);
+        var hasOverview = false;
+        var name;
+        for (var i = 0; i < map.layers.length; ++i) {
+            var olLayer = map.layers[i];
+            name = olLayer.name;
+            if (!overrides[name]) {
+                overrides[name] = {};
+            } else if (overrides[name].overview) {
+                hasOverview = true;
+            }
+        }
+
+        if (hasOverview) {
+            for (name in overrides) {
+                var cur = overrides[name];
+                if (!cur.overview) {
+                    cur.overview = false;
+                }
+            }
+        }
+        return overrides;
+    },
+
+    /**
      * Method: addMapParams
      *
      * Takes an OpenLayers Map and build the configuration needed for
      * the print module.
+     *
+     * Parameters:
+     * overrides - {Object} the map that specify the print module overrides for
+     *                      each layers.
+     * map - {<OpenLayers.Map>} The OL MAP.
+     * dpi - {Integer} the DPI resolution
      */
     addMapParams: function(overrides, map, dpi) {
         var spec = this.spec;
@@ -218,6 +267,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
         spec.units = map.baseLayer.units;
         spec.srs = map.baseLayer.projection.getCode();
         var layers = spec.layers = [];
+        overrides = this.fixOverrides(overrides, map);
         for (var i = 0; i < map.layers.length; ++i) {
             var olLayer = map.layers[i];
             var layerOverrides = OpenLayers.Util.extend({}, overrides[olLayer.name]);
@@ -225,7 +275,8 @@ mapfish.PrintProtocol = OpenLayers.Class({
             //allows to have some attributes overriden in fct of the resolution
             OpenLayers.Util.extend(layerOverrides, layerOverrides[dpi]);
 
-            if (olLayer.getVisibility() && layerOverrides.visibility != false) {
+            if ((olLayer.getVisibility() && layerOverrides.visibility !== false) ||
+                layerOverrides.visibility === true) {
                 var type = olLayer.CLASS_NAME;
                 var handler = mapfish.PrintProtocol.SUPPORTED_TYPES[type];
                 if (handler) {
@@ -253,6 +304,11 @@ mapfish.PrintProtocol = OpenLayers.Class({
      * Method: applyOverrides
      *
      * Change the layer config according to the overrides.
+     *
+     * Parameters:
+     * layer - {<Object>} A layer's print config
+     * overrides - {Object} the map that specify the print module overrides for
+     *                      one layer.
      */
     applyOverrides: function(layer, overrides) {
         for (var key in overrides) {
@@ -261,7 +317,9 @@ mapfish.PrintProtocol = OpenLayers.Class({
                 if (key == 'layers' || key == 'styles') {
                     value = mapfish.Util.fixArray(value);
                 }
-                if (layer[key] != null) {
+                if(key == "visibility") {
+                    //not sent
+                } else if (layer[key] != null || key == "overview") {
                     layer[key] = value;
                 } else {
                     layer.customParams[key] = value;

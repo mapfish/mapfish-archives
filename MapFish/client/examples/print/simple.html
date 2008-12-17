@@ -64,7 +64,8 @@
     map.addControl(new OpenLayers.Control.LayerSwitcher());
 
     var layerOverrides={
-        'Countries': { format: 'image/svg+xml' }
+        "OpenLayers WMS": {overview: true},
+        Countries: { format: 'image/svg+xml' }
     };
 
     var printConfigUrl = mapfish.SERVER_BASE_URL + 'print/info.json';
