@@ -20,6 +20,8 @@
 /*
  * @requires OpenLayers/Util.js
  * @requires OpenLayers/Protocol.js
+ * @requires OpenLayers/Filter/Comparison.js
+ * @requires OpenLayers/Filter/Logical.js
  * @requires core/Searcher.js
  */
 
