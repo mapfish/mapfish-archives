@@ -86,7 +86,7 @@ init_light() {
     if [ -d $PROJECT ]; then
         rm -rf $PROJECT
     fi
-    fetch_project
+    fetch_project $1
 
     run_hook post_init_light
 }
@@ -95,7 +95,7 @@ init_all() {
     run_hook pre_init_all
 
     create_python_env
-    init_light
+    init_light $1
 
     run_hook post_init_all
 }
@@ -202,13 +202,23 @@ init_mapfish() {
 
 fetch_project() {
     run_hook pre_fetch_project
-
+    
     echo "Fetching/updating project"
     if [ -d "project_source/$PROJECT" ]; then
         echo "Detected directory project_source/$PROJECT, using it instead of SVN"
         rsync -av project_source/$PROJECT .
     else
-        $SVN co $SVN_CO_OPTIONS ${PROJECT_SVN_BASE}
+        (echo "${PROJECT_SVN_BASE}" | egrep "(trunk|branches|tags)\/${PROJECT}\/*")
+        if [ $? -eq 0 ]; then
+            project_svn="${PROJECT_SVN_BASE}"
+        else
+            if [ -n $1 ]; then
+                project_svn="${PROJECT_SVN_BASE}/${1}/${PROJECT}"
+            else
+                project_svn="${PROJECT_SVN_BASE}/trunk/${PROJECT}"
+            fi
+        fi
+        $SVN co $SVN_CO_OPTIONS ${project_svn}
     fi
     init_mapfish
 
@@ -223,6 +233,39 @@ fetch_project() {
     run_hook post_fetch_project
 }
 
+create_branch() {
+    $SVN mkdir -m "create dir for branch $1" ${PROJECT_SVN_BASE}/branches/$1/
+    $SVN cp -m "create branch $1" ${PROJECT_SVN_BASE}/trunk/$PROJECT ${PROJECT_SVN_BASE}/branches/$1
+    if [ "$HAS_MAPFISH" = "1" ]; then
+        #
+        # The branch includes a copy (snapshot) of MapFish as opposed
+        # to an svn:externals to MapFish trunk
+        #
+        (
+            cd /tmp
+            rm -rf $PROJECT
+            echo "fetching project, it may time some time..."
+            $SVN co ${PROJECT_SVN_BASE}/branches/$1/$PROJECT
+            cd $PROJECT
+            $SVN export MapFish MapFish_
+            $SVN propdel svn:externals MapFish .
+            $SVN commit -m "remove externals to MapFish" .
+            rm -rf MapFish
+            mv MapFish_ MapFish
+            $SVN add MapFish
+            $SVN commit -m "add MapFish" MapFish
+        )
+    fi
+}
+
+create_tag() {
+    echo "Enter branch name, followed by [ENTER]"
+    read branch
+    $SVN mkdir -m "create dir for tag $1" ${PROJECT_SVN_BASE}/tags/$1/
+    $SVN cp -m "create tag $1" ${PROJECT_SVN_BASE}/branches/$branch/$PROJECT ${PROJECT_SVN_BASE}/tags/$1
+}
+
+
 #
 # Main function
 #
@@ -235,36 +278,78 @@ main() {
         exit 1
     fi
 
-    while getopts ijurh OPT; do
+    opt_i="no"
+    opt_j="no"
+    opt_u="no"
+    opt_b="no"
+    opt_t="no"
+
+    while getopts ijurhb:t: OPT; do
         case $OPT in
         i)
-            echo "Initializing everything"
-            init_all
+            opt_i="yes"
             ;;
         j)
-            echo "Initializing MapFish and project"
-            init_light
+            opt_j="yes"
             ;;
         u)
-            echo "Updating project"
-            fetch_project
+            opt_u="yes"
             ;;
         r)
             echo "Replace .in files"
             subst_in_files
             ;;
+        b)
+            opt_b="$OPTARG"
+            ;;
+        t)
+            opt_t="$OPTARG"
+            ;;
         \?|h)
             echo "Usage: $0 OPTION"
             echo " -h: help"
-            echo -n " -i: initialize everything "
-            echo "(WARNING: this deletes existing directories)"
-            echo -n " -j: initialize MapFish and project "
-            echo "(WARNING: this deletes existing project and MapFish)"
+            echo " -i: initialize everything "
+            echo "     WARNING: this deletes existing directories"
+            echo "     can be used with -t or -b to retrieve a specific tag or branch"
+            echo " -j: initialize MapFish and project "
+            echo "     (WARNING: this deletes existing project and MapFish)"
+            echo "     can be used with -t or -b to retrieve a specific tag or branch"
             echo " -u: update project"
+            echo "     can be used with -t or -b to retrieve a specific tag or branch"
             echo " -r: replace .in files"
+            echo " -b <branch_name>: if not used with -i or -j or -u create a new branch,"
+            echo "     replacing the svn:external to MapFish by a copy of MapFish"
+            echo " -t <tag_name>: if  not used with -i or -j or -u create a new tag"
+            echo 
             exit 1
             ;;
         esac
     done
+
+    arg=
+    if [ $opt_b != "no" ]; then
+        arg="branches/$opt_b"
+    fi
+    if [ $opt_t != "no" ]; then
+        arg="tags/$opt_t"
+    fi
+
+    if [ $opt_i = "yes" ]; then
+        echo "Initializing everything"
+        init_all $arg
+    elif [ $opt_j = "yes" ]; then
+        echo "Initializing MapFish and project"
+        init_light $arg
+    elif [ $opt_u = "yes" ]; then
+        echo "Updating project"
+        fetch_project $arg
+    elif [ $opt_t != "no" ]; then
+        echo "Create tag from branch"
+        create_tag $opt_t
+    elif [ $opt_b != "no" ]; then
+        echo "Create branch from trunk (with a snapshot of MapFish)"
+        create_branch $opt_b
+    fi
+
     echo "Done."
 }
