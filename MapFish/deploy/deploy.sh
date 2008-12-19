@@ -244,7 +244,7 @@ create_branch() {
         (
             cd /tmp
             rm -rf $PROJECT
-            echo "fetching project, it may time some time..."
+            echo "fetching project, it may take some time..."
             $SVN co ${PROJECT_SVN_BASE}/branches/$1/$PROJECT
             cd $PROJECT
             $SVN export MapFish MapFish_
