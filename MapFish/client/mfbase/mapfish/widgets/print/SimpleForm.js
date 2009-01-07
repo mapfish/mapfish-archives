@@ -129,6 +129,7 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.BaseWidget, 
                 scope: this,
                 handler: function() {
                     this.setCurScale(this.fitScale(this.getCurLayout()));
+                    if(this.rotation) this.setCurRotation(0);
                     this.createTheRectangle();
                 }
             });
