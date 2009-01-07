@@ -56,7 +56,7 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.BaseWidget, 
 
     /**
      * APIProperty: formConfig
-     * {Boolean} If true (default), display a reset position button 
+     * {Boolean} If true (default), display a reset position button
      */
     wantResetButton: true,
 
@@ -123,13 +123,15 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.BaseWidget, 
             formPanel.add(this.infoPanel);
         }
 
-        if(this.wantResetButton) {
+        if (this.wantResetButton) {
             formPanel.addButton({
                 text: OpenLayers.Lang.translate('mf.print.resetPos'),
                 scope: this,
                 handler: function() {
                     this.setCurScale(this.fitScale(this.getCurLayout()));
-                    if(this.rotation) this.setCurRotation(0);
+                    if (this.rotation) {
+                        this.setCurRotation(0);
+                    }
                     this.createTheRectangle();
                 }
             });
