@@ -208,7 +208,7 @@ fetch_project() {
         echo "Detected directory project_source/$PROJECT, using it instead of SVN"
         rsync -av project_source/$PROJECT .
     else
-        (echo "${PROJECT_SVN_BASE}" | egrep "(trunk|branches|tags)\/${PROJECT}\/*")
+	(echo "${PROJECT_SVN_BASE}" | egrep "(trunk|branches|tags)\/.*${PROJECT}\/*")
         if [ $? -eq 0 ]; then
             project_svn="${PROJECT_SVN_BASE}"
         else
