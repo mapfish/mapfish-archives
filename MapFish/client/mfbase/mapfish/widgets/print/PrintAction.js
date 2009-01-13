@@ -25,7 +25,7 @@ Ext.namespace('mapfish.widgets');
 Ext.namespace('mapfish.widgets.print');
 
 /**
- * Class: mapfish.PrintAction
+ * Class: mapfish.widgets.print.PrintAction
  * An OpenLayers control that generates a PDF based on the Map's extent
  *
  * Inherits from:
