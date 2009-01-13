@@ -148,6 +148,9 @@ mapfish.widgets.data.GridRowFeatureMediator.prototype = {
             this.rowEventsOff();
             this.selectModel.selectRecords([r]);
             this.rowEventsOn();
+
+            // focus the row in the grid to ensure the row is visible
+            this.grid.getView().focusRow(this.grid.store.indexOf(r));
         }
     },
 
