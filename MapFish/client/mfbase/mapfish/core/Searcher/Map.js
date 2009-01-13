@@ -35,6 +35,24 @@
  * Use this class to create a Map searcher. A Map searcher sends search requests
  * as the user clicks, pauses or draws boxes on the map.
  *
+ * Typical usage:
+ * (start code)
+ *         var searcher = new mapfish.Searcher.Map({
+ *             mode: mapfish.Searcher.Map.HOVER,
+ *             protocol: new mapfish.Protocol.TriggerEventDecorator({
+ *                 protocol: new mapfish.Protocol.MapFish({
+ *                     url: "countries",
+ *                     params: {
+ *                         limit: 10
+ *                     }
+ *                 })
+ *             }),
+ *             displayDefaultPopup: true,
+ *             delay: 400
+ *         });
+ *         map.addControl(searcher);
+ *         searcher.activate();
+ * (end)
  *
  * Inherits from:
  * - mapfish.Searcher
@@ -65,7 +83,7 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
     searchTolerance: 3,
 
     /**
-     * APIProperty: searchTolerance
+     * APIProperty: searchToleranceUnits
      * {String} Tolerance units.
      *     Possible values are 'pixels' and 'geo'.
      *     The latter means that tolerance is given in the current
