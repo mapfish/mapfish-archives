@@ -27,7 +27,7 @@
         var map = new OpenLayers.Map(mapDiv, options);
 
         var epfl = new OpenLayers.Layer.WMS("EPFL Background",
-                            "http://demo.mapfish.org/mapfishsample/trunk/tilecache?",
+                            "http://demo.mapfish.org/mapfishsample/1.1/tilecache?",
                             {layers: 'epfl',
                              format: 'image/png'});
         map.addLayer(epfl);
