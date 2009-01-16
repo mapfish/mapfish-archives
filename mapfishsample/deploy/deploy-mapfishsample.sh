@@ -27,7 +27,7 @@
 
 set -e
 
-DEPLOY_SVN=http://www.mapfish.org/svn/mapfish/trunk/MapFish/deploy
+DEPLOY_SVN=http://www.mapfish.org/svn/mapfish/branches/1.1/MapFish/deploy
 COMPAT_VERSION=1
 
 checkout_deploy() {
@@ -58,7 +58,7 @@ FETCH_PYTHON_ENV=1
 PROJECT=mapfishsample
 
 # Project subversion URL
-PROJECT_SVN_BASE=http://www.mapfish.org/svn/mapfish/trunk/$PROJECT/
+PROJECT_SVN_BASE=http://www.mapfish.org/svn/mapfish/branches/1.1/$PROJECT/
 
 # Project MapFish directory
 PROJECT_MAPFISH_DIR=$PROJECT/MapFish
