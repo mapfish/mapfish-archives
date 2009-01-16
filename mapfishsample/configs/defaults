@@ -23,7 +23,10 @@ export DB_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_VERSION}_mapf
 export MVN=mvn
 
 function post_fetch_project() {
-    PRINT_SRC=$PROJECT_MAPFISH_DIR/server/java/print/
+    JAVA_SRC=$PROJECT_MAPFISH_DIR/server/java
+    GEO_LIB_SRC=$JAVA_SRC/mapfish-geo-lib
+    (cd $GEO_LIB_SRC; $MVN clean install)
+    PRINT_SRC=$JAVA_SRC/print
     (cd $PRINT_SRC; $MVN clean install)
     cp $PRINT_SRC/print-standalone/target/print-standalone.jar $PROJECT_DIR/print/
 }
