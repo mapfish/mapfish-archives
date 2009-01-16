@@ -5,3 +5,4 @@ export JAVA_HOME="/usr/lib/jvm/java-1.5.0-sun"
 
 export VERSION="1.1"
 export DB_VERSION="v1.1"
+export DB_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_VERSION}_mapfishsample
