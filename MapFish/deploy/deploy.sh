@@ -39,9 +39,14 @@ HAS_MAPFISH=1
 # Internal definitions, shouldn't be overridden
 
 BASE=$(cd $(dirname $0); pwd)
-SVN="svn -q"
 PYTHON_ENV=$BASE/env
+
+SVN="svn -q"
+
 SETUPTOOLS_SVN="http://svn.python.org/projects/sandbox/branches/setuptools-0.6"
+
+MAPFISH_PKG_HOST="dev.camptocamp.com"
+MAPFISH_PKG_INDEX="http://${MAPFISH_PKG_HOST}/packages/mapfish/trunk/index"
 
 #
 # Global and Initialization functions
@@ -65,7 +70,7 @@ create_python_env() {
     mkdir $PYTHON_ENV
     (cd $PYTHON_ENV && \
      wget http://svn.colorstudy.com/virtualenv/trunk/virtualenv.py && \
-     python virtualenv.py .)
+     python virtualenv.py --no-site-packages .)
 
     # because of a bug in setuptools we need to check it out
     # from svn and setup.py-install it
@@ -194,7 +199,10 @@ init_mapfish() {
 
     # Install MapFish in env if fetched
     if [ "$FETCH_PYTHON_ENV" = "1" ]; then
-        (cd $PROJECT_MAPFISH_DIR/server/python && $PYTHON_ENV/bin/python setup.py develop)
+        (cd $PROJECT_MAPFISH_DIR/server/python && \
+         $PYTHON_ENV/bin/python setup.py develop \
+            --index-url=$MAPFISH_PKG_INDEX \
+            --allow-hosts=$MAPFISH_PKG_HOST)
     fi
 
     run_hook post_fetch_mapfish
@@ -225,7 +233,10 @@ fetch_project() {
     # Launch project setup.py to install project dependencies if needed
     if [ -f $PROJECT/$PROJECT/setup.py -a "$HAS_MAPFISH" = "1" \
          -a "$SKIP_INIT_MAPFISH" != "1" -a "$FETCH_PYTHON_ENV" = "1" ]; then
-        (cd $PROJECT/$PROJECT && $PYTHON_ENV/bin/python setup.py develop)
+        (cd $PROJECT/$PROJECT && \
+         $PYTHON_ENV/bin/python setup.py develop \
+            --index-url=$MAPFISH_PKG_INDEX \
+            --allow-hosts=$MAPFISH_PKG_HOST)
     fi
 
     subst_in_files
