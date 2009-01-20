@@ -72,6 +72,12 @@ mapfish.PrintProtocol = OpenLayers.Class({
     params: null,
 
     /**
+     * Property: hasOverview
+     * {Boolean} True if overview is specified in some overrides.
+     */
+    hasOverview: false,
+
+    /**
      * Constructor: OpenLayers.Layer
      *
      * Parameters:
@@ -85,7 +91,9 @@ mapfish.PrintProtocol = OpenLayers.Class({
     initialize: function(map, config, overrides, dpi, params) {
         this.config = config;
         this.spec = {pages: []};
+        overrides = this.fixOverrides(overrides, map);
         this.addMapParams(overrides, map, dpi);
+        this.addOverviewMapParams(overrides, map, dpi);
         this.params = params;
     },
 
@@ -246,20 +254,23 @@ mapfish.PrintProtocol = OpenLayers.Class({
                 }
             }
         }
+
+        this.hasOverview = hasOverview;
+
         return overrides;
     },
 
     /**
      * Method: addMapParams
      *
-     * Takes an OpenLayers Map and build the configuration needed for
+     * Takes an OpenLayers Map and build the configuration needed by
      * the print module.
      *
      * Parameters:
      * overrides - {Object} the map that specify the print module overrides for
      *                      each layers.
      * map - {<OpenLayers.Map>} The OL MAP.
-     * dpi - {Integer} the DPI resolution
+     * dpi - {Integer} the DPI resolution.
      */
     addMapParams: function(overrides, map, dpi) {
         var spec = this.spec;
@@ -267,9 +278,48 @@ mapfish.PrintProtocol = OpenLayers.Class({
         spec.units = map.baseLayer.units;
         spec.srs = map.baseLayer.projection.getCode();
         var layers = spec.layers = [];
-        overrides = this.fixOverrides(overrides, map);
-        for (var i = 0; i < map.layers.length; ++i) {
-            var olLayer = map.layers[i];
+        this.fillLayers(layers, map.layers, overrides, dpi);
+    },
+
+    /**
+     * Method: addOverviewMapParams
+     *
+     * Look for an OverviewMap control in the Map and build the overviewLayers
+     * part of the spec needed by the print module. It's done only if there is
+     * no overview overrides
+     *
+     * Parameters:
+     * overrides - {Object} the map that specify the print module overrides for
+     *                      each layers.
+     * map - {<OpenLayers.Map>} The OL MAP.
+     * dpi - {Integer} the DPI resolution.
+     */
+    addOverviewMapParams: function(overrides, map, dpi) {
+        if (!this.hasOverview) {
+            var overviewControls = map.getControlsByClass('OpenLayers.Control.OverviewMap');
+            if (overviewControls.length >= 0) {
+                var spec = this.spec;
+                var layers = spec.overviewLayers = [];
+                this.fillLayers(layers, overviewControls[0].layers, overrides, dpi);
+            }
+        }
+    },
+
+    /**
+     * Method: fillLayers
+     *
+     * Add the layer structure to the given chunk of spec.
+     *
+     * Parameters:
+     * layers - {Array} the target spec chunk.
+     * olLayers - {Array(<OpenLayers.Layer>)} The OpenLayers layers.
+     * overrides - {Object} the map that specify the print module overrides for
+     *                      each layers.
+     * dpi - {Integer} the DPI resolution.
+     */
+    fillLayers: function(layers, olLayers, overrides, dpi) {
+        for (var i = 0; i < olLayers.length; ++i) {
+            var olLayer = olLayers[i];
             var layerOverrides = OpenLayers.Util.extend({}, overrides[olLayer.name]);
 
             //allows to have some attributes overriden in fct of the resolution
@@ -317,7 +367,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
                 if (key == 'layers' || key == 'styles') {
                     value = mapfish.Util.fixArray(value);
                 }
-                if(key == "visibility") {
+                if (key == "visibility") {
                     //not sent
                 } else if (layer[key] != null || key == "overview") {
                     layer[key] = value;
