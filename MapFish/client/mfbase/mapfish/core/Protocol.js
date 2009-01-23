@@ -65,5 +65,32 @@ mapfish.Protocol = {
             }
        }
        return protocol;
+    },
+
+    /**
+     * APIFunction: createMapFishProtocol
+     * Shortcut to create MapFish Protocol decorated with TriggerEventDecorator
+     *     and MergeFilterDecorator
+     *
+     * Example of use:
+     * (start code)
+     * var protocol = mapfish.Protocol.createMapFishProtocol({
+     *     url: url,
+     * });
+     * (end)
+     *
+     * Parameters:
+     * config - {Object} The config of the decorated MapFish protocol
+     *
+     * Returns:
+     * {<mapfish.Protocol.MapFish>} The resulting protocol.
+     * */
+    createMapFishProtocol: function(config) {
+        return this.decorateProtocol({
+            protocol: new mapfish.Protocol.MapFish(config),
+            TriggerEventDecorator: null,
+            MergeFilterDecorator: null
+        });
     }
+    
 };
