@@ -46,6 +46,7 @@ SVN="svn -q"
 SETUPTOOLS_SVN="http://svn.python.org/projects/sandbox/branches/setuptools-0.6"
 
 MAPFISH_PKG_HOST="dev.camptocamp.com"
+MAPFISH_PKG_MASK="dev.camptocamp.com"
 MAPFISH_PKG_INDEX="http://${MAPFISH_PKG_HOST}/packages/mapfish/trunk/index"
 
 #
@@ -236,7 +237,7 @@ fetch_project() {
         (cd $PROJECT/$PROJECT && \
          $PYTHON_ENV/bin/python setup.py develop \
             --index-url=$MAPFISH_PKG_INDEX \
-            --allow-hosts=$MAPFISH_PKG_HOST)
+            --allow-hosts=$MAPFISH_PKG_MASK)
     fi
 
     subst_in_files
