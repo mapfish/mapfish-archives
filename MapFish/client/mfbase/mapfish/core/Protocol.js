@@ -88,8 +88,8 @@ mapfish.Protocol = {
     createMapFishProtocol: function(config) {
         return this.decorateProtocol({
             protocol: new mapfish.Protocol.MapFish(config),
-            TriggerEventDecorator: null,
-            MergeFilterDecorator: null
+            MergeFilterDecorator: null,
+            TriggerEventDecorator: null
         });
     }
     
