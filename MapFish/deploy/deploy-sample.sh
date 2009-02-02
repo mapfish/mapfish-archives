@@ -63,16 +63,25 @@ PROJECT_SVN_BASE=http://example.com/path/to/trunk/$PROJECT/
 # Project MapFish directory
 PROJECT_MAPFISH_DIR=$PROJECT/MapFish
 
-# Set this to "1" if project contains a copy of MapFish (usually using svn:externals)
-HAS_MAPFISH=1
+# The configuration variables defined below have default values in the main
+# deploy.sh script, their definition is therefore commented out by default,
+# feel free to override them if needed
 
-# The deploy script does --allow-hosts=${MAPFISH_PKG_MASK} and
-# --index-url=${MAPFISH_PKG_INDEX} when installing the mapfish and project eggs
-# with setup.py. These two variables have default values defined in the
-# deploy.sh but you can override them here.
+# Set this to "1" if project contains a copy of MapFish (usually using svn:externals)
+#HAS_MAPFISH=1
+
+# The deploy script does --allow-hosts=${MAPFISH_PKG_MASK} and --index-url=${MAPFISH_PKG_INDEX}
+# when installing the mapfish and project eggs with setup.py. These two variables have default
+# values defined in the deploy.sh but you can override them here.
 #MAPFISH_PKG_HOST="dev.camptocamp.com"
 #MAPFISH_PKG_MASK="dev.camptocamp.com"
 #MAPFISH_PKG_INDEX="http://${MAPFISH_PKG_HOST}/packages/mapfish/trunk/index"
+
+# Set this to "1" if the mapfish egg must be installed from the MapFish source. If set
+# to "0" then the deploy script will not install the mapfish egg, in most cases this
+# means that the mapfish egg will be installed as a result of installing the project
+# egg (the project's setup.py includes a mapfish "install_requires" entry.
+#INSTALL_MAPFISH_EGG_FROM_SOURCE=1
 
 # You can define function that will be run at certain stages in the installation process
 # This is an example function that will be run after initialization

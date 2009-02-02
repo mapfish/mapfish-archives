@@ -40,6 +40,8 @@ MAPFISH_PKG_HOST="dev.camptocamp.com"
 MAPFISH_PKG_MASK="dev.camptocamp.com"
 MAPFISH_PKG_INDEX="http://${MAPFISH_PKG_HOST}/packages/mapfish/trunk/index"
 
+INSTALL_MAPFISH_EGG_FROM_SOURCE=1
+
 # Internal definitions, shouldn't be overridden
 
 BASE=$(cd $(dirname $0); pwd)
@@ -199,7 +201,7 @@ init_mapfish() {
     (cd $PROJECT_MAPFISH_DIR/client/build/ && sh ./build.sh $CFG_FILE)
 
     # Install MapFish in env if fetched
-    if [ "$FETCH_PYTHON_ENV" = "1" ]; then
+    if [ "$FETCH_PYTHON_ENV" = "1" -a "$INSTALL_MAPFISH_EGG_FROM_SOURCE" = "1" ]; then
         (cd $PROJECT_MAPFISH_DIR/server/python && \
          $PYTHON_ENV/bin/python setup.py develop \
             --index-url=$MAPFISH_PKG_INDEX \
