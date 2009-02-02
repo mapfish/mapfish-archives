@@ -203,7 +203,7 @@ init_mapfish() {
         (cd $PROJECT_MAPFISH_DIR/server/python && \
          $PYTHON_ENV/bin/python setup.py develop \
             --index-url=$MAPFISH_PKG_INDEX \
-            --allow-hosts=$MAPFISH_PKG_HOST)
+            --allow-hosts=$MAPFISH_PKG_MASK)
     fi
 
     run_hook post_fetch_mapfish
