@@ -36,6 +36,10 @@ fi
 
 HAS_MAPFISH=1
 
+MAPFISH_PKG_HOST="dev.camptocamp.com"
+MAPFISH_PKG_MASK="dev.camptocamp.com"
+MAPFISH_PKG_INDEX="http://${MAPFISH_PKG_HOST}/packages/mapfish/trunk/index"
+
 # Internal definitions, shouldn't be overridden
 
 BASE=$(cd $(dirname $0); pwd)
@@ -44,10 +48,6 @@ PYTHON_ENV=$BASE/env
 SVN="svn -q"
 
 SETUPTOOLS_SVN="http://svn.python.org/projects/sandbox/branches/setuptools-0.6"
-
-MAPFISH_PKG_HOST="dev.camptocamp.com"
-MAPFISH_PKG_MASK="dev.camptocamp.com"
-MAPFISH_PKG_INDEX="http://${MAPFISH_PKG_HOST}/packages/mapfish/trunk/index"
 
 #
 # Global and Initialization functions
