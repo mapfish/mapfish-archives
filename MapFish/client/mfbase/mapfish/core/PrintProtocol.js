@@ -297,7 +297,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
     addOverviewMapParams: function(overrides, map, dpi) {
         if (!this.hasOverview) {
             var overviewControls = map.getControlsByClass('OpenLayers.Control.OverviewMap');
-            if (overviewControls.length >= 0) {
+            if (overviewControls.length > 0) {
                 var spec = this.spec;
                 var layers = spec.overviewLayers = [];
                 this.fillLayers(layers, overviewControls[0].layers, overrides, dpi);
