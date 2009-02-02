@@ -1,4 +1,3 @@
-Pylons
-WebHelpers
 MapFish
 PasteScript
+Pylons

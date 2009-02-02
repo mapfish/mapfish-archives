@@ -1,7 +1,7 @@
 # 
 # Copyright (C) 2007-2008  Camptocamp
 #  
-# This file is part of MapFish
+# This file is part of MapFish Server
 #  
 # MapFish is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -17,8 +17,12 @@
 # along with MapFish.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from mapfishsample.lib.base import *
+from pylons import request, response, session, tmpl_context as c
+from pylons.controllers.util import abort, redirect_to
+
+from mapfishsample.lib.base import BaseController
 from mapfishsample.model.lines import Line
+from mapfishsample.model.meta import Session
 
 from mapfish.lib.filters import *
 from mapfish.lib.protocol import Protocol, create_default_filter
@@ -27,7 +31,7 @@ class LinesController(BaseController):
     readonly = False # if set to True, only GET is supported
 
     def __init__(self):
-        self.protocol = Protocol(model.Session, Line, self.readonly)
+        self.protocol = Protocol(Session, Line, self.readonly)
 
     def index(self, format='json'):
         """GET /: return all features."""

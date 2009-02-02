@@ -1,2 +1,3 @@
+include mapfishsample/config/deployment.ini_tmpl
 recursive-include mapfishsample/public *
 recursive-include mapfishsample/templates *

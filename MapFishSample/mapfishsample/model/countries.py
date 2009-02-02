@@ -25,14 +25,14 @@ from mapfish.sqlalchemygeom import GeometryTableMixIn
 
 from mapfishsample.model.meta import metadata, engine
 
-summits_table = Table(
-    'sommets_out', metadata,
-    Column('geom', Geometry(32768)),
+countries_table = Table(
+    'world_factbk_simplified', metadata,
+    Column('simplify', Geometry(4326)),
     autoload=True, autoload_with=engine)
 
-class Summit(GeometryTableMixIn):
+class Country(GeometryTableMixIn):
     # for GeometryTableMixIn to do its job the __table__ property
     # must be set here
-    __table__ = summits_table
+    __table__ = countries_table
 
-mapper(Summit, summits_table)
+mapper(Country, countries_table)
