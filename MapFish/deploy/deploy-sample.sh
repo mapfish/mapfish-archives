@@ -66,6 +66,14 @@ PROJECT_MAPFISH_DIR=$PROJECT/MapFish
 # Set this to "1" if project contains a copy of MapFish (usually using svn:externals)
 HAS_MAPFISH=1
 
+# The deploy script does --allow-hosts=${MAPFISH_PKG_MASK} and
+# --index-url=${MAPFISH_PKG_INDEX} when installing the mapfish and project eggs
+# with setup.py. These two variables have default values defined in the
+# deploy.sh but you can override them here.
+#MAPFISH_PKG_HOST="dev.camptocamp.com"
+#MAPFISH_PKG_MASK="dev.camptocamp.com"
+#MAPFISH_PKG_INDEX="http://${MAPFISH_PKG_HOST}/packages/mapfish/trunk/index"
+
 # You can define function that will be run at certain stages in the installation process
 # This is an example function that will be run after initialization
 #post_init_all() {
