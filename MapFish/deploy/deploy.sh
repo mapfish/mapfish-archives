@@ -38,7 +38,7 @@ HAS_MAPFISH=1
 
 MAPFISH_PKG_HOST="dev.camptocamp.com"
 MAPFISH_PKG_MASK="dev.camptocamp.com"
-MAPFISH_PKG_INDEX="http://${MAPFISH_PKG_HOST}/packages/mapfish/trunk/index"
+MAPFISH_PKG_INDEX="http://${MAPFISH_PKG_HOST}/packages/mapfish/all/index"
 
 INSTALL_MAPFISH_EGG_FROM_SOURCE=1
 
