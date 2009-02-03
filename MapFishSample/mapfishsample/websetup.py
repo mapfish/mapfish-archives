@@ -13,5 +13,9 @@ def setup_app(command, conf, vars):
     from mapfishsample.model import meta
     meta.metadata.bind = meta.engine
 
+    #
+    # No tables to create in our case
+    # 
+
     # Create the tables if they aren't there already
-    meta.metadata.create_all(checkfirst=True)
+    #meta.metadata.create_all(checkfirst=True)

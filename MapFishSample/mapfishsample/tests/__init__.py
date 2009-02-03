@@ -14,10 +14,11 @@ from paste.script.appinstall import SetupCommand
 from pylons import config, url
 from routes.util import URLGenerator
 from webtest import TestApp
+from routes import url_for
 
 import pylons.test
 
-__all__ = ['environ', 'url', 'TestController']
+__all__ = ['environ', 'url_for', 'TestController']
 
 # Invoke websetup with the current config file
 SetupCommand('setup-app').run([config['__file__']])
