@@ -21,7 +21,7 @@ def make_map():
 
     # CUSTOM ROUTES HERE
 
-    printer.addRoutes(map, 'print/', 'printer')
+    printer.addRoutes(map, '/print/', 'printer')
 
     map.resource('summit', 'summits')
     map.resource('country', 'countries')
