@@ -38,7 +38,6 @@ class TestSummitsController(TestController):
             assert abs(coords[1] - 45) <= 0.5
 
     def test_index_box(self):
-        # changeset 1625 and 1626 make this test fail
         params = {"box": "5,45,5.5,45.5"}
         response = self.app.get(url_for(controller='summits'),
                                 params=params)
