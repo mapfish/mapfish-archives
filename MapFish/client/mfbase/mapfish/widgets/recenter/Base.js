@@ -174,6 +174,7 @@ Ext.extend(mapfish.widgets.recenter.Base, Ext.FormPanel, {
                 {
                     fieldLabel: OpenLayers.i18n('mf.print.scale'),
                     typeAhead: false,
+                    value: this.scales[this.defaultZoom] || this.scales[0],
                     mode: 'local',
                     id: 'scale_' + this.getId(),
                     name: "scale",
@@ -208,14 +209,49 @@ Ext.extend(mapfish.widgets.recenter.Base, Ext.FormPanel, {
         
         // use default zoom level if provided in widget config, 
         // else keep current zoom level
-        zoom = zoom || this.defaultZoom || this.map.getZoom();
+        if (typeof(zoom) == 'undefined') {
+            zoom = (typeof(this.defaultZoom) != 'undefined') 
+                   ? this.defaultZoom : this.map.getZoom()
+        }
 
         if (this.showCenter) {
             // display a symbol on the new center point
             this.showCenterMark(x, y);
         }
-        
+
         this.map.setCenter(new OpenLayers.LonLat(x, y), zoom);
+    },
+
+    /** 
+     * Method: recenterOnBbox 
+     * Recenters on given bounds 
+     * 
+     * Parameters: 
+     * bbox - {<OpenLayers.Bounds>} 
+     */ 
+    recenterOnBbox: function(bbox) { 
+        if (this.showCenter) { 
+            // display a symbol on the center point of the bbox 
+            var lonlat = bbox.getCenterLonLat(); 
+            this.showCenterMark(lonlat.lon, lonlat.lat); 
+        }   
+  
+        this.map.zoomToExtent(bbox); 
+    },
+
+    /**
+     * Method: recenterOnGeometry
+     * Recenters on given geometry
+     *
+     * Parameters:
+     * geometry - {<OpenLayers.Geometry>}
+     */
+    recenterOnGeometry: function(geometry) {
+        if (geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
+            this.recenterOnCoords(geometry.x, geometry.y);
+        } else {
+            this.recenterOnBbox(geometry.getBounds());
+        }
     },
     
     /**
@@ -232,7 +268,7 @@ Ext.extend(mapfish.widgets.recenter.Base, Ext.FormPanel, {
         var features = [
             new OpenLayers.Feature.Vector(
                 new OpenLayers.Geometry.Point(x, y),
-                { type: 'cross' }
+                { type: this.symbol || 'cross' }
             )
         ];
 
@@ -249,12 +285,12 @@ Ext.extend(mapfish.widgets.recenter.Base, Ext.FormPanel, {
             this.vectorLayer.destroyFeatures();
         } else {
             var styles = new OpenLayers.StyleMap({
-                "default": {
+                "default": OpenLayers.Util.extend({
                     graphicName: "${type}", // retrieved from symbol type attribute
                     pointRadius: 10,
                     fillColor: "red",
                     fillOpacity: 1
-                }
+                }, this.centerMarkStyles)
             });
 
             this.vectorLayer = new OpenLayers.Layer.Vector(
