@@ -3,9 +3,13 @@
  */
 OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     'scale': "Echelle = 1 : ${scaleDenom}",
+    'mf.tools': 'Outils',
+
+    'mf.layertree': 'Arbre des couches',
     'mf.layertree.opacity': 'Opacité',
     'mf.layertree.remove': 'Supprimer',
     'mf.layertree.zoomToExtent': 'Zoom sur l\'emprise',    
+
     'mf.print.mapTitle': 'Titre',
     'mf.print.comment': 'Commentaires',
     'mf.print.unableToPrint': "Impossible d'imprimer",
@@ -23,9 +27,11 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     'mf.print.noPage': 'Pas de page sélectionnée, appuyez sur le bouton "Ajouter page" pour en créer une.',
     'mf.print.print-tooltip': 'Générer un PDF contenant au moins l\'étendue de la présente carte',
     'mf.print.serverDown': "Le service d'impression ne fonctionne pas",
+
     'mf.error': 'Erreur',
     'mf.warning': 'Attention',
     'mf.information': 'Information',
+
     'mf.recenter.x': 'X',
     'mf.recenter.y': 'Y',
     'mf.recenter.submit': 'Recentrer',
@@ -35,5 +41,12 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
                                   '${coordX} entre ${minCoordX} et ${maxCoordX},<br />' +
                                   '${coordY} entre ${minCoordY} et ${maxCoordY}',
     'mf.recenter.ws.error': 'Une erreur est survenue lors de l\'accès au webservice distant:',
-    'mf.recenter.ws.service': 'Service sélectionné'
+    'mf.recenter.ws.service': 'Service sélectionné',
+
+    'mf.control.previous': 'Vue précédente',
+    'mf.control.next': 'Vue suivante',
+    'mf.control.pan': 'Déplacer',
+    'mf.control.zoomIn': 'Zoom avant',
+    'mf.control.zoomOut': 'Zoom arrière',
+    'mf.control.zoomAll': 'Vue globale'
 });

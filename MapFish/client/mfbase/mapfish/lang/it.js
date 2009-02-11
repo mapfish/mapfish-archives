@@ -2,9 +2,13 @@
  * @requires OpenLayers/Lang/it.js
  */
 OpenLayers.Util.extend(OpenLayers.Lang.it, {
+    'mf.tools': 'Tools', //TODO
+
+    'mf.layertree': 'Layer tree', //TODO
     'mf.layertree.opacity': 'Opacity', // TODO
     'mf.layertree.remove': 'Remove', // TODO
     'mf.layertree.zoomToExtent': 'Zoom to extent', // TODO
+
     'mf.print.mapTitle': 'Titolo',
     'mf.print.comment': 'Commento',
     'mf.print.loadingConfig': 'Caricamento in corso',
@@ -23,6 +27,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.it, {
     'mf.print.pdfReady': 'Your PDF document is ready.',
     'mf.print.noPage': 'No page selected, click on the "Add page" button to add one.', // TODO
     'mf.print.print-tooltip': 'Generate a PDF with at least the extent shown on the map', // TODO
+
     'mf.error': 'Errore',
     'mf.warning': 'Attenzione',
     'mf.information': 'Informazioni',
@@ -37,5 +42,12 @@ OpenLayers.Util.extend(OpenLayers.Lang.it, {
                                     '${coordX} between ${minCoordX} and ${maxCoordX},<br />' +
                                     '${coordY} between ${minCoordY} and ${maxCoordY}',
     'mf.recenter.ws.error': 'An error occured when accessing the distant webservice:',
-    'mf.recenter.ws.service': 'Selected service'
+    'mf.recenter.ws.service': 'Selected service',
+
+    'mf.control.previous': 'Previous view', //TODO
+    'mf.control.next': 'Next view', //TODO
+    'mf.control.pan': 'Pan', //TODO
+    'mf.control.zoomIn': 'Zoom in', //TODO
+    'mf.control.zoomOut': 'Zoom out', //TODO
+    'mf.control.zoomAll': 'Zoom all' //TODO
 });

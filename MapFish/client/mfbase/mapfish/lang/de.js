@@ -1,10 +1,14 @@
 /**
- * @requires OpenLayers/Lang/en.js
+ * @requires OpenLayers/Lang/de.js
  */
 OpenLayers.Util.extend(OpenLayers.Lang.de, {
+    'mf.tools': 'Tools', //TODO
+
+    'mf.layertree': 'Layer tree', //TODO
     'mf.layertree.opacity': 'Opazität',
     'mf.layertree.remove': 'Ausblenden',
     'mf.layertree.zoomToExtent': 'Zoom object zoomen', //TODO: find a better translation
+
     'mf.print.mapTitle': 'Titel',
     'mf.print.comment': 'Bemerkung',
     'mf.print.loadingConfig': 'Laden der Konfiguration...',
@@ -14,7 +18,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.de, {
     'mf.print.dpi': 'DPI',
     'mf.print.scale': 'Massstab',
     'mf.print.rotation': 'Rotation',
-    'mf.print.print': 'Drücken',
+    'mf.print.print': 'Drucken',
     'mf.print.resetPos': 'Reset Pos.',
     'mf.print.layout': 'Layout',
     'mf.print.addPage': 'Seite hinzufügen',
@@ -24,9 +28,11 @@ OpenLayers.Util.extend(OpenLayers.Lang.de, {
     'mf.print.noPage': 'Keine Seite ausgewählt, bitte auf "' + this['mf.print.addPage'] + '"-' +
                        'Button klicken um eine Seite zu hinzufügen.',
     'mf.print.print-tooltip': 'Generate a PDF with at least the extent shown on the map', // TODO
+
     'mf.error': 'Fehler',
     'mf.warning': 'Warnung',
     'mf.information': 'Information',
+
     'mf.recenter.x': 'X',
     'mf.recenter.y': 'Y',
     'mf.recenter.submit': 'Recenter', // TODO
@@ -36,5 +42,12 @@ OpenLayers.Util.extend(OpenLayers.Lang.de, {
                                     '${coordX} between ${minCoordX} and ${maxCoordX},<br />' +
                                     '${coordY} between ${minCoordY} and ${maxCoordY}', // TODO
     'mf.recenter.ws.error': 'Ein Fehler ist bei Zugang zum Webdienst vorgekommen:',
-    'mf.recenter.ws.service': 'Ausgewählter Webdienst'
+    'mf.recenter.ws.service': 'Ausgewählter Webdienst',
+
+    'mf.control.previous': 'Previous view', //TODO
+    'mf.control.next': 'Next view', //TODO
+    'mf.control.pan': 'Pan', //TODO
+    'mf.control.zoomIn': 'Zoom in', //TODO
+    'mf.control.zoomOut': 'Zoom out', //TODO
+    'mf.control.zoomAll': 'Zoom all' //TODO
 });
