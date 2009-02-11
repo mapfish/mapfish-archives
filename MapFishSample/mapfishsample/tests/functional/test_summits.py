@@ -4,6 +4,7 @@ from geojson import loads
 class TestSummitsController(TestController):
     def test_index(self):
         response = self.app.get(url_for(controller='summits'))
+        assert response.response.content_type == 'application/json'
         assert "FeatureCollection" in response
 
     def test_index_limit_offset(self):

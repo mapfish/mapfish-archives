@@ -26,6 +26,7 @@ class TestLinesController(TestController):
 
     def test_index(self):
         response = self.app.get(url_for(controller='lines'))
+        assert response.response.content_type == 'application/json'
         assert "FeatureCollection" in response
 
     def test_index_bad_format(self):
@@ -34,6 +35,7 @@ class TestLinesController(TestController):
 
     def test_show(self):
         response = self.app.get(url_for(controller='lines', action='show', id=self.fid))
+        assert response.response.content_type == 'application/json'
         assert "Feature" in response
 
     def test_show_bad_format(self):
@@ -53,6 +55,7 @@ class TestLinesController(TestController):
         geojson = loads(response.response._body)
         fid = geojson['features'][0]['id']
         self.fids.append(fid)
+        assert response.response.content_type == 'application/json'
         assert "FeatureCollection" in response
         assert Session.query(Line).get(fid) is not None
 
@@ -62,6 +65,7 @@ class TestLinesController(TestController):
                                 params=params,
                                 headers={'Content-type': 'text/plain'},
                                 status=201)
+        assert response.response.content_type == 'application/json'
         assert "Feature" in response
         assert Session.query(Line).get(self.fid) is not None
 
