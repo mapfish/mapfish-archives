@@ -362,7 +362,10 @@ Ext.extend(mapfish.widgets.print.BaseWidget, Ext.Panel, {
     createRectangle: function(center, scale, layout, rotation) {
         var extent = this.getExtent(center, scale, layout);
         var rect = extent.toGeometry();
-        rect.rotate(-rotation, {x:center.lon, y:center.lat});
+        if (rotation != 0.0) {
+            var centerPoint = new OpenLayers.Geometry.Point(center.lon, center.lat);
+            rect.rotate(-rotation, centerPoint);
+        }
         var feature = new OpenLayers.Feature.Vector(rect, {rotation: rotation});
         this.layer.addFeatures(feature);
 
