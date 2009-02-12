@@ -262,7 +262,8 @@ Ext.extend(mapfish.widgets.print.BaseWidget, Ext.Panel, {
         var angle = Math.atan2(pos.x - center.x, pos.y - center.y) * 180 / Math.PI;
         var page = feature.attributes.page;
         page.attributes.rotation = angle;
-        page.geometry.rotate(feature.attributes.prevAngle - angle, center);
+        var centerPoint = new OpenLayers.Geometry.Point(center.x, center.y);
+        page.geometry.rotate(feature.attributes.prevAngle - angle, centerPoint);
         this.layer.drawFeature(page);
         this.setCurRotation(Math.round(angle));
         feature.attributes.prevAngle = angle;
