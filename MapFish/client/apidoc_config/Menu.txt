@@ -121,6 +121,12 @@ Group: MapFish  {
          File: Toolbar  (no auto-title, widgets/toolbar/Toolbar.js)
          }  # Group: Toolbar
 
+      Group: Recenter {
+
+         File: Base (no auto-title, widgets/recenter/Base.js)
+         File: Coords (no auto-title, widgets/recenter/Coords.js)
+         }  # Group: Recenter
+
       }  # Group: Widgets
 
    }  # Group: MapFish

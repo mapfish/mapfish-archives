@@ -6,5 +6,5 @@ To have the apidoc manually generated (mapfish api only), follow these steps:
 * Copy Menu.txt in some tmp dir
   * $ cp /path/to/mf/apidoc_config/* /tmp/naturaldocs_workdir/.
 * Generate the apidoc
-  * $ co /path/to/naturaldocs
-  * $ /path/to/NaturalDocs -i /path/to/mfbase/mapfish -p /tmp/somepath/Menu.txt -o /path/to/generated/apidoc -r -ro
+  * $ cd /path/to/naturaldocs
+  * $ ./NaturalDocs -i /path/to/mfbase/mapfish -p /tmp/naturaldocs_workdir -o HTML /path/to/generated/apidoc -r -ro
