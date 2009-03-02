@@ -527,7 +527,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
             maxExtent: olLayer.maxExtent.toArray(),
             tileSize: [olLayer.tileSize.w, olLayer.tileSize.h],
             extension: olLayer.extension,
-            resolutions: olLayer.resolutions
+            resolutions: olLayer.serverResolutions || olLayer.resolutions
         });
     },
 
