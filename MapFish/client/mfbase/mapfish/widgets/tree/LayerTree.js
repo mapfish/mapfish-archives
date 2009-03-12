@@ -977,7 +977,8 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                 info.uiProvider = function() {};
                 info.uiProvider.prototype = {
                     render: function() {},
-                    renderIndent: function() {}
+                    renderIndent: function() {},
+                    updateExpandIcon: function() {}
                 };
             }
             layers.push(info);
