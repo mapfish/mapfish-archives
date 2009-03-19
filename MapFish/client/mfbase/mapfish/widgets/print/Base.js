@@ -273,18 +273,23 @@ mapfish.widgets.print.Base = {
         var legends = spec.legends = [];
 
         function addLayer(layerNode) {
-            var layerInfo = {
-                name: layerNode.attributes.printText || layerNode.attributes.text,
-                icon:  mapfish.Util.relativeToAbsoluteURL(layerNode.attributes.icon)
-            };
-            var classesInfo = layerInfo.classes = [];
-            layerNode.eachChild(function(classNode) {
-                classesInfo.push({
-                    name: classNode.attributes.printText || classNode.attributes.text,
-                    icon:  mapfish.Util.relativeToAbsoluteURL(classNode.attributes.icon)
-                });
-            }, this);
-            legends.push(layerInfo);
+            if (layerNode.attributes.printText === '') {
+                // don't display this layer in the legend
+                return;
+            } else {
+                var layerInfo = {
+                    name: layerNode.attributes.printText || layerNode.attributes.text,
+                    icon: mapfish.Util.relativeToAbsoluteURL(layerNode.attributes.icon)
+                };
+                var classesInfo = layerInfo.classes = [];
+                layerNode.eachChild(function(classNode) {
+                    classesInfo.push({
+                        name: classNode.attributes.printText || classNode.attributes.text,
+                        icon:  mapfish.Util.relativeToAbsoluteURL(classNode.attributes.icon)
+                    });
+                }, this);
+                legends.push(layerInfo);
+            }
         }
 
         function goDeep(root) {
