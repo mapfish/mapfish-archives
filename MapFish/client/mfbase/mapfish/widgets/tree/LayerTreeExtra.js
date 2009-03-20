@@ -238,3 +238,68 @@ mapfish.widgets.LayerTree.createContextualMenuPlugin = function(options) {
         }
     };
 };
+
+/**
+ * APIFunction: mapfish.widgets.LayerTree.createDisableLayersPlugin
+ *
+ * Creates an EXT plugin that allows to disable layers in the tree depending
+ * on current scale. Each node of tree can have options minScale and/or maxScale:
+ *
+ * (start code)
+ * {
+ *   text: 'Layer',
+ *   layerName: 'my_layer',
+ *   maxScale: 50000000,
+ *   minScale: 15000000,
+ *   children: [ ...
+ * (end)
+ *
+ * To use, add that to your LayerTree configuration:
+ * (start code)
+ * {
+ *   xtype: 'layertree',
+ *   ...
+ *   plugins: [
+ *     mapfish.widgets.LayerTree.createDisableLayersPlugin(myMap)
+ *   ],
+ *   ...
+ * }
+ * (end)
+ *
+ * Parameters:
+ * serverResolution - {Integer} mapfile resolution (in order to adjust scales)
+ *
+ * Returns:
+ * {Object} - EXT plugin
+ */
+mapfish.widgets.LayerTree.createDisableLayersPlugin = function(serverResolution) {
+    return {
+        init: function(layertree) {
+            if (!layertree.map) {
+                return;
+            }
+            layertree.map.events.on({zoomend : function() {
+                
+                function checkDisable(node, disable) {
+                    if (disable) {
+                        node.disable();
+                    } else {
+                        var scale = layertree.map.getScale();
+                        scale = scale * serverResolution / OpenLayers.DOTS_PER_INCH;
+                        if (scale < node.attributes.minScale ||
+                            scale > node.attributes.maxScale) {
+                            node.disable();
+                            disable = true;
+                        } else {
+                            node.enable();
+                            disable = false;
+                        }
+                    }
+                                        
+                    node.eachChild(function(child) {checkDisable(child, disable);});
+                }
+                checkDisable(layertree.root, false);
+            }}); 
+        }
+    };
+};
