@@ -179,11 +179,15 @@ mapfish.widgets.data.GridRowFeatureMediator.prototype = {
      * r - {Ext.data.Record} The record.
      */
     rowSelected: function(s, i, r) {
-        var f = this.selectControl.layer.getFeatureById(r.id);
-        if (f) {
-            this.featureEventsOff();
-            this.selectControl.select(f);
-            this.featureEventsOn();
+        var layers = this.selectControl.layers, f;
+        for (var i = 0, len = layers.length; i < len; i++) {
+            f = layers[i].getFeatureById(r.id);
+            if (f) {
+                this.featureEventsOff();
+                this.selectControl.select(f);
+                this.featureEventsOn();
+                break;
+            }
         }
     },
 
@@ -196,11 +200,14 @@ mapfish.widgets.data.GridRowFeatureMediator.prototype = {
      * r - {Ext.data.Record} The record.
      */
     rowDeselected: function(s, i, r) {
-        var f = this.selectControl.layer.getFeatureById(r.id);
-        if (f) {
-            this.featureEventsOff();
-            this.selectControl.unselect(f);
-            this.featureEventsOn();
+        var layers = this.selectControl.layers, f;
+        for (var i = 0, len = layers.length; i < len; i++) {
+            f = layers[i].getFeatureById(r.id);
+            if (f) {
+                this.featureEventsOff();
+                this.selectControl.unselect(f);
+                this.featureEventsOn();
+            }
         }
     },
 
@@ -227,11 +234,14 @@ mapfish.widgets.data.GridRowFeatureMediator.prototype = {
      * Turn off the feature events.
      */
     featureEventsOff: function() {
-        this.selectControl.layer.events.un({
-            featureselected: this.featureSelected,
-            featureunselected: this.featureUnselected,
-            scope: this
-        });
+        var layers = this.selectControl.layers;
+        for (var i = 0, len = layers.length; i < len; i++) {
+            layers[i].events.un({
+                featureselected: this.featureSelected,
+                featureunselected: this.featureUnselected,
+                scope: this
+            });
+        }
     },
 
     /**
@@ -239,10 +249,13 @@ mapfish.widgets.data.GridRowFeatureMediator.prototype = {
      * Turn on the feature events.
      */
     featureEventsOn: function() {
-        this.selectControl.layer.events.on({
-            featureselected: this.featureSelected,
-            featureunselected: this.featureUnselected,
-            scope: this
-        });
+        var layers = this.selectControl.layers;
+        for (var i = 0, len = layers.length; i < len; i++) {
+            layers[i].events.on({
+                featureselected: this.featureSelected,
+                featureunselected: this.featureUnselected,
+                scope: this
+            });
+        }
     }
 };
