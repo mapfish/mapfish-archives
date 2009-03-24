@@ -118,12 +118,17 @@ subst_in_files() {
     export PROJECT_DIR=$BASE/$PROJECT
     echo "PROJECT_DIR: $PROJECT_DIR"
 
-    for f in \
-        $BASE/deploy/config-defaults \
-        $PROJECT_DIR/configs/defaults \
-        $PROJECT_DIR/configs/$(hostname -f) \
-        $PROJECT_DIR/configs/$(hostname -f)$(echo $PROJECT_DIR | sed s@/@-@g)\
-        ; do
+    config_files=($BASE/deploy/config-defaults \
+                  $PROJECT_DIR/configs/defaults \
+                  $PROJECT_DIR/configs/$(hostname -f) \
+                  $PROJECT_DIR/configs/$(hostname -f)$(echo $PROJECT_DIR | sed s@/@-@g))
+    
+    # push the commmand line argument if it contains something
+    if [ $1 != "no" ]; then
+        top=${#config_files[@]}
+        config_files[$top]=$1
+    fi
+    for f in ${config_files[@]}; do
         if [ -f $f ]; then
             echo "Importing $f"
             . $f
@@ -242,8 +247,7 @@ fetch_project() {
             --allow-hosts=$MAPFISH_PKG_MASK)
     fi
 
-    subst_in_files
-
+    subst_in_files $opt_c
     run_hook post_fetch_project
 }
 
@@ -295,10 +299,12 @@ main() {
     opt_i="no"
     opt_j="no"
     opt_u="no"
+    opt_r="no"
     opt_b="no"
     opt_t="no"
+    opt_c="no"
 
-    while getopts ijurhb:t: OPT; do
+    while getopts ijurhb:t:c: OPT; do
         case $OPT in
         i)
             opt_i="yes"
@@ -310,14 +316,16 @@ main() {
             opt_u="yes"
             ;;
         r)
-            echo "Replace .in files"
-            subst_in_files
+            opt_r="yes"
             ;;
         b)
             opt_b="$OPTARG"
             ;;
         t)
             opt_t="$OPTARG"
+            ;;
+        c)
+            opt_c="$OPTARG"
             ;;
         \?|h)
             echo "Usage: $0 OPTION"
@@ -334,6 +342,7 @@ main() {
             echo " -b <branch_name>: if not used with -i or -j or -u create a new branch,"
             echo "     replacing the svn:external to MapFish by a copy of MapFish"
             echo " -t <tag_name>: if  not used with -i or -j or -u create a new tag"
+            echo " -c <config file>: read configuration variables from <config file>"
             echo 
             exit 1
             ;;
@@ -357,6 +366,9 @@ main() {
     elif [ $opt_u = "yes" ]; then
         echo "Updating project"
         fetch_project $arg
+    elif [ $opt_r = "yes" ]; then
+        echo "Replace .in files"
+        subst_in_files $opt_c
     elif [ $opt_t != "no" ]; then
         echo "Create tag from branch"
         create_tag $opt_t
