@@ -64,7 +64,7 @@ Ext.extend(mapfish.widgets.print.PrintAction, Ext.Action, {
      * Called when the action is executed (button pressed or menu entry selected).
      */
     handler: function() {
-        if (!this.printing) {
+        if (!this.printing && this.config) {
             this.print();
         }
     },
