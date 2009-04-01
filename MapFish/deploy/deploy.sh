@@ -170,8 +170,9 @@ subst_in_files() {
     done
 
     # This script may be generated from a .in, so we need to chmod it afterwards
+    # but without stopping the deploy process if the command failed. 
     if [ -f $PROJECT/run_standalone.sh ]; then
-        chmod +x $PROJECT/run_standalone.sh
+        chmod +x $PROJECT/run_standalone.sh || true
     fi
 
     run_hook post_subst_in_files
