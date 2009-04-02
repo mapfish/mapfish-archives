@@ -25,12 +25,13 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     'mf.print.clearAll': 'Supprimer toutes',
     'mf.print.pdfReady': 'Votre document PDF est prêt.',
     'mf.print.noPage': 'Pas de page sélectionnée, appuyez sur le bouton "Ajouter page" pour en créer une.',
-    'mf.print.print-tooltip': 'Générer un PDF contenant au moins l\'étendue de la présente carte',
+    'mf.print.print-tooltip': 'Générer un PDF contenant au moins l\'étendue de la carte',
     'mf.print.serverDown': "Le service d'impression ne fonctionne pas",
 
     'mf.error': 'Erreur',
     'mf.warning': 'Attention',
     'mf.information': 'Information',
+    'mf.cancel': 'Annuler',
 
     'mf.recenter.x': 'X',
     'mf.recenter.y': 'Y',

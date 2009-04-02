@@ -27,27 +27,28 @@ OpenLayers.Util.extend(OpenLayers.Lang.de, {
     'mf.print.pdfReady': 'Das PDF-Dokument kann heruntergeladen werden.',
     'mf.print.noPage': 'Keine Seite ausgewählt, bitte auf "' + this['mf.print.addPage'] + '"-' +
                        'Button klicken um eine Seite zu hinzufügen.',
-    'mf.print.print-tooltip': 'Generate a PDF with at least the extent shown on the map', // TODO
+    'mf.print.print-tooltip': 'Ein PDF Generieren, dass mindestens die bounding box umfasst',
 
     'mf.error': 'Fehler',
     'mf.warning': 'Warnung',
     'mf.information': 'Information',
+    'mf.cancel': 'Abbrechen',
 
     'mf.recenter.x': 'X',
     'mf.recenter.y': 'Y',
-    'mf.recenter.submit': 'Recenter', // TODO
-    'mf.recenter.missingCoords': 'Some coordinates are missing.', // TODO
-    'mf.recenter.outOfRangeCoords': 'Submitted coordinates (${myX}, ${myY}) are not in the map area<br />' +
-                                    'and must be within following ranges:<br/>' +
-                                    '${coordX} between ${minCoordX} and ${maxCoordX},<br />' +
-                                    '${coordY} between ${minCoordY} and ${maxCoordY}', // TODO
+    'mf.recenter.submit': 'zentrieren',
+    'mf.recenter.missingCoords': 'Fehlende Koordinaten.',
+    'mf.recenter.outOfRangeCoords': 'Eingegebene Koordinaten (${myX}, ${myY}) sind ausserhalb des Kartenperimeters<br />' +
+                                    'und zollen in folgenden Auschnitt sein:<br/>' +
+                                    '${coordX} zwischen ${minCoordX} und ${maxCoordX},<br />' +
+                                    '${coordY} zwischen ${minCoordY} und ${maxCoordY}',
     'mf.recenter.ws.error': 'Ein Fehler ist bei Zugang zum Webdienst vorgekommen:',
     'mf.recenter.ws.service': 'Ausgewählter Webdienst',
 
-    'mf.control.previous': 'Previous view', //TODO
-    'mf.control.next': 'Next view', //TODO
-    'mf.control.pan': 'Pan', //TODO
-    'mf.control.zoomIn': 'Zoom in', //TODO
-    'mf.control.zoomOut': 'Zoom out', //TODO
-    'mf.control.zoomAll': 'Zoom all' //TODO
+    'mf.control.previous': 'Vorherige Ansicht',
+    'mf.control.next': 'Nexte Ansicht',
+    'mf.control.pan': 'Bewegen',
+    'mf.control.zoomIn': 'Hinein zoomen',
+    'mf.control.zoomOut': 'Heraus zoomen',
+    'mf.control.zoomAll': 'Globale Ansicht'
 });

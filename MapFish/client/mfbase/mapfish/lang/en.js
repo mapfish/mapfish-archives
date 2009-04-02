@@ -31,6 +31,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.en, {
     'mf.error': 'Error',
     'mf.warning': 'Warning',
     'mf.information': 'Information',
+    'mf.cancel': 'Cancel',
 
     'mf.recenter.x': 'X',
     'mf.recenter.y': 'Y',
