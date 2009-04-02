@@ -189,7 +189,7 @@ def getFiles(configDict, configFile = None):
     for filepath in allFiles:
         print "Importing: %s" % filepath
         filekey = filepath.replace("\\", "/").split("/")[0]
-        fullpath = os.path.join(configDict[filekey], filepath)
+        fullpath = os.path.join(configDict[filekey], filepath).strip()
         content = open(fullpath, "U").read() # TODO: Ensure end of line @ EOF?
         files[filepath] = SourceFile(filepath, content) # TODO: Chop path?
 
@@ -219,7 +219,7 @@ def getFiles(configDict, configFile = None):
                 if not files.has_key(filepath):
                     print "Importing: %s" % filepath
                     filekey = filepath.replace("\\", "/").split("/")[0]
-                    fullpath = os.path.join(configDict[filekey], filepath)
+                    fullpath = os.path.join(configDict[filekey], filepath).strip()
                     content = open(fullpath, "U").read() # TODO: Ensure end of line @ EOF?
                     files[filepath] = SourceFile(filepath, content) # TODO: Chop path?
 
