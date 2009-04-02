@@ -77,7 +77,19 @@ mapfish.widgets.LayerTree.removeNode = function(layerTree, node) {
             }
         }
     });
+    var parent = node.parentNode;
     node.remove();
+
+    //delete empty parents
+    while (parent) {
+        if (parent.hasChildNodes()) {
+            break;
+        }
+        var cur = parent;
+        parent = parent.parentNode;
+        cur.remove();
+    }
+
     layerTree._updateCachedObjects();
 };
 
