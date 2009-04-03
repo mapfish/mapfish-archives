@@ -30,7 +30,7 @@ Ext.namespace('mapfish.widgets', 'mapfish.widgets.data');
  *
  * Usage example:
  * (start code)
- * var mediator = mapfish.widgets.data.GridRowFeatureMediator({
+ * var mediator = new mapfish.widgets.data.GridRowFeatureMediator({
  *     grid: grid,
  *     selectControl: selectFeatureControl
  * });
