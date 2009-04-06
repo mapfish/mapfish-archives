@@ -128,6 +128,8 @@
             "widgets/toolbar/CheckItem.js",
             "widgets/toolbar/MenuItem.js",
             "widgets/editing/FeatureList.js",
+            "widgets/editing/FeatureProperties.js",
+            "widgets/editing/FeatureEditingPanel.js",
             "widgets/print/Base.js",
             "widgets/print/BaseWidget.js",
             "widgets/print/SimpleForm.js",

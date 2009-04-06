@@ -181,3 +181,45 @@ mapfish.Util.fixArray = function(subs) {
     }
 };
 
+/**
+ * Function formatURL
+ * If mapfish.PROXY_HOST is defined format the URL passed a parameter
+ * so that it the resource this URL references is accessed throug the
+ * http-proxy script referenced to by mapfish.PROXY_HOST.
+ *
+ * Parameters:
+ * url - {String} The URL to format.
+ *
+ * Returns:
+ * {String} The formatted URL string.
+ */
+mapfish.Util.formatURL = function(url) {
+    var proxy = mapfish.PROXY_HOST;
+    if(proxy && (url.indexOf("http") == 0)) {
+        var str = url;
+        // get protocol from URL
+        var protocol = str.match(/https?:\/\//)[0].split(':')[0];
+        str = str.slice((protocol + '://').length);
+        // get path from URL
+        var path = undefined;
+        var pathSeparatorIndex = str.indexOf('/');
+        if (pathSeparatorIndex != -1) {
+            path = str.substring(pathSeparatorIndex);
+            str = str.slice(0, pathSeparatorIndex);
+        }
+        // get host and port from URL
+        var host_port = str.split(":");
+        var host = host_port[0];
+        var port = host_port.length > 1 ? host_port[1] : undefined;
+        // build URL
+        url = protocol + ',' + host;
+        url += (port == undefined ? '' : ',' + port);
+        url += (path == undefined ? '' : path);
+        if(proxy.lastIndexOf('/') != proxy.length - 1) {
+            url = '/' + url;
+        }
+        url = proxy + url;
+    }
+    return url;
+};
+

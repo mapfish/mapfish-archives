@@ -49,5 +49,28 @@ OpenLayers.Util.extend(OpenLayers.Lang.en, {
     'mf.control.pan': 'Pan',
     'mf.control.zoomIn': 'Zoom in',
     'mf.control.zoomOut': 'Zoom out',
-    'mf.control.zoomAll': 'Zoom all'
+    'mf.control.zoomAll': 'Zoom all',
+
+    'mf.editing.comboNoneName': 'None',
+    'mf.editing.import': 'Import',
+    'mf.editing.importTooltip': 'Import data',
+    'mf.editing.commit': 'Commit',
+    'mf.editing.commitTooltip': 'Commit data',
+    'mf.editing.delete': 'Delete',
+    'mf.editing.deleteTooltip': 'Delete selected feature',
+    'mf.editing.comboLabel': 'Layer to edit',
+    'mf.editing.confirmMessageTitle': 'Edited features',
+    'mf.editing.confirmMessage': 'There are uncommitted features, are you sure ' +
+                                 'you want to switch layer?',
+    'mf.editing.selectModifyFeature': 'Modify features',
+    'mf.editing.drawPointTitle': 'Draw points',
+    'mf.editing.drawLineTitle': 'Draw lines',
+    'mf.editing.drawPolygonTitle': 'Draw polygons',
+    'mf.editing.formTitle': 'Attributes',
+    'mf.editing.gridIdHeader': 'Id',
+    'mf.editing.gridStateHeader': 'State',
+    'mf.editing.gridTitle': 'Edited features',
+    'mf.editing.onContextClickMessage': 'Edit this feature',
+    'mf.editing.onBeforeUnloadMessage': 'The feature editing panel has ' +
+                                        'uncommitted features'
 });
