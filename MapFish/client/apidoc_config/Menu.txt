@@ -91,10 +91,12 @@ Group: MapFish  {
          File: LayerStoreMediator (no auto-title, widgets/data/LayerStoreMediator.js)
          }  # Group: Data
 
-      Group: Edition  {
+      Group: Editing  {
 
          File: FeatureList  (no auto-title, widgets/editing/FeatureList.js)
-         }  # Group: Edition
+         File: FeatureEditingPanel (no auto-title, widgets/editing/FeatureEditingPanel.js)
+         File: FeatureProperties (no auto-title, widgets/editing/FeatureProperties.js)
+         }  # Group: Editing
 
       Group: Geostat  {
 
