@@ -1082,17 +1082,20 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
 
             var isBaseLayer = false;
+            var displayInLayerSwitcher = false;
             if (layers) {
                 isBaseLayer = true;
                 Ext.each(layers, function(layer) {
                     if (!layer.isBaseLayer) {
                         isBaseLayer = false;
-                        return false;
+                    }
+                    if (layer.displayInLayerSwitcher) {
+                       displayInLayerSwitcher = true;
                     }
                 }, this);
             }
 
-            if (isBaseLayer || node.attributes.radio) {
+            if ((isBaseLayer || node.attributes.radio) && displayInLayerSwitcher) {
                 node.attributes.uiProvider = mapfish.widgets.RadioTreeNodeUI;
                 // The ui may already habe been instanciated here, so we
                 // replace it in this case.
@@ -1165,9 +1168,12 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
 
         this._fixupModel();
 
-        this.addListener("dragdrop", function() {
-            this._updateOrder(arguments);
-        }, this);
+        if (this.enableDD) {
+            this.addListener("dragdrop", function() {
+                this._updateOrder(arguments);
+            }, this);
+            this.addListener('nodedragover', this.isDragAllowed, this);
+        }
 
         // Synchronize the OL layer state if a usermodel is supplied
         // This means that the layers checked state defined in the model takes
@@ -1177,9 +1183,31 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
         //  layer / sublayers to be updated?
         if (!this._automaticModel) {
             this._handleModelChange(null, null);
-            if (this.enableDD)
+            if (this.enableDD) {
                 this._updateOrder();
+            }
         }
+    },
+
+    /**
+     * Method: isDragAllowed
+     * Check wether a drag and drop is possible.
+     * 
+     * Parameters:
+     * e - The drag and drop event
+     */
+    isDragAllowed: function(e) {
+        var draggedNode = e.data.node;
+        var targetParentNode = e.target;
+        if (e.point == "above" || e.point == "below") {
+            targetParentNode = targetParentNode.parentNode;
+        }
+        if (draggedNode.parentNode != targetParentNode) {
+            //cannot change parent. For example, cannot move a WMS layer from one
+            //OL layer to another or cannot move an OL layer inside another OL layer.
+            return false;
+        }
+        return true;
     },
 
     /**
