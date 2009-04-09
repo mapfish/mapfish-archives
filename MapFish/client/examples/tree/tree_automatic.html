@@ -23,10 +23,12 @@
       // reference local blank image
       Ext.BLANK_IMAGE_URL = '../../mfbase/ext/resources/images/default/s.gif';
 
-      Ext.onReady(function() {
-        var map = c2corgCreateMap("map");
+      var map, tree; // make these references available from FireBug
 
-        var tree = new mapfish.widgets.LayerTree({
+      Ext.onReady(function() {
+        map = c2corgCreateMap("map");
+
+        tree = new mapfish.widgets.LayerTree({
           map: map, el: 'tree', 
           showWmsLegend: true,
           plugins: [
