@@ -47,9 +47,7 @@ class PolygonsController(BaseController):
         # E.g.
         #
         # default_filter = create_default_filter(
-        #     request,
-        #     Polygon.primary_key_column(),
-        #     Polygon.geometry_column()
+        #     request, Polygon
         # )
         # compare_filter = comparison.Comparison(
         #     comparison.Comparison.ILIKE,

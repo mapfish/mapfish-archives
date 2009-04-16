@@ -47,9 +47,7 @@ class PointsController(BaseController):
         # E.g.
         #
         # default_filter = create_default_filter(
-        #     request,
-        #     Point.primary_key_column(),
-        #     Point.geometry_column()
+        #     request, Point
         # )
         # compare_filter = comparison.Comparison(
         #     comparison.Comparison.ILIKE,

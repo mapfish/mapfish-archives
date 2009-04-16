@@ -37,9 +37,7 @@ class SummitsController(BaseController):
         """GET /: return all features."""
         filter = logical.Logical(logical.Logical.AND, [
             create_default_filter(
-                request,
-                Summit.primary_key_column(),
-                Summit.geometry_column()
+                request, Summit
             )
         ])
         if 'min' in request.params and len(request.params['min']) > 0:

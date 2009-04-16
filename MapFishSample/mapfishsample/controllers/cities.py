@@ -47,9 +47,7 @@ class CitiesController(BaseController):
         # E.g.
         #
         # default_filter = create_default_filter(
-        #     request,
-        #     City.primary_key_column(),
-        #     City.geometry_column()
+        #     request, City
         # )
         # compare_filter = comparison.Comparison(
         #     comparison.Comparison.ILIKE,

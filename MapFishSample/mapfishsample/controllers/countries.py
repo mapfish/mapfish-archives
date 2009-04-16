@@ -47,9 +47,7 @@ class CountriesController(BaseController):
         # E.g.
         #
         # default_filter = create_default_filter(
-        #     request,
-        #     Country.primary_key_column(),
-        #     Country.geometry_column()
+        #     request, Country
         # )
         # compare_filter = comparison.Comparison(
         #     comparison.Comparison.ILIKE,

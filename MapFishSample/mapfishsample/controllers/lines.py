@@ -47,9 +47,7 @@ class LinesController(BaseController):
         # E.g.
         #
         # default_filter = create_default_filter(
-        #     request,
-        #     Line.primary_key_column(),
-        #     Line.geometry_column()
+        #     request, Line
         # )
         # compare_filter = comparison.Comparison(
         #     comparison.Comparison.ILIKE,
