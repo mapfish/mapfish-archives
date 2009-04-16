@@ -975,6 +975,7 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                 // removing them from the model, so that their position
                 // is remembered when drag and drop is used.
                 info.uiProvider = function() {};
+                info.hidden = true;
                 info.uiProvider.prototype = {
                     render: function() {},
                     renderIndent: function() {},

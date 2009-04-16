@@ -273,29 +273,24 @@ mapfish.widgets.print.Base = {
         var legends = spec.legends = [];
 
         function addLayer(layerNode) {
-            if (layerNode.attributes.printText === '') {
-                // don't display this layer in the legend
-                return;
-            } else {
-                var layerInfo = {
-                    name: layerNode.attributes.printText || layerNode.attributes.text,
-                    icon: mapfish.Util.relativeToAbsoluteURL(layerNode.attributes.icon)
-                };
-                var classesInfo = layerInfo.classes = [];
-                layerNode.eachChild(function(classNode) {
-                    classesInfo.push({
-                        name: classNode.attributes.printText || classNode.attributes.text,
-                        icon:  mapfish.Util.relativeToAbsoluteURL(classNode.attributes.icon)
-                    });
-                }, this);
-                legends.push(layerInfo);
-            }
+            var layerInfo = {
+                name: layerNode.attributes.printText || layerNode.attributes.text,
+                icon: mapfish.Util.relativeToAbsoluteURL(layerNode.attributes.icon)
+            };
+            var classesInfo = layerInfo.classes = [];
+            layerNode.eachChild(function(classNode) {
+                classesInfo.push({
+                    name: classNode.attributes.printText || classNode.attributes.text,
+                    icon:  mapfish.Util.relativeToAbsoluteURL(classNode.attributes.icon)
+                });
+            }, this);
+            legends.push(layerInfo);
         }
 
         function goDeep(root) {
             root.eachChild(function(node) {
                 var attr = node.attributes;
-                if (attr.checked && attr.layerNames) {
+                if (attr.checked && attr.layerNames && !attr.hidden && attr.printText!=='') {
                     addLayer(node);
                 } else {
                     goDeep(node);
@@ -303,6 +298,11 @@ mapfish.widgets.print.Base = {
             }, this);
         }
         goDeep(this.layerTree.getRootNode());
+
+        if (legends.length == 0) {
+            //don't display the legends block if there is none
+            delete spec.legends;
+        }
     },
 
     /**
