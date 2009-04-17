@@ -132,7 +132,7 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
     /**
      * APIProperty: displayDefaultPopup
      * {Boolean} Display a default popup with the search results,
-     *      does not apply if mode is set to <mapfish.Searcher.Map.HOVER>,
+     *      does not apply if mode is set to <mapfish.Searcher.Map.EXTENT>,
      *      defaults to false, or if the protocol used isn't of type
      *      <mapfish.Protocol.TriggerEventDecorator>.
      */
