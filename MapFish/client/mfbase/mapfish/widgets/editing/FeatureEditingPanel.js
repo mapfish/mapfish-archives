@@ -20,6 +20,7 @@
 /**
  * @requires OpenLayers/Layer/Vector.js
  * @requires OpenLayers/Control/ModifyFeature.js
+ * @requires OpenLayers/Strategy/BBOX.js
  * @requires core/Protocol/MapFish.js
  * @requires widgets/toolbar/Toolbar.js
  * @requires widgets/data/FeatureReader.js
