@@ -131,7 +131,7 @@ mapfish.widgets.editing.StringProperty = function(config) {
     this.type = 'string';
     this.defaultValue = '';
     mapfish.widgets.editing.StringProperty.superclass.constructor.call(this, config);
-}
+};
 Ext.extend(mapfish.widgets.editing.StringProperty, mapfish.widgets.editing.SimpleProperty);
 
 /**
@@ -142,8 +142,24 @@ mapfish.widgets.editing.IntegerProperty = function(config) {
     this.type = 'int';
     this.defaultValue = 0;
     mapfish.widgets.editing.IntegerProperty.superclass.constructor.call(this, config);
-}
-Ext.extend(mapfish.widgets.editing.IntegerProperty, mapfish.widgets.editing.SimpleProperty);
+};
+Ext.extend(mapfish.widgets.editing.IntegerProperty, mapfish.widgets.editing.SimpleProperty, {
+    /**
+     * Method: getExtField
+     * Return an object with a "numberfield" xtype property.
+     *
+     * Returns:
+     * {Object}
+     */
+    getExtField: function() {
+        return OpenLayers.Util.applyDefaults({
+            xtype: 'numberfield',
+            allowDecimals: false,
+            fieldLabel: this.label || this.name,
+            name: this.name
+        }, this.extFieldCfg);
+    }
+});
 
 /**
  * Class: FloatProperty
@@ -153,8 +169,23 @@ mapfish.widgets.editing.FloatProperty = function(config) {
     this.type = 'float';
     this.defaultValue = 0;
     mapfish.widgets.editing.FloatProperty.superclass.constructor.call(this, config);
-}
-Ext.extend(mapfish.widgets.editing.FloatProperty, mapfish.widgets.editing.SimpleProperty);
+};
+Ext.extend(mapfish.widgets.editing.FloatProperty, mapfish.widgets.editing.SimpleProperty, {
+    /**
+     * Method: getExtField
+     * Return an object with a "numberfield" xtype property.
+     *
+     * Returns:
+     * {Object}
+     */
+    getExtField: function() {
+        return OpenLayers.Util.applyDefaults({
+            xtype: 'numberfield',
+            fieldLabel: this.label || this.name,
+            name: this.name
+        }, this.extFieldCfg);
+    }
+});
 
 /**
  * Class: BooleanProperty
