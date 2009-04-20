@@ -670,7 +670,7 @@ mapfish.widgets.editing.FeatureEditingPanel = Ext.extend(Ext.Panel, {
         });
         this.getTopToolbar().addControl(ctrl, {
             iconCls: 'modifyfeature',
-            toggleGroup: 'map'
+            toggleGroup: this.getId() + 'map'
         });
         ctrl.activate();
         this.modifyFeatureControl = ctrl;
@@ -757,7 +757,7 @@ mapfish.widgets.editing.FeatureEditingPanel = Ext.extend(Ext.Panel, {
         });
         this.getTopToolbar().addControl(ctrl, {
             iconCls: iconCls,
-            toggleGroup: "map"
+            toggleGroup: this.getId() + 'map'
         });
         this.drawFeatureControl = ctrl;
     },
