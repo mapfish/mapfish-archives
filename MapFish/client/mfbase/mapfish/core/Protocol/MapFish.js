@@ -35,7 +35,6 @@
  */
 
 mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
-
     /**
      * Constructor: mapfish.Protocol.MapFish
      *
@@ -182,17 +181,15 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
                 params["box"] = filter.value.toBBOX();
                 break;
             case "Comparison":
-                // Note: the comparison type is not included in the request
-                // parameters. It is the server responsibility to deal with the
-                // appropriate comparison type from the parameter name.
-
-                if (params[filter.property]) {
+                var op = mapfish.Protocol.MapFish.COMP_TYPE_TO_OP_STR[filter.type];
+                if (op === undefined) {
                     OpenLayers.Console.error(
-                        'Filter contains multiple Comparison ' +
-                        'filters for the same property ' + filter.property);
+                        'Unknown comparison filter type ' + filter.type);
                     return false;
                 }
-                params[filter.property] = filter.value;
+                params[filter.property + "__" + op] = filter.value;
+                params["queryable"] = params["queryable"] || [];
+                params["queryable"].push(filter.property);
                 break;
             case "Logical":
                 if (filter.type != OpenLayers.Filter.Logical.AND) {
@@ -360,3 +357,23 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
 
     CLASS_NAME: "mapfish.Protocol.MapFish"
 });
+
+/**
+ * Property: mapfish.Protocol.MapFish.COMP_TYPE_TO_OP_STR
+ * {Object} A private class-level property mapping the
+ *     OpenLayers.Filter.Comparison types to the operation
+ *     strings of the MapFish Protocol.
+ */
+mapfish.Protocol.MapFish.COMP_TYPE_TO_OP_STR = {};
+(function() {
+    var o = mapfish.Protocol.MapFish.COMP_TYPE_TO_OP_STR;
+    o[OpenLayers.Filter.Comparison.EQUAL_TO] = "eq";
+    o[OpenLayers.Filter.Comparison.NOT_EQUAL_TO] = "ne";
+    o[OpenLayers.Filter.Comparison.LESS_THAN] = "lt";
+    o[OpenLayers.Filter.Comparison.LESS_THAN_OR_EQUAL_TO] = "lte";
+    o[OpenLayers.Filter.Comparison.GREATER_THAN] = "gt";
+    o[OpenLayers.Filter.Comparison.GREATER_THAN_OR_EQUAL_TO] = "gte";
+    o[OpenLayers.Filter.Comparison.LIKE] = "ilike";
+})();
+
+

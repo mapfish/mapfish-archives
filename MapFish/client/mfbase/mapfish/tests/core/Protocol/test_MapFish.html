@@ -64,7 +64,7 @@
     }
 
     function test_MapFish_filterAdapter(t) {
-        t.plan(17);
+        t.plan(38);
 
         // setup
 
@@ -185,7 +185,7 @@
         t.eq(options.filter, undefined,
              "filterAdapter deletes filter");
 
-        // 2 tests
+        // 3 tests
         options = {
             filter: new OpenLayers.Filter.Comparison({
                 type: OpenLayers.Filter.Comparison.EQUAL_TO,
@@ -195,12 +195,116 @@
         };
 
         protocol.filterAdapter(options);
-        t.eq(options.params.foo, "bar",
-             "filterAdapter sets correct foo param if passed a Comparison filter");
+        t.eq(options.params["queryable"][0], "foo",
+             "filterAdapter sets correct queryable param if passed an EQUAL_TO filter");
+        t.eq(options.params["foo__eq"], "bar",
+             "filterAdapter sets correct param key and value if passed an EQUAL_TO filter");
         t.eq(options.filter, undefined,
              "filterAdapter deletes filter");
 
         // 3 tests
+        options = {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.NOT_EQUAL_TO,
+                property: "foo",
+                value: "bar"
+            })
+        };
+
+        protocol.filterAdapter(options);
+        t.eq(options.params["queryable"][0], "foo",
+             "filterAdapter sets correct queryable param if passed an NOT_EQUAL_TO filter");
+        t.eq(options.params["foo__ne"], "bar",
+             "filterAdapter sets correct param key and value if passed an NOT_EQUAL_TO filter");
+        t.eq(options.filter, undefined,
+             "filterAdapter deletes filter");
+
+        // 3 tests
+        options = {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.LESS_THAN,
+                property: "foo",
+                value: "bar"
+            })
+        };
+
+        protocol.filterAdapter(options);
+        t.eq(options.params["queryable"][0], "foo",
+             "filterAdapter sets correct queryable param if passed an LESS_THAN filter");
+        t.eq(options.params["foo__lt"], "bar",
+             "filterAdapter sets correct param key and value if passed an LESS_THAN filter");
+        t.eq(options.filter, undefined,
+             "filterAdapter deletes filter");
+
+        // 3 tests
+        options = {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.LESS_THAN_OR_EQUAL_TO,
+                property: "foo",
+                value: "bar"
+            })
+        };
+
+        protocol.filterAdapter(options);
+        t.eq(options.params["queryable"][0], "foo",
+             "filterAdapter sets correct queryable param if passed an LESS_THAN_OR_EQUAL_TO filter");
+        t.eq(options.params["foo__lte"], "bar",
+             "filterAdapter sets correct param key and value if passed an LESS_THAN_OR_EQUAL_TO filter");
+        t.eq(options.filter, undefined,
+             "filterAdapter deletes filter");
+
+        // 3 tests
+        options = {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.GREATER_THAN,
+                property: "foo",
+                value: "bar"
+            })
+        };
+
+        protocol.filterAdapter(options);
+        t.eq(options.params["queryable"][0], "foo",
+             "filterAdapter sets correct queryable param if passed an GREATER_THAN filter");
+        t.eq(options.params["foo__gt"], "bar",
+             "filterAdapter sets correct param key and value if passed an GREATER_THAN filter");
+        t.eq(options.filter, undefined,
+             "filterAdapter deletes filter");
+
+        // 3 tests
+        options = {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.GREATER_THAN_OR_EQUAL_TO,
+                property: "foo",
+                value: "bar"
+            })
+        };
+
+        protocol.filterAdapter(options);
+        t.eq(options.params["queryable"][0], "foo",
+             "filterAdapter sets correct queryable param if passed an GREATER_THAN_OR_EQUAL_TO filter");
+        t.eq(options.params["foo__gte"], "bar",
+             "filterAdapter sets correct param key and value if passed an GREATER_THAN_OR_EQUAL_TO filter");
+        t.eq(options.filter, undefined,
+             "filterAdapter deletes filter");
+
+        // 3 tests
+        options = {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.LIKE,
+                property: "foo",
+                value: "bar"
+            })
+        };
+
+        protocol.filterAdapter(options);
+        t.eq(options.params["queryable"][0], "foo",
+             "filterAdapter sets correct queryable param if passed a LIKE filter");
+        t.eq(options.params["foo__ilike"], "bar",
+             "filterAdapter sets correct param key and value if passed an LIKE filter");
+        t.eq(options.filter, undefined,
+             "filterAdapter deletes filter");
+
+        // 5 tests
         options = {
             filter: new OpenLayers.Filter.Logical({
                 type: OpenLayers.Filter.Logical.AND,
@@ -220,10 +324,14 @@
         };
 
         protocol.filterAdapter(options);
-        t.eq(options.params.foo, "bar",
-             "filterAdapter sets correct foo param if passed a Comparison filter");
-        t.eq(options.params.foo2, "baz",
-        "filterAdapter sets correct foo2 param if passed a Comparison filter");
+        t.eq(options.params["queryable"][0], "foo",
+             "filterAdapter sets correct queryable param if passed an EQUAL_TO filter within a AND filter");
+        t.eq(options.params["foo__eq"], "bar",
+             "filterAdapter sets correct param key and value if passed an EQUAL_TO filter within a AND filter");
+        t.eq(options.params["queryable"][1], "foo2",
+             "filterAdapter sets correct queryable param if passed a LESS_THAN filter within a AND filter");
+        t.eq(options.params["foo2__lt"], "baz",
+             "filterAdapter sets correct param key and value if passed a LESS_THAN filter within a AND filter");
         t.eq(options.filter, undefined,
              "filterAdapter deletes filter");
 
