@@ -28,6 +28,7 @@
  * @requires OpenLayers/Handler/Hover.js
  * @requires OpenLayers/Handler/Box.js
  * @requires OpenLayers/Filter/Spatial.js
+ * @requires OpenLayers/Popup/FramedCloud.js
  */
 
 /**
