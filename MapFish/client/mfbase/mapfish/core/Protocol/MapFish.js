@@ -22,6 +22,7 @@
  * @requires OpenLayers/Protocol/HTTP.js
  * @requires OpenLayers/Feature/Vector.js
  * @requires OpenLayers/Format/GeoJSON.js
+ * @requires OpenLayers/Filter/Comparison.js
  * @requires core/Protocol.js
  */
 
