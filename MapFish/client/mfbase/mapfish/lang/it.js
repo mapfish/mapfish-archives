@@ -36,14 +36,14 @@ OpenLayers.Util.extend(OpenLayers.Lang.it, {
      // TODO ..........
     'mf.recenter.x': 'X',
     'mf.recenter.y': 'Y',
-    'mf.recenter.submit': 'Recenter',
+    'mf.recenter.submit': 'Cerca',
     'mf.recenter.missingCoords': 'Some coordinates are missing.',
     'mf.recenter.outOfRangeCoords': 'Submitted coordinates (${myX}, ${myY}) are not in the map area<br />' +
                                     'and must be within following ranges:<br/>' +
                                     '${coordX} between ${minCoordX} and ${maxCoordX},<br />' +
                                     '${coordY} between ${minCoordY} and ${maxCoordY}',
     'mf.recenter.ws.error': 'An error occured when accessing the distant webservice:',
-    'mf.recenter.ws.service': 'Selected service',
+    'mf.recenter.ws.service': 'Servizio selezionato',
 
     'mf.control.previous': 'Previous view', //TODO
     'mf.control.next': 'Next view', //TODO
