@@ -25,7 +25,7 @@ from mapfishsample.model.summits import Summit
 from mapfishsample.model.meta import Session
 
 from mapfish.lib.filters import *
-from mapfish.lib.protocol import Protocol, create_default_filter
+from mapfish.lib.protocol import Protocol, create_geom_filter
 
 class SummitsController(BaseController):
     readonly = True # if set to True, only GET is supported
@@ -36,32 +36,32 @@ class SummitsController(BaseController):
     def index(self, format='json'):
         """GET /: return all features."""
         filter = logical.Logical(logical.Logical.AND, [
-            create_default_filter(
+            create_geom_filter(
                 request, Summit
             )
         ])
-        if 'min' in request.params and len(request.params['min']) > 0:
+        if 'min__eq' in request.params and len(request.params['min__eq']) > 0:
             filter.filters.append(
                 comparison.Comparison(
                     comparison.Comparison.GREATER_THAN_OR_EQUAL_TO,
                     Summit.elevation,
-                    value=int(request.params['min'])
+                    value=int(request.params['min__eq'])
                 )
             )
-        if 'max' in request.params and len(request.params['max']) > 0:
+        if 'max__eq' in request.params and len(request.params['max__eq']) > 0:
             filter.filters.append(
                 comparison.Comparison(
                     comparison.Comparison.LOWER_THAN_OR_EQUAL_TO,
                     Summit.elevation,
-                    value=int(request.params['max'])
+                    value=int(request.params['max__eq'])
                 )
             )
-        if 'name' in request.params:
+        if 'name__eq' in request.params:
             filter.filters.append(
                 comparison.Comparison(
                     comparison.Comparison.ILIKE,
                     Summit.name,
-                    value=request.params['name']
+                    value=request.params['name__eq']
                 )
             )
         return self.protocol.index(request, response, format=format, filter=filter)
