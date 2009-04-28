@@ -93,6 +93,8 @@ mapfish.widgets.print.MultiPage = Ext.extend(mapfish.widgets.print.BaseWidget, {
      * Called by initComponent to create the component's sub-elements.
      */
     fillComponent: function() {
+        this.columns = this.columns || [];
+
         //The inner border layout (extra level used because the
         //border layout doesn't allow to add components afterwards).
         var innerPanel = this.add({
