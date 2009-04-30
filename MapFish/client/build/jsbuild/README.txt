@@ -21,4 +21,4 @@ You can now build MapFish, OpenLayers and GeoExt together with:
 
 $ jsbuild -o ../../mfbase/release/mapfish/ full.cfg
 
-This will "MapFish.js" in "../../mfbase/release/mapfish".
+This will create "MapFish.js" in "../../mfbase/release/mapfish".
