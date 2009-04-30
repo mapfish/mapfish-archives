@@ -19,6 +19,7 @@
 
 /**
  * @requires core/GeoStat.js
+ * @requires core/Color.js
  */
 
 /**
