@@ -257,6 +257,9 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.BaseWidget, 
      * APIMethod: fillSpec
      * Add the page definitions and set the other parameters.
      *
+     * This method can be overriden to customise the spec sent to the printer.
+     * Don't forget to call the parent implementation.
+     *
      * Parameters:
      * printCommand - {<mapfish.PrintProtocol>} The print definition to fill.
      */

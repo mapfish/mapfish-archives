@@ -634,6 +634,9 @@ Ext.extend(mapfish.widgets.print.BaseWidget, Ext.Panel, {
      * Add the page definitions and set the other parameters. To be implemented
      * by child classes.
      *
+     * This method can be overriden to customise the spec sent to the printer.
+     * Don't forget to call the parent implementation.
+     *
      * Parameters:
      * printCommand - {<mapfish.PrintProtocol>} The print definition to fill.
      */
