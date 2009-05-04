@@ -429,10 +429,20 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
                 if (tolerance && this.searchToleranceUnits == "pixels") {
                     tolerance *= this.map.getResolution();
                 }
-                var lonlat = this.map.getLonLatFromViewPortPx(this.position);
-                filter = {lon: lonlat.lon, lat: lonlat.lat};
+                var ll = this.map.getLonLatFromViewPortPx(this.position);
+                var point = new OpenLayers.Geometry.Point(ll.lon, ll.lat);
                 if (tolerance) {
-                    filter.tolerance = tolerance;
+                    filter = new OpenLayers.Filter.Spatial({
+                        type: OpenLayers.Filter.Spatial.DWITHIN,
+                        value: point,
+                        distance: tolerance,
+                        distanceUnits: this.map.getUnits()
+                    });
+                } else {
+                    filter = new OpenLayers.Filter.Spatial({
+                        type: OpenLayers.Filter.Spatial.WITHIN,
+                        value: point
+                    });
                 }
             }
             this.position = null;

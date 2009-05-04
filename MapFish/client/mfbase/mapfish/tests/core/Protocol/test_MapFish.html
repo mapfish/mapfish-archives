@@ -64,7 +64,7 @@
     }
 
     function test_MapFish_filterAdapter(t) {
-        t.plan(38);
+        t.plan(43);
 
         // setup
 
@@ -110,6 +110,38 @@
              "filterAdapter sets correct box param if passed a BBOX filter");
         t.eq(options.filter, undefined,
              "filterAdapter deletes filter if passed a BBOX filter");
+
+        // 3 tests
+        var lon = 100, lat = 200, tolerance = 10;
+        options = {
+            filter: {
+                CLASS_NAME: "OpenLayers.Filter.Spatial",
+                type: OpenLayers.Filter.Spatial.DWITHIN,
+                value: new OpenLayers.Geometry.Point(100, 200),
+                distance: 10
+            }
+        };
+        protocol.filterAdapter(options);
+        t.eq(options.params.lon, lon,
+             "filterAdapter sets correct lon param if passed a DWITHIN filter");
+        t.eq(options.params.lat, lat,
+             "filterAdapter sets correct lat param if passed a DWITHIN filter");
+        t.eq(options.params.tolerance, tolerance,
+             "filterAdapter sets correct tolerance param if passed a DWITHIN filter");
+
+        // 2 tests
+        options = {
+            filter: {
+                CLASS_NAME: "OpenLayers.Filter.Spatial",
+                type: OpenLayers.Filter.Spatial.WITHIN,
+                value: new OpenLayers.Geometry.Point(100, 200)
+            }
+        };
+        protocol.filterAdapter(options);
+        t.eq(options.params.lon, lon,
+             "filterAdapter sets correct lon param if passed a WITHIN filter");
+        t.eq(options.params.lat, lat,
+             "filterAdapter sets correct lat param if passed a WITHIN filter");
 
         // Some bbox filters used in the next tests.
 

@@ -167,19 +167,34 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
 
         switch (filterType) {
             case "Spatial":
-                if (filter.type != OpenLayers.Filter.Spatial.BBOX) {
-                    OpenLayers.Console.error('Unsupported spatial filter type ' +
-                                             filter.type);
-                    return false;
+                var type = filter.type;
+                switch (type) {
+                    case OpenLayers.Filter.Spatial.BBOX:
+                        if (params["box"]) {
+                            OpenLayers.Console.error('Filter contains multiple ' +
+                                                     'Spatial BBOX entries');
+                            // We should merge with the old bbox, but OL does not
+                            // proving geometry merging.
+                            return false;
+                        }
+                        params["box"] = filter.value.toBBOX();
+                        break;
+                    case OpenLayers.Filter.Spatial.DWITHIN:
+                        params["tolerance"] = filter.distance;
+                    case OpenLayers.Filter.Spatial.WITHIN:
+                        if (params["lon"]) {
+                            OpenLayers.Console.error('Filter contains multiple ' +
+                                                     'Spatial *WITHIN entries');
+                            return false;
+                        }
+                        params["lon"] = filter.value.x;
+                        params["lat"] = filter.value.y;
+                        break;
+                    default:
+                        OpenLayers.Console.warn('Unknown spatial filter type ' +
+                                                type);
+                        return false;
                 }
-                if (params["box"]) {
-                    OpenLayers.Console.error('Filter contains multiple ' +
-                                             'Spatial BBOX entries');
-                    // We should merge with the old bbox, but OL does not
-                    // proving geometry merging.
-                    return false;
-                }
-                params["box"] = filter.value.toBBOX();
                 break;
             case "Comparison":
                 var op = mapfish.Protocol.MapFish.COMP_TYPE_TO_OP_STR[filter.type];
@@ -211,7 +226,6 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
             default:
                 OpenLayers.Console.warn("Unknown filter type " + filterType);
                 return false;
-                break;
         }
         return true;
     },

@@ -61,7 +61,7 @@
     }
 
     function test_Map_getFilter(t) {
-        t.plan(5);
+        t.plan(12);
 
         var protocol, extent, lonlat, res, searcher, filter;
 
@@ -81,25 +81,47 @@
                 },
                 getExtent: function() {
                     return extent;
+                },
+                getUnits: function() {
+                    return "m";
                 }
             }
         });
 
-        // 1 test
+        // 2 tests
         searcher.position = new OpenLayers.Bounds(0, 0, 0, 0);
         filter = searcher.getFilter();
         t.eq(filter.CLASS_NAME, "OpenLayers.Filter.Spatial",
              "getFilter returns a spatial filter");
+        t.eq(filter.type, OpenLayers.Filter.Spatial.BBOX,
+             "getFilter returns a BBOX spatial filter");
 
-        // 3 tests
+        // 5 tests
         searcher.position = new OpenLayers.Pixel(0, 0);
         filter = searcher.getFilter();
-        t.eq(filter.lon, lonlat.lon,
-             "getFilter returns a object with expected lon property");
-        t.eq(filter.lat, lonlat.lat,
-             "getFilter returns a object with expected lat property");
-        t.eq(filter.tolerance, searcher.searchTolerance * res,
-             "getFilter returns a object with expected tolerance property");
+        t.eq(filter.CLASS_NAME, "OpenLayers.Filter.Spatial",
+             "getFilter returns a spatial filter");
+        t.eq(filter.type, OpenLayers.Filter.Spatial.DWITHIN,
+             "getFilter returns a DWITHIN spatial filter");
+        t.eq(filter.value.x, lonlat.lon,
+             "getFilter returns a DWITHIN filter with expected x coord");
+        t.eq(filter.value.y, lonlat.lat,
+             "getFilter returns a DWITHIN filter with expected y coord");
+        t.eq(filter.distance, searcher.searchTolerance * res,
+             "getFilter returns a DWITHIN filter with expected tolerance");
+
+        // 4 tests
+        searcher.searchTolerance = 0;
+        searcher.position = new OpenLayers.Pixel(0, 0);
+        filter = searcher.getFilter();
+        t.eq(filter.CLASS_NAME, "OpenLayers.Filter.Spatial",
+             "getFilter returns a spatial filter");
+        t.eq(filter.type, OpenLayers.Filter.Spatial.WITHIN,
+             "getFilter returns a WITHIN spatial filter");
+        t.eq(filter.value.x, lonlat.lon,
+             "getFilter returns a WITHIN filter with expected x coord");
+        t.eq(filter.value.y, lonlat.lat,
+             "getFilter returns a WITHIN filter with expected y coord");
 
         // 1 test
         searcher.mode =  mapfish.Searcher.Map.EXTENT;
