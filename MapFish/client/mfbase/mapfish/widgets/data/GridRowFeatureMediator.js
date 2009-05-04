@@ -179,7 +179,7 @@ mapfish.widgets.data.GridRowFeatureMediator.prototype = {
      * r - {Ext.data.Record} The record.
      */
     rowSelected: function(s, i, r) {
-        var layers = this.selectControl.layers, f;
+        var layers = this.selectControl.layers || [this.selectControl.layer], f;
         for (var i = 0, len = layers.length; i < len; i++) {
             f = layers[i].getFeatureById(r.id);
             if (f) {
@@ -200,7 +200,7 @@ mapfish.widgets.data.GridRowFeatureMediator.prototype = {
      * r - {Ext.data.Record} The record.
      */
     rowDeselected: function(s, i, r) {
-        var layers = this.selectControl.layers, f;
+        var layers = this.selectControl.layers || [this.selectControl.layer], f;
         for (var i = 0, len = layers.length; i < len; i++) {
             f = layers[i].getFeatureById(r.id);
             if (f) {
@@ -234,7 +234,7 @@ mapfish.widgets.data.GridRowFeatureMediator.prototype = {
      * Turn off the feature events.
      */
     featureEventsOff: function() {
-        var layers = this.selectControl.layers;
+        var layers = this.selectControl.layers || [this.selectControl.layer];
         for (var i = 0, len = layers.length; i < len; i++) {
             layers[i].events.un({
                 featureselected: this.featureSelected,
@@ -249,7 +249,7 @@ mapfish.widgets.data.GridRowFeatureMediator.prototype = {
      * Turn on the feature events.
      */
     featureEventsOn: function() {
-        var layers = this.selectControl.layers;
+        var layers = this.selectControl.layers || [this.selectControl.layer];
         for (var i = 0, len = layers.length; i < len; i++) {
             layers[i].events.on({
                 featureselected: this.featureSelected,
