@@ -1094,6 +1094,8 @@ Ext.extend(mapfish.widgets.LayerTree, Ext.tree.TreePanel, {
                        displayInLayerSwitcher = true;
                     }
                 }, this);
+            } else {
+                displayInLayerSwitcher = true;                
             }
 
             if ((isBaseLayer || node.attributes.radio) && displayInLayerSwitcher) {
