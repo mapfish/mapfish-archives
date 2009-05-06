@@ -12,7 +12,12 @@ $ source env/bin/activate
 
 Install jstools in the virtual environment:
 
+$ easy_install -i http://dev.camptocamp.com/packages/mapfish/all/index JSTools
+
+--
+To install the latest github version you can use:
 $ easy_install 'http://github.com/whitmo/jstools/tarball/master'
+--
 
 Build
 =====
