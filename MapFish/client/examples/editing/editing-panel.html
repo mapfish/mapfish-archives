@@ -46,7 +46,7 @@
     Ext.onReady(function() {
         Ext.QuickTips.init();
         
-        map = new OpenLayers.Map($('olmap'));
+        map = new OpenLayers.Map('olmap');
 
         var setupMap = function(viewport) {
             var map = viewport.findById('map').map;

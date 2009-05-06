@@ -41,7 +41,7 @@
     var map;
   
     Ext.onReady(function() {
-        map = new OpenLayers.Map($('olmap'));
+        map = new OpenLayers.Map('olmap');
 
         var wms = new OpenLayers.Layer.WMS("OpenLayers WMS", 
             "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}, {buffer: 0});
