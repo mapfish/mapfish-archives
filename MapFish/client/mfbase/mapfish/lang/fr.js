@@ -49,7 +49,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     'mf.control.pan': 'Déplacer',
     'mf.control.zoomIn': 'Zoom avant',
     'mf.control.zoomOut': 'Zoom arrière',
-    'mf.control.zoomAll': 'Vue globale'
+    'mf.control.zoomAll': 'Vue globale',
 
     'mf.editing.comboNoneName': 'Aucun',
     'mf.editing.import': 'Importer',
@@ -57,7 +57,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     'mf.editing.commit': 'Sauver',
     'mf.editing.commitTooltip': 'Sauvegarder les données',
     'mf.editing.delete': 'Supprimer',
-    'mf.editing.deleteTooltip': 'Supprimer l'élément sélectionné',
+    'mf.editing.deleteTooltip': 'Supprimer l\'élément sélectionné',
     'mf.editing.comboLabel': 'Couche à éditer',
     'mf.editing.confirmMessageTitle': 'Eléments édités',
     'mf.editing.confirmMessage': 'Certains éléments ne sont pas sauvegardés, ' +
@@ -71,6 +71,6 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
     'mf.editing.gridStateHeader': 'Etat',
     'mf.editing.gridTitle': 'Eléments sélectionnés',
     'mf.editing.onContextClickMessage': 'Editer cet élément',
-    'mf.editing.onBeforeUnloadMessage': 'Le panneau d'édition contient ' +
+    'mf.editing.onBeforeUnloadMessage': 'Le panneau d\'édition contient ' +
                                         'des éléments non sauvegardés'
 });
