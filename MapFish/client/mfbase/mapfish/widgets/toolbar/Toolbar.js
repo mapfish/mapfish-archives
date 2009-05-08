@@ -113,7 +113,9 @@ Ext.extend(mapfish.widgets.toolbar.Toolbar, Ext.Toolbar, {
     addControl: function (control, options) {
         control.visible = true;
         this.controls.push(control);
-        this.map.addControl(control);
+        if (!control.map) {
+            this.map.addControl(control);
+        }
         var button = new Ext.Toolbar.Button(options);
         if (!button.tooltip) {
             button.tooltip = control.title;
