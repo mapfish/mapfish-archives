@@ -183,9 +183,9 @@ mapfish.Util.fixArray = function(subs) {
 
 /**
  * Function formatURL
- * If mapfish.PROXY_HOST is defined format the URL passed a parameter
- * so that it the resource this URL references is accessed throug the
- * http-proxy script referenced to by mapfish.PROXY_HOST.
+ * If mapfish.PROXY_HOST is defined format the passed URL so that
+ * the resource this URL references is accessed through the
+ * http-proxy script mapfish.PROXY_HOST references.
  *
  * Parameters:
  * url - {String} The URL to format.
