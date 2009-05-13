@@ -61,7 +61,7 @@
     }
 
     function test_Map_getFilter(t) {
-        t.plan(12);
+        t.plan(14);
 
         var protocol, extent, lonlat, res, searcher, filter;
 
@@ -84,6 +84,9 @@
                 },
                 getUnits: function() {
                     return "m";
+                },
+                getProjectionObject: function() {
+                    return new OpenLayers.Projection("EPSG:4326");
                 }
             }
         });
@@ -95,6 +98,16 @@
              "getFilter returns a spatial filter");
         t.eq(filter.type, OpenLayers.Filter.Spatial.BBOX,
              "getFilter returns a BBOX spatial filter");
+
+        // 1 test
+        searcher.position = new OpenLayers.Bounds(0, 0, 0, 0);
+        searcher.projection = new OpenLayers.Projection("EPSG:900913");
+        filter = searcher.getFilter();
+        t.ok(filter.value.equals(
+                (new OpenLayers.Bounds(0, 0, 0, 0)).transform(
+                    searcher.map.getProjectionObject(), searcher.projection)),
+             "getFilter reprojects bounds if projection is set");
+        searcher.projection = null;
 
         // 5 tests
         searcher.position = new OpenLayers.Pixel(0, 0);
@@ -109,6 +122,16 @@
              "getFilter returns a DWITHIN filter with expected y coord");
         t.eq(filter.distance, searcher.searchTolerance * res,
              "getFilter returns a DWITHIN filter with expected tolerance");
+
+        // 1 test
+        searcher.position = new OpenLayers.Pixel(0, 0);
+        searcher.projection = new OpenLayers.Projection("EPSG:900913");
+        filter = searcher.getFilter();
+        t.ok(filter.value.equals(
+                (new OpenLayers.Geometry.Point(4.0, 5.0)).transform(
+                    searcher.map.getProjectionObject(), searcher.projection)),
+             "getFilter reprojects point if projection is set");
+        searcher.projection = null;
 
         // 4 tests
         searcher.searchTolerance = 0;

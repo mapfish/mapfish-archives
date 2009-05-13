@@ -169,6 +169,18 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
      *     read call to <OpenLayers.Protocol> object.
      */
     response: null,
+    
+    /**
+     * APIProperty: projection
+     * {<OpenLayers.Projection>} When passed the bounds or point set in
+     *     the filter are reprojected. In order to reproject, a projection
+     *     transformation function for the specified projections must be
+     *     available. This support may be provided via proj4js or via a
+     *     custom transformation function. See
+     *     {<OpenLayers.Projection.addTransform>} for more information on
+     *     custom transformations.
+     */
+    projection: null,
 
     /**
      * Constructor: mapfish.Searcher.Map
@@ -403,6 +415,22 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
     },
 
     /**
+     * Method: reproject
+     * Reproject the passed object if needed.
+     *
+     * Parameters:
+     * obj - {<OpenLayers.Bounds>}|{<OpenLayers.Point>}
+     */
+    reproject: function(obj) {
+        if (this.projection &&
+            !this.projection.equals(this.map.getProjectionObject())) {
+
+            obj.transform(this.map.getProjectionObject(), this.projection);
+        }
+        return obj;
+    },
+
+    /**
      * Method: getFilter
      *      Get the search filter.
      *
@@ -422,7 +450,7 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
             if (this.position instanceof OpenLayers.Bounds) {
                 filter = new OpenLayers.Filter.Spatial({
                     type: OpenLayers.Filter.Spatial.BBOX,
-                    value: this.position
+                    value: this.reproject(this.position)
                 });
             } else {
                 var tolerance = this.searchTolerance;
@@ -430,7 +458,9 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
                     tolerance *= this.map.getResolution();
                 }
                 var ll = this.map.getLonLatFromViewPortPx(this.position);
-                var point = new OpenLayers.Geometry.Point(ll.lon, ll.lat);
+                var point = this.reproject(
+                    new OpenLayers.Geometry.Point(ll.lon, ll.lat)
+                );
                 if (tolerance) {
                     filter = new OpenLayers.Filter.Spatial({
                         type: OpenLayers.Filter.Spatial.DWITHIN,
