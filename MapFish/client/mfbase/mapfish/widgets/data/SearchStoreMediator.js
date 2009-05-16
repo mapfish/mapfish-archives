@@ -187,7 +187,7 @@ mapfish.widgets.data.SearchStoreMediator.prototype = {
     onSearchfinished: function(response) {
         if (response.requestType == "read" && response.success()) {
             var features = response.features;
-            if (features && features.length > 0) {
+            if (features) {
                 this.featureStoreMediator.addFeatures(features, {
                     append: this.append, filter: this.filter
                 });
