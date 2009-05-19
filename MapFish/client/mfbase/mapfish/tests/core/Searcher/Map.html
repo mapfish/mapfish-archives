@@ -61,7 +61,7 @@
     }
 
     function test_Map_getFilter(t) {
-        t.plan(14);
+        t.plan(16);
 
         var protocol, extent, lonlat, res, searcher, filter;
 
@@ -122,6 +122,17 @@
              "getFilter returns a DWITHIN filter with expected y coord");
         t.eq(filter.distance, searcher.searchTolerance * res,
              "getFilter returns a DWITHIN filter with expected tolerance");
+
+        // 2 tests
+        searcher.position = new OpenLayers.Pixel(0, 0);
+        searcher.pointAsBBOX = true;
+        filter = searcher.getFilter();
+        t.eq(filter.type, OpenLayers.Filter.Spatial.BBOX,
+             "getFilter returns a BBOX spatial filter if pointAsBBOX is set to true");
+        // Bounds.ll should be lonlat.lon (4) - searchTolerance (3) * resolution (5) / 2 = -3.5
+        t.ok(filter.value.equals(new OpenLayers.Bounds(-3.5, -2.5, 11.5, 12.5)),
+             "getFilter returns a BBOX spatial filter with expected value");
+        searcher.pointAsBBOX = false;
 
         // 1 test
         searcher.position = new OpenLayers.Pixel(0, 0);

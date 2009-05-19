@@ -93,6 +93,15 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
     searchToleranceUnits: 'pixels',
 
     /**
+     * APIProperty: pointAsBBOX
+     * {Boolean} If true, the filter sent to server will be of BBOX type. If
+     *     false, the filter will be of DWITHIN type.
+     *     If you're experiencing performance issues don't hesitate to set
+     *     it to true. Defaults to false.
+     */
+    pointAsBBOX: false,
+
+    /**
      * APIProperty: pixelTolerance
      * {Integer} This property has no effect if mode is set to
      *     <mapfish.Searcher.Map.BOX> or to <mapfish.Searcher.Map.EXTENT>, 
@@ -462,12 +471,27 @@ mapfish.Searcher.Map = OpenLayers.Class(mapfish.Searcher, OpenLayers.Control, {
                     new OpenLayers.Geometry.Point(ll.lon, ll.lat)
                 );
                 if (tolerance) {
-                    filter = new OpenLayers.Filter.Spatial({
-                        type: OpenLayers.Filter.Spatial.DWITHIN,
-                        value: point,
-                        distance: tolerance,
-                        distanceUnits: this.map.getUnits()
-                    });
+                    // simulate a box around the clicked point, performances
+                    // may be better than with the DWITHIN filter in some cases
+                    if (this.pointAsBBOX) {
+                        var box = new OpenLayers.Bounds(
+                            ll.lon - tolerance / 2,
+                            ll.lat - tolerance / 2,
+                            ll.lon + tolerance / 2,
+                            ll.lat + tolerance / 2
+                        );
+                        filter = new OpenLayers.Filter.Spatial({
+                            type: OpenLayers.Filter.Spatial.BBOX,
+                            value: this.reproject(box)
+                        });
+                    } else {
+                        filter = new OpenLayers.Filter.Spatial({
+                            type: OpenLayers.Filter.Spatial.DWITHIN,
+                            value: point,
+                            distance: tolerance,
+                            distanceUnits: this.map.getUnits()
+                        });
+                    }
                 } else {
                     filter = new OpenLayers.Filter.Spatial({
                         type: OpenLayers.Filter.Spatial.WITHIN,
