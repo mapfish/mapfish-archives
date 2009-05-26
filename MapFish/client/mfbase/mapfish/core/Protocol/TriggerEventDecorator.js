@@ -20,6 +20,7 @@
 /*
  * @requires OpenLayers/Util.js
  * @requires OpenLayers/Protocol.js
+ * @requires core/Protocol.js
  */
 
 /**
