@@ -391,4 +391,29 @@ mapfish.Protocol.MapFish.COMP_TYPE_TO_OP_STR = {};
     o[OpenLayers.Filter.Comparison.LIKE] = "ilike";
 })();
 
+/**
+ * APIFunction: create
+ * Shortcut to create MapFish Protocol decorated with TriggerEventDecorator
+ *     and MergeFilterDecorator
+ *
+ * Example of use:
+ * (start code)
+ * var protocol = mapfish.Protocol.MapFish.create({
+ *     url: url,
+ * });
+ * (end)
+ *
+ * Parameters:
+ * config - {Object} The config of the decorated MapFish protocol
+ *
+ * Returns:
+ * {<mapfish.Protocol.MapFish>} The resulting protocol.
+ * */
+mapfish.Protocol.MapFish.create = function(config) {
+    return mapfish.Protocol.decorateProtocol({
+        protocol: new mapfish.Protocol.MapFish(config),
+        MergeFilterDecorator: null,
+        TriggerEventDecorator: null
+    });
+};
 
