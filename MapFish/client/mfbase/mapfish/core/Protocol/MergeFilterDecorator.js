@@ -22,6 +22,7 @@
  * @requires OpenLayers/Protocol.js
  * @requires OpenLayers/Filter/Comparison.js
  * @requires OpenLayers/Filter/Logical.js
+ * @requires core/Protocol.js
  * @requires core/Searcher.js
  */
 
