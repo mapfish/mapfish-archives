@@ -24,6 +24,7 @@
  * @requires OpenLayers/Map.js
  * @requires OpenLayers/Util.js
  * @requires OpenLayers/Events.js
+ * @requires OpenLayers/Control.js
  * @requires OpenLayers/Handler/Click.js
  * @requires OpenLayers/Handler/Hover.js
  * @requires OpenLayers/Handler/Box.js
