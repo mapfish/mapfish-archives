@@ -71,8 +71,13 @@
                     }
                 ];
 
-        var tree = new mapfish.widgets.LayerTree({map: map, el: 'tree', model: model});
-        tree.render();
+        var tree = new mapfish.widgets.LayerTree({
+            map: map,
+            renderTo: 'tree',
+            model: model,
+            width: 200,
+            height: 400
+        });
 
       }, this);
 
@@ -88,10 +93,6 @@
           font-size: 11px;
           position: absolute;
           left: 620px;
-        }
-        #tree {
-          height: 400px;
-          width: 200px;
         }
     </style>
   </head>
