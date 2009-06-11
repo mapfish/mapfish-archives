@@ -4,22 +4,25 @@
 <title>Map printing with a simple form</title>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css"
-      href="http://extjs.cachefly.net/ext-2.2.1/resources/css/ext-all.css"/>
+      href="../../mfbase/ext/resources/css/ext-all.css"/>
 <link rel="stylesheet" type="text/css"
-      href="http://www.mapfish.org/svn/mapfish/trunk/MapFish/client/mfbase/mapfish/mapfish.css"/>
+      href="../../mfbase/mapfish/mapfish.css"/>
 
 <script type="text/javascript"
-        src="http://openlayers.org/api/OpenLayers.js"></script>
+        src="../../mfbase/openlayers/lib/Firebug/firebug.js"></script>
+<script type="text/javascript"
+        src="../../mfbase/openlayers/lib/OpenLayers.js"></script>
 
 <script type="text/javascript"
-        src="http://extjs.cachefly.net/builds/ext-cdn-771.js"></script>
+        src="../../mfbase/ext/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="../../mfbase/ext/ext-all-debug.js"></script>
 
 <script type="text/javascript">
   // Because of a bug in Firefox 2 we need to specify the MapFish base path.
   // See https://bugzilla.mozilla.org/show_bug.cgi?id=351282
-  var gMfLocation = "http://www.mapfish.org/svn/mapfish/trunk/MapFish/client/mfbase/mapfish/";
+  var gMfLocation = "../../mfbase/mapfish/";
 </script>
-<script type="text/javascript" src="http://www.mapfish.org/svn/mapfish/trunk/MapFish/client/mfbase/mapfish/MapFish.js"></script>
+<script type="text/javascript" src="../../mfbase/mapfish/MapFish.js"></script>
 
 <style type="text/css">
   html, body {
@@ -32,11 +35,10 @@
   }
 </style>
 <script type="text/javascript">
-
-  // mapfish base url for print widget
+  // Mapfish server baseurl for print widget
   mapfish.SERVER_BASE_URL = '../../';
   // reference local blank image
-  Ext.BLANK_IMAGE_URL = 'http://www.mapfish.org/svn/mapfish/trunk/MapFish/client/mfbase/ext/resources/images/default/s.gif';
+  Ext.BLANK_IMAGE_URL = '../../mfbase/ext/resources/images/default/s.gif';
   Ext.onReady(function() {
 
     var map = new OpenLayers.Map($('center'));
@@ -58,7 +60,6 @@
             map: map,
             configUrl: printConfigUrl,
             overrides: layerOverrides,
-	    iconCls: '',
             fillSpec: function(printCommand) {
                 mapfish.widgets.print.PrintAction.prototype.fillSpec.call(this, printCommand);
 
