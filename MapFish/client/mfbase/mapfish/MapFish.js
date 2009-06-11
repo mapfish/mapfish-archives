@@ -114,6 +114,7 @@
             "widgets/ComboBoxFactory.js",
             "widgets/recenter/Base.js",
             "widgets/recenter/Coords.js",
+            "widgets/recenter/DataField.js",
             "widgets/data/FeatureReader.js",
             "widgets/data/FeatureStore.js",
             "widgets/data/FeatureStoreMediator.js",

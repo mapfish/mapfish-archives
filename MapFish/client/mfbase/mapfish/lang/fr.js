@@ -41,6 +41,7 @@ OpenLayers.Util.extend(OpenLayers.Lang.fr, {
                                    'Elles doivent être comprises dans les limites suivantes :<br/>' +
                                   '${coordX} entre ${minCoordX} et ${maxCoordX},<br />' +
                                   '${coordY} entre ${minCoordY} et ${maxCoordY}',
+    'mf.recenter.emptyText': 'Texte à rechercher',
     'mf.recenter.ws.error': 'Une erreur est survenue lors de l\'accès au webservice distant:',
     'mf.recenter.ws.service': 'Service sélectionné',
 
