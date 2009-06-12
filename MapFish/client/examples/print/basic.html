@@ -38,7 +38,7 @@
   Ext.BLANK_IMAGE_URL = '../../mfbase/ext/resources/images/default/s.gif';
   Ext.onReady(function() {
 
-    var map = new OpenLayers.Map($('center'));
+    var map = new OpenLayers.Map();
 
     var wms = new OpenLayers.Layer.WMS("OpenLayers WMS",
             "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}, {buffer: 0});
@@ -56,14 +56,7 @@
         items: [new mapfish.widgets.print.PrintAction({
             map: map,
             configUrl: printConfigUrl,
-            overrides: layerOverrides,
-            fillSpec: function(printCommand) {
-                mapfish.widgets.print.PrintAction.prototype.fillSpec.call(this, printCommand);
-
-                //our layout needs two fields... hard code them here
-                printCommand.spec.comment = "No comment";
-                printCommand.spec.mapTitle = "PrintControl";
-            }
+            overrides: layerOverrides
         })]
     });
 
