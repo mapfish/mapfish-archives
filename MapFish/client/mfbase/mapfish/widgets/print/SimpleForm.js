@@ -55,7 +55,7 @@ mapfish.widgets.print.SimpleForm = Ext.extend(mapfish.widgets.print.BaseWidget, 
     formConfig: null,
 
     /**
-     * APIProperty: formConfig
+     * APIProperty: wantResetButton
      * {Boolean} If true (default), display a reset position button
      */
     wantResetButton: true,
