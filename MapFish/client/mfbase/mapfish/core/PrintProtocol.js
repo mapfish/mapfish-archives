@@ -449,6 +449,7 @@ mapfish.PrintProtocol = OpenLayers.Class({
         }
         return layer;
     },
+
     /**
      * Method: convertMapServerLayer
      *
@@ -529,6 +530,40 @@ mapfish.PrintProtocol = OpenLayers.Class({
             extension: olLayer.extension,
             resolutions: olLayer.serverResolutions || olLayer.resolutions
         });
+    },
+
+    /**
+     * Method: convertOSMLayer
+     *
+     * Builds the layer configuration from an {<OpenLayers.Layer.OSM>} layer.
+     * The structure expected from the print module is:
+     * (start code)
+     * {
+     *   type: 'OSM'
+     *   baseURL: {String}
+     *   layers: [{String}]
+     *   styles: [{String}]
+     *   format: {String}
+     *   opacity: {Float}
+     *   singleTile: {boolean}
+     *   customParams: {
+     *     {String}: {String}
+     *   }
+     * }
+     * (end)
+     *
+     * Parameters:
+     * olLayer - {<OpenLayers.Layer.OSM>} The OL layer.
+     *
+     * Returns:
+     * {Object} The config for this layer
+     */
+    convertOSMLayer: function(olLayer) {
+        var layerInfo = this.convertTileCacheLayer(olLayer);
+        layerInfo.type = 'Osm';
+        layerInfo.baseURL = layerInfo.baseURL.substr(0, layerInfo.baseURL.indexOf("$"));
+        layerInfo.extension = "png";
+        return layerInfo;
     },
 
     /**
@@ -736,8 +771,10 @@ mapfish.PrintProtocol.IGNORED = function() {
 mapfish.PrintProtocol.SUPPORTED_TYPES = {
     'OpenLayers.Layer': mapfish.PrintProtocol.IGNORED,
     'OpenLayers.Layer.WMS': mapfish.PrintProtocol.prototype.convertWMSLayer,
+    'mapfish.Layer.SwitchableWMS': mapfish.PrintProtocol.prototype.convertSwitchableWMSLayer,
     'OpenLayers.Layer.WMS.Untiled': mapfish.PrintProtocol.prototype.convertWMSLayer,
     'OpenLayers.Layer.TileCache': mapfish.PrintProtocol.prototype.convertTileCacheLayer,
+    'OpenLayers.Layer.OSM': mapfish.PrintProtocol.prototype.convertOSMLayer,
     'OpenLayers.Layer.Vector': mapfish.PrintProtocol.prototype.convertVectorLayer,
     'OpenLayers.Layer.Vector.RootContainer': mapfish.PrintProtocol.prototype.convertVectorLayer,
     'OpenLayers.Layer.GML': mapfish.PrintProtocol.prototype.convertVectorLayer,
