@@ -18,7 +18,7 @@
  */ 
  
 /** 
- * @requires widgets/recenter/Base.js 
+ * @requires widgets/recenter/Base.js
  * @include core/Protocol/MapFish.js
  * @include GeoExt/data/FeatureReader.js
  * @include GeoExt/data/ProtocolProxy.js
