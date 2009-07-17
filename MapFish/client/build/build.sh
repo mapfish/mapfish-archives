@@ -21,12 +21,6 @@
 set -e
 
 #
-# Variables
-#
-buildpath="$(cd $(dirname $0); pwd)"
-releasepath="${buildpath}/../mfbase/release"
-
-#
 # Command path definitions
 #
 python="/usr/bin/python"
@@ -35,6 +29,16 @@ rm="/bin/rm"
 sh="/bin/sh"
 cp="/bin/cp"
 
+#
+# Variables
+#
+buildpath="$(cd $(dirname $0); pwd)"
+releasepath="${buildpath}/../mfbase/release"
+venv="${buildpath}/venv"
+
+#
+# Remove old release dir
+#
 ${rm} -rf "${releasepath}"
 
 #
@@ -45,14 +49,23 @@ if [ -d ${releasepath} ]; then
     ${rm} -rf ${releasepath}
 fi
 
-cfgfile="mapfish-widgets.cfg"
+cfgfile="full.cfg"
 if [ -n "$1" -a -f "$1" ]; then
     cfgfile="$1"
 fi
 
+
 mapfishreleasepath="${releasepath}/mapfish"
 ${mkdir} -p ${mapfishreleasepath}
-(cd ${buildpath} && ${python} build.py -c ${cfgfile} -o "${mapfishreleasepath}"/MapFish.js)
+(cd ${buildpath};
+ if [ ! -d ${venv} ]; then
+     echo "creating virtual env and installing jstools..."
+     ${python} go-jstools.py ${venv} > /dev/null
+     echo "done."
+ fi;
+ echo "running jsbuild..."
+ ${venv}/bin/jsbuild -o "${mapfishreleasepath}" full.cfg
+ echo "done.")
 
 # MapFish resources
 ${cp} -r "${mapfishpath}/img" "${mapfishreleasepath}"
