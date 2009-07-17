@@ -11,6 +11,8 @@
 
     <script type="text/javascript" src="../../mfbase/ext/adapter/ext/ext-base.js"></script>
     <script type="text/javascript" src="../../mfbase/ext/ext-all-debug.js"></script>
+  
+    <script type="text/javascript" src="../../mfbase/geoext/lib/GeoExt.js"></script>
 
     <script type="text/javascript">
       // Because of a bug in Firefox 2 we need to specify the MapFish base path.
@@ -74,9 +76,7 @@
         options.controls = [
             new OpenLayers.Control.Navigation()            
         ]
-        map = new OpenLayers.Map('mapContainer', options);
-
-        var mapcomponent = new mapfish.widgets.MapComponent({map: map});
+        map = new OpenLayers.Map(options);
 
         // Creates OSM layer
         var mapnik = new OpenLayers.Layer.TMS(
@@ -100,8 +100,6 @@
             "Google Hybrid",
             {type: G_HYBRID_MAP, 'sphericalMercator': true}
         );
-               
-        map.addLayers([mapnik, gmap, gsat, ghyb]);
                                           
         var toolbar = new mapfish.widgets.toolbar.Toolbar({
             map: map,
@@ -139,9 +137,13 @@
                             }]
                         },{
                             region: 'center',
-                            contentEl: 'mapContainer',
                             minWidth: 200,
-                            title: 'MapFish 2D'
+                            title: 'MapFish 2D',
+                            xtype: "gx_mappanel",
+                            layers: [mapnik, gmap, gsat, ghyb],
+                            map: map,
+                            center:  new OpenLayers.LonLat(-13625995.09, 4550849.74),
+                            zoom: 14
                         },{
                             region: 'east',
                             width: '40%',
@@ -160,9 +162,6 @@
                 }
             ]
         });
-                
-        var center = new OpenLayers.LonLat(-13625995.09, 4550849.74);        
-        map.setCenter(center, 14);               
         
         // Creates GE plugin
         earth = new mapfish.Earth(map, 'map3dContainer', {lonLat: center,
@@ -239,7 +238,6 @@
 <body>
   <div id="header"><a href="http://www.mapfish.org/"><img src="mapfish.png" width="139" height="74" /></a><div id="title">MapFish and Google Earth Demonstration</div></div>
   <div id="menu"></div>
-  <div id="mapContainer"></div>
   <div id="map3dContainer">
   </div>
   <div id="footer" class="x-border-layout-ct">License Information: MapFish and Ext JS licensed under <a href="http://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a>, Google Earth API <a href="http://code.google.com/intl/fr/apis/maps/terms.html">Terms of Service</a></div>

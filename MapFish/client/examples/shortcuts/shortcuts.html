@@ -49,6 +49,7 @@
         map.addLayers([wms]);
         map.addControl(new OpenLayers.Control.LayerSwitcher());
         map.setCenter(new OpenLayers.LonLat(17, 2), 2);
+        
     
         var store = new Ext.data.SimpleStore({
             fields: ['value', 'text', 'bbox'],

@@ -70,7 +70,7 @@
     </script>
       
     <style type="text/css">
-        .map, .mapContainer, #firstMap, #secondMap {
+        .map, #firstMap, #secondMap {
            width: 300px;
            height: 200px;
            border: 1px solid #999;
@@ -82,10 +82,18 @@
         .x-panel-body {
           border: none !important;
         }
+        #north {
+           margin-top:5px;
+           margin-left:5px;
+        }
     </style>
   </head>
 
   <body>
+    <div id="north">
+       <p style="font-size:16pt;color:#15428B;font-weight:bold">MapFish example: multiple maps</p>
+    </div>
+    <br>
     <div id="firstMap" class="map"></div>
     <div id="firstTree" class="tree"></div>
 

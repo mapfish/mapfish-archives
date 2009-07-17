@@ -11,6 +11,8 @@
     <script type="text/javascript" src="../../mfbase/ext/adapter/ext/ext-base.js"></script>
     <script type="text/javascript" src="../../mfbase/ext/ext-all-debug.js"></script>
 
+    <script type="text/javascript" src="../../mfbase/geoext/lib/GeoExt.js"></script>
+
     <script type="text/javascript">
       // Because of a bug in Firefox 2 we need to specify the MapFish base path.
       // See https://bugzilla.mozilla.org/show_bug.cgi?id=351282
@@ -41,26 +43,17 @@
     // reference local blank image
     Ext.BLANK_IMAGE_URL = '../../mfbase/ext/resources/images/default/s.gif';
   
-    var map;
-  
     Ext.onReady(function() {
         Ext.QuickTips.init();
         
-        map = new OpenLayers.Map('olmap');
+        var map = new OpenLayers.Map();
 
-        var setupMap = function(viewport) {
-            var map = viewport.findById('map').map;
-            var wms = new OpenLayers.Layer.WMS("OpenLayers WMS", 
-                "http://labs.metacarta.com/wms/vmap0",
-                {layers: 'basic'},
-                {buffer: 0}
-            );
-            map.addLayers([wms]);
-            map.addControl(new OpenLayers.Control.LayerSwitcher());
-            map.setCenter(new OpenLayers.LonLat(17, 2), 3);
-        };
+        var wms = new OpenLayers.Layer.WMS("OpenLayers WMS",
+            "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'}, {buffer: 0});
+
+        map.addControl(new OpenLayers.Control.LayerSwitcher());
         
-        var layerConfig = {
+       var layerConfig = {
             polygons: {
                 text: 'Polygons',
                 protocol: new mapfish.Protocol.MapFish({
@@ -118,12 +111,12 @@
 
         new Ext.Viewport({
             layout: 'border',
-            listeners: {'afterlayout': {'fn': setupMap}},
             items: [
                 new Ext.BoxComponent({
                     region: 'north',
                     el: 'north',
-                    height: 32
+                    height: 32,
+                    margins: {left: 5,top: 5}
                 }), {
                     region: 'east',
                     id: 'east-panel',
@@ -143,10 +136,10 @@
                     }]
                 }, {
                     region: 'center',
-                    id: 'map',
                     title: 'Map',
                     map: map,
-                    xtype: 'mapcomponent'
+                    xtype: 'gx_mappanel',
+                    layers: [wms]
                 }
             ]
         });
@@ -154,10 +147,9 @@
 	</script>
 </head>
 <body>
-  <div id="north"></div>
-    <p>Feature editing panel example</p>
+  <div id="north">
+    <p style="font-size:16pt;color:#15428B;font-weight:bold">MapFish example: feature editing panel</p>
   </div>
-  <div id="olmap"></div>
   <div id="helptext">
     <ul class="list">
       <li class="list">Choose a layer in the list of layers to edit</li>

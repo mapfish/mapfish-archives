@@ -11,6 +11,8 @@
     <script type="text/javascript" src="../../mfbase/ext/adapter/ext/ext-base.js"></script>
     <script type="text/javascript" src="../../mfbase/ext/ext-all.js"></script>
 
+     <script type="text/javascript" src="../../mfbase/geoext/lib/GeoExt.js"></script>
+
     <script type="text/javascript">
       // Because of a bug in Firefox 2 we need to specify the MapFish base path.
       // See https://bugzilla.mozilla.org/show_bug.cgi?id=351282
@@ -99,7 +101,8 @@
                     new Ext.BoxComponent({
                         region: 'north',
                         el: 'north',
-                        height: 60
+                        height: 32,
+                        margins: {left: 5,top: 5}
                     }), {
                         region: 'west',
                         title: 'LayerTree',
@@ -117,16 +120,17 @@
                         }]
                     },{
                         region: 'center',
-                        //title: 'map',
                         layout: 'fit',
                         frame: false,
                         border: true,
                         margins: '5 5 0 0',
                         items: [{
-                            xtype: 'mapcomponent',
+                            xtype: 'gx_mappanel',
                             map: map,
                             tbar: toolbar,
-                            border: false
+                            border: false,
+                            center: new OpenLayers.LonLat(5,45),
+                            zoom: 6
                         }]
                     },{
                         region: 'south',
@@ -306,13 +310,11 @@
                 createToolbar();
                 createViewport();
                 
-                map.setCenter(new OpenLayers.LonLat(5,45), 6);
-                
                 setToolbarContent();
                 toolbar.activate();
                 
                 // display some text in the status bar:
-                this.setStatus('Status: example app ready');
+                this.setStatus('Status: information');
             }
         };
     }(); // end of app
@@ -327,15 +329,13 @@
         .clear-left {
           clear: left;
         }
-        #north {
-            // uncomment this line to insert a banner :
-            /*background:transparent url(images/banner.jpg) repeat-x scroll 0 0;*/
-        }
      </style>
   </head>
 
   <body>
-    <div id="north">your banner here</div>
+    <div id="north">
+       <p style="font-size:16pt;color:#15428B;font-weight:bold">MapFish example: map with toolbar</p>
+    </div>
     <div id="mymap"></div>
   </body>
 </html>
