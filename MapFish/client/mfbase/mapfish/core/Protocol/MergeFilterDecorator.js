@@ -65,7 +65,9 @@ mapfish.Protocol.MergeFilterDecorator = OpenLayers.Class(OpenLayers.Protocol, {
      * Register a searcher.
      */
     register: function(searcher) {
-        this.searchers.push(searcher);
+        if (OpenLayers.Util.indexOf(this.searchers, searcher) == -1) {
+            this.searchers.push(searcher);
+        }
     },
 
     /**

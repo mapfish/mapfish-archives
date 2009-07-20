@@ -135,7 +135,8 @@
             "widgets/print/BaseWidget.js",
             "widgets/print/SimpleForm.js",
             "widgets/print/MultiPage.js",
-            "widgets/print/PrintAction.js"
+            "widgets/print/PrintAction.js",
+            "widgets/search/Form.js"
         ); // etc.
 
         var allScriptTags = "";

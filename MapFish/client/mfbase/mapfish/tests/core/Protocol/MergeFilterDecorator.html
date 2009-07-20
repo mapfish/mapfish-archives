@@ -33,23 +33,40 @@
              "initialize correctly sets searchers property");
     }
     function test_MergeFilterDecorator_register(t) {
-        t.plan(2);
+        t.plan(6);
 
         // setup
        
         var decorator, searcher;
 
+        // 3 tests
         decorator = new mapfish.Protocol.MergeFilterDecorator({
             protocol: new OpenLayers.Protocol()
         });
-
-        // 2 tests
         searcher = new mapfish.Searcher({
             protocol: decorator
         });
+        t.eq(decorator.searchers.length, 1,
+             "instantiate mapfish.Searcher with a protocol registers the searcher");
+        t.ok(decorator.searchers[0] == searcher,
+             "expected searcher is registered");
         decorator.register(searcher);
         t.eq(decorator.searchers.length, 1,
-             "register registers one searcher");
+             "trying to register the same searcher does not register it twice");
+
+        // 3 tests
+        decorator = new mapfish.Protocol.MergeFilterDecorator({
+            protocol: new OpenLayers.Protocol()
+        });
+        searcher = new mapfish.Searcher({
+            protocol: decorator,
+            autobind: false
+        });
+        t.eq(decorator.searchers.length, 0,
+             "instantiate mapfish.Searcher with a protocol does not register the searcher if autobind is false");
+        decorator.register(searcher);
+        t.eq(decorator.searchers.length, 1,
+             "register registers one searcher since it does not already exist");
         t.ok(decorator.searchers[0] == searcher,
              "register registers expected searcher");
     }
