@@ -36,7 +36,7 @@
         t.plan(6);
 
         // setup
-       
+
         var decorator, searcher;
 
         // 3 tests
@@ -70,6 +70,28 @@
         t.ok(decorator.searchers[0] == searcher,
              "register registers expected searcher");
     }
+
+    function test_MergeFilterDecorator_unregister(t) {
+        t.plan(2);
+
+        // setup
+
+        var decorator, searcher;
+
+        // 2 tests
+        decorator = new mapfish.Protocol.MergeFilterDecorator({
+            protocol: new OpenLayers.Protocol()
+        });
+        searcher = new mapfish.Searcher({
+            protocol: decorator
+        });
+        t.eq(decorator.searchers.length, 1,
+            "initial state: MergeFilterDecorator has one searcher registered");
+        decorator.unregister(searcher);
+        t.eq(decorator.searchers.length, 0,
+            "MergeFilterDecorator.unregister is properly unregistering the searcher");
+    }
+
     function test_MergeFilterDecorator_toFilter(t) {
         t.plan(15);
 

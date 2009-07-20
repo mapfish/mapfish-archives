@@ -75,7 +75,7 @@ mapfish.Protocol.MergeFilterDecorator = OpenLayers.Class(OpenLayers.Protocol, {
      * Unregister a searcher.
      */
     unregister: function(searcher) {
-        OpenLayers.Util.removeItem(searcher, this.searchers);
+        OpenLayers.Util.removeItem(this.searchers, searcher);
     },
 
     /**
