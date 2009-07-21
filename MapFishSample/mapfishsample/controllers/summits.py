@@ -35,36 +35,7 @@ class SummitsController(BaseController):
 
     def index(self, format='json'):
         """GET /: return all features."""
-        filter = logical.Logical(logical.Logical.AND, [
-            create_geom_filter(
-                request, Summit
-            )
-        ])
-        if 'min__eq' in request.params and len(request.params['min__eq']) > 0:
-            filter.filters.append(
-                comparison.Comparison(
-                    comparison.Comparison.GREATER_THAN_OR_EQUAL_TO,
-                    Summit.elevation,
-                    value=int(request.params['min__eq'])
-                )
-            )
-        if 'max__eq' in request.params and len(request.params['max__eq']) > 0:
-            filter.filters.append(
-                comparison.Comparison(
-                    comparison.Comparison.LOWER_THAN_OR_EQUAL_TO,
-                    Summit.elevation,
-                    value=int(request.params['max__eq'])
-                )
-            )
-        if 'name__eq' in request.params:
-            filter.filters.append(
-                comparison.Comparison(
-                    comparison.Comparison.ILIKE,
-                    Summit.name,
-                    value=request.params['name__eq']
-                )
-            )
-        return self.protocol.index(request, response, format=format, filter=filter)
+        return self.protocol.index(request, response, format=format)
 
     def show(self, id, format='json'):
         """GET /id: Show a specific feature."""
