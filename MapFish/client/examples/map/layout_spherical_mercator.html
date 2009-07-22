@@ -20,7 +20,6 @@
     <script type="text/javascript" src="../../mfbase/mapfish/MapFish.js"></script>
     <script type="text/javascript" src="../examples.js"></script>
     
-    <script src='http://dev.virtualearth.net/mapcontrol/v3/mapcontrol.js'></script>
     <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA05C9249WzNJ_bo8JW1_d1RR4mkyLzoxNxIarp_9bfNMlpzk1lBTKyrzDeVpecEf3n5k8eLOy20OHKg'></script>
     <script src="http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=euzuro-openlayers"></script>
     
@@ -40,7 +39,7 @@
     Ext.BLANK_IMAGE_URL = '../../mfbase/ext/resources/images/default/s.gif';
   
     Ext.onReady(function() {
-        
+
         var options = {
             projection: "EPSG:900913",
             units: "m",
@@ -48,7 +47,8 @@
             maxExtent: new OpenLayers.Bounds(-20037508, -20037508,
                                              20037508, 20037508.34)
         };
-        map = new OpenLayers.Map(options);
+
+        var map = new OpenLayers.Map(options);
 
         // create Google Mercator layers
         var gmap = new OpenLayers.Layer.Google(
@@ -79,6 +79,8 @@
                 displayOutsideMaxExtent: true
             }
         );
+
+        map.addLayers([gmap, yahoo, yahoosat, yahoohyb, mapnik]);
        
         var viewport = new Ext.Viewport({
             layout:'border',
@@ -113,9 +115,8 @@
                         animate: true
                     },
                     items: [{
-                        title: 'Layers',
-                        region: 'north',
-                        height: 100,
+                        title: 'Layer Tree',
+                        border: false,
                         xtype: 'layertree',
                         map: map
                     },{
@@ -127,9 +128,7 @@
                 },{
                     region: 'center',
                     title: 'Map',
-                    layout: 'fit',
                     xtype: 'gx_mappanel',
-                    layers: [gmap, yahoo, yahoosat, yahoohyb, mapnik],
                     map: map
                 }
              ]
@@ -150,7 +149,7 @@
             x = ((x % limit) + limit) % limit;            
             return this.url + z + "/" + x + "/" + y + "." + this.type;
         }
-    }
+    };
 	</script>
 </head>
 <body>
