@@ -31,11 +31,11 @@
     // create application
     toolbarExample.app = function() {  
         // private vars:
-        var map, toolbar, viewport, vectorLayer;
+        var map, toolbarItems = [], viewport, vectorLayer;
 
         // private functions
         var createMap = function() {
-            map = new OpenLayers.Map('mymap', {
+            map = new OpenLayers.Map({
                 projection: "EPSG:4326",
                 controls: [], 
                 maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
@@ -77,23 +77,6 @@
             navControl.activate();
         };
         
-        var createToolbar = function() {
-            toolbar = new mapfish.widgets.toolbar.Toolbar({
-                map: map, 
-                configurable: false
-            });
-                
-            // this is a quick fix for http://trac.mapfish.org/trac/mapfish/ticket/126
-            toolbar.autoHeight = false;
-            toolbar.height = 25;
-        };
-        
-        var addSeparator = function() { 
-            toolbar.add(new Ext.Toolbar.Spacer());
-            toolbar.add(new Ext.Toolbar.Separator());
-            toolbar.add(new Ext.Toolbar.Spacer());
-        };
-        
         var createViewport = function() {
             viewport = new Ext.Viewport({
                 layout: 'border',
@@ -127,7 +110,7 @@
                         items: [{
                             xtype: 'gx_mappanel',
                             map: map,
-                            tbar: toolbar,
+                            tbar: toolbarItems,
                             border: false,
                             center: new OpenLayers.LonLat(5,45),
                             zoom: 6
@@ -146,135 +129,118 @@
             });
         };
         
-        var setToolbarContent = function() {
-        
-            toolbar.addControl(
-                new OpenLayers.Control.ZoomToMaxExtent({
-                    map: map,
-                    title: 'Zoom to maximum map extent'
-                }), {
-                    iconCls: 'zoomfull', 
-                    toggleGroup: 'map'
-                }
-            );
-                
-            addSeparator();
-                
-            toolbar.addControl(
-                new OpenLayers.Control.ZoomBox({
-                    title: 'Zoom in: click in the map or use the left mouse button and drag to create a rectangle'
-                }), {
-                    iconCls: 'zoomin', 
-                    toggleGroup: 'map'
-                }
-            );
-            
-            toolbar.addControl(
-                new OpenLayers.Control.ZoomBox({
-                    out: true,
-                    title: 'Zoom out: click in the map or use the left mouse button and drag to create a rectangle'
-                }), {
-                    iconCls: 'zoomout', 
-                    toggleGroup: 'map'
-                }
-            );
-                
-            toolbar.addControl(
-                new OpenLayers.Control.DragPan({
-                    isDefault: true,
-                    title: 'Pan map: keep the left mouse button pressed and drag the map'
-                }), {
-                    iconCls: 'pan', 
-                    toggleGroup: 'map'
-                }
-            );
-                
-            addSeparator();
-                
-            toolbar.addControl(
-                new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Point, {
-                    title: 'Draw a point on the map'
-                }), {
-                    iconCls: 'drawpoint', 
-                    toggleGroup: 'map'
-                }
-            );
-                
-            toolbar.addControl(
-                new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Path, {
-                    title: 'Draw a linestring on the map'
-                }), {
-                    iconCls: 'drawline', 
-                    toggleGroup: 'map'
-                }
-            );
-                
-            toolbar.addControl(
-                new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Polygon, {
-                    title: 'Draw a polygon on the map'
-                }), {
-                    iconCls: 'drawpolygon', 
-                    toggleGroup: 'map'
-                }
-            );
-                
-            addSeparator();
-            
-            var nav = new OpenLayers.Control.NavigationHistory();
-            map.addControl(nav);
-            nav.activate();
-                
-            var buttonPrevious = new Ext.Toolbar.Button({
-                iconCls: 'back',
-                tooltip: 'Previous view', 
-                disabled: true,
-                handler: nav.previous.trigger
+        var createToolbar = function() {
+            var action;
+
+            var createSeparator = function() {
+               toolbarItems.push(" ");
+               toolbarItems.push("-");
+               toolbarItems.push(" ");
+            };
+
+            action = new GeoExt.Action({
+                control: new OpenLayers.Control.ZoomToMaxExtent(),
+                map: map,
+                iconCls: 'zoomfull',
+                toggleGroup: 'map',
+                tooltip: 'Zoom to full extent'
             });
-                
-            var buttonNext = new Ext.Toolbar.Button({
-                iconCls: 'next',
-                tooltip: 'Next view', 
-                disabled: true,
-                handler: nav.next.trigger
+
+            toolbarItems.push(action);
+
+            createSeparator();
+
+            action = new GeoExt.Action({
+                control: new OpenLayers.Control.ZoomBox(),
+                tooltip: 'Zoom in: click in the map or use the left mouse button and drag to create a rectangle',
+                map: map,
+                iconCls: 'zoomin',
+                toggleGroup: 'map'
             });
-                
-            toolbar.add(buttonPrevious);
-            toolbar.add(buttonNext);
-                
-            nav.previous.events.register(
-                "activate", 
-                buttonPrevious,
-                function() { 
-                    this.setDisabled(false); 
-                }
-            );
-                
-            nav.previous.events.register(
-                "deactivate", 
-                buttonPrevious,
-                function() { 
-                    this.setDisabled(true); 
-                }
-            );
-                
-            nav.next.events.register(
-                "activate", 
-                buttonNext, 
-                function(){ 
-                    this.setDisabled(false); 
-                }
-            );
-                
-            nav.next.events.register(
-                "deactivate", 
-                buttonNext,
-                function() { 
-                    this.setDisabled(true); 
-                }
-            );
-                
-            addSeparator();
-        }
+
+            toolbarItems.push(action);
+
+            action = new GeoExt.Action({
+                control: new OpenLayers.Control.ZoomBox({
+                    out: true
+                }),
+                tooltip: 'Zoom out: click in the map or use the left mouse button and drag to create a rectangle',
+                map: map,
+                iconCls: 'zoomout',
+                toggleGroup: 'map'
+            });
+
+            toolbarItems.push(action);
+
+            action = new GeoExt.Action({
+                control: new OpenLayers.Control.DragPan({
+                    isDefault: true
+                }),
+                tooltip: 'Pan map: keep the left mouse button pressed and drag the map',
+                map: map,
+                iconCls: 'pan',
+                toggleGroup: 'map'
+            });
+
+            toolbarItems.push(action);
+
+            createSeparator();
+
+            action = new GeoExt.Action({
+                control: new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Point),
+                tooltip: 'Draw a point on the map',
+                map: map,
+                iconCls: 'drawpoint',
+                toggleGroup: 'map'
+            });
+
+            toolbarItems.push(action);
+
+
+            action = new GeoExt.Action({
+                control: new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Path),
+                tooltip: 'Draw a linestring on the map',
+                map: map,
+                iconCls: 'drawline',
+                toggleGroup: 'map'
+            });
+
+            toolbarItems.push(action);
+
+
+            action = new GeoExt.Action({
+                control: new OpenLayers.Control.DrawFeature(vectorLayer, OpenLayers.Handler.Polygon),
+                tooltip: 'Draw a polygon on the map',
+                map: map,
+                iconCls: 'drawpolygon',
+                toggleGroup: 'map'
+            });
+
+            toolbarItems.push(action);
+
+            createSeparator();
+
+            ctrl = new OpenLayers.Control.NavigationHistory();
+            map.addControl(ctrl);
+
+            action = new GeoExt.Action({
+                   tooltip: "Previous view",
+                   control: ctrl.previous,
+                   iconCls: 'back',
+                   disabled: true
+               });
+            toolbarItems.push(action);
+
+            action = new GeoExt.Action({
+                   tooltip: "Next view",
+                   control: ctrl.next,
+                   iconCls: 'next',
+                   disabled: true
+               });
+            toolbarItems.push(action);
+
+            createSeparator();
+        };
         
         // public space:
         return {
@@ -286,6 +252,7 @@
             },
             
             init: function() {
+                Ext.QuickTips.init();
                 createMap();
                 createWmsLayer(
                     "OpenLayers WMS", 
@@ -310,9 +277,6 @@
                 createToolbar();
                 createViewport();
                 
-                setToolbarContent();
-                toolbar.activate();
-                
                 // display some text in the status bar:
                 this.setStatus('Status: information');
             }
@@ -336,6 +300,5 @@
     <div id="north">
        <p style="font-size:16pt;color:#15428B;font-weight:bold">MapFish example: map with toolbar</p>
     </div>
-    <div id="mymap"></div>
   </body>
 </html>
