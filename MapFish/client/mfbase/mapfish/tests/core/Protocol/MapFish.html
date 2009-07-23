@@ -106,8 +106,8 @@
             }
         };
         protocol.filterAdapter(options);
-        t.eq(options.params.box, bbox,
-             "filterAdapter sets correct box param if passed a BBOX filter");
+        t.eq(options.params.bbox, bbox,
+             "filterAdapter sets correct bbox param if passed a BBOX filter");
         t.eq(options.filter, undefined,
              "filterAdapter deletes filter if passed a BBOX filter");
 
@@ -196,8 +196,8 @@
         };
 
         protocol.filterAdapter(options);
-        t.eq(options.params.box, "0,0,10,10",
-             "filterAdapter sets correct box param if passed a Logical filter containing a BBOX");
+        t.eq(options.params.bbox, "0,0,10,10",
+             "filterAdapter sets correct bbox param if passed a Logical filter containing a BBOX");
         t.eq(options.filter, undefined,
              "filterAdapter deletes filter");
 

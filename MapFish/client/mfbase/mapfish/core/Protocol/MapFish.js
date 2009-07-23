@@ -181,14 +181,14 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
                 var type = filter.type;
                 switch (type) {
                     case OpenLayers.Filter.Spatial.BBOX:
-                        if (params["box"]) {
+                        if (params["bbox"]) {
                             OpenLayers.Console.error('Filter contains multiple ' +
                                                      'Spatial BBOX entries');
                             // We should merge with the old bbox, but OL does not
                             // proving geometry merging.
                             return false;
                         }
-                        params["box"] = filter.value.toBBOX();
+                        params["bbox"] = filter.value.toBBOX();
                         break;
                     case OpenLayers.Filter.Spatial.DWITHIN:
                         params["tolerance"] = filter.distance;
