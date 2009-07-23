@@ -37,6 +37,17 @@
 
 mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
     /**
+     * APIProperty: wildcarded.
+     * {Boolean} If true percent signs are added around values 
+     *     read from LIKE filters, for example if the protocol
+     *     read method is passed a LIKE filter whose property
+     *     is "foo" and whose value is "bar" the string
+     *     "foo__ilike=%bar%" will be sent in the query string;
+     *     defaults to false.
+     */
+    wildcarded: false,
+
+    /**
      * Constructor: mapfish.Protocol.MapFish
      *
      * Parameters:
@@ -203,7 +214,14 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
                         'Unknown comparison filter type ' + filter.type);
                     return false;
                 }
-                params[filter.property + "__" + op] = filter.value;
+                var value = filter.value;
+                if (filter.type == OpenLayers.Filter.Comparison.LIKE) {
+                    value = this.regex2value(value);
+                    if (this.wildcarded) {
+                        value = "%" + value + "%";
+                    }
+                }
+                params[filter.property + "__" + op] = value;
                 params["queryable"] = params["queryable"] || [];
                 params["queryable"].push(filter.property);
                 break;
@@ -228,6 +246,54 @@ mapfish.Protocol.MapFish = OpenLayers.Class(OpenLayers.Protocol.HTTP, {
                 return false;
         }
         return true;
+    },
+
+    /**
+     * Method: regex2value
+     * Convert the value from a regular expression string to a LIKE/ILIKE
+     *     string known to the MapFish web service.
+     *
+     * Parameters:
+     * value - {String} The regex string.
+     *
+     * Returns:
+     * {String} The converted string.
+     */
+    regex2value: function(value) {
+
+        // highly sensitive!! Do not change this without running the
+        // Protocol/MapFish.html unit tests
+
+        // convert % to \%
+        value = value.replace(/%/g, "\\%");
+
+        // convert \\. to \\_ (\\.* occurences converted later)
+        value = value.replace(/\\\\\.(\*)?/g, function($0, $1) {
+            return $1 ? $0 : "\\\\_";
+        });
+
+        // convert \\.* to \\%
+        value = value.replace(/\\\\\.\*/g, "\\\\%");
+
+        // convert . to _ (\. and .* occurences converted later)
+        value = value.replace(/(\\)?\.(\*)?/g, function($0, $1, $2) {
+            return $1 || $2 ? $0 : "_";
+        });
+
+        // convert .* to % (\.* occurnces converted later)
+        value = value.replace(/(\\)?\.\*/g, function($0, $1) {
+            return $1 ? $0 : "%";
+        });
+
+        // convert \. to .
+        value = value.replace(/\\\./g, ".");
+
+        // replace \* with * (watching out for \\*)
+        value = value.replace(/(\\)?\\\*/g, function($0, $1) {
+            return $1 ? $0 : "*";
+        });
+        
+        return value;
     },
 
     /**

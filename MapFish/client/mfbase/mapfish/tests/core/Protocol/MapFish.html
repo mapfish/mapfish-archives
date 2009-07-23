@@ -64,7 +64,7 @@
     }
 
     function test_MapFish_filterAdapter(t) {
-        t.plan(43);
+        t.plan(46);
 
         // setup
 
@@ -367,7 +367,85 @@
         t.eq(options.filter, undefined,
              "filterAdapter deletes filter");
 
+        // 3 tests
+        protocol = new mapfish.Protocol.MapFish({wildcarded: true});
+        options = {
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.LIKE,
+                property: "foo",
+                value: "bar"
+            })
+        };
+
+        protocol.filterAdapter(options);
+        t.eq(options.params["queryable"][0], "foo",
+             "filterAdapter sets correct queryable param if passed a LIKE filter (wildcarded true)");
+        t.eq(options.params["foo__ilike"], "%bar%",
+             "filterAdapter sets correct param key and value if passed an LIKE filter (wildcarded true)");
+        t.eq(options.filter, undefined,
+             "filterAdapter deletes filter (wildcarded true)");
     }
+
+    function test_MapFish_regex2value(t) {
+        t.plan(16);
+
+        // setup
+
+        var protocol = new mapfish.Protocol.MapFish();
+        var value;
+
+        // test
+
+        value = protocol.regex2value("foo");
+        t.eq(value, "foo", 'regex2value converts "foo" to "foo"');
+
+        value = protocol.regex2value("foo%");
+        t.eq(value, "foo\\%", 'regex2value converts "foo%" to "foo\\%"');
+
+        value = protocol.regex2value("foo.*");
+        t.eq(value, "foo%", 'regex2value converts "foo.*" to "foo%"');
+
+        value = protocol.regex2value("f.*oo.*");
+        t.eq(value, "f%oo%", 'regex2value converts "f.*oo.*" to "f%oo%"');
+
+        value = protocol.regex2value("foo.");
+        t.eq(value, "foo_", 'regex2value converts "foo." to "foo_"');
+
+        value = protocol.regex2value("f.oo.");
+        t.eq(value, "f_oo_", 'regex2value converts "f.oo." to "f_oo_"');
+
+        value = protocol.regex2value("f.oo.*");
+        t.eq(value, "f_oo%", 'regex2value converts "f.oo.*" to "f_oo%"');
+
+        value = protocol.regex2value("foo\\\\");
+        t.eq(value, "foo\\\\", 'regex2value converts "foo\\\\" to "foo\\\\"');
+
+        value = protocol.regex2value("foo\\.");
+        t.eq(value, "foo.", 'regex2value converts "foo\\." to "foo."');
+
+        value = protocol.regex2value("foo\\\\.");
+        t.eq(value, "foo\\\\_", 'regex2value converts "foo\\\\." to "foo\\\\_"');
+
+        value = protocol.regex2value("foo\\*");
+        t.eq(value, "foo*", 'regex2value converts "foo\\*" to "foo*"');
+
+        value = protocol.regex2value("foo\\\\*");
+        t.eq(value, "foo\\\\*", 'regex2value converts "foo\\\\*" to "foo\\\\*"');
+
+        value = protocol.regex2value("foo\\\\.*");
+        t.eq(value, "foo\\\\%", 'regex2value converts "foo\\\\.*" to "foo\\\\%"');
+
+        value = protocol.regex2value("fo\\.o.*");
+        t.eq(value, "fo.o%", 'regex2value converts from "fo\\.o.*" to "fo.o%"');
+
+        value = protocol.regex2value("fo.*o\\.");
+        t.eq(value, "fo%o.", 'regex2value converts from "fo.*o\\." to "to%o."');
+
+        value = protocol.regex2value("\\*\\..*.\\\\.*\\\\.%");
+        t.eq(value, "*.%_\\\\%\\\\_\\%",
+             'regex2value converts from "\\*\\..*.\\\\.*\\\\.%" ' +
+             'to "*.%_\\\\%\\\\_\\%"');
+   }
 
     function test_MapFish_update(t) {
         t.plan(9);

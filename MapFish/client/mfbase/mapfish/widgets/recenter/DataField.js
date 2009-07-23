@@ -151,10 +151,11 @@ Ext.extend(mapfish.widgets.recenter.DataField, mapfish.widgets.recenter.Base, {
         // itself passes these options to protocol.read
         store.on({
             beforeload: function(store, options) {
+                var value = ".*" + store.baseParams[combo.queryParam] + ".*";
                 options.filter = new OpenLayers.Filter.Comparison({
                     type: OpenLayers.Filter.Comparison.LIKE,
                     property: combo.queryParam,
-                    value: store.baseParams[combo.queryParam]
+                    value: value
                 });
                 // remove the queryParam from the store's base
                 // params not to pollute the query string

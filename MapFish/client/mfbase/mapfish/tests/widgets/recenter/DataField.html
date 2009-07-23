@@ -117,7 +117,7 @@
                      "protocol.read is passed a LIKE filter");
                 t.eq(options.filter.property, "bar",
                      "protocol.read is passed a filter with expected property");
-                t.eq(options.filter.value, q,
+                t.eq(options.filter.value, ".*" + q + ".*",
                      "protocol.read is passed a filter with expected value");
             };
 
