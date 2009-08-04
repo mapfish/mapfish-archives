@@ -12,7 +12,7 @@ Create a MapFish project
 
 Create a new Rails project::
 
-  rails --database=pogresql MyMapFishProject
+  rails --database=postgresql MyMapFishProject
   cd MyMapFishProject
 
 Install the latest version of the Mapfish plugin::
