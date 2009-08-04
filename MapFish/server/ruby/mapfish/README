@@ -1,10 +1,11 @@
 Mapfish server plugin for Ruby on Rails
 =======================================
 
-This HowTo describes step by step how to use `MapFish <http://www.mapfish.org/>`_ Server Framework to set up a MapFish project. A MapFish project defines Web Services on which MapFish Client components can rely. See `here <http://trac.mapfish.o
-rg/trac/mapfish/wiki/MapFishProtocol>`_ for a description of the interfaces provided by MapFish Web Services.
+This HowTo describes step by step how to use `MapFish <http://www.mapfish.org/>`_ Server Framework to set up a MapFish project. A MapFish project defines Web Services on which MapFish Client components can rely. See `here <http://trac.mapfish.org/trac/mapfish/wiki/MapFishProtocol>`_ for a description of the interfaces provided by MapFish Web Services.
 
 The Mapfish server for Ruby is implemented as a plugin for the `Ruby on Rails <http://www.rubyonrails.org/>`_ framework.
+
+A sample application is available at `GitHub <http://github.com/pka/mapfish-rails-sample-app/tree>`_.
 
 Create a MapFish project
 ------------------------
@@ -16,19 +17,20 @@ Create a new Rails project::
 
 Install the latest version of the Mapfish plugin::
 
-  ./script/plugin install svn://www.mapfish.org/svn/mapfish/trunk/MapFish/server/ruby/mapfish
+  rake mapfish:install_client
 
 Install the latest version of the Mapfish client libraries::
 
   svn export http://www.mapfish.org/svn/mapfish/trunk/MapFish/client/mfbase public/mfbase
 
-Build the deployment libs
-  [TODO]
+Build the deployment libs::
+
+   rake mapfish:build_scripts
 
 Install the required plugins and gems::
 
-  sudo gem install georuby
-  ./script/plugin install svn://rubyforge.org/var/svn/georuby/SpatialAdapter/trunk/spatial_adapter
+  sudo gem install GeoRuby
+  ./script/plugin install git://github.com/fragility/spatial_adapter.git
 
 
 Set up the PostGIS database
@@ -70,14 +72,93 @@ Create a model::
 
 Import some data::
 
-  [TODO] ./script/runner "Geonames::Weather.weather(:north => 44.1, :south => -9.9, :east => -22.4, :west => 55.2).each { |st| WeatherStation.create(:name => st.stationName, :geom => Point.from_x_y(st.lng, st.lat)) }"
+  ./script/runner "Geonames::Weather.weather(:north => 44.1, :south => -9.9, :east => -22.4, :west => 55.2).each { |st| WeatherStation.create(:name => st.stationName, :geom => Point.from_x_y(st.lng, st.lat)) }"
+
+(needs lib/geonames.rb from http://github.com/pka/map_layers/tree in lib/)
 
 Add a new controller with a the default actions for mapfish::
 
   class WeatherStationsController < ApplicationController
 
-    [TODO] geojson_layer :weather_stations, :geometry => :geom
+    # GET /weather_stations
+    def index
+      @weather_stations = WeatherStation.find_by_mapfish_filter(params)
 
+      render :json => @weather_stations.to_geojson
+    end
+
+    # GET /weather_stations/1
+    # GET /weather_stations/1.xml
+    def show
+      @weather_station = WeatherStation.find(params[:id])
+
+      respond_to do |format|
+        format.html # show.html.erb
+        format.xml  { render :xml => @weather_station }
+      end
+    end
+
+    # GET /weather_stations/new
+    # GET /weather_stations/new.xml
+    def new
+      @weather_station = WeatherStation.new
+
+      respond_to do |format|
+        format.html # new.html.erb
+        format.xml  { render :xml => @weather_station }
+      end
+    end
+
+    # GET /weather_stations/1/edit
+    def edit
+      @weather_station = WeatherStation.find(params[:id])
+    end
+
+    # POST /weather_stations
+    # POST /weather_stations.xml
+    def create
+      @weather_station = WeatherStation.new(params[:weather_station])
+
+      respond_to do |format|
+        if @weather_station.save
+          flash[:notice] = 'WeatherStation was successfully created.'
+          format.html { redirect_to(@weather_station) }
+          format.xml  { render :xml => @weather_station, :status => :created, :location => @weather_station }
+        else
+          format.html { render :action => "new" }
+          format.xml  { render :xml => @weather_station.errors, :status => :unprocessable_entity }
+        end
+      end
+    end
+
+    # PUT /weather_stations/1
+    # PUT /weather_stations/1.xml
+    def update
+      @weather_station = WeatherStation.find(params[:id])
+
+      respond_to do |format|
+        if @weather_station.update_attributes(params[:weather_station])
+          flash[:notice] = 'WeatherStation was successfully updated.'
+          format.html { redirect_to(@weather_station) }
+          format.xml  { head :ok }
+        else
+          format.html { render :action => "edit" }
+          format.xml  { render :xml => @weather_station.errors, :status => :unprocessable_entity }
+        end
+      end
+    end
+
+    # DELETE /weather_stations/1
+    # DELETE /weather_stations/1.xml
+    def destroy
+      @weather_station = WeatherStation.find(params[:id])
+      @weather_station.destroy
+
+      respond_to do |format|
+        format.html { redirect_to(weather_stations_url) }
+        format.xml  { head :ok }
+      end
+    end
   end
 
 Create a model for an existing table::
@@ -93,7 +174,82 @@ Add the controller::
 
   class CountriesController < ApplicationController
 
-    [TODO] geojson_layer :readonly => true, :only => [:gid, :country, :birth_rt, :death_rt, :fertility, :simplify]
+    # GET /countries
+    def index
+      @countries = Country.find_by_mapfish_filter(params)
+
+      render :json => @countries.to_geojson
+    end
+
+    # GET /countries/1
+    def show
+      @country = Country.find(params[:id])
+
+      render :json => @country.to_geojson(:only => [:gid, :country, :birth_rt, :death_rt, :fertility, :simplify])
+    end
+
+    # GET /countries/new
+    # GET /countries/new.xml
+    def new
+      @country = Country.new
+
+      respond_to do |format|
+        format.html # new.html.erb
+        format.xml  { render :xml => @country }
+      end
+    end
+
+    # GET /countries/1/edit
+    def edit
+      @country = Country.find(params[:id])
+    end
+
+    # POST /countries
+    # POST /countries.xml
+    def create
+      @country = Country.new(params[:country])
+
+      respond_to do |format|
+        if @country.save
+          flash[:notice] = 'Country was successfully created.'
+          format.html { redirect_to(@country) }
+          format.xml  { render :xml => @country, :status => :created, :location => @country }
+        else
+          format.html { render :action => "new" }
+          format.xml  { render :xml => @country.errors, :status => :unprocessable_entity }
+        end
+      end
+    end
+
+    # PUT /countries/1
+    # PUT /countries/1.xml
+    def update
+      @country = Country.find(params[:id])
+
+      respond_to do |format|
+        if @country.update_attributes(params[:country])
+          flash[:notice] = 'Country was successfully updated.'
+          format.html { redirect_to(@country) }
+          format.xml  { head :ok }
+        else
+          format.html { render :action => "edit" }
+          format.xml  { render :xml => @country.errors, :status => :unprocessable_entity }
+        end
+      end
+    end
+
+    # DELETE /countries/1
+    # DELETE /countries/1.xml
+    def destroy
+      @country = Country.find(params[:id])
+      @country.destroy
+
+      respond_to do |format|
+        format.html { redirect_to(countries_url) }
+        format.xml  { head :ok }
+      end
+    end
+  end
 
   end
 
