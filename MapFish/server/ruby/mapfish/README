@@ -12,20 +12,20 @@ Create a MapFish project
 
 Create a new Rails project::
 
-    rails --database=pogresql MyMapFishProject
-    cd MyMapFishProject
+  rails --database=pogresql MyMapFishProject
+  cd MyMapFishProject
 
 Install the latest version of the Mapfish plugin::
 
-  rake mapfish:install_client
+  ./script/plugin install http://www.mapfish.org/svn/mapfish/trunk/MapFish/server/ruby/mapfish
 
 Install the latest version of the Mapfish client libraries::
 
-  svn export http://www.mapfish.org/svn/mapfish/trunk/MapFish/client/mfbase public/mfbase
+  rake mapfish:install_client
 
 Build the deployment libs::
 
-   rake mapfish:build_scripts
+  rake mapfish:build_scripts
 
 Install the required plugins and gems::
 
