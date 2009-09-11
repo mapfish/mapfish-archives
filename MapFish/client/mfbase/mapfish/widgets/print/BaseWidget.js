@@ -77,7 +77,7 @@ Ext.extend(mapfish.widgets.print.BaseWidget, Ext.Panel, {
 
     /**
      * APIProperty: styleMap
-     * {OpenLayers.StyleMap} An optional map style for the vector layer containing the print rectangle.
+     * {<OpenLayers.StyleMap>} An optional map style for the vector layer containing the print rectangle.
      */
     styleMap: null,
 
