@@ -75,6 +75,12 @@ Ext.extend(mapfish.widgets.print.BaseWidget, Ext.Panel, {
      */
     layer: null,
 
+    /**
+     * APIProperty: styleMap
+     * {OpenLayers.StyleMap} An optional map style for the vector layer containing the print rectangle.
+     */
+    styleMap: null,
+
     layout: 'fit',
 
     /**
@@ -197,6 +203,7 @@ Ext.extend(mapfish.widgets.print.BaseWidget, Ext.Panel, {
 
             this.layer = new OpenLayers.Layer.Vector("_Print" + this.getId(), {
                 displayInLayerSwitcher: false,
+                styleMap: this.styleMap,
                 calculateInRange: function() {
                     return true;
                 }
