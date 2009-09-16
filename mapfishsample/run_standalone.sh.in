@@ -1,5 +1,0 @@
-#!/bin/sh
-# %GENERATED_WARNING%
-
-(cd %PROJECT_DIR%/%PROJECT% && %PASTER% serve %PASTE_CONFIG% --reload)
-
